@@ -1,0 +1,970 @@
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.natural-one-piece-cork-stopper-blanks"
+  classification_refs: "CPC 3.0 31922; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Unwashed uncoated punched and dry-sized one-piece natural cork stopper blanks"
+  excluded_products: "Turned, agglomerated, disc-bonded, colmated/coated finished stoppers and cork boards"
+  representative_product: "Cylindrical Quercus suber one-piece blank; dimensions and grade declared from actual order"
+  production_route: "Purchased boiled stabilized planks → strip cutting → hollow-tube punching → dry sizing → grading → handover; low-voltage user supply and dry dust extraction"
+  market_state: "Manufactured intermediate before semi-finishing; unwashed, uncolmated, unprinted, uncoated; at factory gate"
+functional_unit:
+  what: "Supply natural one-piece cork stopper blanks for downstream finishing"
+  how_much: "1 kg accepted net stopper-blank mass excluding delivery packaging"
+  how_well: "Delivered to declared order dimensions, grade, moisture and acceptance records; no claimed equivalent bottling performance"
+  how_long_or_cycle: "One production and factory-gate handover cycle; no closure service-life claim"
+  reference_flow_link: "stopper_out"
+system_boundary:
+  rules:
+    - rule_id: sb_start
+      applies_to: "all inventory rows"
+      rule: "Retain bark and boiling upstream burdens. Prepared-plank background must match treatment, moisture, heat, water and effluent boundaries. If supplier data end at raw bark, add boiling/stabilization; do not count the same boiling twice."
+      source_ids:
+        - jrc-cork-chain-2017
+        - spanish-natural-stopper-2022
+    - rule_id: sb_route
+      applies_to: "conversion"
+      rule: "Include receipt, strip cutting, punching, dry sizing, grading, extraction and pack-out only. No foreground boiler, steam, combustion, granulation/bonding or washing/coating; a facility performing them needs an expanded, evidenced atomic inventory and cannot conceal them inside this route."
+      source_ids:
+        - jrc-cork-chain-2017
+        - spanish-natural-stopper-2022
+    - rule_id: sb_stages
+      applies_to: "conversion"
+      rule: "Aggregate conversion and handover into one foreground unit while retaining separate stage mass, electricity and loss ledgers. Actual internal transfers must agree at both ends and are not extra external outputs; only one accepted reference output is allowed."
+      source_ids: []
+    - rule_id: sb_chemicals
+      applies_to: "conversion"
+      rule: "Do not substitute generic glue or coating for unknown formulations. Actual wash chemicals, colmation agents, silicone, paraffin, ink or preserving gas are outside this route and require actual substances, concentration/wet-dry basis and doses for a separate assessment. Purchased belt binder and box glue stay in their manufactured-consumable backgrounds, not invented foreground dosing."
+      source_ids:
+        - jrc-cork-chain-2017
+        - spanish-natural-stopper-2022
+    - rule_id: sb_carbon
+      applies_to: "all inventory rows"
+      rule: "Keep separate physical dry-cork, water and biogenic-carbon ledgers. Absence of site combustion does not permit deleting biogenic CO2 from LCI: retain upstream heat-source biogenic/fossil emissions and any actual foreground oxidation, resolving correct species and compartment, regardless of GHG reporting convention. Stocked carbon is not automatically negative emission or permanent storage."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Boiled stabilized selected unbonded Quercus suber planks received at manufacturer; moisture, thickness, quality grade, supplier and inbound transport declared"
+  starting_condition_role: "Foreground starting point; not burden-free bark"
+  product_classification_scope: "Punched one-piece blanks within natural articles of 31922; incoming planks and outgoing offcuts are adjacent categories, not reference articles"
+  recursive_input_rule: "If same-category blanks are purchased for further sizing, distinguish prior supplier production from added processing; do not recursively expand the same site record. The provider route must still satisfy these qualifiers"
+  upstream_dataset_requirement: "Link bark origin/management, stripping, forest handling, stabilization, boiling and heat supply, water reuse/discharge, post-boil stabilization/selection and plank delivery; missing scope is an upstream coverage gap and bars complete cradle-to-gate claims"
+  disclosure: "Foreground from received planks to accepted blank handover; washing/disinfection, colmation, bonding, coating, bottling, use and end of life are outside this gate; measure packaging and disclose period stocks and co-products"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Articles of natural cork, agglomerated cork and articles thereof"
+    uuid: "9dee16fe-f882-489f-9b63-3c0ee5148e02"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Quercus suber"
+    - "unbonded one piece"
+    - "input boiled and stabilized"
+    - punched
+    - "unwashed/uncolmated/unprinted/uncoated"
+    - "dimensions and grade"
+    - "accepted moisture and wet/dry basis"
+    - "net mass"
+    - packaging
+    - "delivery to finisher"
+    - "supply voltage"
+    - "site and period"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Q is total accepted net as-delivered blank mass for the same period and route, excluding packaging; use calibrated scales, tare and lot moisture records. Normalize every row per 1 kg reference flow."
+  - id: moisture_balance
+    applies_to: "plank_in; stopper_out; offcut_out; dust_out; vapour_out"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Measure wet mass m and wet-basis water fraction w separately; dry solids m×(1−w), water mass m×w; dry cork mass equals dry solids multiplied by the measured cork fraction, excluding abrasive/binder contamination; convert dry-basis moisture u by w=u/(1+u). Density or count cannot replace net mass; packaging is outside the cork balance."
+  - id: electricity_units
+    applies_to: "electricity_in"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Meter electricity delivered to the user; 1 kWh=3.6 MJ. The property name follows the database energy chain, not a fuel heating value or delivered heat basis. Verify voltage below 1 kV and supplier loss boundary."
+process_map:
+  - id: conversion
+    name: "Plank receipt, strip cutting/punching, dry sizing/grading and handover"
+    inclusion: "required"
+    inclusion_condition: "This one declared route"
+    role: "foreground production"
+    quantitative_reference: "1 kg accepted net blanks"
+process_inventory:
+  - id: conversion
+    label: "Plank receipt, strip cutting/punching, dry sizing/grading and handover"
+    inputs:
+      product:
+        - row_id: plank_in
+          role: "Prepared natural cork planks"
+          name: "Natural cork, debacked or roughly squared, or in blocks, plates, sheets or strip, crushed, granulated or ground cork, waste cork"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e03a0a0b-6dd8-4190-8204-3210fa9b51f4"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased Quercus suber planks: boiled, stabilized, selected and unbonded, delivered to this gate. Record wet mass and matched moisture; confirm upstream heat, water, effluent, bark stripping and transport coverage."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+        - row_id: electricity_in
+          role: "Low-voltage electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "unit group 93a60a57-a3c8-11da-a746-0800200c9a66; Net calorific value, used as electrical energy 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Meter the supplied consumption mix below 1 kV for cutting, punching, sizing, sorting, extraction and packing. Source geography is CN and the gate is grid-average supply to the user; verify actual site/provider region, year, mix, voltage and delivery/loss boundary before background use. Convert metered kWh to native MJ; the database Net calorific value label is an electrical-energy chain, not heat or fuel."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q; electricity numerator in MJ."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+        - row_id: abrasive_in
+          role: "Coated abrasive belt for dry cork sizing"
+          name: "Abrasive belt"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8240432e-9d1c-43e0-aa76-70e9905b2895"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual whole manufactured coated belt for dry cork sizing, not bulk alumina, industrial diamond or a presumed paper sheet. Record supplier article, grit species, backing and binder, dimensions, new mass, stock and replacement count; keep all components in the purchased mixture background without duplicate foreground component inputs. The broad belt Product/Mass/kg has no fixed grit/backing recipe or metal-only route; source production mix at plant CN requires actual provider geography, year and gate compatibility. Unknown actual formulation and quantity remain collection requirements, not inferred defaults."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_abrasive
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+        - row_id: film_in
+          role: "Polyethylene film bag"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional: only the actual unsupported, non-self-adhesive, non-laminated PE film used to contain blanks. Record polymer grade/CAS9002-88-4, composition and mass, bag conversion and seal method; resolve a different whole packaging identity if backing, adhesive or laminate is actually present. No SO2 atmosphere, paraffin or silicone is assumed. Raw names/CAS/comment establish PE film despite conflicting CPC29220 luggage classification; source classification clarification and actual supplier grade/geography/year/gate compatibility remain pending, not claimed resolved."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+        - row_id: carton_in
+          role: "Corrugated paperboard shipping box"
+          name: "corrugated board boxes"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f197bec-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional: weigh actual complete corrugated shipping boxes and record flute, fibre composition, printing, closure, supplier and stock-adjusted quantity. This source identifies a completed at-plant technology-mix box with 16.6% primary and 83.4% recycled fibre; these are conditional source-compatibility limits requiring the actual supplier fraction basis and manufacturing gate to match, never a default box recipe, recycled-content credit or foreground glue dose. If actual composition/state differs or remains unverified, resolve compatible whole-box data before dataset use; no paperboard feedstock or unsupported optical-assembly/folding-carton substitution."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: stopper_out
+          role: "Accepted natural one-piece stopper blanks"
+          name: "Articles of natural cork, agglomerated cork and articles thereof"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9dee16fe-f882-489f-9b63-3c0ee5148e02"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Exactly one reference output: accepted cylindrical single-piece natural cork blanks after dry sizing and grading, before washing, colmation, printing or coating; net cork mass excludes delivery packaging. The broad manufactured-article identity is restricted to this subset, not a ready-to-bottle closure."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+        - row_id: offcut_out
+          role: "Unbonded cork cutting offcuts for external granulation"
+          name: "Natural cork, debacked or roughly squared, or in blocks, plates, sheets or strip, crushed, granulated or ground cork, waste cork"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e03a0a0b-6dd8-4190-8204-3210fa9b51f4"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Keep stripped edges, perforated strip remnants and rejected natural cork pieces in a separately weighed unbonded coarse offcut stream for the identified external granulator. Product status requires documented applicable by-product/product compliance, customer grade/contamination specifications and acceptance, and actual economic function; payment alone does not establish a Product flow. If the stream remains waste, change type and resolve a compatible Waste identity before dataset use. No foreground grinding, densimetric grading, binder or agglomeration. Record outgoing gate, wet mass, moisture, grade and stocks separately from purchased boiled/stabilized planks despite shared broad UUID; do not equate either exchange or create a self-referential provider loop."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+      waste:
+        - row_id: dust_out
+          role: "Captured cork sizing dust"
+          name: "Cork dust"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "95c2482d-304b-4e57-8509-03b7a602d5f1"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh actual separately captured cork sanding/dry-sizing dust with abrasive contamination, component dry masses/carbon, moisture, ownership and the identified external fuel-use or granulation receiver. The source Waste identity specifically covers stopper sanding/finishing dust for those receiver routes; verify actual acceptance/contamination and receiving treatment/provider scope, not clean cork or an arbitrary disposal stream. Current waste status must be documented; payment alone cannot change it to Product, and a demonstrated economic co-product requires a compatible type/identity before use. Concordant cork name/comment/route support the physical locator despite CPC39283 wood-waste classification; supplier/source classification clarification remains unresolved. No free burdens or avoided-fuel credit."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-cork-chain-2017
+                - spanish-natural-stopper-2022
+            ranges: []
+        - row_id: abrasive_out
+          role: "Spent cork-sizing abrasive belt"
+          name: "Spent abrasive waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "f0a52dd6-0027-4033-9068-f293526f958f"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual removed whole cork-sizing belt after use, including remaining abrasive grains, backing, binder and adhering cork/moisture. Weigh dispatched mass, reconcile new belt consumption, component wear into collected dust/outdoor particles, attached cork and stocks, and document contamination and receiver treatment/provider compatibility. The broad surface-finishing Spent abrasive waste/Mass/kg has no metal-only or loose-powder restriction; do not substitute metal-finishing polishing waste, unused belts or clean cork dust. Account adhering cork and its water once in the separate cork/component ledgers; no default waste fraction or treatment credit."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_abrasive
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: pm25_out
+          role: "Released particles no larger than 2.5 micrometres"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor air, unspecified subcompartment: emitted PM2.5 after controls, including measured fugitive emissions. Workplace captured dust is not an environmental emission. Record sampling cut-size and cork/abrasive fraction; no wood-sector factor is transferred."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: pmcoarse_out
+          role: "Released particles above 2.5 through 10 micrometres"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor air, unspecified: the disjoint PM2.5–PM10 interval. Use matched PM10 minus PM2.5 measurements only when sampling bases agree and subtraction is nonnegative; do not add cumulative PM10 to this row."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: pmover10_out
+          role: "Released particles above 10 micrometres"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor air, unspecified: particles above PM10. A total-minus-PM10 result requires identical method coverage of larger particles; TSP is not automatically total emitted particulate matter. Preserve an explicit measurement gap if a method misses this interval."
+          amount:
+            expression: "Same-period actual exchange total / accepted net blank mass Q."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: vapour_out
+          role: "Cork moisture evaporated to outdoor air"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "unit group 93a60a57-a4c8-11da-a746-0800200c9a66; Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Water species CAS 7732-18-5, air unspecified; not water discharge or supplied steam. Calculate evaporation from matched water-content and stock records for lots with net moisture loss. Moisture gain requires a separately characterized air-water input, not a negative emission or invented drying amount."
+          amount:
+            expression: "Same-period net evaporated water mass from the water balance / accepted net blank mass Q."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids: []
+            ranges: []
+allocation_rules:
+  - rule_id: alloc_separate
+    applies_to: "conversion"
+    rule: "First avoid allocation by stage metering or defensible unit subdivision. Keep physical process/stock/water/carbon ledgers separate from allocated environmental-burden accounts; trace plank cost/burdens to output grades and sold offcuts."
+    source_ids:
+      - spanish-natural-stopper-2022
+  - rule_id: alloc_basis
+    applies_to: "conversion"
+    rule: "When allocation cannot be avoided, assess physical causality and use measured physical relationships where valid; otherwise use economic shares from same-period factory-gate quantity×unit price, recording all outputs with economic function, currency, price window and sensitivity. Never default to case quantities or allocation percentages."
+    source_ids:
+      - spanish-natural-stopper-2022
+  - rule_id: alloc_physical
+    applies_to: "all inventory rows"
+    rule: "Apply allocation shares to burdens, never to physical co-product outputs. Divide reference-product burdens by Q; offcut/dust physical rows retain actual total amounts/Q and cannot disappear into yield or negative inputs. Record only actual external net exchanges once for internal reuse."
+    source_ids: []
+  - rule_id: alloc_residues
+    applies_to: "offcut_out; dust_out"
+    rule: "Outputs with payment revenue and economic function participate in the selected allocation; waste without economic function gains no share merely from recyclability, and treatment-burden ownership must be transparent. dust_out is currently a waste exchange; if records establish an economic co-product, change flow type and resolve a compatible identity before rechecking. Document applicable by-product/product or waste status and customer acceptance specifications separately; payment alone does not establish Product status or compatible treatment. Do not combine economic allocation with undeclared fuel-substitution credits."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_material
+      process_id: "conversion"
+      flow_role: "Planks, blanks, offcuts, dust, water and carbon"
+      record_type: "weighing_and_lot_records"
+      raw_fields: "lot; species; thickness; grade; wet mass; wet-basis moisture and method; dry-cork carbon fraction; cork share in mixed dry solids; cork-associated versus non-cork water; opening/closing stocks; stage transfers; adhering dust; transport distance/mode; receiver; ownership; revenue/prices; accepted Q"
+      collection_method: "Calibrated batch weighing with tare; representative documented moisture method that distinguishes water from other volatiles; documented dry-carbon assay. Match lots at each stage and reconcile weighing tickets, acceptance and stocks; no generic moisture or carbon fraction. Aggregation requirement: Same-period physical total for each row / accepted net blank mass Q; per 1 kg reference flow"
+      unit: "kg; fraction"
+      frequency: "Each lot and monthly stock reconciliation"
+      temporal_coverage: "Complete consecutive 12 months or justified complete production season including downtime/abnormal events"
+      site_scope: "Declared site and this one punching route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Scale calibration; water/carbon tests; lot and two-end transfer records; supplier upstream coverage; receiver records"
+    - protocol_id: cp_energy
+      process_id: "conversion"
+      flow_role: "Low-voltage electricity"
+      record_type: "meter_records"
+      raw_fields: "start/end meter; kWh; voltage; supplier; meter boundary; stage/other-product submetering; extraction/idle/packing; period"
+      collection_method: "Verify user-side meters against invoices for consumption electricity below 1 kV; meter shared equipment or document causal apportionment and reconciliation. Aggregation requirement: Same-period attributable kWh × 3.6 / Q; per 1 kg reference flow"
+      unit: "kWh; MJ"
+      frequency: "Each shift and invoice cycle"
+      temporal_coverage: "Same period as cp_material"
+      site_scope: "This route meters, extraction and packing"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter checks, invoices, supplier and loss boundary"
+    - protocol_id: cp_abrasive
+      process_id: "conversion"
+      flow_role: "New and spent belts"
+      record_type: "maintenance_records"
+      raw_fields: "supplier article; grit/backing/binder; dimensions; unit mass; stock; replacement count; wear; adhering cork; spent-belt receiver"
+      collection_method: "Retain article specification and weighing; reconcile consumption through stocks and replacement logs, weigh spent belts and adhering cork and establish abrasive-wear destinations. Aggregation requirement: Same-period row mass / Q; per 1 kg reference flow"
+      unit: "kg; count"
+      frequency: "Each replacement and stock period"
+      temporal_coverage: "Same period as cp_material"
+      site_scope: "Dry sizing equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Actual article/formulation records; weighing; receiver treatment records"
+    - protocol_id: cp_pack
+      process_id: "conversion"
+      flow_role: "Film and shipping boxes"
+      record_type: "packing_records"
+      raw_fields: "packaging presence/absence; PE grade/composition; film unit mass; box composition/mass; closure method; counts; period; delivery recipient"
+      collection_method: "Reconcile purchases/issues; sample tare-corrected component masses against pack-out/shipping counts and stock; do not transfer finished-closure case packaging amounts or atmosphere. Aggregation requirement: Same-period component mass actually consumed / Q; per 1 kg reference flow"
+      unit: "kg; count"
+      frequency: "Each packaging lot and issue period"
+      temporal_coverage: "Same period as cp_material"
+      site_scope: "Factory-gate pack-out at this boundary"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Supplier material/composition; weighing; shipping/stock records"
+    - protocol_id: cp_air
+      process_id: "conversion"
+      flow_role: "Outdoor particulate emissions in three disjoint size intervals"
+      record_type: "sampling_and_operating_records"
+      raw_fields: "outlet/fugitive source; size cut; method/detection limit; concentration; wet/dry/T/P basis; air volume; control state; operating hours; cork/abrasive composition; sampling period"
+      collection_method: "Post-control size-resolved sampling and air-volume metering covering operating states and fugitives; integrate concentration×volume at common wet/dry/T/P basis. Below-detection results retain upper bounds/uncertainty; unsampled intervals remain gaps; captured mass is not emitted mass. Aggregation requirement: Same-period released total in each disjoint interval / Q; per 1 kg reference flow"
+      unit: "kg; mg/m3; m3; h"
+      frequency: "Representative states and after control changes, with continuous operating-hour records"
+      temporal_coverage: "Corresponding cp_material period, with extrapolation coverage disclosed"
+      site_scope: "Actual outdoor releases; air subcompartment unspecified"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Sampling reports, flow checks, detection limits, controls/operating records"
+  calculation_rules:
+    - id: normalize_exchange
+      applies_to: "all inventory rows"
+      rule: "Divide each same-period physical row total by Q; fix the reference row at 1 kg. Divide allocated burdens by Q separately; never alter physical quantities using burden shares."
+      inputs:
+        - "row total"
+        - Q
+        - "linked collection protocol"
+      output: "exchange per 1 kg reference flow"
+      source_ids: []
+    - id: electricity_conversion
+      applies_to: "electricity_in"
+      rule: "E_MJ=3.6×E_kWh at the same user-side meter boundary."
+      inputs:
+        - E_kWh
+        - cp_energy
+      output: "E_MJ"
+      source_ids: []
+    - id: water_reconciliation
+      applies_to: "vapour_out"
+      rule: "Use cork-associated water consistently, accounting separately for non-cork or abrasive-borne water. Net evaporated cork water = incoming plank water + opening cork-stock water − water in blanks/offcuts/captured dust/cork adhering to spent belts − closing cork-stock water − water carried by released cork particles where actually measured. Keep particle-associated water separate from water vapour and non-cork/abrasive water; no water fraction is invented for a dry-particle measurement. First verify absence of other water exchanges and non-water volatile losses. Do not clamp negative results to zero; investigate moisture gain/other exchanges and add characterization."
+      inputs:
+        - "wet mass"
+        - "wet-basis moisture"
+        - "stock water"
+        - cp_material
+      output: "evaporated kg water"
+      source_ids: []
+    - id: pm_intervals
+      applies_to: "pm25_out; pmcoarse_out; pmover10_out"
+      rule: "For one matched sampling system, fine=PM2.5, coarse=PM10−PM2.5, larger=comparable total particles−PM10; differences require complete method coverage and nonnegative values. mg×10^-6=kg; concentration×same-basis volume gives mass. Cumulative PM10/total are reconciliation quantities, not extra LCI emissions."
+      inputs:
+        - "size-resolved concentrations"
+        - "air volume"
+        - "operating hours"
+        - cp_air
+      output: "three disjoint emitted masses"
+      source_ids: []
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_route
+      applies_to: "conversion"
+      requirement: "Verify boiled stabilized incoming Quercus suber, unbonded one-piece punching without washing/coating and handover to finishing; align supplier/order/site boundaries."
+      evidence: "supplier/order/acceptance records"
+    - id: dq_balance
+      applies_to: "all inventory rows"
+      requirement: "Physical dry-cork/water/biogenic-carbon balances include period stocks, actual output grades, offcuts, captured dust, wear composition, adhering dust and releases; compare residuals with instrument uncertainty and explain, without invented yield/tolerance."
+      evidence: "cp_material; cp_abrasive; cp_air"
+    - id: dq_background
+      applies_to: "all inventory rows"
+      requirement: "Identity success is not complete background data: check state/unit/supply boundary/geography/time/losses for every provider link and disclose unresolved UUIDs/source classification defects."
+      evidence: "provider scope evidence"
+    - id: dq_screen
+      applies_to: "conversion"
+      requirement: "Screen actual maintenance oil, cleaning agents, input packaging residues, additional consumables and abnormal emissions; add atomic exchanges/collection where present and do not claim dataset completeness with remaining gaps."
+      evidence: "site screening and maintenance records"
+validation_rules:
+  - rule_id: val_reference
+    applies_to: "stopper_out"
+    rule: "Check exactly one reference output, 1 kg net mass, Q and all qualifiers defining this subset of the broad UUID; do not add a packaging-stage output with the same reference UUID."
+    source_ids: []
+  - rule_id: val_denominator
+    applies_to: "all inventory rows"
+    rule: "EN/ZH reference, all 13 inventory bases, collection aggregation and calculations use per 1 kg accepted net blanks; align unit conversion and time windows."
+    source_ids: []
+  - rule_id: val_route
+    applies_to: "conversion"
+    rule: "Do not merge agglomerated stoppers, turning, disc bonding, boards or finished-closure washing/coating into this route; disclose missing purchased-plank upstream boiling heat/water/effluent."
+    source_ids:
+      - jrc-cork-chain-2017
+      - spanish-natural-stopper-2022
+  - rule_id: val_air
+    applies_to: "pm25_out; pmcoarse_out; pmover10_out; vapour_out"
+    rule: "Check elementary species, air/unspecified subcompartment, Mass/kg, disjoint size intervals and sampling coverage. Workplace dust, captured waste and water-compartment vapour cannot stand in for outdoor releases; actual biogenic CO2 cannot be deleted for reporting convention."
+    source_ids: []
+  - rule_id: val_completeness
+    applies_to: "all inventory rows"
+    rule: "Report specific unresolved/skipped scope for missing consumable identity, background chains, emission measurements or unexplained balances; do not claim complete LCI or cradle-to-gate. Method is available for independent review; actual site data still require collection."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Site-specific punched natural one-piece blank manufacturing dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Background input to downstream finishing for this same unwashed/uncoated gate; assemble a bounded product system when complete upstream evidence supports it"
+  excluded_use: "Ready-to-bottle closures, all CPC31922, agglomerated boards/stoppers, unknown adhesive/coating recipes or unverified negative-carbon/compliance claims"
+  required_metadata: "Species, one-piece identity, boiled/stabilized input, size/grade, net wet mass/moisture basis, site/period, operations, packaging/voltage, suppliers/receivers, upstream/downstream gate, allocation"
+  required_quality_disclosure: "Measured share; stock/mass/water/carbon balances; PM sampling/detection limits; unresolved UUID/source metadata defects; background matching, missing scope and allocation sensitivity"
+  update_trigger: "Changes to provider boiling heat/boundary, voltage, punching/extraction, blank grade/moisture, belt recipe, packaging, by-product status or handover state"
+data_sources:
+  - id: "jrc-cork-chain-2017"
+    type: "official_guidance"
+    reference: "European Commission JRC: Non-harmonised food contact materials in the EU, JRC104198 (2017), printed pp.172–173; https://publications.jrc.ec.europa.eu/repository/handle/JRC104198"
+    used_for: "Manufacturing versus washing/colmation/coating gate; plank preparation versus granulation. Official summary of an earlier industry code, not contemporary certification or quantitative factors"
+  - id: "spanish-natural-stopper-2022"
+    type: "literature"
+    reference: "Environmental Impact Analysis of Natural Cork Stopper Manufacturing (2022), §§2.1–2.5.3, 3.1; DOI 10.3390/agriculture12050636; https://www.mdpi.com/2077-0472/12/5/636"
+    used_for: "Spanish case punching/turning, sizing/grading versus later treatment, offcuts and economic-allocation example. Qualitative process/allocation rationale only; no transferred sizes, quantities, material recipes or bag atmosphere"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:2092a4a9380d892bac646ebe3535b54e4d10e684cba1d80a77a0d4f56717670c"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5281"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5281
+          line: 59
+          column: 1
+        end:
+          offset: 8556
+          line: 80
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Boiled stabilized selected unbonded Quercus suber planks received at manufacturer; moisture, thickness, quality grade, supplier and inbound transport declared |\n| starting_condition_role | Foreground starting point; not burden-free bark |\n| product_classification_scope | Punched one-piece blanks within natural articles of 31922; incoming planks and outgoing offcuts are adjacent categories, not reference articles |\n| recursive_input_rule | If same-category blanks are purchased for further sizing, distinguish prior supplier production from added processing; do not recursively expand the same site record. The provider route must still satisfy these qualifiers |\n| upstream_dataset_requirement | Link bark origin/management, stripping, forest handling, stabilization, boiling and heat supply, water reuse/discharge, post-boil stabilization/selection and plank delivery; missing scope is an upstream coverage gap and bars complete cradle-to-gate claims |\n| disclosure | Foreground from received planks to accepted blank handover; washing/disinfection, colmation, bonding, coating, bottling, use and end of life are outside this gate; measure packaging and disclose period stocks and co-products |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| sb_start | all inventory rows | Retain bark and boiling upstream burdens. Prepared-plank background must match treatment, moisture, heat, water and effluent boundaries. If supplier data end at raw bark, add boiling/stabilization; do not count the same boiling twice. | jrc-cork-chain-2017; spanish-natural-stopper-2022 |\n| sb_route | conversion | Include receipt, strip cutting, punching, dry sizing, grading, extraction and pack-out only. No foreground boiler, steam, combustion, granulation/bonding or washing/coating; a facility performing them needs an expanded, evidenced atomic inventory and cannot conceal them inside this route. | jrc-cork-chain-2017; spanish-natural-stopper-2022 |\n| sb_stages | conversion | Aggregate conversion and handover into one foreground unit while retaining separate stage mass, electricity and loss ledgers. Actual internal transfers must agree at both ends and are not extra external outputs; only one accepted reference output is allowed. |  |\n| sb_chemicals | conversion | Do not substitute generic glue or coating for unknown formulations. Actual wash chemicals, colmation agents, silicone, paraffin, ink or preserving gas are outside this route and require actual substances, concentration/wet-dry basis and doses for a separate assessment. Purchased belt binder and box glue stay in their manufactured-consumable backgrounds, not invented foreground dosing. | jrc-cork-chain-2017; spanish-natural-stopper-2022 |\n| sb_carbon | all inventory rows | Keep separate physical dry-cork, water and biogenic-carbon ledgers. Absence of site combustion does not permit deleting biogenic CO2 from LCI: retain upstream heat-source biogenic/fossil emissions and any actual foreground oxidation, resolving correct species and compartment, regardless of GHG reporting convention. Stocked carbon is not automatically negative emission or permanent storage. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 309
+              line: 10
+              column: 1
+            end:
+              offset: 371
+              line: 10
+              column: 63
+          text: "# Natural one-piece cork stopper blanks, punched and dry-sized"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5281
+              line: 59
+              column: 1
+            end:
+              offset: 5302
+              line: 59
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_24744"
+      family: "allocation"
+      span:
+        start:
+          offset: 24744
+          line: 299
+          column: 1
+        end:
+          offset: 26572
+          line: 308
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| alloc_separate | conversion | First avoid allocation by stage metering or defensible unit subdivision. Keep physical process/stock/water/carbon ledgers separate from allocated environmental-burden accounts; trace plank cost/burdens to output grades and sold offcuts. | spanish-natural-stopper-2022 |\n| alloc_basis | conversion | When allocation cannot be avoided, assess physical causality and use measured physical relationships where valid; otherwise use economic shares from same-period factory-gate quantity×unit price, recording all outputs with economic function, currency, price window and sensitivity. Never default to case quantities or allocation percentages. | spanish-natural-stopper-2022 |\n| alloc_physical | all inventory rows | Apply allocation shares to burdens, never to physical co-product outputs. Divide reference-product burdens by Q; offcut/dust physical rows retain actual total amounts/Q and cannot disappear into yield or negative inputs. Record only actual external net exchanges once for internal reuse. |  |\n| alloc_residues | offcut_out; dust_out | Outputs with payment revenue and economic function participate in the selected allocation; waste without economic function gains no share merely from recyclability, and treatment-burden ownership must be transparent. dust_out is currently a waste exchange; if records establish an economic co-product, change flow type and resolve a compatible identity before rechecking. Document applicable by-product/product or waste status and customer acceptance specifications separately; payment alone does not establish Product status or compatible treatment. Do not combine economic allocation with undeclared fuel-substitution credits. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 309
+              line: 10
+              column: 1
+            end:
+              offset: 371
+              line: 10
+              column: 63
+          text: "# Natural one-piece cork stopper blanks, punched and dry-sized"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 24744
+              line: 299
+              column: 1
+            end:
+              offset: 24784
+              line: 299
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_35572"
+      family: "validation"
+      span:
+        start:
+          offset: 35572
+          line: 339
+          column: 1
+        end:
+          offset: 37018
+          line: 349
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| val_reference | stopper_out | Check exactly one reference output, 1 kg net mass, Q and all qualifiers defining this subset of the broad UUID; do not add a packaging-stage output with the same reference UUID. |  |\n| val_denominator | all inventory rows | EN/ZH reference, all 13 inventory bases, collection aggregation and calculations use per 1 kg accepted net blanks; align unit conversion and time windows. |  |\n| val_route | conversion | Do not merge agglomerated stoppers, turning, disc bonding, boards or finished-closure washing/coating into this route; disclose missing purchased-plank upstream boiling heat/water/effluent. | jrc-cork-chain-2017; spanish-natural-stopper-2022 |\n| val_air | pm25_out; pmcoarse_out; pmover10_out; vapour_out | Check elementary species, air/unspecified subcompartment, Mass/kg, disjoint size intervals and sampling coverage. Workplace dust, captured waste and water-compartment vapour cannot stand in for outdoor releases; actual biogenic CO2 cannot be deleted for reporting convention. |  |\n| val_completeness | all inventory rows | Report specific unresolved/skipped scope for missing consumable identity, background chains, emission measurements or unexplained balances; do not claim complete LCI or cradle-to-gate. Method is available for independent review; actual site data still require collection. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 309
+              line: 10
+              column: 1
+            end:
+              offset: 371
+              line: 10
+              column: 63
+          text: "# Natural one-piece cork stopper blanks, punched and dry-sized"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 35572
+              line: 339
+              column: 1
+            end:
+              offset: 35594
+              line: 339
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "sb_start"
+      identity_kind: "explicit"
+      unit_id: "normative_5281"
+      source_span:
+        start:
+          offset: 6666
+          line: 74
+          column: 1
+        end:
+          offset: 6988
+          line: 74
+          column: 323
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "sb_route"
+      identity_kind: "explicit"
+      unit_id: "normative_5281"
+      source_span:
+        start:
+          offset: 6989
+          line: 75
+          column: 1
+        end:
+          offset: 7358
+          line: 75
+          column: 370
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "sb_stages"
+      identity_kind: "explicit"
+      unit_id: "normative_5281"
+      source_span:
+        start:
+          offset: 7359
+          line: 76
+          column: 1
+        end:
+          offset: 7649
+          line: 76
+          column: 291
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "sb_chemicals"
+      identity_kind: "explicit"
+      unit_id: "normative_5281"
+      source_span:
+        start:
+          offset: 7650
+          line: 77
+          column: 1
+        end:
+          offset: 8121
+          line: 77
+          column: 472
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "sb_carbon"
+      identity_kind: "explicit"
+      unit_id: "normative_5281"
+      source_span:
+        start:
+          offset: 8122
+          line: 78
+          column: 1
+        end:
+          offset: 8554
+          line: 78
+          column: 433
+    - pointer: "/allocation_rules/0"
+      rule_id: "alloc_separate"
+      identity_kind: "explicit"
+      unit_id: "normative_24744"
+      source_span:
+        start:
+          offset: 24857
+          line: 303
+          column: 1
+        end:
+          offset: 25158
+          line: 303
+          column: 302
+    - pointer: "/allocation_rules/1"
+      rule_id: "alloc_basis"
+      identity_kind: "explicit"
+      unit_id: "normative_24744"
+      source_span:
+        start:
+          offset: 25159
+          line: 304
+          column: 1
+        end:
+          offset: 25561
+          line: 304
+          column: 403
+    - pointer: "/allocation_rules/2"
+      rule_id: "alloc_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_24744"
+      source_span:
+        start:
+          offset: 25562
+          line: 305
+          column: 1
+        end:
+          offset: 25894
+          line: 305
+          column: 333
+    - pointer: "/allocation_rules/3"
+      rule_id: "alloc_residues"
+      identity_kind: "explicit"
+      unit_id: "normative_24744"
+      source_span:
+        start:
+          offset: 25895
+          line: 306
+          column: 1
+        end:
+          offset: 26570
+          line: 306
+          column: 676
+    - pointer: "/validation_rules/0"
+      rule_id: "val_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_35572"
+      source_span:
+        start:
+          offset: 35667
+          line: 343
+          column: 1
+        end:
+          offset: 35881
+          line: 343
+          column: 215
+    - pointer: "/validation_rules/1"
+      rule_id: "val_denominator"
+      identity_kind: "explicit"
+      unit_id: "normative_35572"
+      source_span:
+        start:
+          offset: 35882
+          line: 344
+          column: 1
+        end:
+          offset: 36082
+          line: 344
+          column: 201
+    - pointer: "/validation_rules/2"
+      rule_id: "val_route"
+      identity_kind: "explicit"
+      unit_id: "normative_35572"
+      source_span:
+        start:
+          offset: 36083
+          line: 345
+          column: 1
+        end:
+          offset: 36353
+          line: 345
+          column: 271
+    - pointer: "/validation_rules/3"
+      rule_id: "val_air"
+      identity_kind: "explicit"
+      unit_id: "normative_35572"
+      source_span:
+        start:
+          offset: 36354
+          line: 346
+          column: 1
+        end:
+          offset: 36697
+          line: 346
+          column: 344
+    - pointer: "/validation_rules/4"
+      rule_id: "val_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_35572"
+      source_span:
+        start:
+          offset: 36698
+          line: 347
+          column: 1
+        end:
+          offset: 37016
+          line: 347
+          column: 319
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5281"
+      source_span:
+        start:
+          offset: 5281
+          line: 59
+          column: 1
+        end:
+          offset: 5302
+          line: 59
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5281"
+      source_span:
+        start:
+          offset: 5330
+          line: 63
+          column: 1
+        end:
+          offset: 6593
+          line: 70
+          column: 242
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_24744"
+      source_span:
+        start:
+          offset: 24744
+          line: 299
+          column: 1
+        end:
+          offset: 24784
+          line: 299
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_35572"
+      source_span:
+        start:
+          offset: 35572
+          line: 339
+          column: 1
+        end:
+          offset: 35594
+          line: 339
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:2092a4a9380d892bac646ebe3535b54e4d10e684cba1d80a77a0d4f56717670c"
+  generated_content_sha256: "sha256:fb581d491942f23eb32e139d06dad7dd0f8ff346e4d40452c712f463f21c5813"

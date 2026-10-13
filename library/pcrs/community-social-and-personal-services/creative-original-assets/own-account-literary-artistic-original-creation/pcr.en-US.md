@@ -32,7 +32,7 @@ Commissioned creation services, performer outputs, paintings/sculptures, separat
 | What | Provide the declared original literary, musical or eligible artistic expression for subsequent reproduction or exploitation |
 | How much | One complete identified original; not one printed copy, licence or download |
 | How well | Completeness and readability/playability or genre-specific acceptance criteria evidenced by the actual creator/recipient record; no universal aesthetic or legal approval |
-| How long or cycle | One declared creation interval ending in acceptance of this original/version; no default asset life or later use duration |
+| How long or cycle | One declared creation interval ending when both acceptance of this original/version and its actual initial handover are complete, using the later actual date. If no initial handover applies, retain documented applicability and end at acceptance. Include attributable preservation/support between the two dates; no default asset life or later use duration. |
 | reference_flow_link | `creative_original_output` |
 
 | Field | Value |
@@ -69,8 +69,8 @@ The unit alias item means exactly one Item(s) of the verified Units of items gro
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `boundary_creation` | all creation stages | Include project-specific research, drafts, composing/notation, eligible artistic creation, revision, trials and rejected drafts, fixation, integrity/content verification, preservation through acceptance and actual initial original handover. The real medium governs processes; no mandatory printing, recording or datacenter. | `un-cpc-creative-originals`; `usco-fixation` |
-| `boundary_distinct_outputs` | original versus exploitation | Keep composition separate from the derived sound-recording master; separate later publication/printing, consumer copies/downloads, broadcast, public performance and ongoing archive/use after acceptance. Original creation is charged once, with explicit downstream reuse attribution, never fully to every copy. | `un-cpc-creative-originals`; `usco-composition` |
+| `boundary_creation` | all creation stages | Include project-specific research, drafts, composing/notation, eligible artistic creation, revision, trials and rejected drafts, fixation, integrity/content verification, preservation and attributable support through completion of both acceptance and actual initial original handover, including the intervening period. The real medium governs processes; no mandatory printing, recording or datacenter. | `un-cpc-creative-originals`; `usco-fixation` |
+| `boundary_distinct_outputs` | original versus exploitation | Keep composition separate from the derived sound-recording master; separate later publication/printing, consumer copies/downloads, broadcast, public performance and ongoing archive/use beyond the declared initial-handover boundary. Preservation/storage and support necessary to complete that initial handover remain included through the later actual acceptance/handover date; concurrent downstream exploitation remains separately scoped. Original creation is charged once, with explicit downstream reuse attribution, never fully to every copy. | `un-cpc-creative-originals`; `usco-composition` |
 | `boundary_upstream` | utilities apparatus suppliers | This is a declared original-creation foreground boundary. Compatible upstream inputs are needed before a cradle-to-gate claim. Include supporting workstation/cloud/storage/network and room utilities on their actual measured boundaries. Expand provider inventories into atomic exchanges or use one specific supplier delivery dataset; never both. |  |
 | `boundary_extensions` | actual route completeness | Add a separate atomic row for each actual ink, pigment, film, photographic paper, substrate, adhesive, display, storage device, instrument, cooling utility, fuel, transport or waste not represented here. Record each chemical and environmental medium separately. No automatic onsite combustion emission arises from purchased electricity. Missing material exchanges make the dataset incomplete; zero requires absence evidence. |  |
 
@@ -170,13 +170,13 @@ Only measured CN grid-average user supply below 1 kV; identify its meter and sit
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy separates actual creation jobs, supporting storage and initial original handover.
+- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy_creation separates actual creation jobs, supporting storage and initial original handover.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_creation`
 - Sources: `gsf-sci-1-1`
 
 ###### Alternating current (`creation_electricity_mv`)
@@ -185,13 +185,13 @@ Only measured CN grid-average user supply at 1–35 kV; no duplicate low-voltage
 
 - Selected flow: Alternating current `3d76981f-964a-4865-b588-0e067a2a1163`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy separates actual creation jobs, supporting storage and initial original handover.
+- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy_creation separates actual creation jobs, supporting storage and initial original handover.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_creation`
 - Sources: `gsf-sci-1-1`
 
 ###### Alternating current (`creation_electricity_site`)
@@ -200,13 +200,13 @@ Actual other grid, voltage or non-grid electricity. Match a separate supplier id
 
 - Selected flow: Alternating current
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy separates actual creation jobs, supporting storage and initial original handover.
+- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy_creation separates actual creation jobs, supporting storage and initial original handover.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_creation`
 - Sources: `gsf-sci-1-1`
 
 ###### Uncoated printing, writing and packaging paper (`draft_paper`)
@@ -301,13 +301,13 @@ Only measured CN grid-average user supply below 1 kV; identify its meter and sit
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy separates actual creation jobs, supporting storage and initial original handover.
+- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy_fixation separates actual creation jobs, supporting storage and initial original handover.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_fixation`
 - Sources: `gsf-sci-1-1`
 
 ###### Alternating current (`fixation_electricity_mv`)
@@ -316,13 +316,13 @@ Only measured CN grid-average user supply at 1–35 kV; no duplicate low-voltage
 
 - Selected flow: Alternating current `3d76981f-964a-4865-b588-0e067a2a1163`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy separates actual creation jobs, supporting storage and initial original handover.
+- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy_fixation separates actual creation jobs, supporting storage and initial original handover.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_fixation`
 - Sources: `gsf-sci-1-1`
 
 ###### Alternating current (`fixation_electricity_site`)
@@ -331,13 +331,13 @@ Actual other grid, voltage or non-grid electricity. Match a separate supplier id
 
 - Selected flow: Alternating current
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy separates actual creation jobs, supporting storage and initial original handover.
+- Amount rule: Measured attributable electricity for this stage in kWh × 3.6 MJ/kWh; cp_energy_fixation separates actual creation jobs, supporting storage and initial original handover.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_fixation`
 - Sources: `gsf-sci-1-1`
 
 ###### Manuscript copyediting delivery (`external_copyedit`)
@@ -352,7 +352,7 @@ Only an actual purchased copyediting delivery for the identified own-account man
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_original_inputs`
+- Collection protocol: `cp_copyedit`
 - Sources:
 
 ##### Waste flows
@@ -483,7 +483,7 @@ No mandatory exchange is asserted in this group. Include actually occurring exch
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
 | `allocation_direct` | projects and versions | Subdivide records by project/version before allocation; include unsuccessful trials belonging to the accepted original. Reconcile shared workstation and room-meter totals with documented job/reservation or measured-use keys, including idle/overhead and unassigned use. Do not allocate by sale price, royalties, users or assumed downloads. |  |
-| `allocation_apparatus` | apparatus | Use measured configuration-specific net apparatus mass and evidenced reservation time/capacity shares under cp_apparatus. Actual installed-life evidence is required; for non-computing apparatus use project-documented service-use attribution and sensitivity, not a default life. Provider datasets containing hardware must not be charged again. |  |
+| `allocation_apparatus` | apparatus | Use measured configuration-specific net apparatus mass and evidenced reservation time/capacity shares under cp_apparatus. Actual installation, configuration and use records are always required. A justified expected lifetime/service denominator is permitted when supported by explicit evidence, sensitivity analysis and subsequent reconciliation of the persistent asset ledger; it must be positive and cumulative assigned fractions must not exceed one. A single observed period cannot replace the lifetime denominator, and unknown denominator or attribution relations require review; for non-computing apparatus use project-documented service-use attribution and sensitivity, not a default life. Provider datasets containing hardware must not be charged again. |  |
 | `allocation_originals` | joint and reused originals | Document whether variants express one original or are distinct completed works. Split shared work using evidenced creative activity; when attribution is unsupported retain a joint-output dataset and unresolved allocation. A reused original enters with its explicit upstream share; rights are metadata, not material mass or an avoided-emission credit. |  |
 | `allocation_share_definition` | apparatus manufacturing inputs | For an actual computing resource pool, its dimensionless manufacturing share is time_share × capacity_share: time_share is pool reserved/use time divided by evidenced actual lifetime/cumulative service time or justified expected lifetime; capacity_share is pool-reserved capacity divided by total available capacity. The recorded share and accepted-original count must cover the identical pool and interval. Use consistent time units and strictly positive denominators, and bound each share between zero and one. For non-computing equipment use only an evidenced causal service-use share and retain unsupported attribution for review. These symbols allocate upstream manufacture; they do not convert the creative original to mass. | |
 | `allocation_asset_conservation` | apparatus and reusable assets | Maintain one lifetime manufacturing ledger for each asset across all projects and periods. The denominator must cover evidenced actual lifetime/cumulative service or a justified expected life, with sensitivity and later reconciliation. Cumulative attributed manufacture shares must never exceed one; do not reset full manufacture at each project or observation period. Period-only allocation distributes only the previously justified manufacture share for that period, not the entire asset. Unknown lifetime or ledger coverage requires review. | |
@@ -494,26 +494,29 @@ No mandatory exchange is asserted in this group. Include actually occurring exch
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_original` | fixation | creative_original_output | acceptance_record | original id; genre/function; creator; own-account intention; version; media inventory; hashes or physical identification; completeness; acceptance record; source permissions; rights; project dates; revision baseline | Check the retained expression against actual completion/acceptance and provenance records; count one original, not pages, file renditions or copies. Declare complete creation or incremental revision scope. | item | at original acceptance | full declared creation interval | all creators and contributing sites | per declared reference flow | signed completion record; file/object inventory; provenance and own-account records |
-| `cp_energy` | conception; creation; fixation | stage electricity | meter_record | original id; stage; site; grid; voltage; meter; interval; kWh; measured job/reservation key; idle and facility overhead; provider scope; initial handover records | Use calibrated submeter readings or verifiable provider/job energy records; reconcile shared meters to real project activity and supporting storage/network. Do not derive kWh from GB, revenue or generic energy coefficients. | kWh | each meter/job interval | entire project through acceptance | all actual workplaces/providers | per declared reference flow | meter calibration; job ledger; provider resource/overhead reconciliation |
-| `cp_material` | creation | draft_paper; graphite_pencil; sorted_paper_waste | mass_stock_record | original id; material specification; supplier; issue/return/stock mass; retained-original mass; measured discard mass; waste segregation and destination | Weigh actual material issues, returns and discards using calibrated scales and reconcile opening/closing stock. Retain paper grade and pencil formulation, no assumed composition or loss rate. | kg | each issue/return/discard | full creation interval | actual material use sites | per declared reference flow | weighing and supplier records; stock reconciliation; waste handover |
-| `cp_original_inputs` | creation; fixation | prior_original_input; external_copyedit | supplier_delivery_record | original id; supplier; prior-work id/version; upstream share; permissions; copyediting delivery unit; acceptance; included electricity/apparatus; supplier dataset boundary | Verify actual acquired earlier expression or accepted editing delivery and its upstream boundary. Count identified delivery units; neither contract value nor royalties are exchange amounts. | item | each acquisition/delivery | whole applicable project | actual creator/suppliers | per declared reference flow | acceptance; upstream dataset; permissions; attribution ledger |
-| `cp_apparatus` | apparatus | portable_computer; still_camera; upright_piano; creation_server | equipment_use_record | device id; configuration; measured net device mass in kg; weighing/supplier provenance; dimensionless manufacturing share; share pool and interval; actual accepted-original count in item; original identity and equivalence/independent attribution evidence; project reservation/use time; actual lifetime/cumulative service or justified expected-life denominator and evidence; reserved and total capacity; shared users; lifetime cumulative allocated shares; prior-period manufacturing share; life sensitivity; later reconciliation; upstream coverage | Use calibrated weighing or traceable supplier net-mass records for the actual complete configuration. Record real reservation/use intervals and installed-life basis; Measured net device mass is the actual complete configured device mass in kg; manufacturing share is dimensionless; actual accepted-original count is measured in item from the same pool acceptance ledger. Non-computing use shares require project activity records and sensitivity. No invented device weight or life. | kg | each device and project interval | full relevant creation interval | real creator and provider apparatus | per declared reference flow | configuration/weighing provenance; lifetime evidence and sensitivity; share/count scope reconciliation; cumulative manufacturing-share ledger; reservation reconciliation |
+| `cp_original` | fixation | creative_original_output | acceptance_record | original id; genre/function; creator; own-account intention; version; media inventory; hashes or physical identification; completeness; acceptance record; source permissions; rights; project dates; revision baseline; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Check the retained expression against actual completion/acceptance and provenance records; count one original, not pages, file renditions or copies. Declare complete creation or incremental revision scope. | item | at original acceptance and initial-handover closure; original counted once | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | all creators and contributing sites | per declared reference flow | signed completion record; file/object inventory; provenance and own-account records |
+| `cp_energy` | conception | conception_electricity_lv; conception_electricity_mv; conception_electricity_site | meter_record | original id; stage; site; grid; voltage; meter; interval; kWh; measured job/reservation key; idle and facility overhead; provider scope; initial handover records; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Use calibrated submeter readings or verifiable provider/job energy records; reconcile shared meters to real project activity and supporting storage/network. Do not derive kWh from GB, revenue or generic energy coefficients.; include actual device reservation/use, energy and support needed between acceptance and initial handover under the declared scope; This protocol covers conception only. Reconcile all three stage-specific protocols to the same source meter/provider totals; assign each actual interval and shared overhead once, including failed work and attributable initial-handover support. | kWh | each meter/job interval | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | all actual workplaces/providers | per declared reference flow | meter calibration; job ledger; provider resource/overhead reconciliation |
+| `cp_energy_creation` | creation | creation_electricity_lv; creation_electricity_mv; creation_electricity_site | meter_record | original id; stage; site; grid; voltage; meter; interval; kWh; measured job/reservation key; idle and facility overhead; provider scope; initial handover records; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Use calibrated submeter readings or verifiable provider/job energy records; reconcile shared meters to real project activity and supporting storage/network. Do not derive kWh from GB, revenue or generic energy coefficients.; include actual device reservation/use, energy and support needed between acceptance and initial handover under the declared scope; This protocol covers creation only. Reconcile all three stage-specific protocols to the same source meter/provider totals; assign each actual interval and shared overhead once, including failed work and attributable initial-handover support. | kWh | each meter/job interval | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | all actual workplaces/providers | per declared reference flow | meter calibration; job ledger; provider resource/overhead reconciliation |
+| `cp_energy_fixation` | fixation | fixation_electricity_lv; fixation_electricity_mv; fixation_electricity_site | meter_record | original id; stage; site; grid; voltage; meter; interval; kWh; measured job/reservation key; idle and facility overhead; provider scope; initial handover records; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Use calibrated submeter readings or verifiable provider/job energy records; reconcile shared meters to real project activity and supporting storage/network. Do not derive kWh from GB, revenue or generic energy coefficients.; include actual device reservation/use, energy and support needed between acceptance and initial handover under the declared scope; This protocol covers fixation only. Reconcile all three stage-specific protocols to the same source meter/provider totals; assign each actual interval and shared overhead once, including failed work and attributable initial-handover support. | kWh | each meter/job interval | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | all actual workplaces/providers | per declared reference flow | meter calibration; job ledger; provider resource/overhead reconciliation |
+| `cp_material` | creation | draft_paper; graphite_pencil; sorted_paper_waste | mass_stock_record | original id; material specification; supplier; issue/return/stock mass; retained-original mass; measured discard mass; waste segregation and destination; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Weigh actual material issues, returns and discards using calibrated scales and reconcile opening/closing stock. Retain paper grade and pencil formulation, no assumed composition or loss rate. | kg | each issue/return/discard | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | actual material use sites | per declared reference flow | weighing and supplier records; stock reconciliation; waste handover |
+| `cp_original_inputs` | creation | prior_original_input | supplier_delivery_record | original id; supplier; prior-work id/version; upstream share; permissions; copyediting delivery unit; acceptance; included electricity/apparatus; supplier dataset boundary; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Verify the actual acquired earlier expression, its exact identity/version, permissions and upstream dataset boundary. Collect the documented attributable share of the identified prior original under its card; preserve the reference item unit and upstream allocation evidence. A licence price or royalty is not an exchange amount. | item | each acquisition/delivery | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | actual creator/suppliers | per declared reference flow | acceptance; upstream dataset; permissions; attribution ledger |
+| `cp_copyedit` | fixation | external_copyedit | supplier_delivery_record | original id; supplier; prior-work id/version; upstream share; permissions; copyediting delivery unit; acceptance; included electricity/apparatus; supplier dataset boundary; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Verify the actual accepted manuscript copyediting delivery and its upstream boundary. Count accepted delivery units assigned to this original; retain included supplier electricity and apparatus to prevent duplicate expansion. Contract value and royalties are not delivery counts. | item | each acquisition/delivery | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | actual creator/suppliers | per declared reference flow | acceptance; upstream dataset; permissions; attribution ledger |
+| `cp_apparatus` | apparatus | portable_computer; still_camera; upright_piano; creation_server | equipment_use_record | device id; configuration; measured net device mass in kg; weighing/supplier provenance; dimensionless manufacturing share; share pool and interval; actual accepted-original count in item; original identity and equivalence/independent attribution evidence; project reservation/use time; actual lifetime/cumulative service or justified expected-life denominator and evidence; reserved and total capacity; shared users; lifetime cumulative allocated shares; prior-period manufacturing share; life sensitivity; later reconciliation; upstream coverage; actual acceptance date; actual initial-handover date or documented inapplicability; attributable interval resources | Use calibrated weighing or traceable supplier net-mass records for the actual complete configuration. Record real reservation/use intervals and installed-life basis; Measured net device mass is the actual complete configured device mass in kg; manufacturing share is dimensionless; actual accepted-original count is measured in item from the same pool acceptance ledger. Non-computing use shares require project activity records and sensitivity. No invented device weight or life.; include actual device reservation/use, energy and support needed between acceptance and initial handover under the declared scope | kg | each device and project interval | full applicable project through the later actual acceptance/initial-handover date; if handover is inapplicable, document that and use acceptance | real creator and provider apparatus | per declared reference flow | configuration/weighing provenance; lifetime evidence and sensitivity; share/count scope reconciliation; cumulative manufacturing-share ledger; reservation reconciliation |
 
 ### Calculation Rules
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `electricity_unit` | all electricity rows | MJ = attributable measured kWh × 3.6; attribution is established from primary activity records before conversion. | cp_energy | MJ per declared reference flow |  |
+| `electricity_unit` | all electricity rows | MJ = attributable measured kWh × 3.6; attribution is established from primary activity records before conversion. | cp_energy; cp_energy_creation; cp_energy_fixation | MJ per declared reference flow |  |
 | `apparatus_share` | portable_computer; still_camera; upright_piano; creation_server | Equipment manufacturing input (kg per declared reference flow) = measured net device mass (kg) × evidenced manufacturing share (dimensionless) / actual accepted-original count (item) covered by that share. The numerator describes upstream device manufacture attributed to the pool, not mass of the original. Record device identity, share scope and the actual positive output count through cp_apparatus. Sum separate device contributions without duplicating manufacture contained in supplier datasets; shared-count division requires demonstrated equivalent original beneficiaries, otherwise attribute independently or retain joint-output allocation for review. | cp_apparatus; measured net device mass; dimensionless manufacturing share; actual accepted-original count | kg per declared reference flow |  |
-| `original_basis` | all inventory rows | Record actual attributable exchanges directly per declared reference flow. Split joint-original project records with a documented allocation before normalization; do not count backups, file formats or reprint editions as extra accepted originals. | cp_original; cp_energy; cp_material; cp_original_inputs; cp_apparatus | one original reference flow |  |
+| `original_basis` | all inventory rows | Record actual attributable exchanges directly per declared reference flow. Split joint-original project records with a documented allocation before normalization; do not count backups, file formats or reprint editions as extra accepted originals. | cp_original; cp_energy; cp_energy_creation; cp_energy_fixation; cp_material; cp_original_inputs; cp_copyedit; cp_apparatus | one original reference flow |  |
 
 ### Data Quality Requirements
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
 | `quality_identity` | reference original | Declare genre, intended expression/function, version, completeness, medium and actual own-account provenance; no default page count, notation length, physical mass, aesthetic score or protection term. | cp_original; actual rights and acceptance records |
-| `quality_coverage` | all stages | Cover all participating sites and relevant providers through acceptance, including failed drafts and rework. Disclose meter/provider granularity, room utility scope and equipment/supplier gaps; absence of measurement is not zero. | project ledger; cp_energy; supplier inventories |
+| `quality_coverage` | all stages | Cover all participating sites and relevant providers through the later actual acceptance/initial-handover date, including failed drafts, rework and attributable storage/support between the dates. Disclose meter/provider granularity, room utility scope and equipment/supplier gaps; absence of measurement is not zero. | project ledger; cp_energy; cp_energy_creation; cp_energy_fixation; supplier inventories |
 | `quality_representative` | dataset reuse | A particular manuscript, score or other original is not an industry-average creative work. Comparisons need compatible genre/function, completeness, medium and boundary. Declare actual dates, geography, activity, apparatus, uncertainty and update conditions. | actual project profile and coverage disclosure |
 
 ## 9. Validation Rules

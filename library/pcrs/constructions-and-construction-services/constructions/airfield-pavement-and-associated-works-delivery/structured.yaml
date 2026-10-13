@@ -22,6 +22,10 @@ system_boundary:
       rule: "Record actual earthworks, layers, drainage, marking/grooving, lighting and tests/handover by process. Listed materials are not a universal complete recipe; individually add every additional actual material, packaging, lubricant, planting input, ancillary and temporary work exchange, documenting absent processes."
       source_ids:
         - faa-airport-construction-2018
+    - rule_id: boundary_consumed_inputs
+      applies_to: "purchased consumable/permanently supplied product inputs in all selected or actually attempted construction routes; reusable-asset manufacture excluded"
+      rule: "Input amounts include all actual attributable consumption, including pre-installation damage, rejected loads, cutting/application losses and replacements before handover. This is an explicit exception to local installed/applied/used wording: that wording identifies the intended route and configuration, not a successful-installation-only numerator. Reconcile native-unit input = gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock; retain installed accepted quantities and actual waste separately. Keep supplied identity/state and assembly boundaries exact; do not duplicate internal constituents or reusable-asset manufacture.  This stock-consumption equation does not apply to reusable equipment or plywood-panel manufacturing shares under cp_assets/cp_formwork_assets. Those rows retain their supported cumulative-use manufacture attribution under allocation_assets/asset_share even if the physical asset is returned, transferred or held in reusable closing stock; physical stock movements remain separate and cannot cancel the current use share."
+      source_ids: []
     - rule_id: boundary_stages
       applies_to: "dataset"
       rule: "Link manufacture and transport separately; paving does not represent material production. Operating electricity, aircraft, post-handover maintenance/replacement, final demolition and destinations are excluded; separately model those stages only with real scenarios and redeclared scope."
@@ -88,12 +92,12 @@ measurement_rules:
     required_unit: "m3"
     rule: "Record physical state and measured volume. Volume-to-mass conversion needs measured density of the same material state and batch; excavated, loose and compacted soil volumes are not equal by assumption."
   - id: asset_area
-    applies_to: "plywood_form; pp_geotextile; grass_sod"
+    applies_to: "auxiliary installed/deployed geometry linked to plywood_form; pp_geotextile; grass_sod"
     required_property_ref:
       name: "Area"
       uuid: "93a60a56-a3c8-19da-a746-0800200c9a66"
     required_unit: "m2"
-    rule: "Use actual installed/deployed area retaining thickness, composition and areal mass; never change a public Mass property into Area on name similarity."
+    rule: "Measure installed/deployed geometry, thickness, composition and areal mass as auxiliary records; it does not replace the native inventory numerator. Purchased fabric/sod uses actual attributable consumed area including losses, reconciled to receipts, returns and stock. Reusable formwork manufacture uses panel stock area times the conserved manufacture share under cp_formwork_assets, not repeated deployed area as new manufacture. Never change a public Mass property to Area by name similarity."
   - id: transport_units
     applies_to: "road_freight"
     required_property_ref:
@@ -271,7 +275,7 @@ process_inventory:
           name: "Polypropylene geotextile separation sheet"
           flow_type: "product"
           property_unit: "Area 93a60a56-a3c8-19da-a746-0800200c9a66 / m2"
-          description: "Only installed polypropylene separation fabric matching the actual construction function and supplied material state; retain grade, areal mass and footprint."
+          description: "Actual supplied polypropylene separation fabric consumed for the declared route, including pre-installation damage and rejected/cut material; preserve exact function, supplied state, grade and areal mass. Record supplied/consumed area and installed footprint separately."
           amount:
             expression: "Use cp_base to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain m2 and original work totals."
             value_mode: "foreground_record"
@@ -379,7 +383,7 @@ process_inventory:
           name: "Steel pavement joint dowel bar"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Only installed dowel bars; record steel grade, coating and geometry, actual bar count and supplier mass. Reinforcement and tie bars, if used, require separate actual rows."
+          description: "Actual supplied dowel bars consumed for the declared route, including pre-installation damaged/rejected replacements; record steel grade, coating, geometry, consumed count and supplier mass, with installed accepted count separate. Reinforcement and tie bars, if used, require separate actual rows."
           amount:
             expression: "Use cp_rigid to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain kg and original work totals."
             value_mode: "foreground_record"
@@ -438,9 +442,9 @@ process_inventory:
           name: "Plywood concrete formwork panel"
           flow_type: "product"
           property_unit: "Area 93a60a56-a3c8-19da-a746-0800200c9a66 / m2"
-          description: "Only actual reusable plywood forms. Record panel thickness, composition, deployment area and reuse ledger; count manufacturing burden once across uses through cp_assets, not once per pour."
+          description: "Only actual reusable plywood forms. Record panel thickness, composition, deployment area and reuse ledger; count manufacturing burden once across uses through cp_formwork_assets, not once per pour."
           amount:
-            expression: "Use cp_rigid to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain m2 and original work totals."
+            expression: "Use cp_formwork_assets to collect attributable panel manufacture area from cp_rigid deployment/stock records and the supported cumulative manufacture share; normalize by measured accepted package area, retaining m2 and original records. Deployment area alone is not new panel manufacture."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -448,7 +452,7 @@ process_inventory:
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_rigid
+              collection_protocol_id: cp_formwork_assets
               source_ids:
                 - faa-airport-construction-2018
             ranges: []
@@ -525,7 +529,7 @@ process_inventory:
           name: "Precast cement-concrete storm-drain pipe"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Only actual installed concrete drainage pipe; retain diameter, length, class, reinforcement and measured supplier mass. Include actual bedding, headwalls and outfall work as distinct products and processes."
+          description: "Actual concrete drainage pipe consumed for the declared route, including damage/rejection before installation and replacement; retain diameter, length, class, reinforcement and measured supplier mass, with installed accepted quantity separate. Include actual bedding, headwalls and outfall work as distinct products and processes."
           amount:
             expression: "Use cp_drainage to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain kg and original work totals."
             value_mode: "foreground_record"
@@ -597,7 +601,7 @@ process_inventory:
           name: "Glass retroreflective beads for pavement markings"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Only actual applied glass beads, separately weighed from paint; retain grading and supplier treatment."
+          description: "Actual glass beads consumed for the declared marking route, including attributable application losses and damaged/rejected material; weigh separately from paint, retain grading and supplier treatment, and distinguish consumed from successfully applied quantity."
           amount:
             expression: "Use cp_finish to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain kg and original work totals."
             value_mode: "foreground_record"
@@ -616,7 +620,7 @@ process_inventory:
           name: "Complete inset airfield LED luminaire"
           flow_type: "product"
           property_unit: "Number of items 01846770-4cfe-4a25-8ad9-919d8d378345 / item"
-          description: "Only this actual installed complete fixture with model, function and count. Edge lights, isolating transformers, regulators, conduits and bases, when installed, need distinct product rows; no whole lighting system row."
+          description: "Actual complete fixtures of this model and function consumed for the declared route, including failed/rejected replacements before installation or acceptance; keep consumed and installed accepted counts separate. Edge lights, isolating transformers, regulators, conduits and bases, when installed, need distinct product rows; no whole lighting system row."
           amount:
             expression: "Use cp_finish to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain item and original work totals."
             value_mode: "foreground_record"
@@ -635,7 +639,7 @@ process_inventory:
           name: "Insulated copper airfield lighting cable"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Only installed copper cable with conductor cross-section, insulation, voltage rating, length and measured mass. Supplier kg-per-metre needs verified cable-specific evidence."
+          description: "Actual copper cable consumed for the declared route, including cutting, damage and rejected/replaced lengths before acceptance; retain conductor cross-section, insulation, voltage rating, consumed length and measured mass, with installed length separate. Supplier kg-per-metre needs verified cable-specific evidence."
           amount:
             expression: "Use cp_finish to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain kg and original work totals."
             value_mode: "foreground_record"
@@ -680,8 +684,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_assets
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: roller_asset
           role: "Complete self-propelled road roller"
@@ -699,8 +702,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_assets
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: paver_asset
           role: "Complete asphalt paving machine"
@@ -718,8 +720,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_assets
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: pump_asset
           role: "Complete cement-concrete pump"
@@ -737,8 +738,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_assets
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: site_diesel
           role: "Diesel fuel"
@@ -758,8 +758,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: cn_lv
           role: "Alternating current"
@@ -779,8 +778,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: cn_mv
           role: "Alternating current"
@@ -800,8 +798,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: supplied_water
           role: "Treated mains water delivered to construction site"
@@ -819,8 +816,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
       waste:
         []
@@ -843,8 +839,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: ground_water
           role: "ground water"
@@ -864,8 +859,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
     outputs:
       product:
@@ -891,8 +885,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: fossil_co
           role: "carbon monoxide (fossil)"
@@ -912,8 +905,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: nitric_oxide
           role: "nitrogen monoxide"
@@ -933,8 +925,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: nitrogen_dioxide
           role: "nitrogen dioxide"
@@ -954,8 +945,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: dust_unspecified
           role: "Particulate matter, particle size unspecified"
@@ -975,8 +965,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: coarse_pm
           role: "particles (PM2.5 - PM10)"
@@ -996,8 +985,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: pm10_total
           role: "particles (PM10)"
@@ -1017,8 +1005,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_utilities
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
   - id: transport
     label: "Inbound and construction-waste transport"
@@ -1085,15 +1072,14 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_waste
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: asphalt_waste
           role: "Removed asphalt pavement milling waste"
           name: "Removed asphalt pavement milling waste"
           flow_type: "waste"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Only actual clearance, milling, rejected mix or correction material discarded during this construction cycle; record source and recovery route. Post-handover removal is excluded."
+          description: "Only actual previously laid asphalt pavement removed or milled during clearance or correction in this construction cycle; record laid state, source and recovery route. Unlaid rejected or surplus supplied mix is not pavement milling waste: record it separately with its actual unlaid state, measured mass and receiver under cp_waste before inventory completeness, retaining its attributable upstream manufacture and transport. Verified returns and internal reuse are separately reconciled, not relabelled as milling waste. Post-handover removal is excluded."
           amount:
             expression: "Use cp_waste to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain kg and original work totals."
             value_mode: "foreground_record"
@@ -1104,8 +1090,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_waste
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: concrete_waste
           role: "Hardened cement-concrete construction waste"
@@ -1123,8 +1108,7 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_waste
-              source_ids:
-                - epa-concrete-washout-2012
+              source_ids: []
             ranges: []
         - row_id: washout_liquid
           role: "Cement-concrete equipment washout slurry"
@@ -1188,7 +1172,7 @@ allocation_rules:
     source_ids: []
   - rule_id: allocation_assets
     applies_to: "plywood_form; utilities"
-    rule: "Use cp_assets to record each asset/component manufacture burden, project/period activity and supported cumulative service. Across projects, periods and repeated uses, total manufacture shares of the same asset cannot exceed one. Unknown life/cumulative activity remains a review and completeness gap, never reset per project."
+    rule: "Use cp_assets / cp_formwork_assets to record each asset/component manufacture burden, project/period activity and supported cumulative service. Across projects, periods and repeated uses, total manufacture shares of the same asset cannot exceed one. Unknown life/cumulative activity remains a review and completeness gap, never reset per project."
     source_ids: []
   - rule_id: allocation_recovery
     applies_to: "waste"
@@ -1309,7 +1293,7 @@ dataset_production:
       process_id: "waste"
       flow_role: "row-specific exchange"
       record_type: "foreground_records"
-      raw_fields: "Stream identity/state; weight/volume; water/solids; treatment, recycling or disposal destination; transfer date"
+      raw_fields: "Stream identity/state; weight/volume; water/solids; treatment, recycling or disposal destination; transfer date; asphalt laid/unlaid state; separate unlaid rejects and pavement milling; verified returns/reuse"
       collection_method: "Use segregated containers, calibrated weights/meters, analysis and licensed receiver tickets; document containment, settling and actual water routing"
       unit: "row-specific kg, m3, m2, MJ, item, t*km"
       frequency: "Each delivery, lot, task/meter interval and acceptance event"
@@ -1330,11 +1314,23 @@ dataset_production:
       aggregation_rule: "per declared reference flow"
       quality_evidence: "Calibration, original tickets, as-built surveys, lot tests, corrections, attribution and uncertainty"
     - protocol_id: cp_assets
-      process_id: "utilities_rigid"
-      flow_role: "Asset and reused-component manufacture shares"
+      process_id: "utilities"
+      flow_role: "equipment manufacture shares"
       record_type: "asset_ledger"
       raw_fields: "Asset id; original manufacture burden; each project activity; prior shares; cumulative-service evidence; retirement/transfers"
-      collection_method: "Read manufacture, lease and plant/formwork deployment ledgers; reconcile cumulative shares across projects; unknowns remain gaps"
+      collection_method: "Read manufacture, lease and plant/formwork deployment ledgers; reconcile cumulative shares across projects; unknowns remain gaps; retain actual process ID utilities and the common asset ledger shared with cp_formwork_assets, preventing duplicate shares across the two protocols"
+      unit: "dimensionless shares and source units"
+      frequency: "Each deployment and period closure"
+      temporal_coverage: "All prior usage periods and supported service total"
+      site_scope: "All projects using the same asset"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Traceable asset records; independent share reconciliation"
+    - protocol_id: cp_formwork_assets
+      process_id: "rigid"
+      flow_role: "reusable plywood-panel manufacture shares"
+      record_type: "asset_ledger"
+      raw_fields: "Asset id; original manufacture burden; each project activity; prior shares; cumulative-service evidence; retirement/transfers; panel stock area; deployed area by pour; panel thickness/composition; link to cp_rigid"
+      collection_method: "Read panel manufacture and deployment/stock ledgers with cp_rigid; distinguish actual panel stock area from repeated deployed area, apply supported cumulative-use shares to stock manufacture area, and reconcile the same asset ledger with cp_assets. Retain actual process ID rigid; unknown life or stock remains a gap, not a default share."
       unit: "dimensionless shares and source units"
       frequency: "Each deployment and period closure"
       temporal_coverage: "All prior usage periods and supported service total"
@@ -1373,7 +1369,7 @@ dataset_production:
       applies_to: "plywood_form; utilities"
       rule: "Apply the actual project share of supported cumulative activity to manufacturing burden, then normalize by the same package area. The cumulative ledger proves all assigned shares are no greater than one; unknown denominators remain review without a numeric result."
       inputs:
-        - cp_assets
+        - "cp_assets / cp_formwork_assets"
         - cp_handover
       output: "Attributable manufacture burden per declared reference flow"
       source_ids: []
@@ -1393,7 +1389,7 @@ dataset_production:
     - id: quality_gaps
       applies_to: "dataset"
       requirement: "Disclose unresolved UUIDs, missing upstream coverage, unmetered intervals, asset-manufacture share gaps, method applicability and scientific review status."
-      evidence: "cp_assets; supplier records"
+      evidence: "cp_assets / cp_formwork_assets; supplier records"
 validation_rules:
   - rule_id: validate_reference
     applies_to: "reference_airfield"
@@ -1431,7 +1427,7 @@ data_sources:
   - id: "faa-airport-construction-2018"
     type: "official_guidance"
     reference: "FAA AC 150/5370-10H, Standard Specifications for Construction of Airports, 21 December 2018, updated errata 19 August 2020. https://www.faa.gov/documentLibrary/media/Advisory_Circular/150-5370-10H.pdf"
-    used_for: "P-152 pp.103–115 earthworks; P-154 pp.121–128 subbase; P-209 pp.173–182 crushed base; P-217 pp.207–214 aggregate/turf; P-401 pp.263–290 asphalt; P-501 pp.347–396 concrete; P-605 p.499 onward joints; P-620 p.521 onward markings; P-621 p.537 onward grooves; D-701 p.575 onward drains; L-125 p.713 onward lighting; T-901 p.613 onward seeding, T-904 p.627 onward sodding, T-905 p.633 onward topsoiling. US qualitative construction/acceptance evidence, without importing numeric limits, recipes, load thresholds or compliance requirements"
+    used_for: "P-152 pp.103–116 earthworks; P-154 pp.121–128 subbase; P-209 pp.173–182 crushed base; P-217 pp.207–214 aggregate/turf; P-401 pp.263–293 asphalt; P-501 pp.347–390 concrete; P-605 p.499 onward joints; P-620 p.521 onward markings; P-621 p.537 onward grooves; D-701 p.575 onward drains; L-125 p.713 onward lighting; T-901 p.613 onward seeding, T-904 p.627 onward sodding, T-905 p.633 onward topsoiling. US qualitative construction/acceptance evidence, without importing numeric limits, recipes, load thresholds or compliance requirements"
   - id: "fhwa-pavement-lca-2016"
     type: "official_guidance"
     reference: "FHWA-HIF-16-014, Pavement Life-Cycle Assessment Framework, July 2016, §1.2 p.1-4; §3.2.3; Chapter 4. https://rosap.ntl.bts.gov/view/dot/38470/dot_38470_DS1.pdf"
@@ -1446,21 +1442,21 @@ data_sources:
     used_for: "Concrete washout liquid, settled solids, containment and actual water-route distinction; no assumed soil/water discharge or default pH/concentration"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:93a839fcd76e3ee5e16f0c54052170da7d9316582dca4aff0fb582588a4b8abe"
+  source_sha256: "sha256:86379527dbfe6522e81facc3d65eb5c46ca1008ffc18d391d8aa3277fa7527a7"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_6425"
+    - unit_id: "normative_6820"
       family: "system_boundary"
       span:
         start:
-          offset: 6425
+          offset: 6820
           line: 68
           column: 1
         end:
-          offset: 8693
-          line: 87
+          offset: 10372
+          line: 88
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Actual pre-construction site, retained assets and external supply product gates |\n| starting_condition_role | foreground_start |\n| product_classification_scope | Airfield pavement and related non-building entity; use and delivery scope explicitly declared |\n| recursive_input_rule | Retained same-category pavement is an existing asset input with condition/burden records; do not recursively duplicate its whole construction history |\n| upstream_dataset_requirement | Link each actual supplied product to compatible state, technology, geography and unit manufacture data; onsite mixing separately expands actual ingredients, heating, fuel and releases without duplicating finished-product manufacture |\n| disclosure | Upstream coverage, actual transport/site work, initial removal, retained assets, associated facilities, subcontracting, tests, gaps and post-handover stages |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_delivery | dataset | Record actual earthworks, layers, drainage, marking/grooving, lighting and tests/handover by process. Listed materials are not a universal complete recipe; individually add every additional actual material, packaging, lubricant, planting input, ancillary and temporary work exchange, documenting absent processes. | faa-airport-construction-2018 |\n| boundary_stages | dataset | Link manufacture and transport separately; paving does not represent material production. Operating electricity, aircraft, post-handover maintenance/replacement, final demolition and destinations are excluded; separately model those stages only with real scenarios and redeclared scope. | fhwa-pavement-lca-2016 |\n| boundary_environment | utilities; waste | Include actual utilities and evidenced direct releases, distinguishing fuel supply/combustion, purchased water/resource abstraction, dewatering transfer/discharge, liquid waste/settled solids. Retain actual equipment, duration, location and measurements for noise without inventing default sound-energy exchanges; any evidenced emissions are separate exact substances and media. | epa-construction-dust-1995; epa-concrete-washout-2012 |\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Actual pre-construction site, retained assets and external supply product gates |\n| starting_condition_role | foreground_start |\n| product_classification_scope | Airfield pavement and related non-building entity; use and delivery scope explicitly declared |\n| recursive_input_rule | Retained same-category pavement is an existing asset input with condition/burden records; do not recursively duplicate its whole construction history |\n| upstream_dataset_requirement | Link each actual supplied product to compatible state, technology, geography and unit manufacture data; onsite mixing separately expands actual ingredients, heating, fuel and releases without duplicating finished-product manufacture |\n| disclosure | Upstream coverage, actual transport/site work, initial removal, retained assets, associated facilities, subcontracting, tests, gaps and post-handover stages |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_delivery | dataset | Record actual earthworks, layers, drainage, marking/grooving, lighting and tests/handover by process. Listed materials are not a universal complete recipe; individually add every additional actual material, packaging, lubricant, planting input, ancillary and temporary work exchange, documenting absent processes. | faa-airport-construction-2018 |\n| boundary_consumed_inputs | purchased consumable/permanently supplied product inputs in all selected or actually attempted construction routes; reusable-asset manufacture excluded | Input amounts include all actual attributable consumption, including pre-installation damage, rejected loads, cutting/application losses and replacements before handover. This is an explicit exception to local installed/applied/used wording: that wording identifies the intended route and configuration, not a successful-installation-only numerator. Reconcile native-unit input = gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock; retain installed accepted quantities and actual waste separately. Keep supplied identity/state and assembly boundaries exact; do not duplicate internal constituents or reusable-asset manufacture.  This stock-consumption equation does not apply to reusable equipment or plywood-panel manufacturing shares under cp_assets/cp_formwork_assets. Those rows retain their supported cumulative-use manufacture attribution under allocation_assets/asset_share even if the physical asset is returned, transferred or held in reusable closing stock; physical stock movements remain separate and cannot cancel the current use share. | |\n| boundary_stages | dataset | Link manufacture and transport separately; paving does not represent material production. Operating electricity, aircraft, post-handover maintenance/replacement, final demolition and destinations are excluded; separately model those stages only with real scenarios and redeclared scope. | fhwa-pavement-lca-2016 |\n| boundary_environment | utilities; waste | Include actual utilities and evidenced direct releases, distinguishing fuel supply/combustion, purchased water/resource abstraction, dewatering transfer/discharge, liquid waste/settled solids. Retain actual equipment, duration, location and measurements for noise without inventing default sound-energy exchanges; any evidenced emissions are separate exact substances and media. | epa-construction-dust-1995; epa-concrete-washout-2012 |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1477,11 +1473,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 6425
+              offset: 6820
               line: 68
               column: 1
             end:
-              offset: 6446
+              offset: 6841
               line: 68
               column: 22
           text: "## 5. System Boundary"
@@ -1497,18 +1493,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_52433"
+    - unit_id: "normative_54676"
       family: "allocation"
       span:
         start:
-          offset: 52433
-          line: 970
+          offset: 54676
+          line: 951
           column: 1
         end:
-          offset: 53759
-          line: 978
+          offset: 56023
+          line: 959
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_project | all inventory rows | First partition airport work using submeters, weights, equipment time, actual zones and lots; direct attribution precedes allocation. Shared activities use measured causal physical drivers, preserving all beneficiary projects and denominator with shares summing to one. Area normalizes the reference within a consistent use/structure package; it is not a default allocation among heterogeneous works. |  |\n| allocation_assets | plywood_form; utilities | Use cp_assets to record each asset/component manufacture burden, project/period activity and supported cumulative service. Across projects, periods and repeated uses, total manufacture shares of the same asset cannot exceed one. Unknown life/cumulative activity remains a review and completeness gap, never reset per project. |  |\n| allocation_recovery | waste | Construction waste, reused pavement and exported millings do not automatically earn credits. Document actual treatment/recovery gates, quality and receiver. Any substitution benefit or recycling allocation needs a declared sourced method and sensitivity, without simultaneously claiming avoided manufacture and zero burden. | fhwa-pavement-lca-2016 |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_project | all inventory rows | First partition airport work using submeters, weights, equipment time, actual zones and lots; direct attribution precedes allocation. Shared activities use measured causal physical drivers, preserving all beneficiary projects and denominator with shares summing to one. Area normalizes the reference within a consistent use/structure package; it is not a default allocation among heterogeneous works. |  |\n| allocation_assets | plywood_form; utilities | Use cp_assets / cp_formwork_assets to record each asset/component manufacture burden, project/period activity and supported cumulative service. Across projects, periods and repeated uses, total manufacture shares of the same asset cannot exceed one. Unknown life/cumulative activity remains a review and completeness gap, never reset per project. |  |\n| allocation_recovery | waste | Construction waste, reused pavement and exported millings do not automatically earn credits. Document actual treatment/recovery gates, quality and receiver. Any substitution benefit or recycling allocation needs a declared sourced method and sensitivity, without simultaneously claiming avoided manufacture and zero burden. | fhwa-pavement-lca-2016 |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1525,12 +1521,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 52433
-              line: 970
+              offset: 54676
+              line: 951
               column: 1
             end:
-              offset: 52473
-              line: 970
+              offset: 54716
+              line: 951
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1545,16 +1541,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_65347"
+    - unit_id: "normative_68779"
       family: "validation"
       span:
         start:
-          offset: 65347
-          line: 1015
+          offset: 68779
+          line: 997
           column: 1
         end:
-          offset: 66747
-          line: 1024
+          offset: 70179
+          line: 1006
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validate_reference | reference_airfield | Check 1 m2 output, Area property, surveyed area, delivery completeness and qualifiers; all rows/protocols share the same package denominator. Missing survey/attribution evidence or overlapping area makes data incomplete. | un-cpc3-2025 |\n| validate_route | dataset | Reconcile earthworks, subgrade, aggregate, asphalt/concrete/turf layers and specified associated works with actual design, documenting applicability/absence and corrections. An empty UUID does not imply absence; collection labels cannot complete the inventory. | faa-airport-construction-2018 |\n| validate_identities | all inventory rows | Verify each public identity substance, state, route, geography/voltage, environmental medium and reference property; unsupported mass/area/volume relationships remain unresolved. Align bilingual row_id, rule_id, UUID and official Chinese names. |  |\n| validate_coverage | dataset | Check no overlap between site combustion, transport, upstream manufacture and treatment. Reconcile water/waste destinations, exact emission species and cumulative asset shares. Gaps prevent complete environmental-inventory claims; site delivery confers neither whole-life coverage nor scientific/regulatory approval. | fhwa-pavement-lca-2016; epa-concrete-washout-2012 |\n\n"
       headings:
@@ -1573,12 +1569,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 65347
-              line: 1015
+              offset: 68779
+              line: 997
               column: 1
             end:
-              offset: 65369
-              line: 1015
+              offset: 68801
+              line: 997
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1597,181 +1593,194 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_delivery"
       identity_kind: "explicit"
-      unit_id: "normative_6425"
+      unit_id: "normative_6820"
       source_span:
         start:
-          offset: 7487
+          offset: 7882
           line: 83
           column: 1
         end:
-          offset: 7866
+          offset: 8261
           line: 83
           column: 380
     - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_consumed_inputs"
+      identity_kind: "explicit"
+      unit_id: "normative_6820"
+      source_span:
+        start:
+          offset: 8262
+          line: 84
+          column: 1
+        end:
+          offset: 9545
+          line: 84
+          column: 1284
+    - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_stages"
       identity_kind: "explicit"
-      unit_id: "normative_6425"
+      unit_id: "normative_6820"
       source_span:
         start:
-          offset: 7867
-          line: 84
+          offset: 9546
+          line: 85
           column: 1
         end:
-          offset: 8210
-          line: 84
+          offset: 9889
+          line: 85
           column: 344
-    - pointer: "/system_boundary/rules/2"
+    - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_environment"
       identity_kind: "explicit"
-      unit_id: "normative_6425"
+      unit_id: "normative_6820"
       source_span:
         start:
-          offset: 8211
-          line: 85
+          offset: 9890
+          line: 86
           column: 1
         end:
-          offset: 8691
-          line: 85
+          offset: 10370
+          line: 86
           column: 481
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_project"
       identity_kind: "explicit"
-      unit_id: "normative_52433"
+      unit_id: "normative_54676"
       source_span:
         start:
-          offset: 52546
-          line: 974
+          offset: 54789
+          line: 955
           column: 1
         end:
-          offset: 52995
-          line: 974
+          offset: 55238
+          line: 955
           column: 450
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_assets"
       identity_kind: "explicit"
-      unit_id: "normative_52433"
+      unit_id: "normative_54676"
       source_span:
         start:
-          offset: 52996
-          line: 975
+          offset: 55239
+          line: 956
           column: 1
         end:
-          offset: 53374
-          line: 975
-          column: 379
+          offset: 55638
+          line: 956
+          column: 400
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_recovery"
       identity_kind: "explicit"
-      unit_id: "normative_52433"
+      unit_id: "normative_54676"
       source_span:
         start:
-          offset: 53375
-          line: 976
+          offset: 55639
+          line: 957
           column: 1
         end:
-          offset: 53757
-          line: 976
+          offset: 56021
+          line: 957
           column: 383
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference"
       identity_kind: "explicit"
-      unit_id: "normative_65347"
+      unit_id: "normative_68779"
       source_span:
         start:
-          offset: 65442
-          line: 1019
+          offset: 68874
+          line: 1001
           column: 1
         end:
-          offset: 65723
-          line: 1019
+          offset: 69155
+          line: 1001
           column: 282
     - pointer: "/validation_rules/1"
       rule_id: "validate_route"
       identity_kind: "explicit"
-      unit_id: "normative_65347"
+      unit_id: "normative_68779"
       source_span:
         start:
-          offset: 65724
-          line: 1020
+          offset: 69156
+          line: 1002
           column: 1
         end:
-          offset: 66047
-          line: 1020
+          offset: 69479
+          line: 1002
           column: 324
     - pointer: "/validation_rules/2"
       rule_id: "validate_identities"
       identity_kind: "explicit"
-      unit_id: "normative_65347"
+      unit_id: "normative_68779"
       source_span:
         start:
-          offset: 66048
-          line: 1021
+          offset: 69480
+          line: 1003
           column: 1
         end:
-          offset: 66342
-          line: 1021
+          offset: 69774
+          line: 1003
           column: 295
     - pointer: "/validation_rules/3"
       rule_id: "validate_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_65347"
+      unit_id: "normative_68779"
       source_span:
         start:
-          offset: 66343
-          line: 1022
+          offset: 69775
+          line: 1004
           column: 1
         end:
-          offset: 66745
-          line: 1022
+          offset: 70177
+          line: 1004
           column: 403
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_6425"
+      unit_id: "normative_6820"
       source_span:
         start:
-          offset: 6425
+          offset: 6820
           line: 68
           column: 1
         end:
-          offset: 6446
+          offset: 6841
           line: 68
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_6425"
+      unit_id: "normative_6820"
       source_span:
         start:
-          offset: 6474
+          offset: 6869
           line: 72
           column: 1
         end:
-          offset: 7414
+          offset: 7809
           line: 79
           column: 174
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_52433"
+      unit_id: "normative_54676"
       source_span:
         start:
-          offset: 52433
-          line: 970
+          offset: 54676
+          line: 951
           column: 1
         end:
-          offset: 52473
-          line: 970
+          offset: 54716
+          line: 951
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_65347"
+      unit_id: "normative_68779"
       source_span:
         start:
-          offset: 65347
-          line: 1015
+          offset: 68779
+          line: 997
           column: 1
         end:
-          offset: 65369
-          line: 1015
+          offset: 68801
+          line: 997
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1780,5 +1789,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:93a839fcd76e3ee5e16f0c54052170da7d9316582dca4aff0fb582588a4b8abe"
-  generated_content_sha256: "sha256:f79fbd8c7ea7df84ef71b5c68d2c2e3b3160dd1140ebe97cab046f10fc59bbf2"
+    sha256: "sha256:86379527dbfe6522e81facc3d65eb5c46ca1008ffc18d391d8aa3277fa7527a7"
+  generated_content_sha256: "sha256:39f2301fef0ebbbe33e8bcd74835f4ca4167aa656c14193b7acb2f104407ae2e"

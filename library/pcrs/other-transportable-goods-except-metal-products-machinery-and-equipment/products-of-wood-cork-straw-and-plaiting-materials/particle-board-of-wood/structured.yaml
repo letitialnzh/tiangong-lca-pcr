@@ -1,10 +1,1898 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31431"
-  title: "Particle board of wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.particle-board-of-wood"
+  classification_refs: "CPC 3.0 31431; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Uncoated flat hot-pressed wood particleboard with ingredient-audited unmodified UF binder"
+  excluded_products: "OSB; waferboard; non-wood panels; fiberboard; faced/coated panels; molded products; unidentified or other binder recipes"
+  representative_product: "One accepted wood species/source, particle geometry, UF recipe, density, thickness and moisture cohort"
+  production_route: "Wood sorting/refining → drying → audited UF synthesis/blending → mat forming → hot pressing → cooling → sanding/dimensioning → stacking/packaging"
+  market_state: "Accepted uncoated panel at board factory gate; transport packaging separately counted"
+functional_unit:
+  what: "Supply the declared uncoated wood particleboard grade"
+  how_much: "1 kg accepted net panel"
+  how_well: "Declared density, thickness, moisture basis, mechanical grade and formaldehyde test method/class; no unsupported class claim"
+  how_long_or_cycle: "One factory-gate delivery; service life outside this unit"
+  reference_flow_link: "finished_panel"
+system_boundary:
+  rules:
+    - rule_id: boundary_route
+      applies_to: "all datasets"
+      rule: "Only declared flat UF-bonded uncoated wood panels conform. Audit each ingredient and preparation stage; raw dedicated chips carry forestry and preparation; co-products carry justified source-stage burdens. Supplier resin expansion must retain its actual yield and transfer quantity."
+      source_ids:
+        - usda-handbook-2021
+        - wilson-resins-2010
+        - corrim-pb-2024
+    - rule_id: boundary_heat
+      applies_to: "heat and emissions"
+      rule: "Include actual dryer fuel/direct combustion, separate owned boiler, press heating, oxidizer fuel, wet controls and auxiliary electricity. One meter interval or emission stream is counted once. AP42 boiler evidence does not turn boiler emissions into dryer factors. Imported heat is outside the present enumerated fuel-owned route and needs separately verified supply and net heat basis."
+      source_ids:
+        - epa-pb-2002
+        - epa-boiler-2022
+    - rule_id: boundary_recovery
+      applies_to: "recovered wood"
+      rule: "Require prior use/treatment, contamination testing, legal waste/product status, collection/sorting/cleaning/transport and loss records. Recycled is not evidence for zero burden; declare the recycling convention and sensitivity, and retain actual recovery burdens."
+      source_ids:
+        - corrim-pb-2024
+    - rule_id: boundary_downstream
+      applies_to: "all datasets"
+      rule: "Stop at accepted packaged board factory gate, with packaging exchanges separate from panel mass. Construction, use-phase formaldehyde exposure, service life, disposal and Module D credits require separate scenarios; no 75-year assumption or report end-of-life average is imported."
+      source_ids:
+        - corrim-pb-2024
+boundary_abstraction:
+  declared_starting_condition: "Identified purchased wood feed at board mill and batch-assayed aqueous formaldehyde/urea at identified UF reactor; supply chains before these gates are linked backgrounds"
+  starting_condition_role: "Collected gate conditions, not burden-free origin"
+  product_classification_scope: "CPC 3.0:31431; narrower"
+  recursive_input_rule: "Same-category external board is not an allowed raw-wood shortcut; this route excludes resin-bonded recovered panel. Internal trim return is an internal ledger, not a new purchased reference flow"
+  upstream_dataset_requirement: "Source-specific wood forestry/chipping and co-product allocation; chemical manufacture; fuel and electricity supply; recovery operations; transport; waste treatment. No simultaneous purchased UF background when synthesis is expanded in foreground"
+  disclosure: "Board and resin sites, all gates and ownership, source species, prior material status, included heat/abatement, upstream stages, stock changes, excluded stages, allocation and uncertainty"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "particle board"
+    uuid: "4f19ca17-7b3b-11dd-ad8b-0800200c9a66"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "species and source shares"
+    - "dedicated/co-product/recovered status"
+    - "contaminant acceptance"
+    - "wet/dry mass convention"
+    - "particle architecture"
+    - "actual UF recipe and batch assays"
+    - "resin solids/free formaldehyde"
+    - "wax/catalyst identities"
+    - "density at measured moisture"
+    - "actual thickness/dimensions"
+    - "layer count"
+    - "dry mat forming"
+    - "press type"
+    - temperature
+    - pressure
+    - "dwell/speed"
+    - "drying direct/indirect heat and fuel origin"
+    - "cooled/sanded/uncoated status"
+    - "mechanical and formaldehyde test method/grade"
+    - "region and period"
+    - "supplier-expanded resin boundary"
+    - "allocation and packaging"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use accepted net panel mass at declared release moisture, excluding packaging; collect Q using cp_reference. Every inventory denominator is per 1 kg reference flow."
+  - id: moisture_basis
+    applies_to: "wood and panel physical ledgers"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Dry-basis u = water mass / oven-dry mass; wet mass = dry mass × (1+u). Wet-basis w = u/(1+u). Use same-sample oven-dry or validated meter records, and separate wood water from resin reaction/dilution water. [usda-handbook-2021]"
+  - id: volume_conversion
+    applies_to: "volume-based chips, gas and panel metadata"
+    required_property_ref:
+      name: "Volume and measured Mass"
+      uuid: ""
+    required_unit: "m3; kg"
+    rule: "Panel volume = sum(actual length × width × thickness); panel density uses matching net mass and moisture. Wood-chip UUID 3fa2a6a7-224c-4d99-bd55-a214f0a83161 confirms material identity and Volume/m3 only, not bulk volume. Separate measured wet kg, loose bulk volume Vb, the fixed supplier/background reference amount A_provider with its unit and solid/bulk convention, and measured period demand volume V_provider expressed in that convention. Obtain the supplier/background solid-versus-bulk definition, moisture/state and packing convention; measure same-lot solid volume Vs, wet bulk density rho_b, solid density rho_s and packing k = Vs/Vb on compatible definitions. Obtain V_provider only through a validated matched-state conversion; provider-process scaling is n_provider = V_provider/A_provider and the native Volume exchange is V_provider/Q in m3/kg, each scaled/normalized once. A_provider remains the fixed provider reference amount, not measured demand or a per-kg quantity; database secondary mass/volume coefficients are not measured density or packing. Unknown A_provider/definition/conversion means an incomplete quantity link, even with a correct UUID. Gas volume likewise requires supplier/background reference conditions and matched state. [fao-ubet-volume; usda-handbook-2021]"
+  - id: recipe_basis
+    applies_to: "resin and additives"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Record each actual purchased ingredient/formulation; disclose product and active/solids kg separately. Do not count solution water or internal UF resin transfer twice. Never infer UF dosage from an industry-average percentage. [wilson-resins-2010]"
+  - id: energy_basis
+    applies_to: "energy and useful heat"
+    required_property_ref:
+      name: "Energy with declared physical basis"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Electricity MJ = metered kWh × 3.6. Keep fuel LHV input and measured net delivered heat separate; no assumed boiler efficiency. Steam or hot-water useful heat requires supply and return flow/enthalpy, pressure, temperature and condensate/loss records plus matching background definition. A steam MJ property alone is insufficient. [epa-pb-2002; epa-boiler-2022]"
+process_map:
+  - id: uf_board
+    name: "Audited UF preparation and wood particleboard manufacture"
+    inclusion: "required"
+    inclusion_condition: "One declared recipe and panel cohort, source-resolved UF reactor and wood mill"
+    role: "aggregated_foreground"
+    quantitative_reference: "1 kg accepted net panel"
+process_inventory:
+  - id: uf_board
+    label: "Audited UF preparation and wood particleboard manufacture"
+    inputs:
+      product:
+        - row_id: dedicated_chips
+          role: "Dedicated Chips"
+          name: "Wood Chip"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3fa2a6a7-224c-4d99-bd55-a214f0a83161"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Quantity-basis condition for every wood-chip exchange: the Volume identity is retained, but measured bulk Vb, wet mass and the fixed supplier/background reference amount A_provider and converted period volume V_provider are distinct. Record the actual upstream dataset solid/bulk convention, same-batch species, moisture/state and measured packing k = Vs/Vb. Convert measured demand to V_provider only after definition/state matching, then scale the provider process by V_provider/A_provider; the native exchange is V_provider/Q. A_provider does not change with demand; unknown conversion leaves quantity linkage unresolved. Do not treat a database secondary mass coefficient as density. [fao-ubet-volume] Purchased untreated wood chips deliberately produced from timber for this board; retain tree species, source forestry and full chipping burden. Measure loose volume and same-lot wet bulk density and moisture; no zero-burden residue assumption."
+          amount:
+            expression: "After cohort attribution and matched solid/bulk and moisture/state conversion, obtain same-period V_provider; the native exchange is V_provider/Q (m3/kg), normalized once. Provider-process scaling is separately V_provider/A_provider; A_provider is the fixed provider reference amount/convention, not demand volume. Physical bulk volume alone does not prove the provider convention; missing conversion evidence leaves the link unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_feed
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: coproduct_chips
+          role: "Coproduct Chips"
+          name: "Wood Chip"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3fa2a6a7-224c-4d99-bd55-a214f0a83161"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Quantity-basis condition for every wood-chip exchange: the Volume identity is retained, but measured bulk Vb, wet mass and the fixed supplier/background reference amount A_provider and converted period volume V_provider are distinct. Record the actual upstream dataset solid/bulk convention, same-batch species, moisture/state and measured packing k = Vs/Vb. Convert measured demand to V_provider only after definition/state matching, then scale the provider process by V_provider/A_provider; the native exchange is V_provider/Q. A_provider does not change with demand; unknown conversion leaves quantity linkage unresolved. Do not treat a database secondary mass coefficient as density. [fao-ubet-volume] Purchased untreated chips sold by a multi-output sawmill or veneer mill. Keep this origin separate from dedicated chips even with the same physical flow UUID; obtain documented source-stage allocation."
+          amount:
+            expression: "After cohort attribution and matched solid/bulk and moisture/state conversion, obtain same-period V_provider; the native exchange is V_provider/Q (m3/kg), normalized once. Provider-process scaling is separately V_provider/A_provider; A_provider is the fixed provider reference amount/convention, not demand volume. Physical bulk volume alone does not prove the provider convention; missing conversion evidence leaves the link unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_feed
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: coproduct_sawdust
+          role: "Coproduct Sawdust"
+          name: "Untreated sawmill sawdust sold as co-product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Unresinated wood sawdust feed, not hog fuel or airborne dust; weigh wet mass, moisture and source burden."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_feed
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: coproduct_shavings
+          role: "Coproduct Shavings"
+          name: "Untreated planer shavings sold as co-product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Unresinated planer shavings; record whether supplier drying occurred before this co-product arose and assign applicable upstream drying burden."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_feed
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: urea
+          role: "Urea"
+          name: "Urea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3f8850c0-f718-4c4b-8fcb-8fd42e03aa8e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Separate actual urea used in resin reaction from any later free-urea scavenger dose in raw records; combine only this same chemical exchange. Use product kg, never kg nitrogen."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - wilson-resins-2010
+            ranges: []
+        - row_id: formaldehyde_solution
+          role: "Formaldehyde Solution"
+          name: "Aqueous formaldehyde feed solution, batch-assayed for resin synthesis"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One actual supplied solution product; require batch formaldehyde, methanol stabilizer and water mass fractions and supplier upstream definition. Do not assume laboratory formalin composition. Account its constituents in the physical chemical/water ledger without also counting them as purchased inputs."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - wilson-resins-2010
+            ranges: []
+        - row_id: naoh
+          role: "Naoh"
+          name: "Sodium hydroxide"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e0abcced-0611-4c24-9290-5a2c5a0c4169"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only industrial solid NaOH of the verified grade; record assay and actual dry product mass. If a different aqueous supply is used, resolve that formulation separately; added dilution water is separate."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - wilson-resins-2010
+            ranges: []
+        - row_id: formic_acid
+          role: "Formic Acid"
+          name: "Formic acid"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b2fe4c3e-d4e6-40be-93ee-e47d512b8309"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Individual pH-adjusting formic acid if present in the actual UF batch recipe; record commercial concentration and active fraction, no assumed dose."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - wilson-resins-2010
+            ranges: []
+        - row_id: ammonium_sulfate
+          role: "Ammonium Sulfate"
+          name: "Ammonium sulfate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8c6f0cbb-16d7-4dc9-8d55-e8dea17d7faf"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Individual ammonium sulfate when used for pH adjustment or cure; distinguish synthesis and board blending doses."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - wilson-resins-2010
+            ranges: []
+        - row_id: ammonium_chloride
+          role: "Ammonium Chloride"
+          name: "Ammonium chloride, delivered solid cure catalyst"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "The delivered catalyst identity remains unresolved; reactor/absorption-tower states and volume-basis candidates are not interchangeable with a weighed solid delivery. Resolve actual supplier grade/state before use. Individual ammonium chloride cure catalyst only when actual dosing records identify it; no generic hardener row. A different catalyst requires its own atomic row before dataset completion."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - epa-pb-2002
+            ranges: []
+        - row_id: paraffin
+          role: "Paraffin"
+          name: "Paraffin wax"
+          flow_type: "product"
+          flow_ref:
+            uuid: "17bff97f-179d-49d4-9e97-5128bd6020a6"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Petroleum-fraction paraffin wax added neat or melted, weighed as wax. Wax emulsion with unidentified emulsifier is outside this recipe; do not substitute waste-plastic regenerated wax."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - usda-handbook-2021
+                - epa-pb-2002
+            ranges: []
+        - row_id: process_water
+          role: "Process Water"
+          name: "Process Water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "94a04f7e-2d5c-41f0-b182-d54a3b373a02"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased treated process water for resin dilution, blending, cleaning, wet abatement or cooling makeup. Record use by stage; internal recycled water and water already in chemical solutions are not new purchases."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: electricity
+          role: "Electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3d76981f-964a-4865-b588-0e067a2a1163"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Grid-average delivered AC in the verified voltage class; include preparation, resin reactor, drying fans, forming, press, cooling, sanding, packaging, boiler auxiliaries and abatement. Other supply or voltage requires its own verified flow."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: natural_gas
+          role: "Natural Gas"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Gas quantity-basis condition: preserve the gaseous natural-gas identity, but distinguish meter volume Vm, fixed supplier/background reference amount A_provider and converted period demand volume V_provider. Obtain absolute T and P, dry/wet convention, water content, gas composition and compressibility Z for both states; use calibrated matched-state conversion and the actual background m3 definition. Conversion determines V_provider only; provider scaling is V_provider/A_provider and the native exchange is V_provider/Q, with A_provider fixed. Unknown composition, Z or reference condition keeps the quantity link unresolved, not zero. Pipeline gaseous natural gas for direct dryer, owned boiler or oxidizer, when present. Keep separate stage meters; record pressure, temperature, compressibility, volume reference conditions and supplier energy basis."
+          amount:
+            expression: "Convert the attributable same-period meter amount to V_provider on matched T/P, composition, wet/dry and Z conditions; the native exchange is V_provider/Q (m3/kg), normalized once. Provider-process scaling is separately V_provider/A_provider; A_provider is the fixed provider reference amount/convention, not demand volume. Unknown state/definition leaves the quantity link unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: wood_fuel
+          role: "Wood Fuel"
+          name: "Wood Chip"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3fa2a6a7-224c-4d99-bd55-a214f0a83161"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Quantity-basis condition for every wood-chip exchange: the Volume identity is retained, but measured bulk Vb, wet mass and the fixed supplier/background reference amount A_provider and converted period volume V_provider are distinct. Record the actual upstream dataset solid/bulk convention, same-batch species, moisture/state and measured packing k = Vs/Vb. Convert measured demand to V_provider only after definition/state matching, then scale the provider process by V_provider/A_provider; the native exchange is V_provider/Q. A_provider does not change with demand; unknown conversion leaves quantity linkage unresolved. Do not treat a database secondary mass coefficient as density. [fao-ubet-volume] Externally purchased clean unresinated wood-chip fuel only. Record species, origin and upstream burden, wet bulk density, moisture and actual LHV. Internal fines already in incoming feed are tracked in the internal fuel ledger, not purchased again."
+          amount:
+            expression: "After cohort attribution and matched solid/bulk and moisture/state conversion, obtain same-period V_provider; the native exchange is V_provider/Q (m3/kg), normalized once. Provider-process scaling is separately V_provider/A_provider; A_provider is the fixed provider reference amount/convention, not demand volume. Physical bulk volume alone does not prove the provider convention; missing conversion evidence leaves the link unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - epa-boiler-2022
+                - epa-pb-2002
+            ranges: []
+        - row_id: diesel
+          role: "Diesel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual diesel fuel for owned yard mobile equipment; require fuel grade, fossil/biogenic blend and source dataset, no stationary-engine proxy. External freight fuel belongs in its service dataset."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: pe_film
+          role: "Pe Film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual polyethylene wrapping film mass excluding reusable packs; distinguish purchased virgin/recycled share in background, no extrusion service substituted for material."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: steel_strap
+          role: "Steel Strap"
+          name: "Steel baling band"
+          flow_type: "product"
+          flow_ref:
+            uuid: "56fe4f71-b594-4b55-8553-c87f2516737d"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only recycled/reprocessed uncoated steel baling band with 99% Fe and 1% C by mass, matching the verified composition/route; if absent mark absent, and add a separately verified row for a different actual strap."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: wood_sticker
+          role: "Wood Sticker"
+          name: "Untreated solid-wood packaging spacer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Individual wooden spacer separating stacked panels; net material mass and reuse turns from packaging records, not paper labels."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: inbound_road_freight
+          role: "Inbound Road Freight"
+          name: "Road freight transport of foreground supplies"
+          flow_type: "product"
+          property_unit: "Transport service / t.km"
+          description: "Vehicle-class and load-defined external road service for wood and chemical supplies including supplier-expanded resin transfer. Do not include internal yard equipment again. Other modes are separate flows."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_transport
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+      waste:
+        - row_id: recovered_clean_wood
+          role: "Recovered Clean Wood"
+          name: "Recovered untreated solid wood, unresinated, for particle preparation"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only source-traceable clean solid wood accepted after metal removal and contaminant testing. Exclude preservative-treated, painted and resin-bonded board; record collection, sorting, cleaning, losses and prior burden convention explicitly."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_feed
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_panel
+          role: "Finished Panel"
+          name: "particle board"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca17-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Accepted cooled, sanded, dimensioned uncoated flat UF-bonded wood particleboard at factory gate, excluding packaging. Resin manufacture and finished-board stacking remain in one aggregated foreground to avoid duplicate product references."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+        - row_id: sold_clean_fines
+          role: "Sold Clean Fines"
+          name: "Clean unresinated wood fines sold as co-product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only material sold outside the aggregate, with actual sale and downstream use evidence. Internal return or burning is not an external co-product."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-pb-2024
+            ranges: []
+      waste:
+        - row_id: rejected_panel
+          role: "Rejected Panel"
+          name: "UF-bonded rejected wood particleboard"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Resin-bonded rejects exported to treatment; keep dry wood, resin, moisture and contaminant content."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-pb-2024
+                - epa-pb-2002
+            ranges: []
+        - row_id: captured_sanding_dust
+          role: "Captured Sanding Dust"
+          name: "UF-bonded particleboard sanding dust sent to treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Captured solid dust leaving to treatment only; distinguish internal reuse and fuel from atmospheric PM. Resin-containing dust is not clean wood fuel."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-pb-2024
+                - epa-pb-2002
+            ranges: []
+        - row_id: sorted_steel_reject
+          role: "Sorted Steel Reject"
+          name: "Steel scrap removed from recovered solid wood"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Recovered-feed separation output; metal mass belongs to recovery yield and receiving recycler, not wood panel mass."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-pb-2024
+                - epa-pb-2002
+            ranges: []
+        - row_id: bottom_ash
+          role: "Bottom Ash"
+          name: "Bottom ash from clean wood-residue boiler"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Owned boiler bottom ash only, with ash carbon and mineral assay, treatment manifest and distinct fly ash."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-boiler-2022
+            ranges: []
+        - row_id: fly_ash
+          role: "Fly Ash"
+          name: "Fly ash from clean wood-residue boiler"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Collected boiler fly ash, separate from bottom ash and discharged stack PM; verify fuel and control device."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-boiler-2022
+            ranges: []
+        - row_id: resin_purge
+          role: "Resin Purge"
+          name: "Aqueous UF resin reactor purge"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Actual off-spec liquid purge routed to treatment; record water, free formaldehyde, methanol, urea and cured/uncured solids assays."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - wilson-resins-2010
+            ranges: []
+        - row_id: process_effluent
+          role: "Process Effluent"
+          name: "Particleboard wet-abatement wastewater"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Wet abatement or equipment-cleaning effluent crossing to offsite treatment. Record destination and separate suspended solids/aqueous analytes; do not also emit them directly to nature."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-pb-2024
+                - epa-pb-2002
+            ranges: []
+      elementary:
+        - row_id: co2_bio
+          role: "Co2 Bio"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange. Biogenic CO2 remains in LCI even where a GWP reporting convention excludes it."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: co2_fossil
+          role: "Co2 Fossil"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: co_bio
+          role: "Co Bio"
+          name: "carbon monoxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "8a313a02-e251-11e6-bf01-fe55135034f3"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: co_fossil
+          role: "Co Fossil"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: methane_bio
+          role: "Methane Bio"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: methane_fossil
+          role: "Methane Fossil"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: nitrous_oxide
+          role: "Nitrous Oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: nitric_oxide
+          role: "Nitric Oxide"
+          name: "nitrogen monoxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-96ee-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: nitrogen_dioxide
+          role: "Nitrogen Dioxide"
+          name: "nitrogen dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-96e5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: sulfur_dioxide
+          role: "Sulfur Dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: formaldehyde_air
+          role: "Formaldehyde Air"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: methanol_air
+          role: "Methanol Air"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: acetaldehyde_air
+          role: "Acetaldehyde Air"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: phenol_air
+          role: "Phenol Air"
+          name: "phenol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa41-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: ethanol_air
+          role: "Ethanol Air"
+          name: "ethanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9349-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: propanal_air
+          role: "Propanal Air"
+          name: "propanal"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-9f05-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: alpha_pinene_air
+          role: "Alpha Pinene Air"
+          name: "Alpha-pinene, stereochemistry unspecified"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange. Resolve stereochemistry if the test does; do not substitute a single enantiomer without evidence."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: pm25
+          role: "Pm25"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange. Apply the mutually exclusive size reconciliation in calc_pm; do not add nested cumulative PM10 and PM2.5 totals."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: pmcoarse
+          role: "Pmcoarse"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange. Apply the mutually exclusive size reconciliation in calc_pm; do not add nested cumulative PM10 and PM2.5 totals."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: pmover10
+          role: "Pmover10"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange. Apply the mutually exclusive size reconciliation in calc_pm; do not add nested cumulative PM10 and PM2.5 totals."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+        - row_id: water_vapour
+          role: "Water Vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net release of this single species to outdoor air, unspecified subcompartment; keep resin storage/reactor, dryer, press, cooling, finishing, boiler and abatement outlet source records separate. Use species-specific mass tests or a validated site balance; total VOC, NOx or a correction flow cannot replace this exchange."
+          amount:
+            expression: "Recorded exchange per 1 kg reference flow after inventory adjustment and cohort attribution; collection protocol retains absolute total and denominator Q from cp_reference."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-pb-2002
+                - epa-boiler-2022
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_separation
+    applies_to: "wood inputs and outputs"
+    rule: "First subdivide or use measured causal drivers to separate dedicated wood, resin, heat and abatement burdens. Purchased sawmill co-products require documented supplier allocation; dry-mass allocation of joint source burdens is a declared baseline consistent with the cited study, not proof of zero price or zero burden. Retain a price/alternative-allocation sensitivity when economically different outputs make mass attribution uncertain."
+    source_ids:
+      - corrim-pb-2024
+  - rule_id: allocation_physical
+    applies_to: "all physical exchanges"
+    rule: "Preserve unallocated mass, water, carbon and internal heat/wood/resin transfers. Allocation shares apply to the separate environmental-burden account, not to physical co-product output, stock or internal-link quantity. Returned trim/fines are not independent sold products. Packaging and dedicated treatment remain attributable to the appropriate product."
+    source_ids:
+      - corrim-pb-2024
+  - rule_id: allocation_heat
+    applies_to: "shared heat equipment"
+    rule: "Use measured net useful heat delivered to each receiver to allocate shared boiler/resin heat burden; no fuel-only guessed efficiency or steam mass-only share. Disclose exports and losses. Exclude CHP from this route unless separately reviewed allocation and electricity exchanges are added."
+    source_ids:
+      - epa-boiler-2022
+      - wilson-resins-2010
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "uf_board"
+      flow_role: "accepted net panel"
+      record_type: "measurement and traceable records"
+      raw_fields: "cohort; species/source; grade; thickness/length/width; net mass Q; release moisture; packaging tare; reject/return/opening/closing stocks"
+      collection_method: "Calibrated net weighing; acceptance and thickness measurements; moisture sampling by oven-dry method or oven-validated calibrated meter. Preparation: Q is same-period inventory-adjusted accepted panel mass, excluding rejects and packaging."
+      unit: "kg; m; moisture fraction"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_feed
+      process_id: "uf_board"
+      flow_role: "each wood origin and geometry"
+      record_type: "measurement and traceable records"
+      raw_fields: "delivery; supplier process/gate; species; dedicated/co-product/recovered status; wet mass; loose bulk Vb; independently measured solid Vs on supplier definition; wet bulk rho_b; solid rho_s; packing k = Vs/Vb; supplier/background reference quantity A_provider and unit/solid/bulk convention; converted period demand V_provider; provider scaling n_provider; source and reference moisture/state; contaminants; stocks; source allocation; recovery yield; loss destination"
+      collection_method: "Weigh/sample each segregated lot; supplier forestry/chipping/sawmill stage records; recovered-wood contaminant acceptance and sorting mass balance. Inventory-adjust each source and preserve face/core and recycle links. Obtain the actual supplier/background reference A_provider and definition before volume linkage; measure same-lot densities/packing and matched moisture/state, using calibrated volume and mass methods. No database coefficient is a density; derive V_provider from matched measurements, scale the provider by V_provider/A_provider and normalize the native exchange V_provider/Q once. A_provider remains fixed; unknown conversion remains unresolved."
+      unit: "kg; m3; moisture fraction"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_recipe
+      process_id: "uf_board"
+      flow_role: "each UF ingredient and additive"
+      record_type: "measurement and traceable records"
+      raw_fields: "actual batch id; supplier/site; full chemical recipe; delivery grade/concentration; formaldehyde/methanol/water assay; ingredient kg; solids/free urea/free formaldehyde; molar ratio; pH; reaction time/temperature; batch yields; delivered resin; press catalyst/wax doses"
+      collection_method: "Calibrated ingredient dosing, delivery certificates and batch solids/free-formaldehyde tests; reconcile reactor feed, water, resin, purge and emissions. Supplier-expanded records use actual resin batches delivered to the board cohort; no guessed average chemical split."
+      unit: "kg; mass fraction; temperature; time; pH"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_water
+      process_id: "uf_board"
+      flow_role: "purchased process water"
+      record_type: "measurement and traceable records"
+      raw_fields: "meter; use/stage; withdrawals; added dilution water; cooling makeup; wet-control water; recycled water; effluent; evaporation; stocks"
+      collection_method: "Meter purchased treated water; reconcile solution-contained water and resin condensation water independently of purchases; distinguish internally circulating water."
+      unit: "kg; m3"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_energy
+      process_id: "uf_board"
+      flow_role: "delivered electricity"
+      record_type: "measurement and traceable records"
+      raw_fields: "meter; voltage; supplier/grid/location/year; kWh; equipment/stage; load hours; batch/cohort; shared recipients"
+      collection_method: "Submeter resin, preparation, dryer fans, presses, finish, heat auxiliaries and controls; reconcile unique intervals to site meters and actual shared-service drivers. Convert metered kWh to MJ."
+      unit: "kWh; MJ"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_fuel
+      process_id: "uf_board"
+      flow_role: "each external and internal fuel"
+      record_type: "measurement and traceable records"
+      raw_fields: "fuel id/species/origin; grade/blend; supplier; meter; wet mass; volume; density; moisture; carbon; LHV; absolute T/P; dry/wet convention; water content; gas composition; Z; meter Vm; background reference A_provider and unit/m3 definition; converted period demand V_provider; provider scaling n_provider; chip Vs/Vb/rho_b/rho_s/k and supplier definition; dryer/boiler/oxidizer/mobile equipment; stocks; internal clean-fines diversion"
+      collection_method: "Meter/weigh separately by combustion equipment; supplier/background gas T/P, composition, dry/wet and Z definitions with actual reference A_provider; site wood volume/mass/moisture/LHV assays and matching solid/bulk A_provider definition. Keep physical measurements separate from resolved supply quantities; A_provider remains fixed; matched conversion yields V_provider, provider scaling is V_provider/A_provider and the native exchange is V_provider/Q once. Unknown definition/conversion remains unresolved. Reconcile external wood feed, internally diverted clean fuel and ash. Never use resin-bonded residues as clean untreated fuel."
+      unit: "kg; m3; MJ"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_heat
+      process_id: "uf_board"
+      flow_role: "internal useful heat"
+      record_type: "measurement and traceable records"
+      raw_fields: "receiver; supply/return mass and enthalpy; temperature/pressure; condensate; steam quality; meter interval; losses; fuel input; resin/dryer/press demand; exported heat"
+      collection_method: "Calibrated heat metering or supply-minus-return enthalpy balance with actual water/steam state; verify net delivered heat and match both link ends. Reconcile all receivers/losses to fuel and boiler balances; unknown heat basis remains unresolved."
+      unit: "kg; MJ; temperature; pressure"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_pack
+      process_id: "uf_board"
+      flow_role: "each packing component"
+      record_type: "measurement and traceable records"
+      raw_fields: "film polymer; strap grade/route; wood spacer species; delivered/used/returned mass; reuse turns; cohort; pack tare"
+      collection_method: "Weigh individual components and reconcile purchases, stocks, returns/reuse; exclude packaging from Q. Include other actual packing components as separate rows before claiming complete inventory."
+      unit: "kg"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_residue
+      process_id: "uf_board"
+      flow_role: "each co-product/waste"
+      record_type: "measurement and traceable records"
+      raw_fields: "row/material; origin/stage; wet/dry kg; moisture; resin/contaminants; internal return/burning; sold quantity/prices; ash carbon; liquid assays; treatment destination; stocks"
+      collection_method: "Segregated calibrated weighing and destination manifests. Keep internal residues in link ledger; distinguish clean versus resin-bonded, bottom/fly ash and liquid streams. Analyse treatment-relevant components; retain full physical amounts before burden allocation."
+      unit: "kg; mass fraction"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_air
+      process_id: "uf_board"
+      flow_role: "each net outdoor-air species"
+      record_type: "measurement and traceable records"
+      raw_fields: "species/CAS; source vent/fugitive id; stage; control train; sampled mass concentration; actual/standard dry gas flow; oxygen/moisture correction; operating hours; start/stop; fossil/biogenic origin; PM cut size/filterable/condensable; detection limits"
+      collection_method: "Species-specific accredited stack/source tests and flow monitoring, representative batch/season/operating loads; separate net control outlet from captured material and untreated inlet. Test NO and NO2 separately or retain unresolved speciation; no invented split of NOx. Resolve carbon origin and detection limits; preserve unspeciated VOC/PM as unquantified coverage gaps, not a fabricated species."
+      unit: "kg; mass/volume; gas volume/time"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+    - protocol_id: cp_transport
+      process_id: "uf_board"
+      flow_role: "inbound road service"
+      record_type: "measurement and traceable records"
+      raw_fields: "shipment; origin/destination; actual wet transported mass; distance; vehicle/payload; empty returns; transport mode; resin supplier transfer; carrier dataset"
+      collection_method: "Use weigh tickets and carrier route/load records; calculate actual shipment tonne-km by mode. Exclude yard diesel already in own fuel account and avoid duplicate upstream transport."
+      unit: "t.km"
+      frequency: "each batch/lot and meter interval; period endpoints"
+      temporal_coverage: "complete declared accounting period including seasonal and start/stop variation"
+      site_scope: "same product cohort; named resin supplier and board site; all shared recipients disclosed"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; certificates; raw logs; reconciliation; uncertainty and gaps"
+  calculation_rules:
+    - id: calc_normalize
+      applies_to: "all inventory rows"
+      rule: "x_i = attributable inventory-adjusted exchange total / Q; Q is accepted net finished-panel kg from cp_reference. Reference output is 1 kg. Preserve absolute physical totals and attribution record separately."
+      inputs:
+        - cp_reference
+        - "all row collection protocols"
+      output: "normalized inventory"
+      source_ids:
+        - corrim-pb-2024
+    - id: calc_chip_supply_volume
+      applies_to: "dedicated_chips; coproduct_chips; wood_fuel"
+      rule: "At the same batch/state and matched solid/bulk definitions, k = Vs/Vb, m_wet = rho_b × Vb = rho_s × Vs. If the reference convention of A_provider is that same bulk basis, V_provider = Vb; if it is the compatible solid basis, V_provider = Vs = k × Vb. When reference moisture/state differs, first bridge conserved dry wood mass to the supplier reference moisture and measured corresponding density/packing; do not reuse source k or density across states. Declare fixed A_provider, unit, definition and evidence explicitly and retain converted period V_provider. Provider scaling is n_provider = V_provider/A_provider; normalize the native exchange V_provider/Q once without changing A_provider. Unknown A_provider/k/state leaves linkage incomplete; no FAO typical factor or database secondary property coefficient is a measured conversion."
+      inputs:
+        - cp_feed
+        - cp_fuel
+        - "fixed supplier/background A_provider and definition"
+        - "matched measurements"
+        - Q
+      output: "fixed provider reference, raw/matched period volumes, process scaling and native per-kg exchange separately"
+      source_ids:
+        - fao-ubet-volume
+        - usda-handbook-2021
+    - id: calc_gas_supply_volume
+      applies_to: "natural_gas"
+      rule: "For conserved gas amount with identical dry composition, V_provider = Vm × (Pm/Pb) × (Tb/Tm) × (Zb/Zm), using absolute temperatures/pressures and background reference b. The wet meter volume Vm requires measured water-vapour fraction and a validated dry/wet correction before this expression; differing composition or unsupported Z/reference conditions requires further supplier verification, not an assumed ideal-gas conversion. Keep actual Vm, converted period V_provider and fixed A_provider separately; n_provider = V_provider/A_provider and the native exchange V_provider/Q is normalized once."
+      inputs:
+        - cp_fuel
+        - "fixed supplier/background A_provider and T/P/composition/wet-dry/Z"
+        - Q
+      output: "matched period V_provider, fixed A_provider, process scaling and native m3/kg separately"
+      source_ids:
+        - epa-pb-2002
+    - id: calc_wood_water
+      applies_to: "wood and panel ledgers"
+      rule: "m_dry = m_wet/(1+u); u = (m_wet-m_dry)/m_dry; w = u/(1+u). Reconcile dry wood, retained resin/additives, water carried in/added/generated, finished panel, external waste/emissions and stock changes; internal returns cancel only in aggregate and retain matched stage transfers."
+      inputs:
+        - cp_reference
+        - cp_feed
+        - cp_recipe
+        - cp_water
+        - cp_residue
+        - cp_air
+      output: "dry wood and water balances"
+      source_ids:
+        - usda-handbook-2021
+    - id: calc_recipe
+      applies_to: "UF recipe and retained resin"
+      rule: "Ingredient/formulation constituent mass = actual dosed product kg × batch-assayed mass fraction. Attribute supplier batch inputs/losses by actual resin quantity transferred to the board cohort; retain reaction yield, condensation water and loss balance. Do not add internal liquid UF resin as a second external input, and do not equate urea plus formaldehyde input mass with cured dry polymer mass."
+      inputs:
+        - cp_recipe
+        - cp_water
+        - cp_air
+        - cp_residue
+      output: "component and retained-solids ledger"
+      source_ids:
+        - wilson-resins-2010
+    - id: calc_heat
+      applies_to: "heat receivers and fuel"
+      rule: "Electricity MJ = kWh × 3.6. Fuel energy = measured fuel quantity on declared basis × matching measured LHV. Useful heat = supplied mass × supplied enthalpy minus returned mass × return enthalpy, corrected for documented losses/condensate. Reconcile receiver totals; unknown enthalpy/reference conditions prohibit a usable heat quantity."
+      inputs:
+        - cp_energy
+        - cp_fuel
+        - cp_heat
+      output: "input energy and net useful heat separately"
+      source_ids:
+        - epa-boiler-2022
+    - id: calc_air
+      applies_to: "species emissions"
+      rule: "Integrate same-basis measured species concentration × dry gas volume over actual operating time; add separately measured fugitive sources once. Use consistent moisture/oxygen/temperature corrections and uncertainty. Do not infer site kg from a product chamber-test concentration, LCIA CO2-equivalent or VOC-as-carbon total."
+      inputs:
+        - cp_air
+      output: "single-species net outdoor-air mass"
+      source_ids:
+        - epa-pb-2002
+    - id: calc_pm
+      applies_to: "pm25; pmcoarse; pmover10"
+      rule: "On one common source, period and filterable/condensable definition: PM2.5 fraction = cumulative PM2.5; PM2.5–PM10 fraction = cumulative PM10 minus cumulative PM2.5; >PM10 fraction = total PM minus cumulative PM10. Require nonnegative results and measured compatible totals. Condensable PM must be assigned with documented size evidence or remain a separate unresolved exchange; no zero or guessed PM split."
+      inputs:
+        - cp_air
+      output: "three non-overlapping fractions"
+      source_ids:
+        - epa-pb-2002
+        - epa-boiler-2022
+    - id: calc_carbon
+      applies_to: "wood/fuel/resin physical balances"
+      rule: "Use measured dry material carbon and fossil/biogenic provenance. Reconcile carbon in panel, sold material, residues/ash, stocks, CO2, CO, methane and each measured organic species. Derive CO2 only from a validated residual carbon balance with 44/12, separately by origin; retain biogenic CO2 in LCI and disclose stored biogenic carbon separately from LCIA. No automatic negative CO2 at the factory for wood growth already in upstream datasets."
+      inputs:
+        - cp_feed
+        - cp_recipe
+        - cp_fuel
+        - cp_residue
+        - cp_air
+        - cp_reference
+      output: "separate fossil/biogenic carbon balances"
+      source_ids:
+        - corrim-pb-2024
+        - epa-boiler-2022
+    - id: calc_allocation
+      applies_to: "environmental burden ledger only"
+      rule: "For eligible joint source outputs a_j = dry output mass j / total eligible dry output mass; B_j = a_j × joint burden + dedicated burden j. Use period-matched sale values for economic sensitivity and measured useful-heat shares for shared heat. Physical output and internal links retain full measured quantities."
+      inputs:
+        - cp_feed
+        - cp_residue
+        - cp_heat
+        - "actual joint burdens and prices"
+      output: "allocated environmental burden account"
+      source_ids:
+        - corrim-pb-2024
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: quality_cohort
+      applies_to: "all rows"
+      requirement: "Same recipe/specification/period Q; retain source and supplier scope, sampling representativeness and opening/closing stocks. No factory records have been obtained by this methodology itself."
+      evidence: "cp_reference; cp_feed; cp_recipe"
+    - id: quality_complete
+      applies_to: "all flows"
+      requirement: "Assess every actual chemical, fuel, packing component, waste and species. Unmeasured, unavailable, below-detection and physically absent are distinct states. Extra actual ingredients or fuel routes require additional atomic rows and verified identities before dataset completeness; no aggregate adhesive family or VOC-total row."
+      evidence: "cp_recipe; cp_fuel; cp_pack; cp_air"
+    - id: quality_evidence
+      applies_to: "numeric parameters"
+      requirement: "Use primary site/supplier measurements or independently justified exact-route factors with source location, units, control/device/species/fuel applicability and uncertainty. CORRIM 2021/2022 board and Wilson 2005 resin averages are not generic site quantities; no numerical range is prescribed here."
+      evidence: "original records and source applicability"
+    - id: quality_identity
+      applies_to: "all UUIDs and gaps"
+      requirement: "Flow UUID is identity only; verify type, media, formulation, delivery state/route, reference property and unit against actual exchange. Verified Volume/m3 does not establish the actual supplier/background reference quantity A_provider; solid/bulk chip definitions, same-lot packing/moisture and gas T/P/composition/wet-dry/Z must support the linkage. Blank UUID is unresolved, not proof of zero or database absence. No correction flow or unrelated stereoisomer/species is a substitute."
+      evidence: "identity and support evidence"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "reference product"
+    rule: "Declare all qualifiers and one same-cohort reference output. Uncoated wood particleboard identity cannot be established by CPC label alone; supplier recipe expansion and finished state must agree."
+    source_ids:
+      - usda-handbook-2021
+  - rule_id: validate_balance
+    applies_to: "all physical exchanges"
+    rule: "Use Q excluding packaging/rejects. Reconcile physical mass/water/carbon, actual wood losses, UF reaction/transfer yield and full internal-link equality; keep environmental allocation separate. Missing measurements or negative PM residuals remain unresolved."
+    source_ids:
+      - corrim-pb-2024
+      - wilson-resins-2010
+  - rule_id: validate_emissions
+    applies_to: "air and heat"
+    rule: "Identify species, outdoor-air subcompartment, origin and units; no nested PM addition, total VOC proxy, guessed NOx split or suppressed biogenic CO2. Owned boiler and dryer boundaries remain separate in raw logs. Steam MJ without verified net supply/return basis is unresolved."
+    source_ids:
+      - epa-pb-2002
+      - epa-boiler-2022
+  - rule_id: validate_release
+    applies_to: "data package"
+    rule: "Before a usable dataset claim, resolve all applicable UUID/unit, supplier/background reference-quantity A_provider and chip/gas conversion, recipe, heat and emissions gaps, justify absent rows, add missing atomic exchanges and provide original records plus allocation sensitivity. Candidate methodology and software checks are not independent scientific approval."
+    source_ids:
+      - corrim-pb-2024
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Input to declared wood-panel product supply models with verified applicability"
+  allowed_use: "Cradle-to-factory-gate LCI after linking exact upstream supply and waste treatment; distinguish expanded resin foreground from board-mill-only activity"
+  excluded_use: "OSB, non-wood/fiber/faced/molded products; other/unknown resin routes; use-phase exposure, service equivalence, end-of-life credits; publication without completed data"
+  required_metadata: "All reference qualifiers; board/resin sites and gates; reference UUID/property/unit; Q; supplier/formulation/wood-source provenance; heat and emission methods; packaging and allocation"
+  required_quality_disclosure: "Temporal/geographical/cohort coverage, measurements and gaps, detection limits, unresolved identities, allocation convention/sensitivity, separate physical carbon and environmental account"
+  update_trigger: "Recipe/wood origin/contamination/grade/density/thickness/moisture/press/heat/control changes; supplier data revisions or flow-identity correction"
+data_sources:
+  - id: "usda-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory, Wood handbook—wood as an engineering material, FPL-GTR-282 (2021), chapters 4 (moisture), 10 (adhesives), 11 pp. 11–11 to 11–12 (particleboard). https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf"
+    used_for: "Particle versus OSB/fiber architecture, dry forming and moisture definition; qualitative scope only, no generic recipe/density adoption"
+  - id: "corrim-pb-2024"
+    type: "literature"
+    reference: "Puettmann, CORRIM, Cradle-to-grave Life Cycle Assessment of North American Particleboard, November 2023; revised April 3, 2024 (after March 22 ASTM verification). Sections 3.2.4–3.2.8 pp.18–19; 6.1 pp.26–27; 6.3/Table 9 pp.27–29. https://corrim.org/wp-content/uploads/2024/07/PB-Cradle-to-grave-LCA-Final.pdf"
+    used_for: "2021/2022 survey, twelve facilities (9 US/3 Canada), source and process anatomy, co-product allocation; no transfer of region-weighted recipe/energy/density, downstream life or disposal scenarios"
+  - id: "epa-pb-2002"
+    type: "official_guidance"
+    reference: "US EPA AP-42 Section 10.6.2 Particleboard Manufacturing, June 2002, pp.10.6.2-1–5, Figure 10.6.2-1, emissions tables with original device/fuel/control footnotes. https://www.epa.gov/sites/default/files/2020-10/documents/c10s06-2.pdf"
+    used_for: "Manufacturing stages, distinct board architecture, dryer/press/finishing species and controls; old average factors are not site defaults"
+  - id: "epa-boiler-2022"
+    type: "official_guidance"
+    reference: "US EPA AP-42 Section 1.6 Wood Residue Combustion In Boilers, March 2022, sections 1.6.1–1.6.3 and Tables 1.6-1/1.6-2 footnotes. https://www.epa.gov/system/files/documents/2022-03/c1s6_final.pdf"
+    used_for: "Separate boiler fuel, firing/controls and particulate/species scope; no factor transfer to resin-bonded fuel or dryer"
+  - id: "wilson-resins-2010"
+    type: "literature"
+    reference: "Wilson, Life-cycle inventory of formaldehyde-based resins used in wood composites in terms of resources, emissions, energy and carbon, Wood and Fiber Science 42 (2010), 125–143, manufacturing process pp.127–128 and UF material inventory. https://corrim.org/wp-content/uploads/2017/12/WFS_SI_LCI_Formaldehyde-based_Resins_in_Wood_Composites-Resources_Emissions_Energy_Carbon.pdf"
+    used_for: "US 2005 resin survey, ingredient/reactor/pH/solids anatomy only; original largely starts from methanol-to-formaldehyde, unlike this purchased aqueous feed; no surveyed recipe amounts adopted"
+  - id: "fao-ubet-volume"
+    type: "official_guidance"
+    reference: "FAO, Unified Bioenergy Terminology (UBET), Section 5.1.3 Mass, Volume and Density. https://www.fao.org/4/j4504e/j4504e08.htm"
+    used_for: "Distinguish solid/bulk volume and moisture-dependent density; definitions only, actual supplier/background A_provider and same-batch measured conversion required; no typical tabulated factor/density adopted"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:ec8c3adca597cee40cad2b30a214b679cfa171f738be7e067c919f846ce7208b"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_7475"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 7475
+          line: 62
+          column: 1
+        end:
+          offset: 10200
+          line: 82
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified purchased wood feed at board mill and batch-assayed aqueous formaldehyde/urea at identified UF reactor; supply chains before these gates are linked backgrounds |\n| starting_condition_role | Collected gate conditions, not burden-free origin |\n| product_classification_scope | CPC 3.0:31431; narrower |\n| recursive_input_rule | Same-category external board is not an allowed raw-wood shortcut; this route excludes resin-bonded recovered panel. Internal trim return is an internal ledger, not a new purchased reference flow |\n| upstream_dataset_requirement | Source-specific wood forestry/chipping and co-product allocation; chemical manufacture; fuel and electricity supply; recovery operations; transport; waste treatment. No simultaneous purchased UF background when synthesis is expanded in foreground |\n| disclosure | Board and resin sites, all gates and ownership, source species, prior material status, included heat/abatement, upstream stages, stock changes, excluded stages, allocation and uncertainty |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_route` | all datasets | Only declared flat UF-bonded uncoated wood panels conform. Audit each ingredient and preparation stage; raw dedicated chips carry forestry and preparation; co-products carry justified source-stage burdens. Supplier resin expansion must retain its actual yield and transfer quantity. | `usda-handbook-2021`; `wilson-resins-2010`; `corrim-pb-2024` |\n| `boundary_heat` | heat and emissions | Include actual dryer fuel/direct combustion, separate owned boiler, press heating, oxidizer fuel, wet controls and auxiliary electricity. One meter interval or emission stream is counted once. AP42 boiler evidence does not turn boiler emissions into dryer factors. Imported heat is outside the present enumerated fuel-owned route and needs separately verified supply and net heat basis. | `epa-pb-2002`; `epa-boiler-2022` |\n| `boundary_recovery` | recovered wood | Require prior use/treatment, contamination testing, legal waste/product status, collection/sorting/cleaning/transport and loss records. Recycled is not evidence for zero burden; declare the recycling convention and sensitivity, and retain actual recovery burdens. | `corrim-pb-2024` |\n| `boundary_downstream` | all datasets | Stop at accepted packaged board factory gate, with packaging exchanges separate from panel mass. Construction, use-phase formaldehyde exposure, service life, disposal and Module D credits require separate scenarios; no 75-year assumption or report end-of-life average is imported. | `corrim-pb-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 264
+              line: 9
+              column: 1
+            end:
+              offset: 334
+              line: 9
+              column: 71
+          text: "# Uncoated UF-bonded wood particleboard with audited resin preparation"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 7475
+              line: 62
+              column: 1
+            end:
+              offset: 7496
+              line: 62
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_59023"
+      family: "allocation"
+      span:
+        start:
+          offset: 59023
+          line: 885
+          column: 1
+        end:
+          offset: 60460
+          line: 893
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_separation` | wood inputs and outputs | First subdivide or use measured causal drivers to separate dedicated wood, resin, heat and abatement burdens. Purchased sawmill co-products require documented supplier allocation; dry-mass allocation of joint source burdens is a declared baseline consistent with the cited study, not proof of zero price or zero burden. Retain a price/alternative-allocation sensitivity when economically different outputs make mass attribution uncertain. | `corrim-pb-2024` |\n| `allocation_physical` | all physical exchanges | Preserve unallocated mass, water, carbon and internal heat/wood/resin transfers. Allocation shares apply to the separate environmental-burden account, not to physical co-product output, stock or internal-link quantity. Returned trim/fines are not independent sold products. Packaging and dedicated treatment remain attributable to the appropriate product. | `corrim-pb-2024` |\n| `allocation_heat` | shared heat equipment | Use measured net useful heat delivered to each receiver to allocate shared boiler/resin heat burden; no fuel-only guessed efficiency or steam mass-only share. Disclose exports and losses. Exclude CHP from this route unless separately reviewed allocation and electricity exchanges are added. | `epa-boiler-2022`; `wilson-resins-2010` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 264
+              line: 9
+              column: 1
+            end:
+              offset: 334
+              line: 9
+              column: 71
+          text: "# Uncoated UF-bonded wood particleboard with audited resin preparation"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 59023
+              line: 885
+              column: 1
+            end:
+              offset: 59063
+              line: 885
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_81146"
+      family: "validation"
+      span:
+        start:
+          offset: 81146
+          line: 938
+          column: 1
+        end:
+          offset: 82632
+          line: 947
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_scope` | reference product | Declare all qualifiers and one same-cohort reference output. Uncoated wood particleboard identity cannot be established by CPC label alone; supplier recipe expansion and finished state must agree. | `usda-handbook-2021` |\n| `validate_balance` | all physical exchanges | Use Q excluding packaging/rejects. Reconcile physical mass/water/carbon, actual wood losses, UF reaction/transfer yield and full internal-link equality; keep environmental allocation separate. Missing measurements or negative PM residuals remain unresolved. | `corrim-pb-2024`; `wilson-resins-2010` |\n| `validate_emissions` | air and heat | Identify species, outdoor-air subcompartment, origin and units; no nested PM addition, total VOC proxy, guessed NOx split or suppressed biogenic CO2. Owned boiler and dryer boundaries remain separate in raw logs. Steam MJ without verified net supply/return basis is unresolved. | `epa-pb-2002`; `epa-boiler-2022` |\n| `validate_release` | data package | Before a usable dataset claim, resolve all applicable UUID/unit, supplier/background reference-quantity A_provider and chip/gas conversion, recipe, heat and emissions gaps, justify absent rows, add missing atomic exchanges and provide original records plus allocation sensitivity. Candidate methodology and software checks are not independent scientific approval. | `corrim-pb-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 264
+              line: 9
+              column: 1
+            end:
+              offset: 334
+              line: 9
+              column: 71
+          text: "# Uncoated UF-bonded wood particleboard with audited resin preparation"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 81146
+              line: 938
+              column: 1
+            end:
+              offset: 81168
+              line: 938
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_route"
+      identity_kind: "explicit"
+      unit_id: "normative_7475"
+      source_span:
+        start:
+          offset: 8681
+          line: 77
+          column: 1
+        end:
+          offset: 9064
+          line: 77
+          column: 384
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_heat"
+      identity_kind: "explicit"
+      unit_id: "normative_7475"
+      source_span:
+        start:
+          offset: 9065
+          line: 78
+          column: 1
+        end:
+          offset: 9529
+          line: 78
+          column: 465
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_recovery"
+      identity_kind: "explicit"
+      unit_id: "normative_7475"
+      source_span:
+        start:
+          offset: 9530
+          line: 79
+          column: 1
+        end:
+          offset: 9855
+          line: 79
+          column: 326
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_downstream"
+      identity_kind: "explicit"
+      unit_id: "normative_7475"
+      source_span:
+        start:
+          offset: 9856
+          line: 80
+          column: 1
+        end:
+          offset: 10198
+          line: 80
+          column: 343
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_separation"
+      identity_kind: "explicit"
+      unit_id: "normative_59023"
+      source_span:
+        start:
+          offset: 59136
+          line: 889
+          column: 1
+        end:
+          offset: 59649
+          line: 889
+          column: 514
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_59023"
+      source_span:
+        start:
+          offset: 59650
+          line: 890
+          column: 1
+        end:
+          offset: 60077
+          line: 890
+          column: 428
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_heat"
+      identity_kind: "explicit"
+      unit_id: "normative_59023"
+      source_span:
+        start:
+          offset: 60078
+          line: 891
+          column: 1
+        end:
+          offset: 60458
+          line: 891
+          column: 381
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_81146"
+      source_span:
+        start:
+          offset: 81241
+          line: 942
+          column: 1
+        end:
+          offset: 81503
+          line: 942
+          column: 263
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_81146"
+      source_span:
+        start:
+          offset: 81504
+          line: 943
+          column: 1
+        end:
+          offset: 81852
+          line: 943
+          column: 349
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_81146"
+      source_span:
+        start:
+          offset: 81853
+          line: 944
+          column: 1
+        end:
+          offset: 82207
+          line: 944
+          column: 355
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_release"
+      identity_kind: "explicit"
+      unit_id: "normative_81146"
+      source_span:
+        start:
+          offset: 82208
+          line: 945
+          column: 1
+        end:
+          offset: 82630
+          line: 945
+          column: 423
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_7475"
+      source_span:
+        start:
+          offset: 7475
+          line: 62
+          column: 1
+        end:
+          offset: 7496
+          line: 62
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_7475"
+      source_span:
+        start:
+          offset: 7524
+          line: 66
+          column: 1
+        end:
+          offset: 8608
+          line: 73
+          column: 205
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_59023"
+      source_span:
+        start:
+          offset: 59023
+          line: 885
+          column: 1
+        end:
+          offset: 59063
+          line: 885
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_81146"
+      source_span:
+        start:
+          offset: 81146
+          line: 938
+          column: 1
+        end:
+          offset: 81168
+          line: 938
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:ec8c3adca597cee40cad2b30a214b679cfa171f738be7e067c919f846ce7208b"
+  generated_content_sha256: "sha256:21d2156b8d97f2c4eebc58cfc26597aaec1e08320c623726dca352c019d8854e"

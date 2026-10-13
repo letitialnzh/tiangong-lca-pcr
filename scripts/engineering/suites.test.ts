@@ -205,14 +205,17 @@ test("POSIX SIGTERM is forwarded to the real test process and owned temporary fi
   // its handler. It cannot exercise this cooperative POSIX cleanup contract.
   skip: process.platform === "win32" ? "Windows SIGTERM is non-cooperative; ordinary child failure/cleanup is tested separately." : false,
 }, async t => {
-  const root = fixture(t);
+  // Own this fixture until its entire subprocess group and pipes have closed.
+  const root = mkdtempSync(path.join(realpathSync(tmpdir()), "pcr signal fixture with spaces "));
   const ready = path.join(root, "ready.json");
   writeFixture(root, "scripts/engineering/waiting.test.ts", `
-    import { writeFileSync } from "node:fs";
+    import { writeFileSync, renameSync } from "node:fs";
     import { tmpdir } from "node:os";
     import test from "node:test";
     test("waiting for signal", async () => {
-      writeFileSync(${JSON.stringify(ready)}, JSON.stringify({ temporaryRoot: tmpdir() }));
+      const stagedReady = ${JSON.stringify(ready + ".tmp")};
+      writeFileSync(stagedReady, JSON.stringify({ temporaryRoot: tmpdir() }));
+      renameSync(stagedReady, ${JSON.stringify(ready)});
       await new Promise(() => setInterval(() => {}, 1000));
     });
   `);
@@ -221,23 +224,43 @@ test("POSIX SIGTERM is forwarded to the real test process and owned temporary fi
     const result = await runSuite(process.argv[1], "engineering");
     console.log("SUITE_RESULT " + JSON.stringify(result));
   `;
-  const child = spawn(process.execPath, ["--input-type=module", "-e", source, root], { stdio: ["ignore", "pipe", "pipe"] });
-  t.after(() => { if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL"); });
-  let stdout = "";
+  const child = spawn(process.execPath, ["--input-type=module", "-e", source, root], {
+    stdio: ["ignore", "pipe", "pipe"], detached: true,
+  });
+  let stdout = "", stderr = "";
   child.stdout.on("data", (data: Buffer) => { stdout += data.toString(); });
+  child.stderr.on("data", (data: Buffer) => { stderr += data.toString(); });
+  let closed = false;
   const completion = new Promise<SuiteRunResult>((resolve, reject) => {
     child.once("error", reject);
-    child.once("exit", (exitCode, signal) => resolve({ exitCode, signal }));
+    child.once("close", (exitCode, signal) => { closed = true; resolve({ exitCode, signal }); });
   });
+  t.after(async () => {
+    try {
+      // A failed readiness assertion must not orphan node --test or its worker,
+      // whose inherited pipes otherwise keep this test file alive indefinitely.
+      if (!closed && child.pid !== undefined) {
+        try { process.kill(-child.pid, "SIGKILL"); }
+        catch (error) {
+          if (!(error instanceof Error) || !("code" in error) || error.code !== "ESRCH") throw error;
+        }
+      }
+      await completion;
+    } finally {
+      child.stdout.destroy(); child.stderr.destroy();
+      rmSync(root, { recursive: true, force: true });
+    }
+  }, { timeout: 5_000 });
   const deadline = Date.now() + 10_000;
   while (!existsSync(ready)) {
-    assert.equal(child.exitCode, null, stdout);
-    assert.ok(Date.now() < deadline, "test subprocess did not become ready");
+    assert.equal(child.exitCode, null, stdout + stderr);
+    assert.equal(child.signalCode, null, stdout + stderr);
+    assert.ok(Date.now() < deadline, "test subprocess did not become ready\n" + stdout + stderr);
     await new Promise(resolve => setTimeout(resolve, 25));
   }
   const { temporaryRoot } = JSON.parse(readFileSync(ready, "utf8")) as { temporaryRoot: string };
   assert.equal(child.kill("SIGTERM"), true);
-  assert.deepEqual(await completion, { exitCode: 0, signal: null });
+  assert.deepEqual(await completion, { exitCode: 0, signal: null }, stdout + stderr);
   assert.deepEqual(readRunResult(stdout), { exitCode: null, signal: "SIGTERM" });
   assert.equal(existsSync(temporaryRoot), false);
 });

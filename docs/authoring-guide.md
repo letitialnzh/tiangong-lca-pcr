@@ -24,9 +24,9 @@ checkPaths:
   - .github/ISSUE_TEMPLATE/**
   - library/pcrs/**
   - library/modules/**
-lastReviewedAt: 2026-10-09
-lastReviewedCommit: e9b91252307d0345defcb709e819799d1aa6ba42
-lastReviewedNote: "Reviewed PCR #107/#108 latest browser failure: explicit manual language switches load the verified exported HTML document directly, preserving counterpart, query/fragment, preference and storage-denial behavior; neutral detection remains unchanged. Guide browser acceptance additionally requires exact main-frame HTTP 200 HTML navigation. Unmarked RSC failures remain blocking; no classifier exemptions, dependency or methodology changes. Fresh full CI and updated independent review remain required."
+lastReviewedAt: 2026-10-13
+lastReviewedCommit: 3372bc9f3a0e3dcb41595a05f31c6d4114be08ef
+lastReviewedNote: "Reviewed PCR #114 combined 0.4.7 qualification repair: the POSIX signal-test fixture publishes readiness atomically and reaps its owned subprocess group before deleting temporary files. Controlled failure now exits with the original assertion instead of hanging; complete instrumented engineering tests and strict types pass locally. Production runner, coverage semantics, CI budgets, runtime pins and candidate methodology are unchanged; fresh complete CI and publication remain required."
 ---
 
 # Authoring Guide

@@ -21,9 +21,9 @@ checkPaths:
   - .docpact/config.yaml
   - builder/**
   - classifications/**
-lastReviewedAt: 2026-10-02
-lastReviewedCommit: 562ffbed520a7d4d56d20336b8a93fc0fe9e2273
-lastReviewedNote: "Reviewed PR #58 under PCR #60: 44 bilingual candidate/authored PCRs, 43 new accepted CPC mappings and one explicitly superseded electricity decision. Exact projection, source-reference, language, catalog and alias checks preserve unrelated entries and candidate review debt. The steam/hot-water unresolved identity ledger is completed; classification acceptance does not grant methodology publication. Ownership, routing and lifecycle contracts remain unchanged."
+lastReviewedAt: 2026-10-13
+lastReviewedCommit: 1ff58b6468c47dc2fcf416a2ea9af0c21defd95b
+lastReviewedNote: "Reviewed PCR #110/#111 combined candidate at 1ff58b64: original canonical files are retained, the regenerated catalog contains 1085 unique material records and 934 accepted CPC edges preserve classification boundaries. Unified 0.4.7 version mirrors align; runtime, reader compatibility, candidate methodology and translation states remain unchanged. Complete fresh CI, workspace integration and verified coordinated publication remain required."
 ---
 
 # Classification Policy

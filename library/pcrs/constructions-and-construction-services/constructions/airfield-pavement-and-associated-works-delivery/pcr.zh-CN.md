@@ -54,7 +54,7 @@ content_maturity: authored_methodology
 | reference_area | reference product | 面积 `93a60a56-a3c8-19da-a746-0800200c9a66` | m2 | 使用 cp_handover 测量实际验收平面面积；所有清单按每声明的参考流采集。用相应工程总量除以同范围验收面积，保留原始总量、归属依据与除数；不重复叠加各层面积。 |
 | energy_units | cn_lv; cn_mv | 净热值 `93a60a56-a3c8-11da-a746-0800200c9a66` | MJ | 保留公开净热值属性及能量单位组。现场计量 kWh 按单位组 3.6 MJ/kWh 换算；不得把该属性改成质量。 |
 | material_state | fresh_concrete; topsoil; supplied_water; washout_liquid | 体积 `93a60a56-a3c8-22da-a746-0800200c9a66` | m3 | 记录实际物理状态与测量体积。体积转质量须有相同材料状态与批次实测密度；挖方、松散与压实土方不可无依据等量。 |
-| asset_area | plywood_form; pp_geotextile; grass_sod | 面积 `93a60a56-a3c8-19da-a746-0800200c9a66` | m2 | 用实际安装／部署面积并保留厚度、组成与单位面积质量；公开质量属性不能仅因名称相似改成面积。 |
+| asset_area | 关联plywood_form、pp_geotextile及grass_sod的辅助安装或部署几何 | 面积 `93a60a56-a3c8-19da-a746-0800200c9a66` | m2 | 安装或部署几何、厚度、组成及单位面积质量为辅助实测记录，不替代原生清单分子。外购物织物和草皮按实际可归属消耗面积计入，包括损耗，并核对收货、退回及库存。可复用模板制造按cp_formwork_assets采用模板存量面积乘守恒制造份额，不把重复部署面积作为新制造。不得仅因名称相似把公开质量属性改为面积。 |
 | transport_units | road_freight | 质量*距离 `118f2a40-50ec-457c-aa60-9bc6b6af9931` | t*km | 保留公开质量*距离属性，其组参考 kg*km，1 t*km = 1000 kg*km；按实际货量和路程计算，不假定距离或载荷。 |
 
 | 字段 | 值 |
@@ -81,6 +81,7 @@ content_maturity: authored_methodology
 | rule_id | applies_to | 规则 | source_ids |
 | --- | --- | --- | --- |
 | boundary_delivery | dataset | 逐工序记录实际土方、各层、排水、标线／刻槽、灯光与检验交付。列出的材料不是通用完整配方；实际其他材料、包装、润滑油、植被投入、辅助及临时工程逐一增加原子行，并说明未发生工序。 | faa-airport-construction-2018 |
+| boundary_consumed_inputs | 全部选定或真实尝试施工路线的外购消耗或永久供货产品投入；排除可复用资产制造 | 投入量包含全部真实可归属消耗，含安装前损坏、拒收供货、切割或施用损耗及交付前替换。这是对局部“安装、施用或使用”措辞的显式例外：该措辞识别目标路线和配置，不将分子限为成功安装量。按原生单位核对投入=可归属总收货+期初库存−经核实退回或转移−期末可复用库存；安装验收量及真实废物分别保留。精确保留供货身份、状态和总成边界，不重复内含组分或可复用资产制造。  本库存消耗公式不适用于cp_assets/cp_formwork_assets管理的可复用设备或胶合板模板制造份额。这些行仍按allocation_assets/asset_share采用有依据累计使用制造归属，即使实体退回、转移或留在可复用期末库存亦如此；实物库存流转另记，不能抵消本次使用份额。 | |
 | boundary_stages | dataset | 材料制造和运输分别链接，现场铺筑不代表材料生产。运营电力、航空器、交付后维护／更换、最终拆除和去向不纳入；若另建这些阶段，采用真实情景并显式重新声明边界。 | fhwa-pavement-lca-2016 |
 | boundary_environment | utilities; waste | 计入实际施工公用工程及有依据直接释放，区别燃料供应与燃烧、外购水与资源取用、抽排转移与排放、废液与沉淀固体。噪声保留实际设备、持续时间、位置和测量，不虚构默认声能基础流；任何有据排放都按确切物质和介质另列。 | epa-construction-dust-1995; epa-concrete-washout-2012 |
 
@@ -192,7 +193,7 @@ content_maturity: authored_methodology
 
 ###### 聚丙烯土工隔离布（`pp_geotextile`）
 
-仅计匹配实际施工用途及供货材料状态的已安装聚丙烯隔离织物；保留牌号、单位面积质量和面积。
+实际为声明路线消耗的外供聚丙烯隔离织物，包括安装前损坏、拒收及切割物料；保留准确施工功能、供货状态、等级及单位面积质量。供入或消耗面积与安装覆盖范围分别记录。
 
 - 选定流：聚丙烯土工隔离布
 - 流属性/单位：面积 `93a60a56-a3c8-19da-a746-0800200c9a66` / m2
@@ -292,7 +293,7 @@ content_maturity: authored_methodology
 
 ###### 钢制铺面接缝传力杆（`steel_dowel`）
 
-仅计安装传力杆；记录钢材等级、涂层、几何、实际根数与供应质量。实际采用的钢筋、拉杆另列清单。
+实际为声明路线消耗的外供传力杆，包括安装前损坏、拒收后的替换；保留钢级、涂层、几何、消耗件数及供应商质量，安装验收件数另存。真实使用的钢筋和拉杆仍须按实际另列行。
 
 - 选定流：钢制铺面接缝传力杆
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -337,17 +338,17 @@ content_maturity: authored_methodology
 
 ###### 混凝土模板用胶合板（`plywood_form`）
 
-仅计实际可重复使用胶合板模板。记录板厚、组成、部署面积与复用台账；通过 cp_assets 跨使用累计一次制造负担，不按每次浇筑重置。
+仅计实际可重复使用胶合板模板。记录板厚、组成、部署面积与复用台账；通过 cp_formwork_assets 跨使用累计一次制造负担，不按每次浇筑重置。
 
 - 选定流：混凝土模板用胶合板
 - 流属性/单位：面积 `93a60a56-a3c8-19da-a746-0800200c9a66` / m2
-- 数量规则：使用 cp_rigid 采集该行实际交换数量，按同范围实测验收面积归一化；保留 m2 与原始工程总量。
+- 数量规则：以cp_rigid部署及存量记录和有据累计制造份额为基础，由cp_formwork_assets采集可归属模板制造面积，再按实测验收工程面积归一化，保留m2与原始记录。部署面积本身不等于新模板制造量。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每声明的参考流
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
-- 采集协议：`cp_rigid`
+- 采集协议：`cp_formwork_assets`
 - 来源：`faa-airport-construction-2018`
 
 ##### 废物流
@@ -422,7 +423,7 @@ content_maturity: authored_methodology
 
 ###### 预制水泥混凝土雨水排水管（`concrete_pipe`）
 
-仅计实际安装混凝土排水管；保留直径、长度、等级、配筋与供应方实测质量。实际垫层、端墙和出水口工程按不同物料与工序单列。
+实际为声明路线消耗的混凝土排水管，含安装前损坏、拒收及替换；保留直径、长度、等级、配筋及供应商实测质量，安装验收量另存。实际垫层、端墙及排出口工程分别作为产品与过程记录。
 
 - 选定流：预制水泥混凝土雨水排水管
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -487,7 +488,7 @@ content_maturity: authored_methodology
 
 ###### 铺面标线用玻璃反光珠（`glass_beads`）
 
-仅计实际施用玻璃珠，与漆分开称量；保留级配和供应方处理状态。
+声明标线路线实际消耗的玻璃珠，包括可归属施用损耗及损坏、拒收物料；与涂料分开称量，保留粒级及供应方处理，消耗量与成功施用量分开。
 
 - 选定流：铺面标线用玻璃反光珠
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -502,7 +503,7 @@ content_maturity: authored_methodology
 
 ###### 完整嵌入式机场 LED 灯具（`airfield_light`）
 
-仅计该实际安装完整灯具，记录型号、用途与数量。边灯、隔离变压器、调光器、导管及灯座若安装须另列物理产品，不写整套灯光系统集合行。
+声明路线实际消耗的本型号及功能完整灯具，包括安装或验收前失效、拒收后的替换；消耗件数与安装验收件数分别记录。边灯、隔离变压器、调光器、套管及基础等真实组件须按实际供货边界各列产品行，不用整个灯光系统集合行。
 
 - 选定流：完整嵌入式机场 LED 灯具
 - 流属性/单位：物品数量 `01846770-4cfe-4a25-8ad9-919d8d378345` / item
@@ -517,7 +518,7 @@ content_maturity: authored_methodology
 
 ###### 绝缘铜芯机场灯光电缆（`copper_cable`）
 
-仅计安装铜芯电缆，记录截面、绝缘、额定电压、长度与实测质量。供应方每米质量须有该电缆的核实依据。
+声明路线实际消耗的铜电缆，含验收前切割、损坏及拒收、替换的长度；保留导体截面、绝缘、电压等级、消耗长度及实测质量，安装长度另存。供方每米质量须有真实电缆特定核验证据。
 
 - 选定流：绝缘铜芯机场灯光电缆
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -563,7 +564,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_assets`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 完整自行式压路机（`roller_asset`）
 
@@ -578,7 +578,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_assets`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 完整沥青摊铺机（`paver_asset`）
 
@@ -593,7 +592,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_assets`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 完整水泥混凝土泵（`pump_asset`）
 
@@ -608,7 +606,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_assets`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 柴油（`site_diesel`）
 
@@ -623,7 +620,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 交流电（`cn_lv`）
 
@@ -638,7 +634,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 交流电（`cn_mv`）
 
@@ -653,7 +648,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 送达施工现场的处理后自来水（`supplied_water`）
 
@@ -668,7 +662,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ##### 废物流
 
@@ -687,7 +680,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 地下水（`ground_water`）
 
@@ -702,7 +694,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 #### 输出
 
@@ -725,7 +716,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 一氧化碳（化石源）（`fossil_co`）
 
@@ -740,7 +730,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 一氧化氮（`nitric_oxide`）
 
@@ -755,7 +744,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 二氧化氮（`nitrogen_dioxide`）
 
@@ -770,7 +758,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 颗粒物，粒径未特指（`dust_unspecified`）
 
@@ -785,7 +772,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 颗粒物 (PM2.5 - PM10)（`coarse_pm`）
 
@@ -800,7 +786,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 颗粒物 (PM10)（`pm10_total`）
 
@@ -815,7 +800,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_utilities`
-- 来源：`epa-concrete-washout-2012`
 
 ### 过程：进场及施工废物运输（`transport`）
 
@@ -883,11 +867,10 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_waste`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 拆除沥青铺面铣刨废料（`asphalt_waste`）
 
-仅计本施工周期清场、铣刨、拒收或修正实际废弃物料，记录来源与回收路线。交付后拆除不计入。
+仅计本施工周期清场或修正时实际拆除、铣刨的已铺筑沥青铺面，记录已铺筑状态、来源及回收路线。未铺筑的拒收或剩余外供混合料不是铺面铣刨废料：完整清单必须按cp_waste另行记录其真实未铺筑状态、实测质量和接收方，保留可归属上游制造及运输负担。经核实退回及内部复用分别核对，不改名为铣刨废料。交付后拆除不计入。
 
 - 选定流：拆除沥青铺面铣刨废料
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -898,7 +881,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_waste`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 硬化水泥混凝土施工废料（`concrete_waste`）
 
@@ -913,7 +895,6 @@ content_maturity: authored_methodology
 - 基准类型：`reference_flow`
 - 证据类型：`collected_record`
 - 采集协议：`cp_waste`
-- 来源：`epa-concrete-washout-2012`
 
 ###### 水泥混凝土设备清洗浆液（`washout_liquid`）
 
@@ -972,7 +953,7 @@ content_maturity: authored_methodology
 | rule_id | applies_to | 规则 | source_ids |
 | --- | --- | --- | --- |
 | allocation_project | all inventory rows | 先用分表、称重、机时、实际施工区和批次记录划分机场各工程，直接归属优先于分配。共享活动只用有测量支持的因果物理驱动量分配；保留所有受益工程及分母，总份额等于一。面积仅用于同用途／同结构工程内的参考归一化，不能默认分摊异质工程。 |  |
-| allocation_assets | plywood_form; utilities | 使用 cp_assets 记录每件设备和复用构件制造负担、各项目／期间实际活动和有依据累计服务量；同一资产跨项目、期间和重复使用的累计制造份额不得大于一。未知寿命／累计活动须保留审查与完整性缺口，不按每项目重置。 |  |
+| allocation_assets | plywood_form; utilities | 使用 cp_assets / cp_formwork_assets 记录每件设备和复用构件制造负担、各项目／期间实际活动和有依据累计服务量；同一资产跨项目、期间和重复使用的累计制造份额不得大于一。未知寿命／累计活动须保留审查与完整性缺口，不按每项目重置。 |  |
 | allocation_recovery | waste | 施工废物、再利用旧铺面和外送铣刨料不自动产生抵扣。记录实际处置／回收门槛、质量状态与接收方；任何替代收益或回收分配须另有已说明方法、来源及敏感性，不能同时获得避免制造和零负担双重收益。 | fhwa-pavement-lca-2016 |
 
 ## 8. 前景数据采集、计算与质量规则
@@ -990,9 +971,10 @@ content_maturity: authored_methodology
 | cp_finish | finish | 每行具体交换 | foreground_records | 标线颜色／配方；实际漆／玻璃珠质量；槽长度／深度；灯具型号／数量；电缆质量／长度；调试 | 保留校准领退记录、竣工标线／刻槽、设备计量、安装表与试验 | 各行单位 kg、m3、m2、MJ、item、t*km | 逐交付、批次、机时、计量周期与验收事件 | 实际开工至交付全期间，明确未计量间隔 | 声明工程与全部外包归属范围 | 每声明的参考流 | 校准、原始票据、竣工测量、批次检测、返工、归属与不确定性 |
 | cp_utilities | utilities | 每行具体交换 | foreground_records | 燃料库存／收货；设备／任务机时；电表／地域／电压；供应／取用水、抽排与回流；排放物种、介质与控制 | 按工程包分表计量；用库存与承包方记录核对耗油；保留批次密度／碳／净热值、经验证源特定排放方法及不确定性 | 各行单位 kg、m3、m2、MJ、item、t*km | 逐交付、批次、机时、计量周期与验收事件 | 实际开工至交付全期间，明确未计量间隔 | 声明工程与全部外包归属范围 | 每声明的参考流 | 校准、原始票据、竣工测量、批次检测、返工、归属与不确定性 |
 | cp_transport | transport | 每行具体交换 | foreground_records | 各段货物 kg、实际 km；车辆／载荷；空返；服务门槛 | 用运单、称重、路线与车辆日志；将实际 kg 换算吨以计 t*km；区分项目运送与背景已含部分 | 各行单位 kg、m3、m2、MJ、item、t*km | 逐交付、批次、机时、计量周期与验收事件 | 实际开工至交付全期间，明确未计量间隔 | 声明工程与全部外包归属范围 | 每声明的参考流 | 校准、原始票据、竣工测量、批次检测、返工、归属与不确定性 |
-| cp_waste | waste | 每行具体交换 | foreground_records | 流身份／状态；质量／体积；水／固体；处理、回收或处置去向；转移日期 | 用分类容器、校准称重／计量、分析与接收方票据；记录围控、沉淀与实际水路 | 各行单位 kg、m3、m2、MJ、item、t*km | 逐交付、批次、机时、计量周期与验收事件 | 实际开工至交付全期间，明确未计量间隔 | 声明工程与全部外包归属范围 | 每声明的参考流 | 校准、原始票据、竣工测量、批次检测、返工、归属与不确定性 |
+| cp_waste | waste | 每行具体交换 | foreground_records | 流身份／状态；质量／体积；水／固体；处理、回收或处置去向；转移日期；沥青已铺筑或未铺筑状态；分别记录未铺筑拒收料与铺面铣刨料；经核实退回及复用 | 用分类容器、校准称重／计量、分析与接收方票据；记录围控、沉淀与实际水路 | 各行单位 kg、m3、m2、MJ、item、t*km | 逐交付、批次、机时、计量周期与验收事件 | 实际开工至交付全期间，明确未计量间隔 | 声明工程与全部外包归属范围 | 每声明的参考流 | 校准、原始票据、竣工测量、批次检测、返工、归属与不确定性 |
 | cp_handover | handover | 每行具体交换 | foreground_records | 项目／工程包边界；验收平面面积 m2；跑道／滑行道／机坪长度宽度；各层；能力／荷载使用要求；相关工程；试验与签署日期 | 测量竣工已验收水平表面多边形，交叉处不重叠；将批次验收、几何、实际功能、表面状态及相关构筑物追溯到签署交付 | 各行单位 kg、m3、m2、MJ、item、t*km | 逐交付、批次、机时、计量周期与验收事件 | 实际开工至交付全期间，明确未计量间隔 | 声明工程与全部外包归属范围 | 每声明的参考流 | 校准、原始票据、竣工测量、批次检测、返工、归属与不确定性 |
-| cp_assets | utilities; rigid | 设备及复用构件制造份额 | asset_ledger | 资产标识；原始制造负担；各项目活动；已用份额；累计服务量依据；停用／转移 | 读取制造数据、租赁与设备／模板部署台账，跨项目核对累计份额；未知保持缺口 | 无量纲份额及源数据单位 | 每次部署及周期结束 | 所有已发生使用期间及有依据服务量 | 同一资产所有工程 | 每声明的参考流 | 可追溯资产记录；独立份额核对 |
+| cp_assets | utilities | 设备制造份额 | asset_ledger | 资产标识；原始制造负担；各项目活动；已用份额；累计服务量依据；停用／转移 | 读取制造数据、租赁与设备／模板部署台账，跨项目核对累计份额；未知保持缺口；保留真实工序ID utilities，并与cp_formwork_assets共享同一资产台账，防止两协议重复分配份额 | 无量纲份额及源数据单位 | 每次部署及周期结束 | 所有已发生使用期间及有依据服务量 | 同一资产所有工程 | 每声明的参考流 | 可追溯资产记录；独立份额核对 |
+| cp_formwork_assets | rigid | 可复用胶合板模板制造份额 | asset_ledger | 资产标识；原始制造负担；各项目活动；已用份额；累计服务量依据；停用／转移；模板存量面积；各浇筑部署面积；模板厚度和组成；关联cp_rigid | 结合cp_rigid读取模板制造、部署及存量台账；区分真实模板存量面积与重复部署面积，将有据累计使用份额用于存量制造面积，并与cp_assets核对同一资产台账。保留真实工序ID rigid；未知寿命或存量保持缺口，不设默认份额。 | 无量纲份额及源数据单位 | 每次部署及周期结束 | 所有已发生使用期间及有依据服务量 | 同一资产所有工程 | 每声明的参考流 | 可追溯资产记录；独立份额核对 |
 
 ### 计算规则
 
@@ -1001,7 +983,7 @@ content_maturity: authored_methodology
 | normalize_area | all inventory rows | 将同用途／同结构工程中归属的每种交换总量除以 cp_handover 记录的实际验收平面面积 m2，形成每声明的参考流数量；产出固定为 1 m2。保留原始总量及实测面积，不用层面积或造价代替。 | cp_handover; project exchange records | 每声明的参考流交换量 |  |
 | preserve_units | all inventory rows | 按明确单位组换算同量纲单位；质量与体积换算仅用同批次实际密度，电力 kWh 转 MJ 乘 3.6。保留原计量与不确定性。 | cp_utilities; cp_transport; supplier records | 行单位数量 |  |
 | direct_emissions | utilities | 由实际测量或适用于具体设备／燃料／控制的经验证方法计算各物种释放量；保留方法原始单位与归属。化石碳平衡使用实际燃料碳与燃烧证据；不引入默认因子或总 NOx 默认拆分，扬尘总量与分级不能叠加。 | cp_utilities; site measurements; applicable method evidence | 各具体物种 kg | epa-construction-dust-1995 |
-| asset_share | plywood_form; utilities | 把有依据累计活动中的本工程实际份额用于制造负担，再按相同工程面积归一化。使用累计台账证明所有已分配份额不大于一；未知分母保持审查，不产生数值。 | cp_assets; cp_handover | 每声明的参考流归属制造负担 |  |
+| asset_share | plywood_form; utilities | 把有依据累计活动中的本工程实际份额用于制造负担，再按相同工程面积归一化。使用累计台账证明所有已分配份额不大于一；未知分母保持审查，不产生数值。 | cp_assets / cp_formwork_assets; cp_handover | 每声明的参考流归属制造负担 |  |
 
 ### 数据质量要求
 
@@ -1010,7 +992,7 @@ content_maturity: authored_methodology
 | quality_scope | dataset | 逐用途、层结构及验收范围保留实测面积和完整配置，不把不同荷载／工况的每平方米视为等价。 | cp_handover; faa-airport-construction-2018 |
 | quality_records | all inventory rows | 保留实际施工全期间记录、计量校准、拒收返工与外包，核对材料净收货、安装及废物。缺失记录注明并阻止完整数据宣称，不以默认损耗补齐。 | cp_site; cp_base; cp_flexible; cp_rigid; cp_waste |
 | quality_environment | utilities; waste | 水路、颗粒分级、排放介质和化石来源须有证据；AP-42 旧总体因子不作为机场现场默认量，不从城市监测浓度直接推出项目排放质量。 | cp_utilities; epa-construction-dust-1995; epa-concrete-washout-2012 |
-| quality_gaps | dataset | 披露未匹配 UUID、未覆盖上游、未计量间隔、设备制造份额缺口、方法适用性与科学审查状态。 | cp_assets; supplier records |
+| quality_gaps | dataset | 披露未匹配 UUID、未覆盖上游、未计量间隔、设备制造份额缺口、方法适用性与科学审查状态。 | cp_assets / cp_formwork_assets; supplier records |
 
 ## 9. 校验规则
 

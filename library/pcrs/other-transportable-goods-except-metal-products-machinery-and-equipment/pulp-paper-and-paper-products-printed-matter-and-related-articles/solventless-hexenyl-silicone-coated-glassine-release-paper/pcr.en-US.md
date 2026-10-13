@@ -1,0 +1,530 @@
+---
+pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.pulp-paper-and-paper-products-printed-matter-and-related-articles.solventless-hexenyl-silicone-coated-glassine-release-paper"
+language: en-US
+sync_with: pcr.zh-CN.md
+status: candidate
+content_maturity: authored_methodology
+translation_status: canonical
+---
+
+# Solventless addition-cured hexenyl-silicone release paper on purchased glassine
+
+## 1. Scope and Applicability
+
+This PCR covers unprinted single-sided glassine release paper supplied in rolls, made by off-line precision roll coating of purchased unsiliconized glassine with a neat pre-catalyzed hexenyl-functional silicone base and a compatible silicon-hydride polysiloxane crosslinker, followed by thermal addition cure, slitting, winding and dispatch. The foreground utility configuration is all-electric, with no on-site combustion, purchased steam, thermal oxidizer or on-site wastewater treatment. This is an explicit modelling applicability condition, not a claim about all commercial plants.
+
+Solvent-diluted, emulsion, condensation-cured, UV-cured and vinyl-only systems are excluded, as are extrusion-laminated papers, inorganic pigment coating, double-sided release constructions, polymer-film substrates, acid-parchment manufacture, uncoated greaseproof/glassine manufacture, printed labels, adhesive/face-stock laminates, die-cut labels and finished packages. Additional separately dosed catalyst, release modifier or anti-mist additive requires a reviewed extension with an atomic row for each actual supplied product. Dow supports the hexenyl chemistry and glassine compatibility; WACKER independently supports the solventless roll-coating and mist-control context, without extending its vinyl-system recipe to hexenyl formulations.
+
+## 2. Product Category Identity
+
+| Field | Value |
+| --- | --- |
+| canonical_pcr_id | pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.pulp-paper-and-paper-products-printed-matter-and-related-articles.solventless-hexenyl-silicone-coated-glassine-release-paper |
+| classification_refs | CPC 3.0 32149; narrower; scope and accepted decisions: `classifications/mappings/cpc-3.0-to-pcr.yaml` and its referenced ADRs |
+| covered_products | Neat thermally addition-cured hexenyl-silicone coated glassine, one side, rolls |
+| excluded_products | The excluded routes and products in section 1 |
+| representative_product | Accepted roll of single-sided silicone-coated glassine with declared release performance |
+| production_route | Purchased glassine → two-feed neat bath → roll coat → electric thermal cure → slit/wind/pack |
+| market_state | Converter-gate roll paper; core and shipping wrap measured separately |
+
+## 3. Reference Flow
+
+| Field | Value |
+| --- | --- |
+| What | A paper release surface for temporary contact with a declared adhesive system |
+| How much | 1 kg accepted net reference paper at measured dispatch moisture |
+| How well | Declared substrate grammage, silicone coat mass on the coated side, cure/anchorage and peel-release results under a specified adhesive, aging, peel angle and speed; no universal performance threshold |
+| How long or cycle | One declared downstream release cycle; reuse and end-of-life outside this factory-gate unit |
+| reference_flow_link | `release_paper` |
+
+| Field | Value |
+| --- | --- |
+| Reference amount | 1 |
+| Reference product flow | coated printing, writing and packaging paper `faaae1a8-97af-4a26-bdb2-198abfc0d8e4` |
+| Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
+| Reference unit | kg |
+| Required qualifiers | glassine supplier/grade and moisture; no existing silicone or polymer-film layer; hexenyl/catalyst/crosslinker identities and delivered bases; single coated side; measured coat mass and dispatch moisture; cure/anchorage/release test method and adhesive/aging/peel conditions; all-electric stage boundary; supplier background quantity/geography; waste receivers |
+
+The broad reference UUID supports processed-paper identity only. Required qualifiers must appear in the data package; it does not establish a silicone recipe, measured quantity, supplier dataset or methodology approval.
+
+## 4. Measurement and Unit Rules
+
+| rule_id | Applies to | Required property | Required unit | Rule |
+| --- | --- | --- | --- | --- |
+| reference_mass | reference product | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Reference amount is 1 kg accepted paper, including its retained silicone and measured moisture, excluding core, wrap and rejects. Q_ref is the positive accepted net paper mass over the same reporting period. |
+| common_denominator | all inventory rows |  |  | Every exchange uses per 1 kg reference flow. Collect reporting-period totals at matching stocks and dates, apply normalize_reference; do not divide by gross roll mass or input glassine mass. |
+| coat_area | paper/coating balance | Mass | kg | Area A = accepted width × accepted length, excluding trim; single-side cured coating mass = A × measured coat weight / 1000 when coat weight is in g/m2. Reconcile with base-paper dry mass and paper moisture; do not equate bath charge with retained coating. |
+| electricity_conversion | electricity | Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` | MJ | Convert metered kWh to MJ with 1 kWh = 3.6 MJ, then normalize. Preserve the original property label and user-side voltage; the label is not a fuel heating value or proof of steam enthalpy. |
+| wet_dry_separation | mass/water/carbon balance | Mass | kg | For each weighed wet stream dry mass = wet mass × (1 - measured wet-basis water fraction). Formulated base and crosslinker use delivered mass and measured solids/functionality; pure-chemical and mixture masses are not interchangeable. Supplier reactive-group definitions govern any SiH/reactive-group calculation; no fixed mix ratio. |
+
+## 5. System Boundary
+
+### Boundary Abstraction
+
+| Field | Value |
+| --- | --- |
+| declared_starting_condition | Purchased unsiliconized glassine roll, supplied formulation/crosslinker and utilities received at the coating converter |
+| starting_condition_role | Observed incoming state, not a raw-wood or pulp-production substitute |
+| product_classification_scope | Only the scoped processed roll-paper subset of CPC32149 |
+| recursive_input_rule | Returned same-category coated rolls are stock/rework with their existing upstream burden; do not reclassify them as virgin glassine or recursively claim zero upstream production |
+| upstream_dataset_requirement | Link compatible actual glassine manufacture, delivered coating formulation/crosslinker, tap water, electricity and dispatch materials. Purchased inputs carry upstream burdens, even though pulp/paper making is outside this foreground unit |
+| disclosure | Site/date, incoming grade, coating chemistry, stage meters, moisture, retained/rejected mass, exhaust/cleaning boundary, stocks, receivers, excluded activities and background compatibility |
+
+| rule_id | applies_to | rule | source_ids |
+| --- | --- | --- | --- |
+| boundary_unit | coating_unit | Collect receiving/dosing, roll coating, thermal cure, extraction, cleaning, quality losses, slitting/winding and dispatch as one foreground unit with stage subledgers. Preserve the same physical amount at both ends of internal web or reusable-bath transfers; the sole product output is release_paper. | dow-hexenyl-guide; jrc-pulp-paper-bref-2015 |
+| boundary_emissions | outdoor_release | Inventory actual outdoor releases after capture and all exported residues. Captured paper dust and silicone mist are wastes if exported, not simultaneous elementary emissions. Indoor measurements do not by themselves establish outdoor mass. | jrc-pulp-paper-bref-2015; wacker-release-systems; epa-paper-coating-2007 |
+| boundary_limits | dataset_scope | No forest/sawmill survey or plywood recipe substitutes for glassine/paper manufacture. This all-electric unit excludes integrated papermaking and on-site combustion/treatment; if present, obtain the distinct original process evidence and complete atomic inventory before claiming applicability. | jrc-pulp-paper-bref-2015; epa-paper-coating-2007 |
+
+## 6. Process Inventory Structure
+
+### Process Map
+
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
+| --- | --- | --- | --- | --- | --- |
+| coating_unit | Neat coating, electric cure and roll finishing | required | Scoped two-feed, single-side glassine route | Foreground conversion with separate receiving, dosing, coating/cure, cleanup and dispatch meters | 1 kg `release_paper` |
+
+One actual foreground coating unit retains stage subledgers and matching internal returns, with the accepted paper as its terminal reference output. Record actual stage amounts, retained material, losses and internal recirculation before environmental-load allocation. Conditional rows are zero only with documented absence; unmeasured is unknown. Any additional actual packaging, cleaner, ingredient or emitted species needs a named atomic row and identity/evidence review before a complete dataset claim.
+
+### Process: Neat coating and roll finishing (`coating_unit`)
+
+#### Inputs
+
+##### Product flows
+
+###### Purchased glassine substrate (`glassine`)
+
+Only unprinted glassine without an existing silicone or polymer-film layer; supplier certificate must identify the glassine subset of this broad paper flow. Record delivered mass, moisture, grammage and incoming losses.
+
+- Selected flow: Vegetable parchment, greaseproof papers, tracing papers and glassine and other glazed transparent or translucent papers `89996c15-334b-4f79-ad2c-e21d667f9c80`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_material`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_material`
+- Sources: `dow-hexenyl-guide`
+
+###### Pre-catalyzed hexenyl-functional polysiloxane release-coating base (`silicone_base`)
+
+One purchased formulated base containing its declared platinum catalyst and inhibitor, used neat; record grade, solids, reactive functionality, composition and batch mass. Do not count included catalyst again. This broad coating-material identity locates only the actual neat pre-catalyzed hexenyl-functional liquid base as a whole delivered formulation, including its declared platinum complex, inhibitor and other supplied constituents. Require supplier/SDS and grade-specific complete composition, water/volatile/solids definitions, reactive functionality and mass reference before background linkage. It is neither pure PDMS nor the mixed bath: do not count included catalyst/inhibitor separately or include separately dosed crosslinker mass here.
+
+- Selected flow: Coating `59808a77-a33c-493f-8e5f-c0eb3e837943`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_material`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_material`
+- Sources: `dow-hexenyl-guide`
+
+###### Silicon-hydride-functional polysiloxane crosslinker for hexenyl silicone release coating (`hydride_crosslinker`)
+
+One compatible purchased crosslinker, without separately added anti-mist or release modifier. Obtain supplier SiH functionality and delivered mass; do not prescribe a universal mixing ratio. The broad polysiloxane-fluid identity conditionally covers only the actual undiluted silicon-hydride-functional polysiloxane crosslinker supplied as this separate product. Verify supplier/SDS complete grade composition, SiH functionality and assay definition, delivered mass basis and compatibility with the declared hexenyl base and primary production route. The raw record has no CAS and does not verify a particular functional polymer, purity or background; ordinary nonfunctional PDMS, chlorosilanes, elemental silicon and silicone adhesive do not substitute. Any supplied inhibitor or other constituent remains in its delivered product mass and supplier composition account, without an invented amount or duplicate feed.
+
+- Selected flow: Organic Silicone `4af74934-ef9f-40c1-9de6-e6223ca0b4fe`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_material`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_material`
+- Sources: `dow-hexenyl-guide`
+
+###### Electricity for the foreground unit (`electricity`)
+
+Low-voltage purchased electricity for dosing, roll coating, electric thermal curing, extraction, winding and packing. Keep stage meters, startup and idle use. This scoped unit uses no fuel or purchased steam. The source CN supply location and <1kV grid-average consumption mix are not a foreground-country or supplier default; verify actual site/country/year/voltage/provider/background compatibility.
+
+- Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
+- Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
+- Unit group: `93a60a57-a3c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_energy`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_energy`
+- Sources: `dow-hexenyl-guide`; `epa-paper-coating-2007`
+
+###### Paperboard dispatch core (`paper_core`)
+
+Weigh new cylindrical paperboard cores delivered with the saleable rolls. Exclude cores from net reference paper mass; reusable plant cores stay in the internal asset ledger.
+
+- Selected flow: Cardboard tube or Paper core `78bf7f6e-519e-4b3d-82f0-eda15b2fee61`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_material`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_material`
+- Sources: `jrc-pulp-paper-bref-2015`
+
+###### Polyethylene dispatch wrap (`pe_wrap`)
+
+Only actual PE film shipped around the roll; weigh it separately from paper. Its presence does not make the reference product a finished package. Verify actual film grade/composition and supplier-background state, without treating the source luggage classification as proof of film construction.
+
+- Selected flow: Polyethylene film `e64eb06c-6dc9-45f1-b003-3dc6c44b27e2`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_material`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_material`
+- Sources: `jrc-pulp-paper-bref-2015`
+
+###### Tap water for equipment cleaning (`cleaning_water`)
+
+Conditional on actual tap-water cleaning; no water is added to the neat coating bath. Record supplied mass, or measured volume with site density; do not use the database secondary mass/volume coefficient as a measured density.
+
+- Selected flow: Tap water `d1e0e36c-07f0-4a75-bdcb-efb5d9e2ac36`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_cleaning`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_cleaning`
+- Sources: `epa-paper-coating-2007`
+
+###### Isopropanol cleaning input (`ipa_cleaner`)
+
+Conditional on supplier-approved use of isopropanol as a separately weighed chemical. Record actual purity and water fraction; no solvent dilution of the coating is permitted. No assumed 70% mixture. The raw China production mix is not generic-world background: actual country/year/provider, delivered purity/composition, supplier CAS and delivered-grade versus pure-IPA reference mass must match before linkage; use measured fractions only for a documented basis conversion and retain supplied whole mass/water separately. A multicomponent cleaner needs its own compatible supplied-product identity, not an IPA chemical substituted for its whole mass.
+
+- Selected flow: Isopropanol `a4a75541-e156-4e30-947c-ba067a682afd`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_cleaning`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_cleaning`
+- Sources: `epa-paper-coating-2007`
+
+###### Polyester nonwoven cleaning wipe (`polyester_wipe`)
+
+Conditional on an actual nonwoven polyester wipe; do not substitute cotton blends or a coated composite. Record dry purchased cloth mass and any added solvent separately. Require actual supplier nonwoven/polyester construction and compatible delivery background; the contradictory quilted-article classification is not proof of a quilted or composite wipe.
+
+- Selected flow: Textile, nonwoven polyester `5ac0c411-47ce-40ed-8ce1-9aaf9c351ca4`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_cleaning`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_cleaning`
+- Sources: `epa-paper-coating-2007`
+
+#### Outputs
+
+##### Product flows
+
+###### Accepted silicone-coated release paper (`release_paper`)
+
+The sole reference product output is the accepted single-side coated glassine roll paper, net of core and wrap, at its measured dispatch moisture. Internal coated-web movement to winding is a stage record, not another product exchange. This broad coated-paper identity locates the complete actual single-sided hexenyl-silicone glassine paper only. Require declared substrate and retained functional coating; do not infer printing, aqueous varnish, mineral pigment, added reinforcing fibre, a supplied recipe, performance or matched background from generic record examples.
+
+- Selected flow: coated printing, writing and packaging paper `faaae1a8-97af-4a26-bdb2-198abfc0d8e4`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: 1 kg
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_output`
+- Sources: `dow-hexenyl-guide`
+
+##### Waste flows
+
+###### Uncoated glassine trim leaving the unit (`uncoated_trim`)
+
+One segregated clean uncoated-paper waste exchange; record moisture and receiver acceptance. Only exported trim is counted; internal reuse remains a same-mass internal transfer.
+
+- Selected flow: waste paper (unspecified) `f140a5a2-5318-4d06-956f-a87b9c6fda25`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_residue`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_residue`
+- Sources: `jrc-pulp-paper-bref-2015`
+
+###### Silicone-coated glassine trim and rejected web (`coated_trim`)
+
+One coated-paper waste exchange with silicone loading, paper moisture, cure state and receiver recorded. BREF broke recycling does not establish this coated waste is accepted by a paper mill. Retain this independent actual silicone-coated glassine trim/rejected-web solid, with paper/coating composition, cure state, moisture and actual receiver acceptance. The broad industrial solid-waste identity determines neither recyclability nor treatment, hazardous status, receiving background or avoided credit; other separately generated streams cannot be merged here.
+
+- Selected flow: Waste solid `851fd235-5a89-4cf9-b7da-5c278ed1dcbb`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_residue`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_residue`
+- Sources: `jrc-pulp-paper-bref-2015`; `dow-hexenyl-guide`
+
+###### Uncured hexenyl-silicone coating-bath residue (`spent_bath`)
+
+Segregated bath drain-down or expired mixture, measured as delivered to the receiver with solids and catalyst-bearing composition. Reusable bath returned to the same run is not waste. Retain this independent actual uncured liquid bath drain-down/expired formulation, with full base/crosslinker/catalyst/inhibitor composition and measured water/volatile/solids fractions at transfer. Verify actual liquid collection state and receiving conditions; cured solid residue requires a separately reviewed solid identity/row. Broad industrial waste-liquid identity is not a pure silicone chemical, paint recipe, hazard classification, treatment or credit.
+
+- Selected flow: Waste liquid `bdfc32cf-8028-40a8-a2e4-2d73422ece34`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_residue`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_residue`
+- Sources: `dow-hexenyl-guide`
+
+###### Silicone-contaminated polyester cleaning wipe (`spent_wipe`)
+
+One contaminated-cloth exchange; record cloth, coating and retained IPA fractions without double counting retained solvent as a separate exported waste liquid. Retain this independent contaminated polyester-cloth solid, including its measured retained silicone, IPA and water; establish actual collection state and receiver acceptance. The broad industrial solid-waste identity is not clean polymer scrap or proof of hazard class/treatment. Its retained solvent/water stays in the whole wet cloth mass and constituent ledger, never a second external liquid transfer.
+
+- Selected flow: Waste solid `851fd235-5a89-4cf9-b7da-5c278ed1dcbb`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_residue`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_residue`
+- Sources: `epa-paper-coating-2007`
+
+###### Aqueous cleaning effluent containing glassine fines and silicone residue (`aqueous_effluent`)
+
+Conditional wastewater sent to off-site treatment; weigh or measure volume plus density, solids and chemical composition. It is a waste transfer, not direct freshwater release. Retain this independent actual whole wet off-site cleaning wastewater: water plus actual paper fines, coating and any measured IPA, with receiver/treatment compatibility and sampling state. Use weighed whole-stream mass or actual volume and matching measured density, never an assumed 1000 kg/m3. Constituent H2O/IPA/dry solids belong to reconciliation subledgers, not additional external waste or freshwater-emission rows for the same transfer. Broad industrial waste-liquid identity establishes neither actual hazard status nor treatment/background.
+
+- Selected flow: Waste liquid `bdfc32cf-8028-40a8-a2e4-2d73422ece34`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_residue`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_residue`
+- Sources: `epa-paper-coating-2007`
+
+###### Spent isopropanol cleaning liquid containing silicone residue (`spent_ipa`)
+
+Conditional separate liquid receiver transfer; record IPA, water and coating fractions, receiver and recycling or disposal route. Exclude solvent already counted in wipes or aqueous effluent. Retain this independent actual liquid receiver transfer of spent IPA with measured water, coating and other supplied constituents, sampling state and compatible receiver/treatment. Weigh the whole mixture; obtain matching actual density for volume conversion. Keep pure IPA and H2O masses as constituent subledgers only, exclude solvent already exported in wipes/aqueous effluent, and infer no hazard class, recycling yield, treatment/background or credit from this broad industrial waste-liquid identity.
+
+- Selected flow: Waste liquid `bdfc32cf-8028-40a8-a2e4-2d73422ece34`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_residue`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_residue`
+- Sources: `epa-paper-coating-2007`
+
+###### Captured glassine cutting dust containing silicone coating (`collected_dust`)
+
+One collected solid waste exchange from filters or collectors. Record moisture, paper/coating fractions, capture stage and receiver; never also treat captured mass as outdoor particulate emission. Retain this independent captured solid glassine/coating cutting-dust stream with stage, composition, moisture and receiver acceptance; captured coating mist returned internally is a paired internal record, while a separately exported mist residue needs its own reviewed atomic row. The broad industrial solid-waste identity implies no receiving treatment/hazard class or background match. Captured mass is not also released outdoor PM.
+
+- Selected flow: Waste solid `851fd235-5a89-4cf9-b7da-5c278ed1dcbb`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_residue`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_residue`
+- Sources: `jrc-pulp-paper-bref-2015`; `wacker-release-systems`
+
+##### Elementary flows
+
+###### Outdoor fine particulate release (`pm_fine`)
+
+Measure the non-overlapping aerodynamic size fraction actually released after capture to outdoor air, unspecified. Include paper dust and silicone mist in the same physical size ledger; do not add a second total-mist exchange for the same aerosol. No default positive factor.
+
+- Selected flow: particles (PM2.5) `08a91e70-3ddc-11dd-9293-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_air`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_air`
+- Sources: `jrc-pulp-paper-bref-2015`; `wacker-release-systems`
+
+###### Outdoor particulate release above 2.5 through 10 micrometres (`pm_middle`)
+
+Measure the non-overlapping aerodynamic size fraction actually released after capture to outdoor air, unspecified. Include paper dust and silicone mist in the same physical size ledger; do not add a second total-mist exchange for the same aerosol. No default positive factor.
+
+- Selected flow: particles (PM2.5 - PM10) `08a91e70-3ddc-11dd-9501-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_air`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_air`
+- Sources: `jrc-pulp-paper-bref-2015`; `wacker-release-systems`
+
+###### Outdoor particulate release above 10 micrometres (`pm_coarse`)
+
+Measure the non-overlapping aerodynamic size fraction actually released after capture to outdoor air, unspecified. Include paper dust and silicone mist in the same physical size ledger; do not add a second total-mist exchange for the same aerosol. No default positive factor.
+
+- Selected flow: particles (> PM10) `fe0acd60-3ddc-11dd-a70a-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_air`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_air`
+- Sources: `jrc-pulp-paper-bref-2015`; `wacker-release-systems`
+
+###### Isopropanol released to outdoor air (`ipa_air`)
+
+Conditional on actual IPA cleaning; measure emission or close a species-specific solvent balance including stocks, recovered liquid, wipe retention, wastewater and product retention. Workplace concentration alone is not a boundary mass.
+
+- Selected flow: isopropanol `fe0acd60-3ddc-11dd-a843-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_cleaning`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_cleaning`
+- Sources: `epa-paper-coating-2007`
+
+###### Water vapour leaving the unit (`water_vapour`)
+
+Use measured water in all actual incoming materials/cleaning, accepted paper, shipped core/wrap, independent residues/returns and opening/closing stocks to determine evaporated water, with exhaust verification. Ambient ventilation humidity is not process-generated water.
+
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Measured boundary quantity normalized to the accepted net paper mass over the same reporting period, using `cp_water`.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_water`
+- Sources: `dow-hexenyl-guide`
+
+## 7. Allocation and Co-product Handling
+
+| rule_id | applies_to | rule | source_ids |
+| --- | --- | --- | --- |
+| allocation_separate | coating_unit | First subdivide product campaigns and stage meters; assign recipe-specific inputs, rejects and cleaning directly. Shared electric use follows measured equipment time/load, with startup and idle consumption assigned and disclosed. No default allocation fraction.  Demonstrate that the measured time/load driver explains shared electric demand; otherwise collect better subdivision evidence before allocating. | eu-pef-allocation-2021; dow-hexenyl-guide; jrc-pulp-paper-bref-2015 |
+| allocation_physical | material_balance | Keep unallocated physical mass, moisture and carbon ledgers separate from allocated environmental loads. Never multiply physical co-product outputs or internal transfers by burden shares. | jrc-pulp-paper-bref-2015 |
+| allocation_residue | residue_receiver | Clean trim sale does not automatically justify a substitution credit or co-product status. Disclose economic/physical status and receiver, use one declared recycling/allocation convention, and avoid simultaneous avoided-paper credit and downstream recycling credit. Require independent review if a genuine co-product creates a new allocation problem. | eu-pef-allocation-2021; jrc-pulp-paper-bref-2015 |
+
+## 8. Foreground Data Collection, Calculation, and Quality Rules
+
+### Data Collection Protocols
+
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| cp_output | coating_unit | release_paper | measured_record | roll ID; gross mass; core/wrap tare; accepted net Q_ref; rejected mass; width; length; wet-basis moisture; substrate grade; coat weight; cure/anchorage/release results; adhesive/aging/peel conditions | Calibrated weighing and moisture sampling linked to dispatched rolls; record coating/cure test method, calibration and sampling age. Determine coat weight with a substrate/formulation-calibrated method; no copied supplier trial value. Sum accepted net roll paper mass for Q_ref; exclude packaging and rejects. Report the matching-period row total divided by Q_ref for per 1 kg reference flow; retain original totals and stocks. | kg; m; g/m2 | Each accepted roll and representative samples per coating batch | Declared representative reporting period including changeovers, startup, losses and closing stocks | One coating converter and declared line/grade campaigns | per 1 kg reference flow | Calibration, raw records, dated samples, uncertainty and reconciliation retained |
+| cp_material | coating_unit | material input | measured_record | supplier/grade; receipt and consumption mass; opening/closing stock; returned mass; paper moisture/grammage; formulation SDS/solids; catalyst content; crosslinker/reactive-group definitions; core/wrap mass, opening/closing stocks, shipped tare, external returns/losses; actual constituent carbon origin | Weigh each delivered material independently; reconcile receipts plus opening stock minus closing stock and external returns with dosing/dispatch records. No recipe or chemical-property defaults. Retain separate supplier/grade totals and paper/coating balances before normalization. Report the matching-period row total divided by Q_ref for per 1 kg reference flow; retain original totals and stocks. | kg | Each lot/batch and period stock closure | Declared representative reporting period including changeovers, startup, losses and closing stocks | One coating converter and declared line/grade campaigns | per 1 kg reference flow | Calibration, raw records, dated samples, uncertainty and reconciliation retained |
+| cp_energy | coating_unit | electricity | measured_record | meter ID; stage; kWh readings; run/idle/startup times; actual voltage; shared load; background region/year | Use calibrated stage meters, including oven and extraction; reconcile with unit intake, retain measured shared-service drivers. Sum recorded kWh, convert by 3.6 to MJ, retain stage subledgers. Report the matching-period row total divided by Q_ref for per 1 kg reference flow; retain original totals and stocks. | kWh; MJ | Continuous readings with batch/shift closure | Declared representative reporting period including changeovers, startup, losses and closing stocks | One coating converter and declared line/grade campaigns | per 1 kg reference flow | Calibration, raw records, dated samples, uncertainty and reconciliation retained |
+| cp_cleaning | coating_unit | cleaning | measured_record | cleaning event; agent approval/SDS; IPA purity; water and wipe mass; solvent inventory; retained/recovered solvent in separate waste streams; residual solvent on product; exhaust mass | Weigh or meter actual agents independently; analyze IPA fraction and reconcile it across liquid, wipe, wastewater, stocks and outdoor release. Keep closed-container transfer records. Aggregate each chemical and destination separately; retain unclosed solvent balance as unknown. Report the matching-period row total divided by Q_ref for per 1 kg reference flow; retain original totals and stocks. | kg; m3 with measured density | Each cleaning event and stock closure | Declared representative reporting period including changeovers, startup, losses and closing stocks | One coating converter and declared line/grade campaigns | per 1 kg reference flow | Calibration, raw records, dated samples, uncertainty and reconciliation retained |
+| cp_residue | coating_unit | waste output | measured_record | row_id; stage; waste mass; moisture; coating/IPA/cloth fractions; cure state; internal return; receiver; receiver acceptance; destination treatment | Separate uncoated trim, coated trim, bath residue, wipes, effluent, spent IPA and captured dust; weigh only external transfers; match receiver records and actual composition. Sum by atomic stream and destination; reconcile generated waste with stocks and internal returns. Report the matching-period row total divided by Q_ref for per 1 kg reference flow; retain original totals and stocks. | kg | Each collection/transfer and period closure | Declared representative reporting period including changeovers, startup, losses and closing stocks | One coating converter and declared line/grade campaigns | per 1 kg reference flow | Calibration, raw records, dated samples, uncertainty and reconciliation retained |
+| cp_air | coating_unit | particulate output | measured_record | source/stage; capture device; test method; sample volume; aerodynamic size bins; blank correction; mg/m3; flow/time; operating states; emitted mass; paper/silicone fractions | Use route-appropriate size-resolved exhaust/fugitive measurements with actual volumetric basis and periods; document captured and released material separately. If only total dust or cumulative PM10 is available, do not invent fractions. Integrate post-control boundary releases for each non-overlapping size bin. Report the matching-period row total divided by Q_ref for per 1 kg reference flow; retain original totals and stocks. | mg/m3; m3; kg | Representative tests covering normal runs, startup and cutting; retain actual integration periods | Declared representative reporting period including changeovers, startup, losses and closing stocks | One coating converter and declared line/grade campaigns | per 1 kg reference flow | Calibration, raw records, dated samples, uncertainty and reconciliation retained |
+| cp_water | coating_unit | water balance | measured_record | paper wet masses and moisture; supplied base/crosslinker and cleaner water fractions; cloth/core/wrap moisture and shipped tare; cleaning water; independent liquid/solid waste and external-return water; stocks; exhaust humidity/flow; ambient inlet humidity | Reconcile process water with calibrated weights/meters and moisture assays; verify exhaust water after subtracting incoming ambient vapour. No assumed density or cure-generated water. Reconcile net evaporated water and retained/transfer water before normalization. Report the matching-period row total divided by Q_ref for per 1 kg reference flow; retain original totals and stocks. | kg; m3 with measured density | Same roll/batch records and period stocks | Declared representative reporting period including changeovers, startup, losses and closing stocks | One coating converter and declared line/grade campaigns | per 1 kg reference flow | Calibration, raw records, dated samples, uncertainty and reconciliation retained |
+
+### Calculation Rules
+
+| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| --- | --- | --- | --- | --- | --- |
+| normalize_reference | all inventory rows | q_ref = q_period / Q_ref; q_period is this row’s measured or calculated reporting-period exchange; Q_ref is accepted net paper mass in kg; q_ref is amount per 1 kg reference flow. | q_period; Q_ref; cp_output | q_ref |  |
+| area_coating | retained coating | m_coat = A × coat_g_m2 / 1000; A = accepted width × accepted length. Measured single-side coat weight is grade/calibration specific; do not use supplier example values. | cp_output; coat_g_m2; A | m_coat kg | dow-hexenyl-guide |
+| packaging_ledger | paper_core; pe_wrap | For each material separately, external receipts + opening stock = actual mass shipped with rolls + separately recorded external waste/loss + closing stock + external unused-material returns. Internal reusable cores cancel in the asset ledger. Keep these measured physical departures in cp_output/cp_material tare and dispatch records, outside Q_ref; any actual external packaging waste needs its own atomic row/receiver, not forced into paper/coating residues. No burden share changes physical mass. | cp_material; cp_output; cp_residue | separate core/wrap physical ledgers |  |
+| dry_balance | physical paper and coating | External dry paper/coating receipts + opening dry stock = dry accepted paper + dry exported paper/coating constituents + dry emitted paper/coating particulate/other specifically measured coating species + closing dry stock + external unused-paper/coating returns. This ledger contains only paper/coating constituents of mixed residues, not whole wet waste, IPA cleaner, wipe material, core or wrap; retain their separate constituent/material accounts without duplicating a waste transfer. Internal transfers cancel; consumed amounts are reconciled separately and never combined with a second stock adjustment. Residual disagreement remains explicit uncertainty, not forced zero. | cp_material; cp_output; cp_residue; cp_air | unallocated dry physical ledger |  |
+| water_balance | water_vapour | Measured water in all actual incoming materials/cleaning + opening water stock = water in accepted paper, shipped packaging, independent residues and external unused-material returns + closing water stock + net process water vapour. Include measured formulation, cleaner and cloth/packaging moisture where present, without assuming marketing solids content proves zero water; whole wet external residues occur only once, with H2O in constituent subledgers. Separate ambient ventilation water. Do not assume addition cure creates stoichiometric water. | cp_water; cp_output; cp_residue | net process water kg |  |
+| ipa_balance | ipa_air | External IPA receipts + opening IPA stock = IPA in separately exported liquid/wipes/effluent + closing IPA stock + external unused-IPA returns + retained product IPA + outdoor emitted IPA. Internally recovered solvent cancels, and recovery-bound exported liquid belongs to one liquid transfer only; never treat total liquid as pure IPA. | cp_cleaning; cp_residue | IPA species balance kg | epa-paper-coating-2007 |
+| particulate_integration | outdoor particulate rows | m_i = sum(c_i × V_i) / 1000000 for c_i in mg/m3 and matching V_i in m3. PM10 - PM2.5 gives the middle bin only when tests have matching source/time/control bases; total dust - PM10 gives >10 only with a compatible measured total. Never add cumulative PM10 to its component bins. | cp_air | each disjoint bin kg |  |
+| carbon_ledger | physical carbon | Keep paper, coating, IPA, cloth, core and wrap carbon separately with measured or supplier-supported constituent carbon fractions and biogenic/fossil origin, stocks and destinations; unknown fractions/origins remain unknown. Include actual core/wrap shipped out and external residue/return constituents, excluding them from net reference paper mass and never assigning source origin from a generic name. Retained carbon is not an immediate negative CO2 emission. Record measured biogenic CO2 if present regardless of a GHG reporting convention; do not infer carbon conversion or combustion in this all-electric route. | cp_material; cp_output; cp_residue; cp_air; cp_cleaning | unallocated source-separated carbon ledger |  |
+
+### Data Quality Requirements
+
+| requirement_id | Applies to | Requirement | Evidence |
+| --- | --- | --- | --- |
+| identity_compatibility | all linked exchanges | Verify physical identity separately from quantity/background compatibility. Broad product rows require actual subset evidence; incompatible species/CAS/route are not proxies. Unresolved rows block a fully linked dataset, not their collection protocol. | SDS, supplier declaration, grade, receiver and background definitions |
+| measurement_complete | all rows and balances | Retain raw data and uncertainty; missing readings, undetected values and proven absent activities are distinct. No invented recipe, coat weight, efficiency, particle split or process emission factor. | Calibration, detection limits, matching denominators and reconciliation |
+| performance_tests | reference paper | Report substrate/formulation-specific coat-weight, cure, anchorage and release tests and their aging/adhesive/peel conditions. Supplier demonstration recipes, trial limits and setpoints are case evidence, never universal defaults. | dow-hexenyl-guide |
+| source_scope | method evidence | BREF §7.1.10 supports cutting-dust and trim collection, not silicone recipe or coated-trim recyclability. EPA2007 supports cleaning-source identification only; historic industry factors and legal thresholds are not imported. | jrc-pulp-paper-bref-2015; epa-paper-coating-2007 |
+
+## 9. Validation Rules
+
+| rule_id | applies_to | rule | source_ids |
+| --- | --- | --- | --- |
+| validate_reference | reference_paper | Require all reference qualifiers, positive Q_ref, one product output release_paper and the same 1 kg denominator in both languages; reject gross-roll, area-only or unqualified paper substitutes. | dow-hexenyl-guide |
+| validate_route | coating_unit | Require unsiliconized glassine, one-side neat hexenyl addition cure, compatible two-feed supplier identities and all-electric utility proof. Additional real components, utilities, emissions or treatment require complete atomic extensions; exclude a changed coating route. | dow-hexenyl-guide; wacker-release-systems |
+| validate_ledgers | physical_accounting | Reconcile mass, water and separately sourced carbon before burden allocation; internal transfers match at both ends. Particle bins must be disjoint; collected dust, aerosol composition and emitted fractions cannot double count. Unclosed balances and unsupported size fractions are inconclusive, not passing. | jrc-pulp-paper-bref-2015; wacker-release-systems |
+| validate_cleaning | cleaning | Conditional cleaning rows require actual presence/absence evidence and species balances. A waste transfer is not a direct water emission; assess actual receiving treatment separately. Any actual measured biogenic CO2 remains in LCI, and other detected species require named rows. | epa-paper-coating-2007 |
+| validate_linkage | data_package | Check actual flow property/unit, composition, source category and supply/receiver bases. Resolve blank UUID rows and disclosed source defects before claiming complete background linkage; identity lookup alone or mechanical PCR checks do not establish scientific approval. | dow-hexenyl-guide |
+
+## 10. Published Dataset Profile
+
+| Field | Value |
+| --- | --- |
+| dataset_role | secondary_dataset; background_dataset |
+| downstream_use | A measured converter-gate exchange supplying one qualified silicone-coated glassine paper input |
+| allowed_use | Only matching single-sided neat hexenyl addition-cured glassine and the disclosed electric/cleaning configuration after all identity and quantity links are complete |
+| excluded_use | Generic CPC32149 average, finished label/packaging, different cure chemistry, double-sided or polymer-film substrate, fuel/steam plant, unqualified upstream paper or fully linked claims with unresolved rows |
+| required_metadata | Site/period, grade/recipe identity, functional qualifiers, Q_ref and moisture, upstream links, meters, stocks, source scope, receivers and recycling/allocation convention |
+| required_quality_disclosure | Uncertainty, missing data, proven absences, source-classification defects, unclosed balances, background compatibility, unresolved identities and independent-review status |
+| update_trigger | Changed substrate, formulation/cure/side count, utilities, cleaning, emissions, receiver or source data; recalculate balances and recheck applicability |
+
+## 11. Data Sources
+
+| Source id | Type | Reference | Used for |
+| --- | --- | --- | --- |
+| dow-hexenyl-guide | handbook | [Dow SYL-OFF Solventless Platinum-Catalyzed Hexenyl Silicone Release Coatings](https://www.dow.com/documents/30/30-1162-01-syl-off-solventless-hexenyl-formulation-guide.pdf?iframe=true), pp.2–5, General information/Product range/Product handling/Application information | Chemistry, pre-catalyzed delivered base, glassine compatibility, coating/cure/performance variables; no quantitative recipe or trial setpoint adopted |
+| wacker-release-systems | handbook | [WACKER DEHESIVE release systems](https://www.wacker.com/h/medias/6188-EN.pdf), PDF p.11 / printed pp.20–21 | Independent solventless roll-coating and mist context; formulation/catalyst specifics remain supplier-dependent |
+| jrc-pulp-paper-bref-2015 | official_guidance | [JRC Production of Pulp, Paper and Board BREF (2015)](https://bureau-industrial-transformation.jrc.ec.europa.eu/sites/default/files/2019-11/PP_revised_BREF_2015.pdf), §7.1.10, printed p.670 / PDF p.708 | Reeling/cutting/dispatch, dust and trim collection; no silicone chemistry, emission factor or coated-waste recycling guarantee |
+| epa-paper-coating-2007 | official_guidance | [US EPA 453/R-07-003, Control Techniques Guidelines for Paper, Film, and Foil Coatings (2007)](https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P100957P.TXT), IV.A–B and V.B | Thermal curing and cleaning-source identification, separate solvent/wipe transfers; qualitative process support, not a present legal compliance test or default solvent/factor |
+| eu-pef-allocation-2021 | official_guidance | [European Commission Environmental Footprint Annexes (2021)](https://environment.ec.europa.eu/system/files/2021-12/Annexes%201%20to%202.pdf), Annex I §4.5, pp.63–64 | Subdivision-first and justified underlying physical relationship for shared burdens; no paper-specific fraction or claim of complete PEF conformity |

@@ -84,15 +84,13 @@ export function createPcrIdAliasRegistry({ leafSlugs, mapping: rawMapping }: {le
     aliases.push({
       source_pcr_id: leaf.pcr_id,
       source_pcr_path: leaf.pcr_dir,
-      target: accepted
-        ? { kind: "canonical_pcr", pcr_id: accepted.pcr_id }
-        : {
-            kind: "classification_coverage",
-            classification_system: String(leafSlugs.classification_system).toLowerCase(),
-            classification_version: String(leafSlugs.classification_version),
-            code: String(leaf.code),
-          },
-      reason: accepted ? "canonical_pcr_replacement" : "empty_scaffold_migration",
+      target: {
+        kind: "classification_coverage",
+        classification_system: String(leafSlugs.classification_system).toLowerCase(),
+        classification_version: String(leafSlugs.classification_version),
+        code: String(leaf.code),
+      },
+      reason: "empty_scaffold_migration",
       decision_ref: PCR_ID_ALIAS_DECISION_REF,
     });
   }

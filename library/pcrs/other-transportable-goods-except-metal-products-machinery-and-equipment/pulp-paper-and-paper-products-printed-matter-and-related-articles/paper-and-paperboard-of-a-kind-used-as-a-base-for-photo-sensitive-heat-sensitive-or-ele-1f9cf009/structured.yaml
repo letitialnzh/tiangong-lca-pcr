@@ -1,10 +1,1197 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "32123"
-  title: "Paper and paperboard of a kind used as a base for photo-sensitive, heat-sensitive or electro-sensitive paper or paperboard"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.pulp-paper-and-paper-products-printed-matter-and-related-articles.paper-and-paperboard-of-a-kind-used-as-a-base-for-photo-sensitive-heat-sensitive-or-ele-1f9cf009"
+  classification_refs: "CPC 3.0 32123; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Finished uncoated thermal base paper reels made by the supported purchased-chemical-pulp route"
+  excluded_products: "Functional-coated recording paper; photo/electrosensitive grades; paperboard; mechanical/recovered-fibre routes; integrated pulp production"
+  representative_product: "Andhra Thermal Base Paper (NS); physical base-paper identity only [andhra-thermal-base]"
+  production_route: "Purchased ECF chemical pulp to finished reels; external electricity, steam generation and wastewater treatment"
+  market_state: "Accepted base-paper reels before functional coating; supplied to a coater"
+functional_unit:
+  what: "Cellulosic substrate for subsequent thermal coating; no recording function at this gate"
+  how_much: "1 kg accepted uncoated base paper, excluding packaging"
+  how_well: "Declared grammage, moisture, caliper, smoothness, strength, absorption, furnish and coating compatibility meet the actual purchaser specification"
+  how_long_or_cycle: "One factory-gate delivery; recording durability after coating is outside scope"
+  reference_flow_link: "base_paper"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "boundary_manufacturing: Include all observed preparation, papermaking, nonfunctional sizing, finishing, internal fibre/water recovery, utility use and dispatch packaging within the declared gate [jrc-pulp-paper-bref-2015, 7.1.1–7.1.10]. Add every actual chemical, carrier, packaging component and reject as a specific atomic exchange; the listed conditional recipe does not establish completeness."
+      source_ids: []
+    - rule_id: system_boundary_rule_2
+      applies_to: "foreground_system_boundary"
+      rule: "boundary_external_services: Link upstream pulp and supplied energy plus external wastewater/waste treatment without duplicating their combustion, water-abstraction or treated-outfall emissions in the foreground. No arbitrary mass cut-off; disclose each missing exchange and upstream link. An on-site boiler, biological plant or direct water discharge requires expanded, independently evidenced inventories."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Purchased bleached chemical papermaking pulp received at mill; no wood cooking or bleaching in foreground"
+  starting_condition_role: "foreground entry gate"
+  product_classification_scope: "Thermal-base-paper subset of CPC 32123, uncoated at dispatch"
+  recursive_input_rule: "Trace same-category purchased base paper to its upstream manufacturing dataset; do not regenerate its pulp inventory here. A purchased-base-paper converting-only route is outside this manufacturing method."
+  upstream_dataset_requirement: "Require route-, state-, region-, time- and reference-basis-compatible cradle-to-gate datasets for pulp, utilities, chemicals, packaging and receiving treatment. Identity UUID verification alone does not satisfy this requirement."
+  disclosure: "Declare foreground gate-to-gate collection and upstream links separately; do not present missing upstream or treatment as zero-burden cradle-to-gate results."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Paper and paperboard of a kind used as a base for photo-sensitive, heat-sensitive or electro-sensitive paper or paperboard"
+    uuid: "a0b357fa-9e43-483e-806d-6a2f5c9c6357"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "uncoated thermal base paper"
+    - "no functional layer"
+    - "ECF chemical pulp"
+    - "hardwood/softwood grade"
+    - "delivery moisture"
+    - grammage
+    - "net accepted paper mass"
+    - "purchaser quality specification"
+    - "sizing formulation"
+    - "reel dimensions"
+    - "external steam and effluent treatment boundaries"
+    - "supply voltage"
+    - "site and collection period"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use accepted paper net mass Q in cp_mass at actual delivery moisture; exclude core, wrappers and pallet. Normalize every external exchange to 1 kg reference flow."
+  - id: dry_basis
+    applies_to: "pulp, paper, sludge and chemicals"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Record wet/as-received and dry masses separately: m_dry = m_wet * (1 - w), where w is measured wet-basis moisture fraction. Supplier air-dry conventions must be declared, not assumed from BREF examples."
+  - id: electricity_basis
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Preserve the reference-property name from the direct record. E_MJ = 3.6 * E_kWh is a unit conversion only; reconcile the delivered supply interface and background."
+  - id: steam_basis
+    applies_to: "steam_heat"
+    required_property_ref:
+      name: "Gross calorific value"
+      uuid: "93a60a56-a3c8-14da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Collect delivery and return enthalpy under cp_heat. A GCV/MJ property alone does not prove net delivered heat. Require a supplier-defined conversion k_bg before linking H_bg = k_bg * H_net; an unknown k_bg blocks the numeric supplier link."
+  - id: formulation_basis
+    applies_to: "chemical rows"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Keep commercial-product mass, water, active solids and other ingredients distinct. Use measured concentration and supplier reference definition; never substitute emulsion mass for pure active mass or count constituents twice."
+process_map:
+  - id: papermaking
+    name: "Purchased pulp to accepted uncoated thermal base-paper reels"
+    inclusion: "required"
+    inclusion_condition: "Supported external-utility and effluent-treatment route"
+    role: "foreground"
+    quantitative_reference: "base_paper"
+process_inventory:
+  - id: papermaking
+    label: "Purchased pulp to accepted uncoated thermal base-paper reels"
+    inputs:
+      product:
+        - row_id: hardwood_pulp
+          role: "Chemical wood pulp, other than dissolving grades"
+          name: "Chemical wood pulp, other than dissolving grades"
+          flow_type: "product"
+          flow_ref:
+            uuid: "fe36cb07-5527-4085-a80b-c8ef2cc7e0aa"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased ECF-bleached hardwood kraft papermaking pulp, not dissolving pulp; measured as received. Specify species, bleaching route and lot moisture; reconcile oven-dry and supplier air-dry bases independently. The broad identity also includes other chemical pulp and does not establish the supplier inventory."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: softwood_pulp
+          role: "Chemical wood pulp, other than dissolving grades"
+          name: "Chemical wood pulp, other than dissolving grades"
+          flow_type: "product"
+          flow_ref:
+            uuid: "fe36cb07-5527-4085-a80b-c8ef2cc7e0aa"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Include only if separately purchased ECF-bleached softwood kraft papermaking pulp is in the actual furnish. Record separately from hardwood pulp despite the shared broad UUID; no default blend ratio. Verify species, grade, moisture and supplier reference basis for this row."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: process_water
+          role: "Tap water"
+          name: "Tap water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d1e0e36c-07f0-4a75-bdcb-efb5d9e2ac36"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased treated tap water used for process and cleaning. Use measured volume and measured temperature-dependent density for mass-reference linkage; the database secondary volume coefficient is not a prescribed site density. Direct abstraction or on-site water production requires an explicitly extended boundary."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3d76981f-964a-4865-b588-0e067a2a1163"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Grid AC delivered at a 1–35 kV supply interface, including preparation, paper machine, finishing, recovery, ventilation and maintenance. If the real interface is outside that band, resolve another exact identity. Convert metered kWh to MJ and verify supplier geography, time and losses. The source identity specifies CN; actual region, reference year, supplier mix, voltage and loss boundary must be independently compatible before quantitative linking."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: steam_heat
+          role: "Heat from steam"
+          name: "Heat from steam"
+          flow_type: "product"
+          flow_ref:
+            uuid: "cbc1f372-5c64-4ad5-a938-89b9396758c9"
+          property_unit: "Gross calorific value 93a60a56-a3c8-14da-a746-0800200c9a66 / MJ"
+          description: "Industrial-boiler steam heat supplied across the foreground boundary to paper drying; preserve the direct record reference property Gross calorific value. Physical identity is compatible, but supplier/background reference-energy definition must be reconciled with measured delivery enthalpy before numeric linking. The database benchmark is not a PCR default. Unknown energy basis remains pending."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: calcium_carbonate
+          role: "Calcium carbonate"
+          name: "Calcium carbonate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "dfce1026-0ad5-4362-87de-4b425a583e6b"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional calcium carbonate wet-end filler, not a pigment precoat. Record supplier assay, mineral form, particle size, production route and dry-solids fraction. This identity contains no verified CAS or grade specification; supplier confirmation is required. A formulated slurry must account separately for carrier water and other constituents without double counting. The source synonym is limestone filler and its CPC 15200 classification is calcareous stone, not proof of papermaking grade or precipitated carbonate. Limit this locator to actual compatible ground natural calcium-carbonate filler with verified mineral species, processing, purity and particle grade. Precipitated, surface-modified or formulated alternatives need a separately verified identity; source CAS is absent."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: cationic_starch
+          role: "Cationic starch for wet-end strength"
+          name: "Cationic starch for wet-end strength"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Include only when the actual recipe uses cationic starch. Record substitution/charge, botanical source, grade and dry-solids mass. Native starch and modified food starch are not verified substitutes; UUID remains unresolved."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: surface_starch
+          role: "Starch"
+          name: "Starch"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e5842f16-31b3-4ea4-b16a-f7b06beeb6c3"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional native starch used for nonfunctional surface sizing; measure dry starch and process-water carrier separately. This UUID must not stand for chemically modified/cationic starch or a thermal coating. If another grade is used, add its specific atomic row."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: akd
+          role: "Alkyl Ketene Dimer"
+          name: "Alkyl Ketene Dimer"
+          flow_type: "product"
+          flow_ref:
+            uuid: "095d668d-6196-43d7-82b2-655ac9d26693"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional AKD sizing material from synthesis/emulsification, never a colour developer. Record commercial formulation, concentration and wet-versus-active mass. The direct record does not define an emulsion strength or active-mass reference; do not automatically convert active solids into the linked reference quantity. Supplier/background formulation compatibility is required."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: pam
+          role: "cationic polyacrylamide (CPAM)"
+          name: "cationic polyacrylamide (CPAM)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ccf600a4-35af-45d6-95b3-cb58590a579f"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional cationic polyacrylamide retention aid; verify polymer charge, grade and delivered solids. The broad CPAM identity does not cover anionic PAM or K-PAM. Supplier dry/wet reference basis must be documented."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: sodium_hydroxide
+          role: "Sodium hydroxide"
+          name: "Sodium hydroxide"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e0abcced-0611-4c24-9290-5a2c5a0c4169"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional industrial solid sodium hydroxide used in actual cleaning/alkalinity control, not kraft cooking within this boundary. For solution preparation record NaOH purity and carrier water; a purchased solution requires concentration-compatible identity and background rather than assuming pure NaOH mass is solution mass. This source is specifically industrial solid NaOH at 95–98% purity; use only for an actually compatible supplied grade. A different concentration, solution or formulation requires its own verified identity and reference basis."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: pe_film
+          role: "Low-density polyethylene foil (PE-LD)"
+          name: "Low-density polyethylene foil (PE-LD)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "2cecd3a7-d90e-44b4-aec5-1d9dfb907477"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional noncellular, nonadhesive LDPE transport wrapping film; record resin identity, thickness and net installed film mass. Exclude other plastics and finished packaging assemblies. The classified film is also unreinforced, unlaminated and unsupported; verify actual construction. Do not apply this identity to a composite moisture-barrier laminate."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: kraft_wrap
+          role: "Uncoated printing, writing and packaging paper"
+          name: "Uncoated printing, writing and packaging paper"
+          flow_type: "product"
+          flow_ref:
+            uuid: "936bdcb2-06b6-4ee9-8e7c-2f7762aba298"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional uncoated kraft reel wrapping paper within this broad uncoated-packaging-paper identity. Record actual kraft grade, moisture and supply route; do not use the paper-bag record for a wrapping sheet or coated moisture barrier. The source CPC 32129 graphic-paper classification is a documented limitation relative to its broader packaging-paper name. Confirm the actual uncoated wrapping sheet, fibre composition, grammage, moisture, source gate and compatible supplier inventory; this classification does not itself establish packaging grade."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: paper_core
+          role: "Cardboard tube or Paper core"
+          name: "Cardboard tube or Paper core"
+          flow_type: "product"
+          flow_ref:
+            uuid: "78bf7f6e-519e-4b3d-82f0-eda15b2fee61"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased paperboard winding core for dispatched reels. Record core mass, dimensions, composition and supplier background; exclude core from reference paper mass."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: pallet
+          role: "Pallets, box pallets and other load boards, of wood, pallet collars of wood"
+          name: "Pallets, box pallets and other load boards, of wood, pallet collars of wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4b49871e-95be-4e0c-9223-9902f9eaa763"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional wooden pallet actually supplied with dispatched product; measure net complete-pallet mass, including actual fasteners, and reuse/replacement records. Keep wood moisture and biogenic carbon separately from metal and other components; a wood-only mass cannot represent the complete pallet. This broad wooden-load-board identity is limited here to the actual pallet; no default per-reel pallet or reuse lifetime."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: lubricant
+          role: "Lubricating oil"
+          name: "Lubricating oil"
+          flow_type: "product"
+          flow_ref:
+            uuid: "66628f20-9d33-4997-bd6c-6357453fa268"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional petroleum-fraction lubricating oil consumed by foreground machinery; exclude fully synthetic oil from this identity. Record stock changes and maintenance use; no fuel combustion is presumed. Only an actual formulation compatible with the source petroleum-oil classification (at least 70% petroleum oils by mass) may use this locator; verify SDS and additives. Its 40.5 MJ/kg descriptor is metadata, not an adopted calorific value or emission factor. Keep whole supplied lubricant mass and avoid duplicate constituent purchases."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: base_paper
+          role: "Paper and paperboard of a kind used as a base for photo-sensitive, heat-sensitive or electro-sensitive paper or paperboard"
+          name: "Paper and paperboard of a kind used as a base for photo-sensitive, heat-sensitive or electro-sensitive paper or paperboard"
+          flow_type: "product"
+          flow_ref:
+            uuid: "a0b357fa-9e43-483e-806d-6a2f5c9c6357"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "The sole reference product output: accepted, dried, sized and finished uncoated thermal base paper, net of paper core and transport packaging, at the declared delivery moisture. One consolidated process prevents the same paper being counted again between drying and dispatch."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_mass
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+      waste:
+        - row_id: wastewater
+          role: "Untreated papermaking wastewater to external treatment"
+          name: "Waste liquid"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "bdfc32cf-8028-40a8-a2e4-2d73422ece34"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual untreated virgin-pulp papermaking wastewater sent to an identified external treatment plant, conditionally located by the broad industrial Waste liquid identity. Verify whole-liquid composition, contamination, liquid state, receiver and compatible treatment provider; the generic source wording is not a site hazard classification. Native reference is Mass/kg: measure whole wet handover mass, or use matched measured volume times actual effluent density at recorded temperature. Retain volume and COD/BOD/TSS/N/P species loads for treatment-inlet characterization; these are neither total liquid mass nor foreground elementary discharges. Carrier-water mass requires actual water fraction, not an assumption that mixed effluent is pure water. Recovered-fibre fluting and manganese-slag wastewater records remain incompatible."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: fibre_sludge
+          role: "sludge (paper production)"
+          name: "sludge (paper production)"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "b48b29ab-4ead-4413-9adb-07631cd7af09"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional dewatered primary fibre/filler sludge from white-water recovery that leaves the site. Record wet mass, dry solids, fibre/filler composition and receiving facility; no biological-treatment sludge is presumed in this outsourced-treatment route. Retained recoverable fibre is internal recycle, not waste output."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: paper_reject
+          role: "waste paper (unspecified)"
+          name: "waste paper (unspecified)"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "f140a5a2-5318-4d06-956f-a87b9c6fda25"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only uncoated paper trim/rejects exported as waste. Measure net mass, moisture, sizing contamination and receiver. Internal wet/dry broke returned to stock is excluded from external exchanges but retained in the physical stage ledger. Functional-coated broke is outside scope."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: waste_oil
+          role: "Used lubricating oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional used lubricating oil leaving machinery maintenance; keep source, contamination and actual treatment recipient. This is generated waste mass without an assumed regeneration credit."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: collected_dust
+          role: "Collected dry-paper cutting dust"
+          name: "Dust"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2a6c9b60-a075-45ec-b611-c3b4dd255935"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditionally include actual dust collected from dry-paper cutting, winding and handling and exported as a separately identified waste [jrc-pulp-paper-bref-2015, 7.1.10, printed p. 670]. Verify fibre/filler/sizing composition, moisture, contamination, collector stock, net consignment mass and recipient. The broad industrial collector-dust identity does not prescribe composition or treatment. Dust returned internally to stock preparation stays in the internal physical ledger; exported captured dust is distinct from paper trim and from outdoor PM size fractions. Neither capture efficiency nor a positive quantity is assumed."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+      elementary:
+        - row_id: water_vapour
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net process-water vapour released to outdoor air, unspecified. H2O CAS 7732-18-5; determine from moisture/air-flow measurements or the closed water balance. Distinguish steam delivery/condensate from paper moisture evaporation; no evapotranspiration correction flow."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional emitted particles at or below PM2.5 to outdoor air, unspecified, after controls. Use measured disjoint size fraction; collected filter dust is waste, not this emission."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: pm2510
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional emitted particles above PM2.5 through PM10 to outdoor air, unspecified. Subtract PM2.5 from a consistently measured cumulative PM10 total only when sampling/operating basis matches."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: pmover10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional emitted particles above PM10 to outdoor air, unspecified. Use size-resolved measurements or total suspended particles minus compatible cumulative PM10; do not infer coarse dust from a name-only particulate factor."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+        - row_id: bioco2
+          role: "carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only physically evidenced short-term biogenic CO2 releases from this foreground to outdoor air, unspecified; CAS 124-38-9. No boiler or biological treatment is assumed here. Verify actual carbon source; never relabel fossil CO2, use uptake/correction flows, or omit a real biogenic release because a GHG reporting convention excludes it. Upstream heat/treatment emissions remain in their supplier datasets."
+          amount:
+            expression: "Measured exchange amount aggregated per 1 kg reference flow by the linked collection protocol; retain period amount X_i and net paper Q in the collection record. No default amount; unknown is not zero."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - jrc-pulp-paper-bref-2015
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_subdivision: First isolate the actual thermal-base-paper campaign using production lots, submetering and causal service records. Other mill grades retain their own physical production quantities. A shared-meter share may apply to an environmental-burden account, never to the measured real mass of pulp, accepted paper, broke or internal transfers."
+    source_ids: []
+  - rule_id: allocation_rule_2
+    applies_to: "foreground_burden_allocation"
+    rule: "allocation_residues: No automatic avoided-product or energy-recovery credit for internal broke, white water or exported waste. Record exported material fate and legal/physical waste status. A genuine saleable co-product requires separately evidenced subdivision or causal allocation and transparent physical and allocated ledgers; economic allocation is not inferred from waste revenue. This default route has one reference product, not an invented pulp co-product."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_mass
+      process_id: "papermaking"
+      flow_role: "reference output"
+      record_type: "weighing"
+      raw_fields: "lot; reel; gross mass; core and wrapper tare; accepted net mass; moisture w; grammage; grade; beginning/end accepted stock"
+      collection_method: "Calibrated reel scale and traceable tare; representative gravimetric moisture sample to documented constant-dry-mass endpoint; record method, temperature, sampling and repeatability. Reconcile accepted production and dispatch stocks. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: Q = sum accepted net paper mass; exclude returned/rejected lots and packaging"
+      unit: "kg"
+      frequency: "Every lot and moisture sample"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "Accepted uncoated grade"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; acceptance certificates; moisture records"
+    - protocol_id: cp_material
+      process_id: "papermaking"
+      flow_role: "pulp and individual chemical/maintenance input"
+      record_type: "stock and dosing"
+      raw_fields: "row_id; supplier; species/CAS where relevant; grade; supply route; lot; delivered mass; stock changes; formulation; solids; dosing; background reference basis"
+      collection_method: "Reconcile receipts, calibrated dosing scales and beginning/end stores for each atomic material; measure moisture/solids and retain supplier composition documents. Account constituent water exactly once. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: X_i = receipts + opening stock - closing stock - other-grade transfers; preserve physical total and trace attributable use"
+      unit: "kg"
+      frequency: "Each delivery and dosing lot"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "Thermal-base-paper campaign"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Invoices; scale/doser calibration; assays; supplier basis"
+    - protocol_id: cp_water
+      process_id: "papermaking"
+      flow_role: "purchased water and external wastewater"
+      record_type: "meter and laboratory"
+      raw_fields: "row_id; meter total; volume; temperature; density; receiver; inlet/outlet stock; moisture; COD; BOD; TSS; N/P; constituent analysis"
+      collection_method: "Calibrated water/effluent totalizers; flow-proportional representative composite sampling and documented lab methods. Measure separate actual densities and temperatures for purchased water and wastewater; X_water = V_water*rho_water and X_wastewater = V_wastewater*rho_wastewater, or independently calibrated whole-liquid weighing. Retain each water fraction for the water balance; neither density is defaulted to 1000 kg/m3. Record treatment-inlet composition and trace the receiving external plant. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: Aggregate net boundary volumes; keep recycled white water separate; reconcile water balance and inlet pollutants with external treatment inputs"
+      unit: "m3; kg"
+      frequency: "Continuous totals; representative samples"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "Mill boundary excluding external treatment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; laboratory blanks/standards; receiver records"
+    - protocol_id: cp_energy
+      process_id: "papermaking"
+      flow_role: "grid electricity"
+      record_type: "submeter"
+      raw_fields: "supply voltage; region; time; meter kWh; preparation/drying/sizing/finishing readings; loads; transformations; other grades"
+      collection_method: "Calibrated submetering with campaign timestamps; reconcile whole-site and grade/stage records, supply interface and transformer boundary. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: E_MJ = 3.6 * E_kWh; retain separate physical meter total and causal attributable consumption"
+      unit: "kWh; MJ"
+      frequency: "Continuous and campaign totals"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "Purchased-grid interface and scoped equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; bills; reconciliation; supplier mix"
+    - protocol_id: cp_heat
+      process_id: "papermaking"
+      flow_role: "delivered steam heat"
+      record_type: "enthalpy and supplier definition"
+      raw_fields: "steam mass; pressure; temperature; quality; enthalpy; condensate mass and return enthalpy; vent/blowdown; supplier reference state; k_bg; drying/sizing loads"
+      collection_method: "Calibrated steam/condensate meters and pressure/temperature records; use documented thermodynamic tables and measured steam quality; reconcile all return/vent states with supplier energy accounting. Supplier must define how net delivered heat relates to the GCV reference. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: H_net = (sum m_s*h_s - sum m_r*h_r)/1000; declare reference states for unreturned streams; H_bg = k_bg*H_net only with verified k_bg"
+      unit: "kg; kJ/kg; MJ"
+      frequency: "Continuous totals and state readings"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "External supply boundary to drying/redrying"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; enthalpy method/version; return ledger; supplier agreement"
+    - protocol_id: cp_pack
+      process_id: "papermaking"
+      flow_role: "each packaging input"
+      record_type: "weigh and reuse"
+      raw_fields: "row_id; net installed mass; core dimensions; packing count; grade; supplier; pallet reuse/replacement and losses"
+      collection_method: "Weigh individual installed components net of offcuts; reconcile issued stock, waste and reuse records; exclude packaging from Q. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: X_i = attributable component consumption; reuse service and replacement based on actual records without default lifetime"
+      unit: "kg"
+      frequency: "Each packing lot"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "Finished reels leaving gate"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Packing list; scale calibration; reuse log"
+    - protocol_id: cp_waste
+      process_id: "papermaking"
+      flow_role: "each exported waste"
+      record_type: "weighbridge and recipient"
+      raw_fields: "row_id; wet mass; dry solids; origin; contamination; receiver; treatment route; internal recovery; stock"
+      collection_method: "Calibrated scales and waste manifests; sample solids/composition, including separately collected paper-cutting dust and its collector opening/closing stocks; reconcile internal returned fibre and exported rejects independently; retain receiver confirmation. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: X_i = net exported waste mass; no internal broke as an export; record fate without automatic credit"
+      unit: "kg"
+      frequency: "Each consignment"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "External waste gate"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Waste manifests; receiver; sample and weighing records"
+    - protocol_id: cp_air
+      process_id: "papermaking"
+      flow_role: "each elementary emission"
+      record_type: "measurement and balance"
+      raw_fields: "row_id; species; CAS; carbon origin; medium/submedium; sampling location; size bins; concentration; dry/wet gas basis; flow; time; control status; water balance"
+      collection_method: "Representative outlet and fugitive monitoring or an explicitly supported closed balance; retain operating hours, blanks, uncertainty and control conditions. Screen actual cutting/winding sources and controls; measure residual outdoor dust separately from captured material and internal recovery. Do not treat detection limits as zero. Identify fossil/biogenic source independently. Preserve physical period totals, perform the following aggregation, then divide by Q from cp_mass to produce amounts per 1 kg reference flow: X_i = sum c_i*V_i/1000000 for c_i in mg/m3 and matching V_i in m3; use disjoint PM bins; H2O may use closed water balance; no unmeasured emission factor"
+      unit: "kg"
+      frequency: "Representative operating modes and period totals"
+      temporal_coverage: "Same complete declared period"
+      site_scope: "Actual outdoor releases from scoped equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Lab methods; calibration; operating log; detection limits; balance residuals"
+  calculation_rules:
+    - id: normalize_exchange
+      applies_to: "all inventory rows"
+      rule: "q_i = X_i / Q; X_i is the measured grade-attributable exchange amount; Q is accepted net paper kg from the same period and route. Reference product q = Q/Q = 1 kg."
+      inputs:
+        - X_i
+        - Q
+        - cp_mass
+        - "row protocol"
+      output: "amount per 1 kg reference flow"
+      source_ids:
+        - jrc-pulp-paper-bref-2015
+    - id: dry_solids
+      applies_to: "physical ledger"
+      rule: "m_dry = m_wet * (1 - w); w is measured, no default pulp/finished-paper moisture"
+      inputs:
+        - m_wet
+        - w
+        - cp_mass
+        - cp_material
+        - cp_waste
+      output: "kg dry solids"
+      source_ids:
+        - jrc-pulp-paper-bref-2015
+    - id: steam_link
+      applies_to: "steam_heat"
+      rule: "H_bg = k_bg * H_net; use cp_heat enthalpy balance and supplier-defined reference basis; unknown k_bg is pending and does not equal 1"
+      inputs:
+        - cp_heat
+        - "supplier definition"
+      output: "MJ; pending if unknown"
+      source_ids:
+        - jrc-pulp-paper-bref-2015
+    - id: physical_balances
+      applies_to: "material/water/carbon ledgers"
+      rule: "For each conserved quantity: external inputs = accepted paper + dispatched packaging + external wastes + elementary releases + returned utility water + closing-minus-opening stocks + documented residual. Include real dispatched cores, wrappers and pallets even though excluded from Q. Reconcile steam supply/condensate return as a separate physical utility-water circuit when the LCI energy exchange is net heat; do not count supply steam as purchased process water or its condensate as external wastewater. Internal recirculation cancels once, with equal sender/receiver quantities. Use each particulate stream’s actual carried moisture in the water ledger without duplicating vapour; do not invent a moisture fraction or treat a dry particulate metric as extra water. Carbon uses measured elemental fractions; actual biogenic CO2 remains in the inventory."
+      inputs:
+        - cp_mass
+        - cp_material
+        - cp_water
+        - cp_waste
+        - cp_air
+        - "measured composition"
+      output: "unallocated kg solids/water/C and explained residual"
+      source_ids:
+        - jrc-pulp-paper-bref-2015
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "every row"
+      requirement: "Verify physical identity, route, grade, chemical/CAS consistency, reference property and unit; identity and numeric background compatibility are separate decisions. Unresolved rows remain specific with no substitute UUID."
+      evidence: "Supplier specifications and actual reference definitions"
+    - id: dq_completeness
+      applies_to: "foreground and upstream"
+      requirement: "Reconcile physical solids/water/carbon ledgers and all utility/stage records. Add each actual unlisted chemical, packaging waste, VOC species or direct emission as its own atomic row. Neither this conditional list nor a non-detect alone proves absence."
+      evidence: "Process diagram; purchase/reject records; balance residual and uncertainty"
+    - id: dq_temporal
+      applies_to: "collection period"
+      requirement: "Same period and grade for Q and all exchanges; document coverage, abnormal operations, uncertainty and supplier vintage. No historical single-mill factor as a generic default."
+      evidence: "Time-stamped logs and complete record coverage"
+    - id: dq_linkage
+      applies_to: "steam_heat; akd; pam; pulp; wastewater"
+      requirement: "Missing supplier enthalpy/formulation/moisture bases or compatible external treatment are explicit dataset gaps, even when flow identity is known. Do not report a linked complete dataset until resolved."
+      evidence: "Supplier contracts and independently documented background quantities"
+validation_rules:
+  - rule_id: validation_rule_1
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_product: Require all reference qualifiers and exactly one base_paper output at 1 kg; reject an imaging coating, incompatible furnish or the unsupported mill route [andhra-thermal-base]."
+    source_ids: []
+  - rule_id: validation_rule_2
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_measurement: Q must be positive, finite, net of packaging and common to every normalized row in both languages. Preserve mass/volume/NCV/GCV distinctions and documented conversions; missing steam or chemical supplier-basis compatibility makes the concrete dataset incomplete."
+    source_ids: []
+  - rule_id: validation_rule_3
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_balances: Check unallocated physical mass/water/carbon balances before allocation; explain residuals with measurement uncertainty and stock changes. Require equal internal-link endpoints, disjoint PM fractions and no duplicated treatment/combustion emissions. Real biogenic CO2 must remain visible independent of LCIA or GHG reporting conventions."
+    source_ids: []
+  - rule_id: validation_rule_4
+    applies_to: "foreground_dataset_conformance"
+    rule: "validate_completeness: Reject unresolved positive-exchange identity or missing upstream/treatment linkage when delivering a complete dataset. An absent exchange needs evidenced nonoccurrence; a pending row, detection limit or unavailable tool is not a passing result."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground manufacturing data package; linked cradle-to-gate product dataset only after upstream and treatment compatibility is established"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Uncoated thermal base-paper supply to a downstream coater within the declared route and quality scope"
+  excluded_use: "Finished thermal recording paper; photo/electrosensitive grades; complete label; universal CPC 32123 proxy; direct claims about the named producer’s LCI"
+  required_metadata: "Reference qualifiers; gates; site; period; stage meters; supplier bases; all actual atomic exchanges; treatment recipient"
+  required_quality_disclosure: "Physical and allocated ledgers; balance residuals; uncertainty; identities; missing upstream links; pending steam/formulation bases; applicability limits"
+  update_trigger: "Changed furnish, coating state, sizing formulation, utility interface, treatment route, supplier reference basis or purchaser specification"
+data_sources:
+  - id: "jrc-pulp-paper-bref-2015"
+    type: "official_guidance"
+    reference: "European Commission JRC, Best Available Techniques Reference Document for the Production of Pulp, Paper and Board (2015), JRC95678. https://bureau-industrial-transformation.jrc.ec.europa.eu/sites/default/files/2019-11/PP_revised_BREF_2015.pdf ; Chapter 7, 7.1.1–7.1.10, 7.2.2.6–7.2.2.7; printed pp. 660–670, 711–714"
+    used_for: "Applicable papermaking-stage distinctions and residual/air-emission identification; not wood-processing evidence. Optional coating, integrated routes and historical/case numeric values are not adopted as default recipes or quantities. Collection protocols and scoped boundary are explicit PCR authoring choices, not a claim that BREF is an LCA allocation standard."
+  - id: "andhra-thermal-base"
+    type: "literature"
+    reference: "Andhra Paper Limited, Andhra Thermal Base Paper (NS), https://andhrapaper.com/product/andhra-thermal-base-paper-ns/ ; product description and Features"
+    used_for: "Verifiable real base-paper product before customer coating, with advertised ECF pulp and alkaline sizing. Manufacturer specifications are product-specific; no mill recipe, supplier quantities or non-integrated production route is inferred."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:bfca15ccd2b41118f55958750aec8ce48c93e0a19b24c78aaac2abdef1c399be"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6520"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6520
+          line: 63
+          column: 1
+        end:
+          offset: 8376
+          line: 79
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased bleached chemical papermaking pulp received at mill; no wood cooking or bleaching in foreground |\n| starting_condition_role | foreground entry gate |\n| product_classification_scope | Thermal-base-paper subset of CPC 32123, uncoated at dispatch |\n| recursive_input_rule | Trace same-category purchased base paper to its upstream manufacturing dataset; do not regenerate its pulp inventory here. A purchased-base-paper converting-only route is outside this manufacturing method. |\n| upstream_dataset_requirement | Require route-, state-, region-, time- and reference-basis-compatible cradle-to-gate datasets for pulp, utilities, chemicals, packaging and receiving treatment. Identity UUID verification alone does not satisfy this requirement. |\n| disclosure | Declare foreground gate-to-gate collection and upstream links separately; do not present missing upstream or treatment as zero-burden cradle-to-gate results. |\n\n- `boundary_manufacturing`: Include all observed preparation, papermaking, nonfunctional sizing, finishing, internal fibre/water recovery, utility use and dispatch packaging within the declared gate [jrc-pulp-paper-bref-2015, 7.1.1–7.1.10]. Add every actual chemical, carrier, packaging component and reject as a specific atomic exchange; the listed conditional recipe does not establish completeness.\n- `boundary_external_services`: Link upstream pulp and supplied energy plus external wastewater/waste treatment without duplicating their combustion, water-abstraction or treated-outfall emissions in the foreground. No arbitrary mass cut-off; disclose each missing exchange and upstream link. An on-site boiler, biological plant or direct water discharge requires expanded, independently evidenced inventories.\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 383
+              line: 10
+              column: 1
+            end:
+              offset: 450
+              line: 10
+              column: 68
+          text: "# Uncoated thermal base paper from purchased bleached chemical pulp"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6520
+              line: 63
+              column: 1
+            end:
+              offset: 6541
+              line: 63
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_37987"
+      family: "allocation"
+      span:
+        start:
+          offset: 37987
+          line: 514
+          column: 1
+        end:
+          offset: 38864
+          line: 519
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n- `allocation_subdivision`: First isolate the actual thermal-base-paper campaign using production lots, submetering and causal service records. Other mill grades retain their own physical production quantities. A shared-meter share may apply to an environmental-burden account, never to the measured real mass of pulp, accepted paper, broke or internal transfers.\n- `allocation_residues`: No automatic avoided-product or energy-recovery credit for internal broke, white water or exported waste. Record exported material fate and legal/physical waste status. A genuine saleable co-product requires separately evidenced subdivision or causal allocation and transparent physical and allocated ledgers; economic allocation is not inferred from waste revenue. This default route has one reference product, not an invented pulp co-product.\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 383
+              line: 10
+              column: 1
+            end:
+              offset: 450
+              line: 10
+              column: 68
+          text: "# Uncoated thermal base paper from purchased bleached chemical pulp"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 37987
+              line: 514
+              column: 1
+            end:
+              offset: 38027
+              line: 514
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_50432"
+      family: "validation"
+      span:
+        start:
+          offset: 50432
+          line: 555
+          column: 1
+        end:
+          offset: 51578
+          line: 562
+          column: 1
+      markdown: "## 9. Validation Rules\n\n- `validate_product`: Require all reference qualifiers and exactly one base_paper output at 1 kg; reject an imaging coating, incompatible furnish or the unsupported mill route [andhra-thermal-base].\n- `validate_measurement`: Q must be positive, finite, net of packaging and common to every normalized row in both languages. Preserve mass/volume/NCV/GCV distinctions and documented conversions; missing steam or chemical supplier-basis compatibility makes the concrete dataset incomplete.\n- `validate_balances`: Check unallocated physical mass/water/carbon balances before allocation; explain residuals with measurement uncertainty and stock changes. Require equal internal-link endpoints, disjoint PM fractions and no duplicated treatment/combustion emissions. Real biogenic CO2 must remain visible independent of LCIA or GHG reporting conventions.\n- `validate_completeness`: Reject unresolved positive-exchange identity or missing upstream/treatment linkage when delivering a complete dataset. An absent exchange needs evidenced nonoccurrence; a pending row, detection limit or unavailable tool is not a passing result.\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 383
+              line: 10
+              column: 1
+            end:
+              offset: 450
+              line: 10
+              column: 68
+          text: "# Uncoated thermal base paper from purchased bleached chemical pulp"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 50432
+              line: 555
+              column: 1
+            end:
+              offset: 50454
+              line: 555
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "system_boundary_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_6520"
+      source_span:
+        start:
+          offset: 7562
+          line: 76
+          column: 1
+        end:
+          offset: 7963
+          line: 76
+          column: 402
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "system_boundary_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_6520"
+      source_span:
+        start:
+          offset: 7964
+          line: 77
+          column: 1
+        end:
+          offset: 8374
+          line: 77
+          column: 411
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_37987"
+      source_span:
+        start:
+          offset: 38029
+          line: 516
+          column: 1
+        end:
+          offset: 38392
+          line: 516
+          column: 364
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_37987"
+      source_span:
+        start:
+          offset: 38393
+          line: 517
+          column: 1
+        end:
+          offset: 38862
+          line: 517
+          column: 470
+    - pointer: "/validation_rules/0"
+      rule_id: "validation_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_50432"
+      source_span:
+        start:
+          offset: 50456
+          line: 557
+          column: 1
+        end:
+          offset: 50654
+          line: 557
+          column: 199
+    - pointer: "/validation_rules/1"
+      rule_id: "validation_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_50432"
+      source_span:
+        start:
+          offset: 50655
+          line: 558
+          column: 1
+        end:
+          offset: 50943
+          line: 558
+          column: 289
+    - pointer: "/validation_rules/2"
+      rule_id: "validation_rule_3"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_50432"
+      source_span:
+        start:
+          offset: 50944
+          line: 559
+          column: 1
+        end:
+          offset: 51304
+          line: 559
+          column: 361
+    - pointer: "/validation_rules/3"
+      rule_id: "validation_rule_4"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_50432"
+      source_span:
+        start:
+          offset: 51305
+          line: 560
+          column: 1
+        end:
+          offset: 51576
+          line: 560
+          column: 272
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6520"
+      source_span:
+        start:
+          offset: 6520
+          line: 63
+          column: 1
+        end:
+          offset: 6541
+          line: 63
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6520"
+      source_span:
+        start:
+          offset: 6569
+          line: 67
+          column: 1
+        end:
+          offset: 7560
+          line: 74
+          column: 175
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_37987"
+      source_span:
+        start:
+          offset: 37987
+          line: 514
+          column: 1
+        end:
+          offset: 38027
+          line: 514
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_50432"
+      source_span:
+        start:
+          offset: 50432
+          line: 555
+          column: 1
+        end:
+          offset: 50454
+          line: 555
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:bfca15ccd2b41118f55958750aec8ce48c93e0a19b24c78aaac2abdef1c399be"
+  generated_content_sha256: "sha256:76f9aa3332972eb3c377eeb29d907002a295de168a3d199544e74ee5d2d0ab39"

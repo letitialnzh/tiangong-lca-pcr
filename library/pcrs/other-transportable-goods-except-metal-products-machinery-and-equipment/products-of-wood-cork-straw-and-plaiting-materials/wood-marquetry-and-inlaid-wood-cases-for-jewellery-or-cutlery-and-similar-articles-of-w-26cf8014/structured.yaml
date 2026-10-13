@@ -1,10 +1,1262 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31913"
-  title: "Wood marquetry and inlaid wood; cases for jewellery or cutlery, and similar articles, of wood; statuettes and other ornaments, of wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.wood-marquetry-and-inlaid-wood-cases-for-jewellery-or-cutlery-and-similar-articles-of-w-26cf8014"
+  classification_refs: "CPC 3.0 31913; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Single-piece hardwood carved indoor decorative statuettes and ornaments with brush-applied shellac"
+  excluded_products: "Marquetry; storage cases; functional furniture/tableware/toys; glued or treated wood; other finish routes"
+  representative_product: "A kiln-dried solid hardwood decorative statuette, dry sanded and clear shellac brush finished"
+  production_route: "Delivered kiln-dried untreated hardwood → carve → dry sand → mix shellac/ethanol → brush → ambient dry → inspect → pack"
+  market_state: "Accepted finished indoor ornament at factory dispatch gate, packaging inventoried separately"
+functional_unit:
+  what: "Indoor decorative display with the specified carved design and cleanable transparent finish"
+  how_much: "1 kg accepted net finished ornament, including retained coating but excluding transport packaging"
+  how_well: "Design/dimensions, botanical wood species, moisture, workmanship, dry-film acceptance and indoor exposure are declared and passed"
+  how_long_or_cycle: "One factory production and dispatch cycle; no fixed use lifetime or replacement equivalence"
+  reference_flow_link: "finished_ornament"
+system_boundary:
+  rules:
+    - rule_id: boundary_upstream
+      applies_to: "all inventory rows"
+      rule: "Include upstream production and actual delivered transport once; retain upstream biogenic and fossil carbon emissions as distinct LCI exchanges. No GHG reporting convention permits deletion of biogenic CO2. Missing delivered background or waste receiver linkage is incomplete data."
+      source_ids:
+        - corrim-northern-lumber-2025
+    - rule_id: boundary_stages
+      applies_to: "ornament_manufacture"
+      rule: "Aggregate carving, sanding, mixing, brush coating, ambient drying, inspection and packing as one foreground unit, while preserving independent stage measurements. No duplicated intermediate finished-product exchange; process links, if later decomposed, carry equal physical quantities at both ends."
+      source_ids:
+        - usda-wood-handbook-2021
+        - epa-coating-eiip-2001
+    - rule_id: boundary_losses
+      applies_to: "ornament_manufacture"
+      rule: "Account for reject/rework, collection equipment, escaped dust and solvent/water releases. Plant lighting/ventilation electricity is measured and attributed; reusable capital equipment/brush manufacture is outside the declared foreground, with exclusions and significance reviewed. No threshold is assumed to justify omission of a detected chemical or important waste."
+      source_ids:
+        - epa-coating-eiip-2001
+    - rule_id: boundary_route
+      applies_to: "ornament_manufacture"
+      rule: "Verify brush application and ambient drying, with no combustion, drying kiln, thermal abatement or solvent recovery. Introducing these operations, denaturants, post-coating sanding or another finish requires additional atomic inventories and method review; do not silently apply this route."
+      source_ids:
+        - gsa-shellac-2017
+        - usda-finishing-1999
+boundary_abstraction:
+  declared_starting_condition: "Untreated kiln-dried non-coniferous sawn blank and separately purchased dry shellac, ethanol and consumables delivered to the factory"
+  starting_condition_role: "foreground_entry"
+  product_classification_scope: "Carved decorative subset of CPC3.0 31913; no classification-wide method"
+  recursive_input_rule: "Purchased finished ornaments or previously coated blanks are outside this manufacturing route; do not relabel them as virgin dry sawn blanks. Internal rework of the same batch remains in the single unit without a new reference output."
+  upstream_dataset_requirement: "Trace wood forestry/sawmill/drying, resin refining, ethanol manufacture, electricity and each consumable to compatible supplier/background datasets, including inbound freight and waste treatment. An entry boundary is not a burden cut-off."
+  disclosure: "Declare site/time, species/supply treatment, meters, coating formulation, packaging, release subcompartments, stock changes, residue destinations, allocation and unresolved supplier quantity compatibility."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Wood marquetry and inlaid wood, cases for jewellery or cutlery, and similar articles, of wood, statuettes and other ornaments, of wood"
+    uuid: "0c60a652-810a-4789-ab0c-ee9babbb3fd7"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Decorative function and design"
+    - "indoor exposure"
+    - "single-piece construction"
+    - "botanical species/provenance"
+    - "untreated kiln-dried supply"
+    - "incoming and final moisture dry basis"
+    - "shellac grade/wax status"
+    - "solvent purity/origin/water"
+    - "brush and ambient-drying route"
+    - "dry-film and residual-solvent acceptance"
+    - "accepted net product mass"
+    - "site/period"
+    - "low-voltage meter"
+    - "residue receivers and status"
+    - "packaging specification"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh accepted dry-to-specification finished ornaments on a calibrated scale, excluding packaging. Retained shellac, moisture and residual solvent are included in net output; keep component amounts separately. Aggregate by homogeneous species/design/finish batch."
+  - id: moisture_basis
+    applies_to: "dry_wood; finished_ornament; offcut_sale; offcut_waste; dust_waste; reject_waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Record dry-basis moisture u = water mass / oven-dry wood mass. For uncoated wood, dry wood mass = wet wood mass / (1 + u); use measured species/batch moisture. For coated output/rejects, subtract measured coating and solvent masses before applying the wood-moisture conversion. Volatile extractives can bias oven-dry moisture measurements; assess the actual species and uncertainty rather than drying a coated object as a wood sample. [usda-wood-handbook-2021]"
+  - id: solvent_basis
+    applies_to: "ethanol; ethanol_air; shellac_waste; solvent_waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Keep delivered liquid mass, ethanol species mass, shellac dry solids and water distinct. Confirm supplier reference basis before linking; no generic alcohol, denaturant or wet/dry substitution. Volume-to-mass requires actual temperature and measured or supplier-verified solution density, not a database secondary coefficient."
+  - id: electrical_basis
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "The electricity record uses the energy property with MJ reference, not fuel combustion heat. Convert metered kWh to MJ using 1 kWh = 3.6 MJ; match <1 kV consumer delivery and avoid double-counting transformer losses."
+  - id: particle_basis
+    applies_to: "pm25; pmcoarse; pmover10"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Report disjoint size bins from the same source/time/method and actual release boundary. Reject negative difference or incompatible totals; retain unknown size distribution as pending rather than treating missing fractions as zero."
+process_map:
+  - id: ornament_manufacture
+    name: "Carving through finished ornament dispatch"
+    inclusion: "required"
+    inclusion_condition: "Declared single-piece hardwood and shellac brush route"
+    role: "foreground_production"
+    quantitative_reference: "1 kg finished_ornament"
+process_inventory:
+  - id: ornament_manufacture
+    label: "Carving through finished ornament dispatch"
+    inputs:
+      product:
+        - row_id: dry_wood
+          role: "Dry Wood"
+          name: "Sawnwood, hardwood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "43103a96-43df-4f35-ad02-728237b3f815"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Purchased untreated kiln-dried hardwood sawn blank. Record botanical species, dimensions, moisture, provenance and supplier. A generic sawnwood identity supplies no species-specific background or loss factor. The selected kiln-dried hardwood sawnwood identity applies only when actual incoming blank thickness exceeds 6 mm; measure and declare that dimension, with species, treatment, moisture and the sawmill-versus-delivered gate. Thinner feedstock requires separate flow-identity and applicability review, not a guessed dimension. The seat-frame example does not establish this ornament supplier or delivered background."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_materials."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: electricity
+          role: "Electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Purchased grid electricity at the low-voltage consumer meter (<1 kV). Include carving, extraction fans, sanding, mixing, ventilation and packing; retain their separate submeter records. Use this UUID only for that voltage and delivery interface, with the actual regional/year background. Actual provider, supply geography, year, grid mix and loss boundary remain to be verified; this physical low-voltage locator does not establish a China or generic world background."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_energy."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges: []
+        - row_id: abrasive
+          role: "Abrasive"
+          name: "Abrasive paper, at plant"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ba6c99d4-60d9-46a5-9ef5-ca3d0b877d57"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One paper-backed sanding abrasive consumable. Confirm actual abrasive mineral, backing, binder, grit and supplier; quantify whole consumable mass, not bulk aluminium oxide. Generic abrasive-paper identity is conditional on actual paper construction; cloth belts are excluded."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_materials."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: shellac
+          role: "Shellac"
+          name: "Dry refined shellac resin flakes"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Dry refined lac-insect shellac resin, mixed on site with the separately recorded ethanol. Require supplier grade, wax status, dry solids and impurity declaration. Raw gum exudate, Chinese tree lacquer and premixed varnish are not this exchange."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_finish."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_finish
+              source_ids:
+                - usda-finishing-1999
+                - gsa-shellac-2017
+            ranges: []
+        - row_id: ethanol
+          role: "Ethanol"
+          name: "Ethanol"
+          flow_type: "product"
+          flow_ref:
+            uuid: "df7bb021-85c3-4d72-ad46-29e83afe64e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Undenatured ethanol for shellac preparation and brush cleaning, without intentionally added other solvents. Record delivered purity and water; link the supplier amount basis. Chemical identity alone does not specify fermentation or fossil production. Separate delivery mass from ethanol-species mass; supplier admixtures require new atomic rows and scope review."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_finish."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_finish
+              source_ids:
+                - gsa-shellac-2017
+                - epa-coating-eiip-2001
+            ranges: []
+        - row_id: carton
+          role: "Carton"
+          name: "corrugated board boxes"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f197bec-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "A purchased finished corrugated carton with declared actual fibre furnish and supplier. Weigh cartons issued net of returns, with an explicit account of any scrap. Do not assume a database fibre recipe for the site. This UUID has explicit source furnish of 16.6% primary fibre and 83.4% recycled fibre. Use it conditionally only after supplier evidence confirms compatible actual carton furnish, construction and delivery/reference basis. These values constrain UUID applicability, not the factory recipe or an assumed measured composition. If actual furnish differs or is unknown, keep provider/background linkage pending and separately review an applicable identity before using that linkage."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_pack."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges: []
+        - row_id: film
+          role: "Film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Polyethylene protective film only when actually used. Confirm PE polymer, film format, thickness and supplier. The film identity does not authorize other polymers or foam. Verify actual supplied PE-film grade and provider/reference state before background linkage; source-classification debt is not resolved by physical polymer identity."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_pack."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_ornament
+          role: "Finished Ornament"
+          name: "Wood marquetry and inlaid wood, cases for jewellery or cutlery, and similar articles, of wood, statuettes and other ornaments, of wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "0c60a652-810a-4789-ab0c-ee9babbb3fd7"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Exactly one final reference output: accepted single-piece hardwood carved ornament after shellac drying and packing, excluding packaging mass. The broad product record explicitly includes wooden statuettes; dataset qualifiers restrict it to this method. No intermediate output reuses this reference UUID."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_product
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: offcut_sale
+          role: "Offcut Sale"
+          name: "Wood material"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only separately sorted clean sawn/carved offcuts with documented useful function and purchaser acceptance. Record actual physical output before any burden allocation. The same piece cannot also occur in offcut_waste; loose chips or dust need their own identity if sold. Wood material is a broad foreground Product flow locator, restricted here to one segregated actual clean, unglued, uncoated, untreated solid hardwood carving-offcut grade with species, dimensions/form, moisture, useful function, purchaser/provider gate and measured mass declared. It establishes no waste-to-product conversion, agreed selling function, virgin-product equivalence, background burden or substitution credit by itself. Coated rejects, unsorted chips and dust are not this row."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-northern-lumber-2025
+            ranges: []
+      waste:
+        - row_id: offcut_waste
+          role: "Offcut Waste"
+          name: "Offcut"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "acc22294-8e77-4784-988f-2499be3c60eb"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Unagglomerated untreated hardwood carving offcuts discarded to an identified receiver, before shellac application, with no adhesive contamination. Confirm actual clean state and receiver acceptance. Do not extend this row to coated rejects."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-northern-lumber-2025
+            ranges: []
+        - row_id: dust_waste
+          role: "Dust Waste"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collected clean wood saw/carving/sanding fines removed from bins and filters before finishing. The record includes sanding and grinding; use only the untreated combustion/recycling receiver route. Weigh captured material separately from escaped air particles and from dust retained on spent abrasive paper."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: reject_waste
+          role: "Reject Waste"
+          name: "Wood waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2ef9d37a-2fbf-42f6-8ccf-5d6677d5cfd8"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Discarded shellac-coated wooden ornaments with the coating mass, chemistry and receiver declared. The broad wood-waste definition includes durable wooden products; it establishes no treatment or clean-fuel suitability. Never combine with clean offcuts or assume avoided virgin wood. Use only for the actual non-agglomerated discarded whole carved wood object or pieces with retained shellac/ethanol/water composition and contamination declared; verify receiver/provider acceptance and compatible treatment independently. The raw primary-production label does not identify a treatment technology or remove coating contamination."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - usda-finishing-1999
+            ranges: []
+        - row_id: spent_abrasive
+          role: "Spent Abrasive"
+          name: "Spent abrasive waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "f0a52dd6-0027-4033-9068-f293526f958f"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Spent whole sanding paper with declared retained wood dust and mineral/binder content. Partition retained wood in the physical balance once; it is not also loose dust_waste. Link the actual receiver, not a clean-paper recycling default. The broad spent-abrasive Waste identity applies to this actual whole paper-backed dry-sanding consumable only with paper, abrasive mineral, binder, attached clean hardwood dust, moisture and contamination composition declared and receiver/provider acceptance verified. No metal blasting medium, clean waste paper, cloth belt, clean-paper recycling or treatment burden is assumed."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids: []
+            ranges: []
+        - row_id: shellac_waste
+          role: "Shellac Waste"
+          name: "Waste paint"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "877e5a04-76c8-4c5b-ac4c-062f5beeb2bd"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Unused shellac coating solution discarded from a separate coating container. Measure wet mass and shellac/ethanol/water composition. Do not also report the same liquid as brush-rinse solvent; retained ethanol is not counted as air emission. The broad waste-coating-residue identity is conditional on actual separately collected wet leftover refined-shellac/ethanol/water coating from this mixing/application route and receiver/provider confirmation of that liquid waste state. Record composition, generated mass, storage and accepted offsite treatment; no pigment, overspray, sludge, filter, generic paint recipe or hazardous classification is inferred from the broad name. It does not identify the separate ethanol brush-rinse stream or establish compatible treatment background."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_finish."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_finish
+              source_ids:
+                - epa-coating-eiip-2001
+            ranges: []
+        - row_id: solvent_waste
+          role: "Solvent Waste"
+          name: "Spent ethanol brush-rinse solvent"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Separately contained spent ethanol used to rinse the reusable application brush, with shellac contamination and water quantified. Collection and offsite treatment are included; no on-site solvent incineration, distillation or recovery unit is assumed."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_finish."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_finish
+              source_ids:
+                - epa-coating-eiip-2001
+            ranges: []
+      elementary:
+        - row_id: pm25
+          role: "Pm25"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Wood dust emitted to outdoor air, unspecified subcompartment, PM2.5 fraction. Include measured outlet and fugitive releases after collection, not filter catch or indoor worker exposure. No mineral abrasive share is attributed to wood without analysis."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: pmcoarse
+          role: "Pmcoarse"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Outdoor-air wood particulate fraction between PM2.5 and PM10. Calculate only from compatible paired PM10 and PM2.5 observations. If only total PM is measured, keep size allocation pending; do not invent a split."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: pmover10
+          role: "Pmover10"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Outdoor-air wood particulate fraction above PM10. Calculate only from compatible total PM and PM10 observations. This row and the other two size fractions are disjoint; never add PM10 or total PM as additional exchanges."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: ethanol_air
+          role: "Ethanol Air"
+          name: "ethanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9349-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Ethanol CAS64-17-5 released across the plant boundary to outdoor air, unspecified subcompartment, from shellac mixing, application, drying and brush rinsing. Use species mass balance including stock, retained product solvent and separately removed liquids. Indoor exposure is not an additional LCI release of the same mass."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_finish."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_finish
+              source_ids:
+                - epa-coating-eiip-2001
+            ranges: []
+        - row_id: water_air
+          role: "Water Air"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Net water vapour released to outdoor air during ambient wood equilibration and finish drying. Quantify wood moisture changes and water present in supplied ethanol/resin, residual liquid and product. Negative net evaporation requires a separate water-uptake exchange; do not force it to zero. Keep the output nonnegative only when evaporation is substantiated; actual atmospheric uptake needs a separately verified atomic input, not a negative vapour output or a forced balance residual."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_water."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: acetic_air
+          role: "Acetic Air"
+          name: "acetic acid"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-92c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Acetic acid CAS64-19-7 to outdoor air only when identified in actual wood/finish release tests. Species identity is not evidence of a positive emission. Screen actual species and ambient route; do not transplant kiln-drying emission factors."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: pinene_air
+          role: "Pinene Air"
+          name: "pin-2(3)-ene"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "0a701083-c7e6-43d1-8ae5-e62050edc5dc"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Alpha-pinene CAS80-56-8 to outdoor air only when the actual wood species and emission speciation demonstrate it. Do not substitute a specific enantiomer CAS7785-26-4 for an unseparated alpha-pinene measurement; other terpenes require separate rows."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: formaldehyde_air
+          role: "Formaldehyde Air"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Formaldehyde CAS50-00-0 to outdoor air only if found by representative actual wood/finish testing. Absence of synthetic adhesive does not prove zero natural release; evidence must distinguish nondetection, detection limit, missing measurement and measured zero."
+          amount:
+            expression: "Collected batch exchange / accepted net finished-ornament batch mass; record using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_physical
+    applies_to: "ornament_manufacture"
+    rule: "Maintain an unallocated physical wood/water/coating/carbon ledger and a separate environmental-burden ledger. Never multiply measured product/co-product output masses by allocation fractions. Internal transfers and stock are physical quantities; reconciled yields precede allocation."
+    source_ids:
+      - corrim-northern-lumber-2025
+      - usda-wood-handbook-2021
+  - rule_id: allocation_status
+    applies_to: "offcut_sale; offcut_waste; dust_waste; reject_waste"
+    rule: "Assign residue status by actual function, market specification, clean/contaminated condition and receiver. Do not classify every wood loss as burden-free waste. Sale alone does not establish an avoided-product credit. Waste transport/treatment remains assigned to production; contaminants determine receiver suitability."
+    source_ids:
+      - corrim-northern-lumber-2025
+  - rule_id: allocation_burdens
+    applies_to: "ornament_manufacture"
+    rule: "First subdivide attributable stage burdens using records; final finishing and packaging belong to the ornament. For remaining genuinely shared burdens, justify a physical relationship and its measured basis. If no defensible physical relationship exists, disclose economic allocation using consistent quantities/prices and sensitivity analysis. Do not import CORRIM lumber mass shares or apply automatic zero burdens."
+    source_ids:
+      - corrim-northern-lumber-2025
+  - rule_id: allocation_no_credit
+    applies_to: "ornament_manufacture"
+    rule: "No automatic substitution or energy credit for exported offcuts/dust and no onsite biomass use in this route. Any expanded system must separately identify actual displaced function, receiver process, quality and mutually exclusive attribution; retain all real carbon releases."
+    source_ids:
+      - corrim-northern-lumber-2025
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_product
+      process_id: "ornament_manufacture"
+      flow_role: "accepted output"
+      record_type: "measured_record"
+      raw_fields: "Batch id; species; design; accepted net product kg; rejected count/mass; finish/wax; dry film; moisture; retained solvent; packaging tare; final stock"
+      collection_method: "Calibrated batch weighing after finish acceptance, with documented moisture and retained-coating/solvent tests; retain drawings, single-piece proof and signed acceptance."
+      unit: "kg"
+      frequency: "Each accepted batch"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+    - protocol_id: cp_materials
+      process_id: "ornament_manufacture"
+      flow_role: "dry wood and abrasive"
+      record_type: "measured_record"
+      raw_fields: "Supplier/batch; botanical species; origin; kiln treatment; net wood kg; moisture sample wet/dry masses; abrasive mass/mineral/backing/binder; receipts; opening/closing stock; returns; density/volume basis when used"
+      collection_method: "Calibrated scales and representative untreated wood oven-dry moisture samples; separate coating solids from wood. Reconcile invoice/stock and supplier delivered background."
+      unit: "kg"
+      frequency: "Each receipt and production batch"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+    - protocol_id: cp_energy
+      process_id: "ornament_manufacture"
+      flow_role: "electricity"
+      record_type: "measured_record"
+      raw_fields: "Meter ids; voltage; kWh readings; stage equipment runtimes; fan/ventilation/lighting loads; production batch/idle status; attribution evidence"
+      collection_method: "Read calibrated <1 kV consumer meter and submeters; reconcile whole-period electricity including downtime and collection fans; attribute using measured stage use."
+      unit: "MJ"
+      frequency: "Each shift plus batch reconciliation"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+    - protocol_id: cp_finish
+      process_id: "ornament_manufacture"
+      flow_role: "shellac and ethanol balance"
+      record_type: "measured_record"
+      raw_fields: "Resin/ethanol delivery mass and composition; purity/wax; water fraction; solvent origin; supplier amount basis; formulation sheet; batch additions; cleaning withdrawals; opening/closing stocks; retained product/reject solvent; unused coating and separate rinse liquids; measured exhaust/fugitive ethanol; uncertainty"
+      collection_method: "Calibrated gravimetric mixing/stock reconciliation and supplier certificates; sample distinct waste liquids and retained film/solvent. Verify brush/ambient route and no denaturants. Use species mass balance with representative testing, not total VOC as carbon or percent recipes."
+      unit: "kg"
+      frequency: "Each mixture, cleaning event and batch"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+    - protocol_id: cp_residues
+      process_id: "ornament_manufacture"
+      flow_role: "each segregated residue"
+      record_type: "measured_record"
+      raw_fields: "Row id; stage; batch; gross/tare; wet wood and dry solids; coating/solvent/dust on abrasive; stock changes; sale contracts; prices if needed; receiver and accepted treatment; transfer receipts"
+      collection_method: "Weigh each separate offcut/dust/reject/abrasive stream and reconcile receiving tickets. Record composition and physical destination before environmental allocation; exclude double counting between waste streams."
+      unit: "kg"
+      frequency: "Each bin/dispatch and batch"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+    - protocol_id: cp_air
+      process_id: "ornament_manufacture"
+      flow_role: "each outdoor particulate/species"
+      record_type: "measured_record"
+      raw_fields: "Source/stage; sampling method; volume and T/P/moisture basis; emission concentration; duration; capture/outlet/fugitive measurement; PMtotal/PM10/PM2.5; wood/mineral share; CAS speciation; nondetection limits; ambient blank; uncertainty"
+      collection_method: "Representative post-control outdoor-release tests with synchronized compatible gas basis and size methods; integrate concentration × exhaust quantity and fugitive periods. Screen actual wood/finish species. EPA sawmill PTE factors and softwood survey values are not carving defaults."
+      unit: "kg"
+      frequency: "Representative operating states and each changed route/species"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+    - protocol_id: cp_water
+      process_id: "ornament_manufacture"
+      flow_role: "net ambient water transfer"
+      record_type: "measured_record"
+      raw_fields: "Incoming/final wood and residue dry masses and moisture; water in resin/ethanol and waste liquids; retained product water; opening/closing stocks; ambient T/RH; uptake versus evaporation"
+      collection_method: "Use paired gravimetric moisture and liquid composition records with stock correction. State uncertainty and sign; distinguish ambient uptake from vapour release without assuming kiln drying."
+      unit: "kg"
+      frequency: "Each batch, including ambient-drying period"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+    - protocol_id: cp_pack
+      process_id: "ornament_manufacture"
+      flow_role: "carton and PE film"
+      record_type: "measured_record"
+      raw_fields: "Actual material specification/fibre furnish; PE polymer/thickness; supplier; net issued mass; returns/scrap; output package bill; inbound freight basis"
+      collection_method: "Weigh each packaging component separately and reconcile store/pack-out. Declare unused film with documented absence; add separate atomic packaging-waste rows if generated, with receivers."
+      unit: "kg"
+      frequency: "Each packing batch"
+      temporal_coverage: "Complete selected production period, seasonal/shift coverage disclosed"
+      site_scope: "One declared site and homogeneous species/design/finish route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Raw tickets; calibration; uncertainty; supplier certificates; stock and stage reconciliation"
+  calculation_rules:
+    - id: batch_normalization
+      applies_to: "all inventory rows"
+      rule: "For each row sum the attributable measured exchange amount over the selected homogeneous production period, then divide by accepted net finished-ornament kg. The final reference output is 1 kg. Failed output contributes burdens and waste, not the accepted denominator."
+      inputs:
+        - "batch exchange amount"
+        - "accepted net finished-ornament kg"
+        - cp_product
+      output: "exchange amount per 1 kg reference flow"
+      source_ids: []
+    - id: electricity_conversion
+      applies_to: "electricity"
+      rule: "Metered electricity MJ = recorded kWh × 3.6; divide attributable MJ by the same accepted net finished-ornament kg."
+      inputs:
+        - "meter kWh"
+        - cp_energy
+        - cp_product
+      output: "MJ per 1 kg reference flow"
+      source_ids: []
+    - id: uncoated_wood_moisture
+      applies_to: "uncoated wood samples and measured product-component separation"
+      rule: "Use these collection-ledger equations before normalization or burden allocation. B is accepted batch net ornament mass (kg). For every uncoated wood sample, u = (m_wet - m_dry) / m_dry and m_dry = m_wet / (1 + u). Coated final/reject masses are first separated into wood, water, retained shellac and retained solvent by measured composition; whole ornament mass is not oven-dry wood mass."
+      inputs:
+        - cp_materials
+        - cp_product
+        - cp_residues
+      output: "separate wood, water, coating and solvent quantities"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: dry_wood_reconciliation
+      applies_to: "ornament_manufacture physical dry-wood ledger"
+      rule: "Dry wood entering + opening dry-wood stock = dry wood retained in accepted products + dry wood in saleable offcuts + discarded offcuts + collected dust + rejects + dust retained on spent abrasive + outdoor wood-dust release + wood-derived volatile mass + closing dry-wood stock + measured reconciliation residual. Separate wood/mineral dust by composition; do not force all total-PM mass into wood yield. Inventory changes of work-in-progress are included, and rework transfers cancel within the unit. The residual has measurement uncertainty and investigation, not a new fictitious waste exchange."
+      inputs:
+        - cp_materials
+        - cp_product
+        - cp_residues
+        - cp_air
+      output: "dry-wood balance, WIP/rework and measured residual"
+      source_ids: []
+    - id: ethanol_shellac_reconciliation
+      applies_to: "shellac and ethanol species ledgers"
+      rule: "For ethanol species: delivered ethanol + opening ethanol stock = retained ethanol in accepted product/rejects + ethanol in discarded coating solution + ethanol in separate rinse solvent + outdoor ethanol release + closing stock + reconciliation residual. Incoming species mass = delivered liquid mass × measured ethanol mass fraction. Sum releases across mixing/application/drying/cleaning once, net of ambient background; no assumed 100% volatilization. Shellac dry solids are balanced independently among accepted film, rejects, waste coating, rinse residue and stock."
+      inputs:
+        - cp_finish
+        - cp_product
+        - cp_residues
+        - cp_air
+      output: "ethanol species and independent shellac dry-solids balances"
+      source_ids:
+        - epa-coating-eiip-2001
+    - id: matched_particle_partition
+      applies_to: "pm25; pmcoarse; pmover10"
+      rule: "For matched cumulative particle observations: PM2.5 bin = PM2.5; coarse bin = PM10 - PM2.5; >PM10 bin = PMtotal - PM10. Require PMtotal ≥ PM10 ≥ PM2.5 ≥ 0, same size definitions/method/time/source, and post-control outdoor releases. These bins sum to PMtotal once; filter catch remains waste, and indoor samples cannot be added to the same released mass. PTE tables are not measurements."
+      inputs:
+        - cp_air
+        - cp_residues
+      output: "exclusive outdoor particle masses"
+      source_ids:
+        - epa-sawmill-pte-2014
+    - id: water_carbon_reconciliation
+      applies_to: "ornament_manufacture physical water/carbon ledgers"
+      rule: "Water ledger covers wood moisture, liquid-input water, waste-liquid water, product/residue retained water, stock and net ambient uptake/vapour. Carbon ledger separately records dry wood and shellac carbon from measured/supplier composition, ethanol carbon from confirmed species amount, retained carbon, sale/waste transfers and outdoor volatile/particle carbon. Reconcile without assuming a universal wood carbon fraction or transferring a northern softwood survey coefficient. Track biogenic versus fossil origin for wood/resin/ethanol/background emissions; LCIA conventions never change the physical ledger."
+      inputs:
+        - cp_materials
+        - cp_finish
+        - cp_product
+        - cp_residues
+        - cp_air
+        - cp_water
+      output: "separate measured water and biogenic/fossil carbon ledgers"
+      source_ids: []
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: quality_basis
+      applies_to: "all inventory rows"
+      requirement: "Same accepted 1 kg denominator in all records; one species/design/finish scope or separately measured strata. Reject unsupported count, volume, wet/dry or supplier reference conversions."
+      evidence: "cp_product; cp_materials; cp_finish"
+    - id: quality_absence
+      applies_to: "conditional rows"
+      requirement: "Nondetection, measured zero, absent process and unmeasured are distinct. State test coverage and detection limits; uncertainty/speciation gaps remain pending. Add a specific atomic row for any identified additional ingredient, packaging waste or released species."
+      evidence: "cp_air; cp_finish; cp_pack"
+    - id: quality_identity
+      applies_to: "UUID-bearing rows"
+      requirement: "Verify actual material, route, medium, property, supplier amount basis and background context. Identity success does not complete the data package. Unknown UUIDs or source defects must remain disclosed and resolved before claiming complete compatible linkage."
+      evidence: "supplier certificates; receiver manifests; direct identity metadata"
+    - id: quality_coverage
+      applies_to: "ornament_manufacture"
+      requirement: "Disclose production period, season/shift/site representation, calibration and uncertainty; retain complete stage and physical ledgers and the separate burden allocation ledger. Source survey numbers are not industry defaults for the selected hardwood route."
+      evidence: "all collection protocols"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "reference product"
+    rule: "Reject classification-label-only applicability. Verify single-piece untreated kiln-dried hardwood, indoor decorative function, shellac/undenatured-ethanol brush route and all required qualifiers; excluded product functions require another method."
+    source_ids:
+      - usda-wood-handbook-2021
+      - usda-finishing-1999
+  - rule_id: validate_reference
+    applies_to: "all inventory rows"
+    rule: "Exactly one finished_ornament product output carries the reference UUID and 1 kg. All row, protocol and normalization denominators agree; exclude packaging from net reference mass and exclude rejected product from the denominator."
+    source_ids: []
+  - rule_id: validate_balances
+    applies_to: "ornament_manufacture"
+    rule: "Check measured dry wood, coating solids, ethanol species, water and carbon balances with declared uncertainties and stock changes. Investigate residuals; confirm equal internal transfer quantities and no physical allocation of co-product outputs."
+    source_ids:
+      - usda-wood-handbook-2021
+      - epa-coating-eiip-2001
+      - corrim-northern-lumber-2025
+  - rule_id: validate_emissions
+    applies_to: "elementary outputs"
+    rule: "Verify outdoor-air subcompartment, CAS and species mass rather than total VOC-as-carbon. Require disjoint particle size bins and no indoor/outdoor double count. No unverified correction, surrogate, enantiomer or missing-fraction substitution; unmeasured emissions remain unresolved."
+    source_ids:
+      - epa-coating-eiip-2001
+      - epa-sawmill-pte-2014
+  - rule_id: validate_destinations
+    applies_to: "waste and coproduct outputs"
+    rule: "Verify clean/contaminated state, separate receiver function, composition and upstream/treatment linkage. No zero-burden wood-loss default and no automatic substitution credit. Declare missing UUIDs and source metadata defects rather than claiming scientific approval or full completeness."
+    source_ids:
+      - corrim-northern-lumber-2025
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Supply of the declared indoor carved shellac-coated hardwood ornament, after complete data collection, compatible linkage and independent quality review"
+  allowed_use: "Same species/design/function/route and reference basis; explicit uncertainty and applicability review"
+  excluded_use: "Whole CPC31913 coverage; storage case, inlay, tableware or furniture substitution; alternate coating; generic per-piece aesthetic equivalence; methodology approval inferred from packaging"
+  required_metadata: "All reference qualifiers, production period/site, supplier/background pins and delivery bases, receiver routes, full physical ledgers and burden allocation"
+  required_quality_disclosure: "UUID gaps; metadata defects; measurements/nondetection; uncertainty; balances; representativeness; exclusions; pending independent scientific review"
+  update_trigger: "Wood species/supply treatment, design, coating/solvent/denaturant, application/drying/abatement, supplier reference basis, electricity boundary or residue destination changes"
+data_sources:
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA FPL, Wood handbook, FPL-GTR-282 (2021), Ch4 pp4-1,4-11; Ch13 pp13-2; Ch16 pp16-29–16-30. https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf"
+    used_for: "Dry-basis moisture, measured mass/density and indoor surface preparation; no universal species moisture or density adopted."
+  - id: "usda-finishing-1999"
+    type: "handbook"
+    reference: "USDA FPL, Williams (1999), FPL-GTR-113, Ch15 p15-31, Surface Coats. https://research.fs.usda.gov/download/treesearch/7145.pdf"
+    used_for: "Shellac as an indoor transparent coat and water sensitivity; historical description is not a production recipe or quantified service life."
+  - id: "gsa-shellac-2017"
+    type: "official_guidance"
+    reference: "GSA, Cleaning and refinishing of woodwork, procedure modified 2017-07-28, Part2 materials and Part3 §3.02. https://www.gsa.gov/real-estate/historic-preservation/historic-preservation-policy-tools/preservation-tools-resources/technical-procedures/cleaning-and-refinishing-of-woodwork"
+    used_for: "Shellac/alcohol combination and substrate-dependent acceptance. Restoration cloth/wax steps and overnight time are not transferred to ornament manufacture; supplier must substantiate the selected ethanol-only brush route."
+  - id: "epa-coating-eiip-2001"
+    type: "official_guidance"
+    reference: "US EPA EIIP VolII Ch7 (July 2001), §§3.1.1,4.1,4.2,6.1.1; pp7.4-10–7.4-11. https://www.epa.gov/sites/default/files/2015-08/documents/ii07_july2001.pdf"
+    used_for: "Site-specific coating material balance, species composition and captured/fugitive distinction; no example application rate, recipe or removal efficiency adopted."
+  - id: "corrim-northern-lumber-2025"
+    type: "literature"
+    reference: "CORRIM, Life Cycle Assessment of Softwood Lumber Production – Northern Region (2025-07-22), §3.2.6 p16. https://corrim.org/wp-content/uploads/2025/07/LCA-Report-Northern-Lumber-Report-07222025.pdf"
+    used_for: "Counterevidence to treating all residues as burden-free: report partitions environmental loads among lumber/byproducts and attributes packaging to final product. Its softwood survey, factors and prescribed allocation shares are not transferred to hardwood ornaments."
+  - id: "epa-sawmill-pte-2014"
+    type: "official_guidance"
+    reference: "US EPA Region10 (2014-05-08), PM Potential to Emit Factors for Activities at Sawmills Excluding Boilers, pp1–2. https://www.epa.gov/sites/default/files/2016-09/documents/spmpteef_memo.pdf"
+    used_for: "Limits of the sawmill PTE table and nested PM size conventions; its maximum-capacity factors do not quantify actual carving emissions or boiler emissions."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:7a22924b235db248216f45e755bc2c23732bd41b5b7ba5f83c067c7bad2a3109"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6779"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6779
+          line: 70
+          column: 1
+        end:
+          offset: 9580
+          line: 94
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Untreated kiln-dried non-coniferous sawn blank and separately purchased dry shellac, ethanol and consumables delivered to the factory |\n| starting_condition_role | foreground_entry |\n| product_classification_scope | Carved decorative subset of CPC3.0 31913; no classification-wide method |\n| recursive_input_rule | Purchased finished ornaments or previously coated blanks are outside this manufacturing route; do not relabel them as virgin dry sawn blanks. Internal rework of the same batch remains in the single unit without a new reference output. |\n| upstream_dataset_requirement | Trace wood forestry/sawmill/drying, resin refining, ethanol manufacture, electricity and each consumable to compatible supplier/background datasets, including inbound freight and waste treatment. An entry boundary is not a burden cut-off. |\n| disclosure | Declare site/time, species/supply treatment, meters, coating formulation, packaging, release subcompartments, stock changes, residue destinations, allocation and unresolved supplier quantity compatibility. |\n\n\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_upstream | all inventory rows | Include upstream production and actual delivered transport once; retain upstream biogenic and fossil carbon emissions as distinct LCI exchanges. No GHG reporting convention permits deletion of biogenic CO2. Missing delivered background or waste receiver linkage is incomplete data. | corrim-northern-lumber-2025 |\n| boundary_stages | ornament_manufacture | Aggregate carving, sanding, mixing, brush coating, ambient drying, inspection and packing as one foreground unit, while preserving independent stage measurements. No duplicated intermediate finished-product exchange; process links, if later decomposed, carry equal physical quantities at both ends. | usda-wood-handbook-2021; epa-coating-eiip-2001 |\n| boundary_losses | ornament_manufacture | Account for reject/rework, collection equipment, escaped dust and solvent/water releases. Plant lighting/ventilation electricity is measured and attributed; reusable capital equipment/brush manufacture is outside the declared foreground, with exclusions and significance reviewed. No threshold is assumed to justify omission of a detected chemical or important waste. | epa-coating-eiip-2001 |\n| boundary_route | ornament_manufacture | Verify brush application and ambient drying, with no combustion, drying kiln, thermal abatement or solvent recovery. Introducing these operations, denaturants, post-coating sanding or another finish requires additional atomic inventories and method review; do not silently apply this route. | gsa-shellac-2017; usda-finishing-1999 |\n\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 386
+              line: 11
+              column: 1
+            end:
+              offset: 460
+              line: 11
+              column: 75
+          text: "# Single-piece hardwood carved indoor ornaments with brush-applied shellac"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6779
+              line: 70
+              column: 1
+            end:
+              offset: 6800
+              line: 70
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_32929"
+      family: "allocation"
+      span:
+        start:
+          offset: 32929
+          line: 465
+          column: 1
+        end:
+          offset: 34715
+          line: 476
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_physical | ornament_manufacture | Maintain an unallocated physical wood/water/coating/carbon ledger and a separate environmental-burden ledger. Never multiply measured product/co-product output masses by allocation fractions. Internal transfers and stock are physical quantities; reconciled yields precede allocation. | corrim-northern-lumber-2025; usda-wood-handbook-2021 |\n| allocation_status | offcut_sale; offcut_waste; dust_waste; reject_waste | Assign residue status by actual function, market specification, clean/contaminated condition and receiver. Do not classify every wood loss as burden-free waste. Sale alone does not establish an avoided-product credit. Waste transport/treatment remains assigned to production; contaminants determine receiver suitability. | corrim-northern-lumber-2025 |\n| allocation_burdens | ornament_manufacture | First subdivide attributable stage burdens using records; final finishing and packaging belong to the ornament. For remaining genuinely shared burdens, justify a physical relationship and its measured basis. If no defensible physical relationship exists, disclose economic allocation using consistent quantities/prices and sensitivity analysis. Do not import CORRIM lumber mass shares or apply automatic zero burdens. | corrim-northern-lumber-2025 |\n| allocation_no_credit | ornament_manufacture | No automatic substitution or energy credit for exported offcuts/dust and no onsite biomass use in this route. Any expanded system must separately identify actual displaced function, receiver process, quality and mutually exclusive attribution; retain all real carbon releases. | corrim-northern-lumber-2025 |\n\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 386
+              line: 11
+              column: 1
+            end:
+              offset: 460
+              line: 11
+              column: 75
+          text: "# Single-piece hardwood carved indoor ornaments with brush-applied shellac"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 32929
+              line: 465
+              column: 1
+            end:
+              offset: 32969
+              line: 465
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_51235"
+      family: "validation"
+      span:
+        start:
+          offset: 51235
+          line: 531
+          column: 1
+        end:
+          offset: 53072
+          line: 543
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validate_scope | reference product | Reject classification-label-only applicability. Verify single-piece untreated kiln-dried hardwood, indoor decorative function, shellac/undenatured-ethanol brush route and all required qualifiers; excluded product functions require another method. | usda-wood-handbook-2021; usda-finishing-1999 |\n| validate_reference | all inventory rows | Exactly one finished_ornament product output carries the reference UUID and 1 kg. All row, protocol and normalization denominators agree; exclude packaging from net reference mass and exclude rejected product from the denominator. |  |\n| validate_balances | ornament_manufacture | Check measured dry wood, coating solids, ethanol species, water and carbon balances with declared uncertainties and stock changes. Investigate residuals; confirm equal internal transfer quantities and no physical allocation of co-product outputs. | usda-wood-handbook-2021; epa-coating-eiip-2001; corrim-northern-lumber-2025 |\n| validate_emissions | elementary outputs | Verify outdoor-air subcompartment, CAS and species mass rather than total VOC-as-carbon. Require disjoint particle size bins and no indoor/outdoor double count. No unverified correction, surrogate, enantiomer or missing-fraction substitution; unmeasured emissions remain unresolved. | epa-coating-eiip-2001; epa-sawmill-pte-2014 |\n| validate_destinations | waste and coproduct outputs | Verify clean/contaminated state, separate receiver function, composition and upstream/treatment linkage. No zero-burden wood-loss default and no automatic substitution credit. Declare missing UUIDs and source metadata defects rather than claiming scientific approval or full completeness. | corrim-northern-lumber-2025 |\n\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 386
+              line: 11
+              column: 1
+            end:
+              offset: 460
+              line: 11
+              column: 75
+          text: "# Single-piece hardwood carved indoor ornaments with brush-applied shellac"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 51235
+              line: 531
+              column: 1
+            end:
+              offset: 51257
+              line: 531
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_upstream"
+      identity_kind: "explicit"
+      unit_id: "normative_6779"
+      source_span:
+        start:
+          offset: 8015
+          line: 87
+          column: 1
+        end:
+          offset: 8371
+          line: 87
+          column: 357
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_stages"
+      identity_kind: "explicit"
+      unit_id: "normative_6779"
+      source_span:
+        start:
+          offset: 8372
+          line: 88
+          column: 1
+        end:
+          offset: 8764
+          line: 88
+          column: 393
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_losses"
+      identity_kind: "explicit"
+      unit_id: "normative_6779"
+      source_span:
+        start:
+          offset: 8765
+          line: 89
+          column: 1
+        end:
+          offset: 9201
+          line: 89
+          column: 437
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_route"
+      identity_kind: "explicit"
+      unit_id: "normative_6779"
+      source_span:
+        start:
+          offset: 9202
+          line: 90
+          column: 1
+        end:
+          offset: 9576
+          line: 90
+          column: 375
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_32929"
+      source_span:
+        start:
+          offset: 33042
+          line: 469
+          column: 1
+        end:
+          offset: 33429
+          line: 469
+          column: 388
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_status"
+      identity_kind: "explicit"
+      unit_id: "normative_32929"
+      source_span:
+        start:
+          offset: 33430
+          line: 470
+          column: 1
+        end:
+          offset: 33858
+          line: 470
+          column: 429
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_burdens"
+      identity_kind: "explicit"
+      unit_id: "normative_32929"
+      source_span:
+        start:
+          offset: 33859
+          line: 471
+          column: 1
+        end:
+          offset: 34354
+          line: 471
+          column: 496
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_no_credit"
+      identity_kind: "explicit"
+      unit_id: "normative_32929"
+      source_span:
+        start:
+          offset: 34355
+          line: 472
+          column: 1
+        end:
+          offset: 34711
+          line: 472
+          column: 357
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_51235"
+      source_span:
+        start:
+          offset: 51330
+          line: 535
+          column: 1
+        end:
+          offset: 51664
+          line: 535
+          column: 335
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_51235"
+      source_span:
+        start:
+          offset: 51665
+          line: 536
+          column: 1
+        end:
+          offset: 51944
+          line: 536
+          column: 280
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_balances"
+      identity_kind: "explicit"
+      unit_id: "normative_51235"
+      source_span:
+        start:
+          offset: 51945
+          line: 537
+          column: 1
+        end:
+          offset: 52316
+          line: 537
+          column: 372
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_51235"
+      source_span:
+        start:
+          offset: 52317
+          line: 538
+          column: 1
+        end:
+          offset: 52691
+          line: 538
+          column: 375
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_destinations"
+      identity_kind: "explicit"
+      unit_id: "normative_51235"
+      source_span:
+        start:
+          offset: 52692
+          line: 539
+          column: 1
+        end:
+          offset: 53068
+          line: 539
+          column: 377
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6779"
+      source_span:
+        start:
+          offset: 6779
+          line: 70
+          column: 1
+        end:
+          offset: 6800
+          line: 70
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6779"
+      source_span:
+        start:
+          offset: 6828
+          line: 74
+          column: 1
+        end:
+          offset: 7940
+          line: 81
+          column: 223
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_32929"
+      source_span:
+        start:
+          offset: 32929
+          line: 465
+          column: 1
+        end:
+          offset: 32969
+          line: 465
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_51235"
+      source_span:
+        start:
+          offset: 51235
+          line: 531
+          column: 1
+        end:
+          offset: 51257
+          line: 531
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7a22924b235db248216f45e755bc2c23732bd41b5b7ba5f83c067c7bad2a3109"
+  generated_content_sha256: "sha256:2670f58a0627e42eb46f8102f007bfe56a47153df395221f6510a7ef7d455e75"

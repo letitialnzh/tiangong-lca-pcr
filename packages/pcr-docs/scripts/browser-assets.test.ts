@@ -11,9 +11,9 @@ test('compiled Worker ships its codec and reads v1/v2/v3 with unchanged real-eng
   const outputRoot = mkdtempSync(path.join(tmpdir(), 'pcr-search-assets-test-'));
   try {
     const built = compileDocsBrowserAssets({outputRoot});
-    assert.deepEqual(built.files, ['search-worker.mjs', 'search-terms.mjs', 'search-codec.mjs']);
+    assert.deepEqual(built.files, ['search-worker.mjs', 'search-terms.mjs', 'search-wire.mjs']);
     const worker = readFileSync(path.join(outputRoot, 'search-worker.mjs'), 'utf8');
-    assert.match(worker, /"\.\/search-codec\.mjs"/u);
+    assert.match(worker, /"\.\/search-wire\.mjs"/u);
     assert.doesNotMatch(worker, /\.ts["']/u);
     for (const version of [1, 2, 3]) for (const scenario of ['wire-roundtrip', 'english-rank', 'chinese', 'normalization', 'serialized-retry']) {
       const result = spawnSync(process.execPath, [fileURLToPath(new URL('./fixtures/search-worker-runtime.ts', import.meta.url)), scenario, String(version), path.join(outputRoot, 'search-worker.mjs')], {encoding: 'utf8', timeout: 30_000});

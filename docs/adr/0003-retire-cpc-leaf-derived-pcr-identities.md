@@ -19,10 +19,11 @@ checkPaths:
   - classifications/aliases/**
   - classifications/systems/cpc/3.0/normalized/leaf-slugs.json
   - classifications/mappings/cpc-3.0-to-pcr.yaml
-  - packages/pcr-core/src/pcr-id-aliases.mjs
+  - packages/pcr-core/src/pcr-id-aliases.ts
   - packages/tiangong-pcr-cli/**
-lastReviewedAt: 2026-07-14
-lastReviewedCommit: 41e00bafd03530af7871e4620e59862dd779473e
+lastReviewedAt: 2026-10-12
+lastReviewedCommit: 3de84c1d092e7916530963783998f78e43607bf4
+lastReviewedNote: "Reviewed the 51-record wood/paper integration: accepted narrower mappings to new semantic paths retain old leaf-derived coverage locators; runtime canonical redirect compatibility remains available without automatic generation."
 ---
 
 # ADR 0003：退役由 CPC leaf 派生的 PCR identity
@@ -63,8 +64,10 @@ classification coordinate 查询；它不会隐式跟随到 PCR。`show`、`guid
 
 Checked-in registry 由 normalized `leaf-slugs.json` 与 accepted-only mapping v2 确定性生成。生成器必须
 支持 check 模式，使源数据改变但 registry 未同步时 lint 失败。Mapping 中与 leaf-derived id 相同的 accepted
-canonical PCR 被排除；无 accepted edge 的 leaf 生成 coverage alias；若 accepted edge 明确指向另一个
-canonical id，则生成经过语义校验的 canonical redirect。
+canonical PCR 被排除；其余 leaf 均生成 coverage alias，包括 accepted edge 指向另一个语义 PCR id 的
+情况。分类子集的 accepted mapping 不能单独证明旧 broad identity 被整体替换，不能触发 canonical
+redirect。`canonical_pcr` 类型保留运行时兼容能力；另行明确审核的 identity replacement 不由分类映射
+生成器自动决定。
 
 ## 结果
 

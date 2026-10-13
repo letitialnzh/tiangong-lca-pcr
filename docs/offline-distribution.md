@@ -1,7 +1,7 @@
 ---
-lastReviewedAt: 2026-10-09
-lastReviewedCommit: f2e1d1f63dcec0c4b240b5ed0e0a3f6a36907d19
-lastReviewedNote: "Reviewed PCR #107/#108: explicit scalar browser diagnostics avoid cyclic partial receipts; new homepage probes align live acceptance with preserved language URLs at HTTP 200 and sealed hashes. Historical two-catalog manifests retain exact artifact verification/materialization. Complete fresh CI and independent review remain required; immutable v0.4.5 candidate receipts, methodology status, English-only npm content and runtime pins are preserved."
+lastReviewedAt: 2026-10-13
+lastReviewedCommit: 1ff58b6468c47dc2fcf416a2ea9af0c21defd95b
+lastReviewedNote: "Reviewed PCR #110/#111 combined candidate at 1ff58b64: original canonical files are retained, the regenerated catalog contains 1085 unique material records and 934 accepted CPC edges preserve classification boundaries. Unified 0.4.7 version mirrors align; runtime, reader compatibility, candidate methodology and translation states remain unchanged. Complete fresh CI, workspace integration and verified coordinated publication remain required."
 title: Offline PCR distribution contract
 docType: contract
 scope: repo
@@ -63,6 +63,19 @@ before checkout, so long paths and exact-byte source fingerprints are preserved.
 Installed content packages do not require Git. Prepare Node separately
 on a connected machine if the destination has no runtime. No install hooks, runtime
 network calls or implicit content downloads are used.
+
+## Combined candidate preparation for 0.4.7
+
+Product 0.4.7 combines PR #110's 21 new and seven revised candidate PCRs with
+PR #111's 51 wood/paper candidates and classification decisions. The regenerated
+material index contains 1,085 records. Search retains complete records and exact
+engine imports through wire v3; methodology and translation states remain unchanged.
+
+Version mirrors are preparation inputs. Publication requires fresh complete
+qualification of the combined commit, immutable sealed artifacts and the existing
+coordinated npm/website verification. The verified stable predecessor is 0.4.6;
+never move its tag or replace its published artifacts. Reader compatibility stays
+at the reviewed minimum 0.4.1, with no runtime or dependency upgrade.
 
 ## Build and transport
 

@@ -1,10 +1,2690 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31102"
-  title: "Wood, sawn or chipped lengthwise, sliced or peeled, of a thickness exceeding 6 mm, of non-coniferous wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.wood-sawn-or-chipped-lengthwise-sliced-or-peeled-of-a-thickness-exceeding-6-mm-of-non-c-2b701f10"
+  classification_refs: "CPC 3.0 31102; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Untreated kiln-dried straight-planed temperate non-coniferous longitudinally sawn solid wood; actual thickness >6 mm"
+  excluded_products: "Tropical or coniferous wood; green/air-dried or unplaned final products; sliced/peeled products; veneer ≤6 mm; sleepers; profiles; treated/glued/engineered wood; alternative drying routes"
+  representative_product: "Accepted kiln-dried planed temperate hardwood at dispatch moisture, mill gate"
+  production_route: "Log receiving/debarking/sawing → rough green handoff → indirect steam kiln → rough kiln handoff → straight planing/grading/packing; boiler conditional"
+  market_state: "Kiln-dried, straight-planed, untreated; moisture and grade declared for the actual product"
+functional_unit:
+  what: "Supply >6-mm kiln-dried planed temperate non-coniferous sawnwood for further manufacture"
+  how_much: "1 kg accepted net dispatch mass excluding packaging"
+  how_well: "Declared botanical species, origin, grade, measured geometry and dispatch moisture; kiln-dried and planed"
+  how_long_or_cycle: "One recorded production accounting period; no end-use lifetime"
+  reference_flow_link: "finished_kiln_product"
+system_boundary:
+  rules:
+    - rule_id: boundary_operations
+      applies_to: "mill manufacture"
+      rule: "Include receiving, debarking, sawing, internal transfers, kiln fans/controls/steam, drying rejects, planing/grading, packing, wastewater and actual emissions. On-site boiler is conditional; purchased heat has upstream coverage and no duplicated on-site emissions. No use/end-of-life or employee commute; disclose capital scope. No automatic small-mass cut-off for hazardous flows."
+      source_ids:
+        - corrim-hardwood-2020
+    - rule_id: boundary_screening
+      applies_to: "actual site"
+      rule: "Screen actual process diagram, supplier SDS, permit/stack speciation and wastewater destinations. Add each actual missing chemical, waste or elementary species as one atomic exchange before a complete site dataset claim. Do not force all conditional example pollutants to occur or treat missing data as zero."
+      source_ids:
+        - corrim-hardwood-2020
+        - epa-wood-boiler-2022
+boundary_abstraction:
+  declared_starting_condition: "Delivered temperate hardwood sawlogs with measured bark and moisture, or declared purchased rough green hardwood at supplier gate"
+  starting_condition_role: "Foreground manufacturing starting gate; upstream production separately linked"
+  product_classification_scope: "Narrower subset of CPC 31102; excludes tropical, non-kiln/air-predried and sliced/peeled routes"
+  recursive_input_rule: "Purchased green lumber carries its supplier production and transport; record exact state and stop local recursion at verified supplier gate. Internal handoffs cancel once and are never new purchases."
+  upstream_dataset_requirement: "Link species/origin-matched forest management, harvesting, land-use change/carbon and delivery transport plus utility/fuel/material production. Delivered logs are not burden-free; no cradle-to-gate claim if upstream is missing."
+  disclosure: "Site/period, species/provenance, starting gate, supplier coverage, bark, moisture, kiln/control/heat technology, allocated versus physical records and all exclusions"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Sawnwood, hardwood"
+    uuid: "e58cb409-74f7-4f0b-bfc0-9261c27c14be"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Botanical species and mix"
+    - "temperate growing region/ecozone and forestry origin"
+    - "actual thickness >6 mm"
+    - width
+    - length
+    - "grade and rejects"
+    - "unimpregnated/unglued state"
+    - "indirect steam kiln schedule"
+    - "planed state"
+    - "dispatch dry-basis moisture and sample method"
+    - "calibrated net wet mass excluding packaging"
+    - "matched-state solid-volume/density conversion if used"
+    - site
+    - period
+    - "supplier gate and allocation"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use calibrated accepted net dispatch wet mass from cp_reference, excluding packaging. Each dataset fixes one species/grade/moisture/geometry scope."
+  - id: moisture_basis
+    applies_to: "wood and wood residues"
+    required_property_ref:
+      name: "Explicit dry or wet water fraction"
+      uuid: ""
+    required_unit: "dimensionless fractions"
+    rule: "u=(m_wet-m_od)/m_od; w=(m_wet-m_od)/m_wet; w=u/(1+u); u=w/(1-w); m_od=m_wet/(1+u)=m_wet×(1-w). Convert percentages by /100; m_od>0, u≥0, 0≤w<1. Measure each species/state separately, including bark and fuels. [usda-wood-handbook-2021 Ch.4 eqs.4-1/4-2; corrim-hardwood-2020 §3.3; algebraic conversion.]"
+  - id: solid_volume
+    applies_to: "wood reported in volume"
+    required_property_ref:
+      name: "Matched mass and solid volume"
+      uuid: ""
+    required_unit: "kg; m3"
+    rule: "m_wet=rho_u×V_u, with species, moisture and geometry matched. Basic density is oven-dry mass/green solid volume, unlike oven-dry density or dispatch wet density. Measure dimensions and density; keep drying shrinkage and planing loss separate. Nominal board-foot/log scales and stacked/loose volume cannot substitute for solid volume without a measured conversion. No universal hardwood density. [usda-wood-handbook-2021 Ch.4 Table4-5; corrim-hardwood-2020 Tables2–4.]"
+  - id: carrier_units
+    applies_to: "electricity, steam heat and fuels"
+    required_property_ref:
+      name: "Verified reference property"
+      uuid: ""
+    required_unit: "MJ; kg; m3"
+    rule: "Retain each verified reference property/unit. Electricity kWh×3.6 gives MJ. Steam heat requires the separately documented heat boundary and condensate convention below: equal MJ units or a database Gross calorific value label do not equate fuel HHV, total boiler production and receiver net useful heat. Fuel mass/volume/heat conversions require actual composition, density, moisture and a stated measured LHV/HHV basis. Do not assume biomass heating value, gas reference conditions or boiler efficiency."
+  - id: steam_heat_basis
+    applies_to: "drying_heat; heat_out"
+    required_property_ref:
+      name: "Documented transferred heat boundary"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "The chosen steam flow confirms an industrial-steam identity and Gross calorific value/MJ reference only; its original does not define receiver net useful heat or condensate reference enthalpy. Before using its UUID with an amount/background dataset, obtain supplier or matched-background documentation defining the same delivery point, included losses, steam/condensate streams and enthalpy reference as this row. Confirm on site using the piping/meter diagram, calibrated heat-meter definition or measured mass/pressure/temperature/steam quality and traceable steam-property calculation; record return fraction, condensate temperature/pressure, enthalpy datum and discharged/leaking streams. Retain the boundary comparison and any measured conversion/loss reconciliation. A label or common MJ unit is not conversion evidence. Unknown compatibility remains pending review: retain the site record, but do not treat the UUID–quantity/background binding as established or the dataset as complete."
+  - id: gas_volume_basis
+    applies_to: "heat_gas"
+    required_property_ref:
+      name: "Volume at documented gas conditions"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Use gaseous pipeline natural gas on its verified Volume/m3 reference; record m3 per 1 kg terminal reference without forcing kg. Match supplier/meter and background reference temperature, absolute pressure, dry/wet basis and composition. If conversion is needed, use a documented meter/supplier correction with actual compressibility/composition and conditions; disclose its inputs and uncertainty. A normal/standard m3 state, pure methane composition, generic density/heating value or a Mass meanValue of 1.0 is not established by the original. Unknown volume/background compatibility remains unresolved for the concrete dataset."
+  - id: nox_quantity_basis
+    applies_to: "yard_nox; heat_nox"
+    required_property_ref:
+      name: "Mass; verified quantity convention"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Before calculation, document the actual measured or factor-derived NOx quantity convention, chemical/species scope, concentration and gas-state basis and its independently verified relation to the selected LCI flow and assessment method. Native Mass/kg does not establish an NO2-equivalent convention. Keep actual NO/NO2 species quantities and documented conversion/speciation evidence when an equivalent basis is used; no universal conversion or assumed split. Reconcile any aggregate with separately modelled NO/NO2 and keep N2O separately, without counting the same release twice. Missing convention/speciation or LCI/assessment compatibility leaves the raw result and its normalized exchange pending review; never silently label a mass as NO2-equivalent or invent zero."
+process_map:
+  - id: sawing
+    name: "Receiving, debarking and sawing"
+    inclusion: "conditional"
+    inclusion_condition: "When converting delivered sawlogs; purchased green supplier boundary remains linked"
+    role: "Rough green intermediate and physical co-products"
+    quantitative_reference: "per 1 kg reference flow"
+  - id: processing
+    name: "Kiln drying, straight planing, grading and packing"
+    inclusion: "required"
+    inclusion_condition: "Green feedstock; no air predrying represented; stages separately metered"
+    role: "Aggregated terminal unit; unique finished output"
+    quantitative_reference: "per 1 kg reference flow"
+  - id: heat
+    name: "On-site indirect steam generation"
+    inclusion: "conditional"
+    inclusion_condition: "On-site boiler; omit if heat purchased with verified upstream boundary"
+    role: "Useful steam heat, fuels and emissions"
+    quantitative_reference: "per 1 kg reference flow"
+process_inventory:
+  - id: sawing
+    label: "Receiving, debarking and sawing"
+    inputs:
+      product:
+        - row_id: sawlogs_in
+          role: "Non-coniferous sawlogs with bark, delivered to mill"
+          name: "Non-coniferous sawlogs with bark, delivered to mill"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Required delivered sawlogs; record species, bark fraction, net wet mass and moisture."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: sawing_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only customer-side grid-average alternating current below 1 kV; other supply requires an exact separate identity."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: yard_diesel
+          role: "Diesel fuel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only if yard equipment burns diesel within the foreground; exclude contracted transport already in delivered-log background."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: sawing_oil
+          role: "Petroleum lubricating oil for sawmill machinery"
+          name: "Petroleum lubricating oil for sawmill machinery"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only petroleum lubricating oil actually used by sawmill machinery; measure additions and retained stock."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_lubricant
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: yard_tap_water
+          role: "Water, tap"
+          name: "Water, tap"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c6fb2442-d527-4e3d-bf01-4c94ea2b71ec"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only purchased tap water used in the log yard; freshwater abstraction is a separate upstream exchange, not tap water."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: yard_gasoline
+          role: "Gasoline"
+          name: "Gasoline"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e6677cd5-b574-4e00-a3bd-c373ac796135"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: yard_propane
+          role: "Propane forklift fuel"
+          name: "Propane forklift fuel"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: rough_green_out
+          role: "Green non-coniferous sawnwood, rough-sawn"
+          name: "Green non-coniferous sawnwood, rough-sawn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e882cc86-ffc0-4470-8534-84fef54f20a0"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Unpreserved non-coniferous rough green sawnwood exceeding 6 mm transferred to processing; record the unallocated physical handoff quantity and moisture state, matching drying_green_in exactly at that handoff."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: chips_coproduct
+          role: "Untreated non-coniferous wood chips, mill coproduct"
+          name: "Untreated non-coniferous wood chips, mill coproduct"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this distinct recoverable coproduct at its actual exit, including sale and separately identified internal transfer; no duplicate waste output."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: bark_coproduct
+          role: "Non-coniferous bark, mill coproduct"
+          name: "Non-coniferous bark, mill coproduct"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this distinct recoverable coproduct at its actual exit, including sale and separately identified internal transfer; no duplicate waste output."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: sawdust_coproduct
+          role: "Untreated non-coniferous sawdust, mill coproduct"
+          name: "Untreated non-coniferous sawdust, mill coproduct"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record this distinct recoverable coproduct at its actual exit, including sale and separately identified internal transfer; no duplicate waste output."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+      waste:
+        - row_id: bark_discard
+          role: "Bark"
+          name: "Bark"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "a2536c07-fbe1-4a12-90fb-21bd2e99b74e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only bark discarded as waste; exclude sold bark and separately tracked boiler fuel."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: sawdust_discard
+          role: "sawdust waste"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only untreated sawdust discarded as waste; exclude marketed or internally burned sawdust. This selected untreated sawdust-waste identity is restricted to a documented compatible external combustion or material-recovery receiver and matching untreated waste state. Retain whole measured waste mass, moisture/composition, actual receiver and treatment/provider boundary. Other or unverified routes and treated/contaminated material require a separately verified compatible identity or a precise UUID gap; preserve every actual physical waste exchange without assumed treatment, internal-fuel substitution or recovery credit."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: yard_runoff
+          role: "Sawmill log-yard runoff sent to wastewater treatment"
+          name: "Sawmill log-yard runoff sent to wastewater treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only collected log-yard runoff crossing to treatment; no wastewater lumping with kiln condensate."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+      elementary:
+        - row_id: sawing_pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: sawing_pm25_10
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: sawing_pm_gt10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: yard_co2_fossil
+          role: "carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: yard_co_fossil
+          role: "carbon monoxide (fossil)"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: yard_ch4_fossil
+          role: "methane (fossil)"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: yard_n2o
+          role: "nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: yard_nox
+          role: "Nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: yard_so2
+          role: "sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+  - id: processing
+    label: "Kiln drying, straight planing, grading and packing"
+    inputs:
+      product:
+        - row_id: drying_green_in
+          role: "Green non-coniferous sawnwood, rough-sawn"
+          name: "Green non-coniferous sawnwood, rough-sawn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e882cc86-ffc0-4470-8534-84fef54f20a0"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Same-batch rough green non-coniferous sawnwood from rough_green_out: the unallocated physical amount on both sides is equal at the same handoff and moisture basis. Subsequent drying changes belong inside processing; no allocation share changes this transfer."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material_processing
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: drying_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only customer-side below-1-kV grid electricity for fans and indirect-steam kiln controls; separately meter this stage from planing/packing."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_processing
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: drying_heat
+          role: "Process heat from steam"
+          name: "Process heat from steam"
+          flow_type: "product"
+          flow_ref:
+            uuid: "fcf9e128-688f-42f0-9dca-85d2319cfac5"
+          property_unit: "Gross calorific value 93a60a56-a3c8-14da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only process steam heat for indirect kiln heating, with supplier/matched-background heat boundary and condensate convention demonstrably equal to the row quantity. The original UUID record does not confirm net useful delivery. Collect and compare steam input, condensate return and other discharge/line-loss boundaries on site; purchased and internally generated heat remain separately traceable. For an internal handoff, heat_out and drying_heat are identical only at the same verified boundary and convention. Unknown compatibility is a pending measurement/background gap; do not equate fuel HHV, total boiler output and receiver net useful heat."
+          amount:
+            expression: "After documented supplier/background heat-basis compatibility is established, use the measured unallocated heat total at the common delivery boundary divided once by accepted terminal net wet kg. Keep heat_out and drying_heat equal at that boundary; unknown compatibility is pending review, not a confirmed UUID–amount binding. Retain original quantities and losses separately; no co-product-share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_processing
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: finishing_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only below-1-kV grid electricity for trimming, grading, straight planing and packing."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_processing
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: film_in
+          role: "Polyethylene film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only polyethylene film actually included in dispatch packaging; exclude from net reference-product mass."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: strap_in
+          role: "Polypropylene packaging strap"
+          name: "Polypropylene packaging strap"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only polypropylene strapping actually included in dispatch packaging; do not substitute PP resin."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: purchased_green_in
+          role: "Green non-coniferous sawnwood, rough-sawn"
+          name: "Green non-coniferous sawnwood, rough-sawn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e882cc86-ffc0-4470-8534-84fef54f20a0"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_kiln_product
+          role: "Sawnwood, hardwood"
+          name: "Sawnwood, hardwood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e58cb409-74f7-4f0b-bfc0-9261c27c14be"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Accepted untreated kiln-dried straight-planed temperate non-coniferous sawnwood, actual finished thickness >6 mm, at mill gate. This is the unique terminal product; no tropical, green or air-dried substitution."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: shavings_coproduct
+          role: "Untreated non-coniferous planer shavings, mill coproduct"
+          name: "Untreated non-coniferous planer shavings, mill coproduct"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only recoverable untreated planer shavings from this finishing step; upstream bark and chips receive no finishing burden."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material_processing
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: finishing_sawdust
+          role: "Untreated non-coniferous sawdust, mill coproduct"
+          name: "Untreated non-coniferous sawdust, mill coproduct"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+      waste:
+        - row_id: offcut_discard
+          role: "Offcut"
+          name: "Offcut"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "acc22294-8e77-4784-988f-2499be3c60eb"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only untreated wood offcuts discarded as waste; resale and on-site fuel are distinct transfers. Only actual non-agglomerated, untreated and unglued coarse wood offcuts belong to this row; keep moisture and recipient records, and verify their physical state and receiver/provider compatibility before treatment linkage. Do not substitute agglomerated fuel or captured powder."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste_processing
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+      elementary:
+        - row_id: drying_water_vapour
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_methanol
+          role: "methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_formaldehyde
+          role: "formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_phenol
+          role: "phenol"
+          name: "phenol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa41-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_acetaldehyde
+          role: "acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_propanal
+          role: "propanal"
+          name: "propanal"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-9f05-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_acrolein
+          role: "acrolein"
+          name: "acrolein"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91a4-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_pm25_10
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: drying_pm_gt10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: finishing_pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: finishing_pm25_10
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: finishing_pm_gt10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_processing
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+  - id: heat
+    label: "On-site indirect steam generation"
+    inputs:
+      product:
+        - row_id: heat_bark_fuel
+          role: "Untreated non-coniferous bark fuel"
+          name: "Untreated non-coniferous bark fuel"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only this separately weighed untreated non-coniferous residue when actually burned; record internal origin or external supplier, moisture and calorific basis."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_sawdust_fuel
+          role: "Untreated non-coniferous sawdust fuel"
+          name: "Untreated non-coniferous sawdust fuel"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only this separately weighed untreated non-coniferous residue when actually burned; record internal origin or external supplier, moisture and calorific basis."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_chips_fuel
+          role: "Untreated non-coniferous wood-chip fuel"
+          name: "Untreated non-coniferous wood-chip fuel"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only this separately weighed untreated non-coniferous residue when actually burned; record internal origin or external supplier, moisture and calorific basis."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_gas
+          role: "natural gas in the gaseous state"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66 / m3"
+          description: "Only actual gaseous natural gas delivered by pipeline to the kiln boiler, matching the directly read consumption-stage gas identity. Verify supplier composition and delivery condition; record metered volume with reference temperature, absolute pressure and dry/wet basis, matched to the linked background dataset. The original does not specify these numerical gas conditions or a usable density; unresolved reference-state compatibility must be disclosed before a complete dataset claim."
+          amount:
+            expression: "Use the actual metered gas volume at its documented supplier/background-matched conditions, divided once by accepted terminal net wet kg; retain m3 as numerator. Any pressure/temperature/dryness correction needs the recorded supplier/meter method and actual inputs. Unknown volume/background compatibility is pending review; no automatic kg or fuel-energy conversion."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_diesel
+          role: "Diesel fuel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only actual boiler auxiliary diesel; exclude yard diesel and imported heat fuel already included upstream."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only below-1-kV grid electricity for boiler auxiliaries and actual pollution controls."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_water
+          role: "Water, tap"
+          name: "Water, tap"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c6fb2442-d527-4e3d-bf01-4c94ea2b71ec"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water_heat
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_shavings_fuel
+          role: "Untreated non-coniferous planer shavings fuel"
+          name: "Untreated non-coniferous planer shavings fuel"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel_heat
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: heat_out
+          role: "Process heat from steam"
+          name: "Process heat from steam"
+          flow_type: "product"
+          flow_ref:
+            uuid: "fcf9e128-688f-42f0-9dca-85d2319cfac5"
+          property_unit: "Gross calorific value 93a60a56-a3c8-14da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Only process steam heat for indirect kiln heating, with supplier/matched-background heat boundary and condensate convention demonstrably equal to the row quantity. The original UUID record does not confirm net useful delivery. Collect and compare steam input, condensate return and other discharge/line-loss boundaries on site; purchased and internally generated heat remain separately traceable. For an internal handoff, heat_out and drying_heat are identical only at the same verified boundary and convention. Unknown compatibility is a pending measurement/background gap; do not equate fuel HHV, total boiler output and receiver net useful heat."
+          amount:
+            expression: "After documented supplier/background heat-basis compatibility is established, use the measured unallocated heat total at the common delivery boundary divided once by accepted terminal net wet kg. Keep heat_out and drying_heat equal at that boundary; unknown compatibility is pending review, not a confirmed UUID–amount binding. Retain original quantities and losses separately; no co-product-share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+      waste:
+        - row_id: heat_bottom_ash
+          role: "Bottom ash from untreated wood combustion"
+          name: "Bottom ash from untreated wood combustion"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only this distinct collected wood-combustion ash stream; measure its own mass, unburned carbon and treatment destination."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_fly_ash
+          role: "Fly ash from untreated wood combustion"
+          name: "Fly ash from untreated wood combustion"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only this distinct collected wood-combustion ash stream; measure its own mass, unburned carbon and treatment destination."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste_heat
+              source_ids:
+                - corrim-hardwood-2020
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: heat_blowdown
+          role: "Boiler blowdown sent to wastewater treatment"
+          name: "Boiler blowdown sent to wastewater treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water_heat
+              source_ids:
+                - corrim-hardwood-2020
+            ranges: []
+      elementary:
+        - row_id: heat_co2_bio
+          role: "carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_co_bio
+          role: "carbon monoxide (biogenic)"
+          name: "carbon monoxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "8a313a02-e251-11e6-bf01-fe55135034f3"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_ch4_bio
+          role: "methane (biogenic)"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_co2_fossil
+          role: "carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_co_fossil
+          role: "carbon monoxide (fossil)"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_ch4_fossil
+          role: "methane (fossil)"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_n2o
+          role: "nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_nox
+          role: "Nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_so2
+          role: "sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_pm25_10
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_pm_gt10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include this specific outdoor-air emission when demonstrated by site measurements or an applicable species/source/fuel/control-specific model; no reported value means unknown, not zero."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: heat_formaldehyde
+          role: "formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_methanol
+          role: "methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_phenol
+          role: "phenol"
+          name: "phenol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa41-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_acetaldehyde
+          role: "acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_propanal
+          role: "propanal"
+          name: "propanal"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-9f05-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_acrolein
+          role: "acrolein"
+          name: "acrolein"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91a4-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_hcl
+          role: "hydrogen chloride"
+          name: "hydrogen chloride"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aab0-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_lead
+          role: "lead"
+          name: "lead"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "4d9a8790-3ddd-11dd-91dc-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_mercury
+          role: "mercury"
+          name: "mercury"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8c4-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_naphthalene
+          role: "naphthalene"
+          name: "naphthalene"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a682-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include when physically present on the declared route; measure separately and disclose absence or missing data."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-hardwood-2020
+            ranges: []
+        - row_id: heat_water_vapour
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Record boiler exhaust water from fuel moisture, combustion-generated water and any entrained process water separately from kiln wood-moisture loss; reconcile the boiler physical water ledger."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production cohort divided once by accepted terminal net wet kg. Retain raw totals and origin/destination; no co-product share multiplier."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water_heat
+              source_ids:
+                - epa-wood-boiler-2022
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_separate
+    applies_to: "physical graph and burden account"
+    rule: "Keep the unallocated physical process graph, dry-matter/water/carbon balances, equal internal links and complete co-product masses separate from the environmental burden ledger. Never multiply physical co-product outputs or internal handoffs by an allocation share. Allocate original shared energy/upstream/emission burdens only after reconciling measured physical totals; do not break the terminal 1 kg object."
+    source_ids:
+      - corrim-hardwood-2020
+      - usda-wood-handbook-2021
+  - rule_id: allocation_steps
+    applies_to: "joint wood-producing steps"
+    rule: "First subdivide metered steps and assign exclusive operations directly. For inseparable same-material wood co-products use measured oven-dry mass shares a_i=m_od_i/sum(m_od_j) for products leaving that joint step; this is a PCR methodological choice informed by the report’s mass-allocation case, not reported site shares. Include internally used fuel residues in the joint-step product denominator and carry their production burden to heat. Green bark/chips leaving before drying receive no subsequent kiln/planing burden. Drying burdens attach to the lumber actually dried; planing shares apply only at planing."
+    source_ids:
+      - corrim-hardwood-2020
+      - usda-wood-handbook-2021
+  - rule_id: allocation_destination
+    applies_to: "residue and waste destinations"
+    rule: "Separate each residue’s sold, internally burned and discarded portions using transfers and sales/treatment evidence. Waste without product function gets treatment burden, not a manufactured negative credit. Internal fuel cannot be simultaneously exported or assigned zero inherited burden. No automatic avoided fossil-fuel/disposal credit. Keep economic allocation or substitution as separately justified sensitivity cases with prices/time/boundary and results, not mixed with the baseline."
+    source_ids:
+      - corrim-hardwood-2020
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "processing"
+      flow_role: "reference net mass and state"
+      record_type: "Acceptance/dispatch records"
+      raw_fields: "lot; species; provenance/ecozone; grade; finished dimensions; net wet kg; rejects; moisture; packaging tare reporting-period pool; wholly failed batches; rework origin and final acceptance IDs"
+      collection_method: "Calibrated net weighing excluding packaging; reconcile acceptance and dispatch; match sampled moisture and actual geometry Reconcile the complete pool including failed and rework records; only finally accepted net output enters the denominator once, and a zero-output pool remains unnormalized."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_material
+      process_id: "sawing"
+      flow_role: "wood and co-products"
+      record_type: "Lot and transfer ledger"
+      raw_fields: "species; actual solid dimensions/volume; net wet mass; dry/wet basis; oven-dry sample; bark; destination; internal handoff pair; stock changes; actual owner sawing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Weigh lots and residues; stratify species/thickness/heartwood/sapwood; promptly seal/weigh representative samples, oven dry to stable mass following USDA Ch.13, assess extractive bias; paired volume and mass at same moisture. Meters need species/temperature calibration and oven-dry checks. Collect only actual sawing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg; m3; moisture fraction"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_material_processing
+      process_id: "processing"
+      flow_role: "wood and co-products"
+      record_type: "Lot and transfer ledger"
+      raw_fields: "species; actual solid dimensions/volume; net wet mass; dry/wet basis; oven-dry sample; bark; destination; internal handoff pair; stock changes; actual owner processing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Weigh lots and residues; stratify species/thickness/heartwood/sapwood; promptly seal/weigh representative samples, oven dry to stable mass following USDA Ch.13, assess extractive bias; paired volume and mass at same moisture. Meters need species/temperature calibration and oven-dry checks. Collect only actual processing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg; m3; moisture fraction"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_lubricant
+      process_id: "sawing"
+      flow_role: "Actual separately supplied lubricant"
+      record_type: "Lubricant receipt, issue and stock ledger"
+      raw_fields: "grade/SDS and composition; supplier; raw kg; opening/closing stock; issues/returns; equipment; spent-oil destination; reporting pool and failed-batch IDs"
+      collection_method: "Weigh actual issues, returns and stock; reconcile additions, actual consumption, retained oil and separate spent-oil handoff. Preserve absolute kg before normalization; no timber species or oven-dry sampling applies to lubricant."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_energy
+      process_id: "sawing"
+      flow_role: "electricity and useful heat"
+      record_type: "Meter and kiln records"
+      raw_fields: "kWh; steam heat MJ and its accounting boundary; supplier/background heat-definition evidence; piping/meter location; steam/condensate masses, absolute pressure, temperature, steam quality, enthalpies and common reference datum; condensate return fraction/destination; vent/leak/line losses; meter definition/calibration; kiln batch/species/thickness; time/temperature/humidity; boiler/control; shared-meter split; actual owner sawing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Read calibrated stage meters and inspect the steam/return piping diagram. Obtain the supplier statement or matched-background quantitative-reference definition and compare boundary, loss inclusion and condensate/enthalpy convention against the meter quantity. If enthalpy differences are calculated, use measured fluid states and a documented property method with consistent datum and all relevant return/discharge streams; never assume all steam returns or use boiler feedwater as receiver condensate without evidence. Record a source-specific measured reconciliation for any different boundary before binding heat to a UUID/background. Unknown definitions are retained as pending compatibility gaps, not verified conversions. Record batch schedules, seasons and rejects separately. Collect only actual sawing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "MJ; kWh"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, steam/return diagram and supplier/background reference definitions; signed boundary comparison and measured reconciliation; pending definitions explicitly disclosed"
+    - protocol_id: cp_energy_processing
+      process_id: "processing"
+      flow_role: "electricity and useful heat"
+      record_type: "Meter and kiln records"
+      raw_fields: "kWh; steam heat MJ and its accounting boundary; supplier/background heat-definition evidence; piping/meter location; steam/condensate masses, absolute pressure, temperature, steam quality, enthalpies and common reference datum; condensate return fraction/destination; vent/leak/line losses; meter definition/calibration; kiln batch/species/thickness; time/temperature/humidity; boiler/control; shared-meter split; actual owner processing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Read calibrated stage meters and inspect the steam/return piping diagram. Obtain the supplier statement or matched-background quantitative-reference definition and compare boundary, loss inclusion and condensate/enthalpy convention against the meter quantity. If enthalpy differences are calculated, use measured fluid states and a documented property method with consistent datum and all relevant return/discharge streams; never assume all steam returns or use boiler feedwater as receiver condensate without evidence. Record a source-specific measured reconciliation for any different boundary before binding heat to a UUID/background. Unknown definitions are retained as pending compatibility gaps, not verified conversions. Record batch schedules, seasons and rejects separately. Collect only actual processing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "MJ; kWh"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, steam/return diagram and supplier/background reference definitions; signed boundary comparison and measured reconciliation; pending definitions explicitly disclosed"
+    - protocol_id: cp_energy_heat
+      process_id: "heat"
+      flow_role: "electricity and useful heat"
+      record_type: "Meter and kiln records"
+      raw_fields: "kWh; steam heat MJ and its accounting boundary; supplier/background heat-definition evidence; piping/meter location; steam/condensate masses, absolute pressure, temperature, steam quality, enthalpies and common reference datum; condensate return fraction/destination; vent/leak/line losses; meter definition/calibration; kiln batch/species/thickness; time/temperature/humidity; boiler/control; shared-meter split; actual owner heat; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Read calibrated stage meters and inspect the steam/return piping diagram. Obtain the supplier statement or matched-background quantitative-reference definition and compare boundary, loss inclusion and condensate/enthalpy convention against the meter quantity. If enthalpy differences are calculated, use measured fluid states and a documented property method with consistent datum and all relevant return/discharge streams; never assume all steam returns or use boiler feedwater as receiver condensate without evidence. Record a source-specific measured reconciliation for any different boundary before binding heat to a UUID/background. Unknown definitions are retained as pending compatibility gaps, not verified conversions. Record batch schedules, seasons and rejects separately. Collect only actual heat stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "MJ; kWh"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, steam/return diagram and supplier/background reference definitions; signed boundary comparison and measured reconciliation; pending definitions explicitly disclosed"
+    - protocol_id: cp_fuel
+      process_id: "sawing"
+      flow_role: "individual fuels"
+      record_type: "Fuel receipt/use/test"
+      raw_fields: "fuel identity; supplier gas composition/delivery; gas meter raw and corrected m3; reference temperature/absolute pressure; dry/wet basis; correction method/compressibility and calibration; matched-background volume definition; species/residue origin; wet kg; dry fraction; density; measured LHV/HHV on matching basis; start/end stock; internally supplied mass; actual owner sawing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Reconcile receipts, stocks and metered use. For gas inspect the meter/correction certificate and supplier billing gas conditions/composition; obtain the linked-background reference-volume definition and compare temperature, absolute pressure and dryness. Preserve volume/m3; any mass/energy conversion needs actual matched-condition density/heating value, not database meanValues or labels. Missing reference-state compatibility is pending review. Weigh internal wood fuels and sample moisture, carbon, ash/heating value and combustion air for the physical balance; do not import generic species fuel properties. Collect only actual sawing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg; m3; MJ"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_fuel_heat
+      process_id: "heat"
+      flow_role: "individual fuels"
+      record_type: "Fuel receipt/use/test"
+      raw_fields: "fuel identity; supplier gas composition/delivery; gas meter raw and corrected m3; reference temperature/absolute pressure; dry/wet basis; correction method/compressibility and calibration; matched-background volume definition; species/residue origin; wet kg; dry fraction; density; measured LHV/HHV on matching basis; start/end stock; internally supplied mass; actual owner heat; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Reconcile receipts, stocks and metered use. For gas inspect the meter/correction certificate and supplier billing gas conditions/composition; obtain the linked-background reference-volume definition and compare temperature, absolute pressure and dryness. Preserve volume/m3; any mass/energy conversion needs actual matched-condition density/heating value, not database meanValues or labels. Missing reference-state compatibility is pending review. Weigh internal wood fuels and sample moisture, carbon, ash/heating value and combustion air for the physical balance; do not import generic species fuel properties. Collect only actual heat stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg; m3; MJ"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_water
+      process_id: "sawing"
+      flow_role: "water and discharge"
+      record_type: "Water meter and effluent records"
+      raw_fields: "supplied kg/m3; source; recycle; runoff/blowdown; return condensate; destination; measured composition; actual owner sawing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Meter net water crossing boundary; reconcile recirculation, condensate, vapour, wastewater and changes in product moisture; treat off-site wastewater as waste, direct environmental releases as individual species with actual compartment Collect only actual sawing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg; m3"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_water_heat
+      process_id: "heat"
+      flow_role: "water and discharge"
+      record_type: "Water meter and effluent records"
+      raw_fields: "supplied kg/m3; source; recycle; runoff/blowdown; return condensate; destination; measured composition; actual owner heat; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Meter net water crossing boundary; reconcile recirculation, condensate, vapour, wastewater and changes in product moisture; treat off-site wastewater as waste, direct environmental releases as individual species with actual compartment Collect only actual heat stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg; m3"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_packaging
+      process_id: "processing"
+      flow_role: "film and strap"
+      record_type: "Packaging issue ledger"
+      raw_fields: "each material; formulation; mass; recovered/reused; supplier boundary"
+      collection_method: "Weigh or reconcile material purchases, usage and stock; split components and keep packaging outside wood reference mass"
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_waste
+      process_id: "sawing"
+      flow_role: "each discarded residue"
+      record_type: "Waste transfer record"
+      raw_fields: "identity; mass/moisture; destination; treatment; product versus waste evidence; actual owner sawing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Weigh and retain treatment/sales evidence; separate captured dust from airborne release and bottom from fly ash Collect only actual sawing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_waste_processing
+      process_id: "processing"
+      flow_role: "each discarded residue"
+      record_type: "Waste transfer record"
+      raw_fields: "identity; mass/moisture; destination; treatment; product versus waste evidence; actual owner processing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Weigh and retain treatment/sales evidence; separate captured dust from airborne release and bottom from fly ash Collect only actual processing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_waste_heat
+      process_id: "heat"
+      flow_role: "each discarded residue"
+      record_type: "Waste transfer record"
+      raw_fields: "identity; mass/moisture; destination; treatment; product versus waste evidence; actual owner heat; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Weigh and retain treatment/sales evidence; separate captured dust from airborne release and bottom from fly ash Collect only actual heat stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_air
+      process_id: "heat"
+      flow_role: "individual outdoor-air species"
+      record_type: "Monitoring/model record"
+      raw_fields: "species/CAS; source/fuel biogenic or fossil; stack flow; duration; concentration; controls; method/detection limit; PM fractions/filterable/condensable; NOx as NO2; sample period; route/species/factor conditions; actual owner heat; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Use representative post-control tests or independently justified source-specific models; screen kiln organics by actual hardwood species/schedule. Regional mixed boiler LCI and coniferous resin VOCs are not hardwood kiln measurements. Reconcile cumulative PM to disjoint fractions, retaining limitations and nondetect handling. Collect only actual heat stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_air_sawing
+      process_id: "sawing"
+      flow_role: "individual outdoor-air species"
+      record_type: "Monitoring/model record"
+      raw_fields: "species/CAS; source/fuel biogenic or fossil; stack flow; duration; concentration; controls; method/detection limit; PM fractions/filterable/condensable; NOx as NO2; sample period; route/species/factor conditions; actual owner sawing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Use representative post-control tests or independently justified source-specific models; screen kiln organics by actual hardwood species/schedule. Regional mixed boiler LCI and coniferous resin VOCs are not hardwood kiln measurements. Reconcile cumulative PM to disjoint fractions, retaining limitations and nondetect handling. Collect only actual sawing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_air_processing
+      process_id: "processing"
+      flow_role: "individual outdoor-air species"
+      record_type: "Monitoring/model record"
+      raw_fields: "species/CAS; source/fuel biogenic or fossil; stack flow; duration; concentration; controls; method/detection limit; PM fractions/filterable/condensable; NOx as NO2; sample period; route/species/factor conditions; actual owner processing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Use representative post-control tests or independently justified source-specific models; screen kiln organics by actual hardwood species/schedule. Regional mixed boiler LCI and coniferous resin VOCs are not hardwood kiln measurements. Reconcile cumulative PM to disjoint fractions, retaining limitations and nondetect handling. Collect only actual processing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_emission
+      process_id: "sawing"
+      flow_role: "individual outdoor-air species"
+      record_type: "Monitoring/model record"
+      raw_fields: "species/CAS; source/fuel biogenic or fossil; stack flow; duration; concentration; controls; method/detection limit; PM fractions/filterable/condensable; NOx as NO2; sample period; route/species/factor conditions; actual owner sawing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Use representative post-control tests or independently justified source-specific models; screen kiln organics by actual hardwood species/schedule. Regional mixed boiler LCI and coniferous resin VOCs are not hardwood kiln measurements. Reconcile cumulative PM to disjoint fractions, retaining limitations and nondetect handling. Collect only actual sawing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_emission_processing
+      process_id: "processing"
+      flow_role: "individual outdoor-air species"
+      record_type: "Monitoring/model record"
+      raw_fields: "species/CAS; source/fuel biogenic or fossil; stack flow; duration; concentration; controls; method/detection limit; PM fractions/filterable/condensable; NOx as NO2; sample period; route/species/factor conditions; actual owner processing; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Use representative post-control tests or independently justified source-specific models; screen kiln organics by actual hardwood species/schedule. Regional mixed boiler LCI and coniferous resin VOCs are not hardwood kiln measurements. Reconcile cumulative PM to disjoint fractions, retaining limitations and nondetect handling. Collect only actual processing stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+    - protocol_id: cp_emission_heat
+      process_id: "heat"
+      flow_role: "individual outdoor-air species"
+      record_type: "Monitoring/model record"
+      raw_fields: "species/CAS; source/fuel biogenic or fossil; stack flow; duration; concentration; controls; method/detection limit; PM fractions/filterable/condensable; NOx as NO2; sample period; route/species/factor conditions; actual owner heat; raw_record_id; shared_meter_id; boundary/internal status; matched transfer id"
+      collection_method: "Use representative post-control tests or independently justified source-specific models; screen kiln organics by actual hardwood species/schedule. Regional mixed boiler LCI and coniferous resin VOCs are not hardwood kiln measurements. Reconcile cumulative PM to disjoint fractions, retaining limitations and nondetect handling. Collect only actual heat stage records; retain the original fields and QA only where physically applicable to that stage. A shared master meter or source record is a reconciliation witness, not an extra exchange: retain each attributable external raw record once across companion protocols using measured stage/service attribution, with fractions reconciled to the master total. Keep internal sending/receiving records separately with equal state, period and quantity; do not add either endpoint as another external purchase or emission. All companions use the same complete accepted-output reporting pool, retaining failed/rework activity and raw native units."
+      unit: "kg"
+      frequency: "Each lot/batch and meter/monitoring interval"
+      temporal_coverage: "Complete declared production period, with seasonal drying coverage"
+      site_scope: "Declared mill and matched suppliers only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, lot/stock reconciliation, sampling and source applicability; unknown records excluded from averages with coverage disclosed"
+  calculation_rules:
+    - id: normalize_records
+      applies_to: "all inventory rows"
+      rule: "Sum each attributable physical exchange over the same declared period and divide by accepted terminal net wet kg; preserve its numerator unit. Terminal product equals 1 kg; no denominator change to dry kg, m3, kiln batch or green output. Aggregate sites only within one qualified state/species/route using sum exchange / sum matched output; unknown is not zero. Use one documented same-product, grade, route, configuration and site reporting-period pool across every card and linked protocol; include all attributable startup, shutdown, wholly failed batches, rejects and rework in the raw numerator totals. Count reworked product once only when finally accepted. Divide each summed native-unit exchange once by the same strictly positive pooled accepted net kg; do not average batch ratios or discard a zero-output batch. If the complete matched pool has zero accepted output, retain the absolute inventory and require review without a per-kg result; do not invent output or transfer burdens to an unrelated product/period. Preserve physical handoffs and stock balances independently of burden allocation."
+      inputs:
+        - "Each row protocol"
+        - cp_reference
+        - "attributable exchange totals"
+        - "accepted net kg"
+      output: "physical exchange per 1 kg reference flow"
+      source_ids:
+        - corrim-hardwood-2020
+    - id: convert_moisture_volume
+      applies_to: "wood mass and volume"
+      rule: "Apply moisture_basis and solid_volume to paired measured states; dry wood, contained water, solid volume shrinkage and machining loss are separate. Use same-state measured density for a volume-reference database row rather than rejecting it solely for its unit."
+      inputs:
+        - cp_material
+        - cp_material_processing
+        - cp_reference
+      output: "traceable mass/volume/moisture conversion"
+      source_ids:
+        - usda-wood-handbook-2021
+        - corrim-hardwood-2020
+    - id: steam_heat_reconciliation
+      applies_to: "drying_heat; heat_out"
+      rule: "First compare the site heat-meter boundary/definition with supplier or matched-background heat reference, including condensate enthalpy datum, return fraction, discharge and line-loss treatment. Use the documented meter quantity, or a recorded fluid energy balance from measured mass/state/enthalpy on a consistent datum, only after establishing equivalence or an evidenced conversion. Keep fuel-HHV input, total boiler heat and receiver useful transfer as separate quantities; no coefficient is inferred from equal MJ or the Gross calorific value label. Apply the same verified delivery quantity at both internal ends, then divide by the same accepted net terminal kg. If evidence is absent, retain raw totals and mark compatibility pending; do not invent a delivered-MJ conversion."
+      inputs:
+        - cp_energy
+        - cp_energy_processing
+        - cp_energy_heat
+        - cp_water
+        - cp_water_heat
+        - cp_reference
+      output: "conditionally verified delivery MJ per 1 kg reference flow, or pending compatibility"
+      source_ids:
+        - corrim-hardwood-2020
+    - id: gas_volume_reconciliation
+      applies_to: "heat_gas"
+      rule: "Keep the supplier/meter volume at explicitly documented temperature, absolute pressure and dry/wet/composition basis, matched to background gas reference volume. Normalize the verified m3 total by accepted terminal net kg; no gas-to-kg conversion is required. Any correction between states uses the actual documented meter/supplier procedure and inputs, not an assumed normal state, density or property meanValue. Missing background/reference conditions are pending compatibility."
+      inputs:
+        - cp_fuel
+        - cp_fuel_heat
+        - cp_reference
+      output: "m3 per 1 kg reference flow, or pending compatibility"
+      source_ids:
+        - epa-wood-boiler-2022
+    - id: drying_water
+      applies_to: "kiln water balance"
+      rule: "For each matched charge reconcile wood water in minus wood water out plus spray/steam additions, less condensate/liquid discharge and stock change, to vented water. Do not count contained input water again as a separate purchased flow, and do not attribute boiler combustion water to kiln wood moisture loss."
+      inputs:
+        - cp_material
+        - cp_material_processing
+        - cp_energy
+        - cp_energy_processing
+        - cp_energy_heat
+        - cp_water
+        - cp_water_heat
+      output: "water ledger and vapour amount"
+      source_ids:
+        - usda-wood-handbook-2021
+        - corrim-hardwood-2020
+    - id: particle_fractions
+      applies_to: "PM air rows"
+      rule: "Only with matched method/source/control/time and compatible particle definition: PM2.5–10=PM10-PM2.5; PM>10=total compatible PM-PM10. Require nonnegative differences. Do not add total PM, PM10 and PM2.5; condensable PM requires a separately supported definition and must not be subtracted across incompatible tests."
+      inputs:
+        - cp_air
+        - cp_air_sawing
+        - cp_air_processing
+        - cp_emission
+        - cp_emission_processing
+        - cp_emission_heat
+      output: "nonoverlapping PM fractions"
+      source_ids:
+        - epa-wood-boiler-2022
+        - epa-sawmill-pte-2014
+    - id: allocated_burdens
+      applies_to: "environmental burden ledger"
+      rule: "At each joint step assign shared burden a_i×original shared burden; sum shares to one and trace carry-over to later processing/heat. Keep unallocated physical rows and equal handoffs intact. Directly assign exclusive burdens; retain economic sensitivity separately."
+      inputs:
+        - cp_material
+        - cp_material_processing
+        - cp_energy
+        - cp_energy_processing
+        - cp_energy_heat
+        - cp_air
+        - cp_air_sawing
+        - cp_air_processing
+        - cp_emission
+        - cp_emission_processing
+        - cp_emission_heat
+        - allocation_steps
+      output: "separate assigned product LCI"
+      source_ids:
+        - corrim-hardwood-2020
+    - id: carbon_balance
+      applies_to: "wood and combustion carbon"
+      rule: "Use sampled dry fuel/wood carbon and documented fossil fractions to reconcile carbon in wood products/residues, CO2, CO, CH4, other carbon-containing species, ash and stocks; CO2 carbon mass=CO2 mass×12/44. Report biogenic CO2 in LCI irrespective of GHG statistical conventions; uptake/storage/end-of-life are disclosed separately without automatic neutrality."
+      inputs:
+        - cp_fuel
+        - cp_fuel_heat
+        - cp_material
+        - cp_material_processing
+        - cp_air
+        - cp_air_sawing
+        - cp_air_processing
+        - cp_emission
+        - cp_emission_processing
+        - cp_emission_heat
+      output: "separate biogenic/fossil carbon ledger"
+      source_ids:
+        - epa-wood-boiler-2022
+        - corrim-hardwood-2020
+  data_quality_requirements:
+    - id: quality_species
+      applies_to: "product and timber inputs"
+      requirement: "Botanical identity, temperate source ecozone and mix fractions; measure state-specific moisture/density/yield. No tropical extrapolation, universal hardwood density or resin-based VOC default. Table4 of CORRIM is a regional mix and is not a species-identification authority."
+      evidence: "Supplier/provenance documentation and lot sampling"
+    - id: quality_missing
+      applies_to: "all rows"
+      requirement: "Distinguish measured, calculated, modelled, nondetect and missing amounts; conditional absence needs documented physical absence. Publish coverage and uncertainty; no universal numeric range or fabricated mill data."
+      evidence: "Raw records, monitoring basis and detection limits"
+    - id: quality_identity
+      applies_to: "all applicable exchanges"
+      requirement: "Confirm exact flow type, reference property/unit, state and compartment. Identity verification alone does not confirm quantity/background compatibility: require explicit supplier/background heat and condensate definitions for steam and matching gas reference-volume conditions. Unknown identities or physical conventions remain disclosed review gaps and prevent a complete dataset claim. Elementary total-metal identities require measured total metal, not arbitrary compounds."
+      evidence: "Producer identity and compartment reconciliation"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "one dataset reference"
+    rule: "Require 1 kg net kiln-dried planed temperate non-coniferous >6-mm sawnwood and exactly one linked finished_kiln_product. Reject tropical, green/air-dried, rough, sliced/peeled, treated or alternate-kiln use of this reference. Check all qualifiers and identical EN/ZH denominators, formulas, row and source counts."
+    source_ids:
+      - corrim-hardwood-2020
+      - usda-wood-handbook-2021
+  - rule_id: validate_balances
+    applies_to: "all stages"
+    rule: "Check dry wood, water, energy and carbon physical balances, stock movements, source-specific losses and equal internal links. Check burden shares separately and trace to original totals; do not scale co-product physical outputs. Explain residuals with measured uncertainty, not an invented tolerance."
+    source_ids:
+      - corrim-hardwood-2020
+      - usda-wood-handbook-2021
+  - rule_id: validate_emissions
+    applies_to: "air and other releases"
+    rule: "No coniferous resin factors as hardwood measurements, no CORRIM secondary boiler LCI as kiln-specific monitoring, no PTE capacity factors as actual emissions and no sawmill dust memo for boilers. Require matched chemical/source/fossil-biogenic/medium and measured controls, disjoint PM; retain biogenic CO2. Report NOx as NO2-equivalent mass only when measurement basis supports it."
+    source_ids:
+      - corrim-hardwood-2020
+      - epa-wood-boiler-2022
+      - epa-sawmill-pte-2014
+  - rule_id: validate_energy_compatibility
+    applies_to: "drying_heat; heat_out; heat_gas"
+    rule: "Require site meter/supplier evidence and matching background quantitative-reference definitions. For steam check common delivery/loss boundary, condensate return and enthalpy datum; require evidence for any conversion and equal internal handoffs. A Gross calorific value label or common MJ units cannot prove equality of fuel HHV, total boiler heat and receiver net useful heat. For gas require pipeline-gaseous state, actual composition and matching temperature/absolute-pressure/dryness volume convention. Unsupported or missing compatibility is pending review/incomplete applicability, never a validated binding merely because the flow UUID is known. Builder reference-basis checks do not verify these site conditions."
+    source_ids:
+      - corrim-hardwood-2020
+      - epa-wood-boiler-2022
+  - rule_id: validate_completeness
+    applies_to: "site dataset readiness"
+    rule: "Confirm every applicable identity, site-screened missing exchange and upstream boundary before claiming a complete resolved dataset. Blank identities are review gaps, not a pass; no scientific approval follows from builder checks."
+    source_ids:
+      - corrim-hardwood-2020
+published_dataset_profile:
+  dataset_role: "Site-specific manufacturing method with separate unallocated physical graph and allocated kiln-product LCI"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Species/origin, kiln, planing, dimensions, moisture and boundary-matched manufacturing after identity/completeness review"
+  excluded_use: "EPD certification; structural equivalence; tropical/green/air-dried/rough or other kiln substitution; carbon-neutrality or complete resolved inventory claims while applicable identities remain unresolved"
+  required_metadata: "Required reference qualifiers; process/physical diagram; period/site; supplier coverage; measured conversion; equal handoffs; co-product destinations; burden shares; biogenic/fossil carbon convention"
+  required_quality_disclosure: "Measured versus estimated records, uncertainty, losses, exclusions, missing identities and unreviewed applicability"
+  update_trigger: "Species/origin/state, product geometry/grade, kiln/heat/control route, allocation, boundary or evidence change"
+data_sources:
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA FPL (2021), Wood handbook—wood as an engineering material, FPL-GTR-282. Ch.4 pp.4-1,4-11 and Table4-5; Ch.13 pp.13-1–13-7. [Official original](https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf)."
+    used_for: "Moisture/density-state definitions, sampling and air/kiln distinction; no numerical density default"
+  - id: "corrim-hardwood-2020"
+    type: "literature"
+    reference: "Hubbard, Bergman, Sahoo and Bowe (2020-04-27), A Life Cycle Assessment of Hardwood Lumber Production in the Northeast and North Central United States, CORRIM, 45 pp. §§1.2.3–1.2.6,3.2–3.3,4.4,6.4; Tables2–10. [USDA original](https://research.fs.usda.gov/download/treesearch/60571.pdf); [CORRIM original](https://corrim.org/wp-content/uploads/2020/06/FINAL-Northeast-and-Northcentral-Hardwood-Lumber-Production-LCA-CORRIM-Report.pdf)."
+    used_for: "2017 six-mill NE/NC case: physical stages, indirect steam kiln, planing/packaging, mass-allocation precedent and limits. No survey quantity or tropical default adopted"
+  - id: "epa-wood-boiler-2022"
+    type: "official_guidance"
+    reference: "EPA (March 2022), AP-42 §1.6 Wood Residue Combustion in Boilers; §§1.6.1–1.6.4 and Table1.6-1 footnotes. [Original](https://www.epa.gov/system/files/documents/2022-03/c1s6_final.pdf)."
+    used_for: "Boiler source/fuel/moisture/control dependence, emissions screening and nested PM caution; no generic emission factor adopted, biogenic CO2 retained"
+  - id: "epa-sawmill-pte-2014"
+    type: "official_guidance"
+    reference: "EPA Region10 (2014-05-08), Particulate Matter Potential to Emit Emission Factors for Activities at Sawmills, Excluding Boilers, Located in Pacific Northwest Indian Country; memorandum p.1 and table p.2. [Original](https://www.epa.gov/sites/default/files/2016-09/documents/spmpteef_memo.pdf)."
+    used_for: "Scope exclusion and cumulative PM method warning only; PTE is capacity, not actual mill emission; no numerical factors adopted"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:598a03265161c74d45d8e3ae5fbe08dd9ad191a15b5e83dc4039f9276467e45a"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_9703"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 9703
+          line: 66
+          column: 1
+        end:
+          offset: 11779
+          line: 84
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Delivered temperate hardwood sawlogs with measured bark and moisture, or declared purchased rough green hardwood at supplier gate |\n| starting_condition_role | Foreground manufacturing starting gate; upstream production separately linked |\n| product_classification_scope | Narrower subset of CPC 31102; excludes tropical, non-kiln/air-predried and sliced/peeled routes |\n| recursive_input_rule | Purchased green lumber carries its supplier production and transport; record exact state and stop local recursion at verified supplier gate. Internal handoffs cancel once and are never new purchases. |\n| upstream_dataset_requirement | Link species/origin-matched forest management, harvesting, land-use change/carbon and delivery transport plus utility/fuel/material production. Delivered logs are not burden-free; no cradle-to-gate claim if upstream is missing. |\n| disclosure | Site/period, species/provenance, starting gate, supplier coverage, bark, moisture, kiln/control/heat technology, allocated versus physical records and all exclusions |\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_operations` | mill manufacture | Include receiving, debarking, sawing, internal transfers, kiln fans/controls/steam, drying rejects, planing/grading, packing, wastewater and actual emissions. On-site boiler is conditional; purchased heat has upstream coverage and no duplicated on-site emissions. No use/end-of-life or employee commute; disclose capital scope. No automatic small-mass cut-off for hazardous flows. | corrim-hardwood-2020 |\n| `boundary_screening` | actual site | Screen actual process diagram, supplier SDS, permit/stack speciation and wastewater destinations. Add each actual missing chemical, waste or elementary species as one atomic exchange before a complete site dataset claim. Do not force all conditional example pollutants to occur or treat missing data as zero. | corrim-hardwood-2020; epa-wood-boiler-2022 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 338
+              line: 9
+              column: 1
+            end:
+              offset: 432
+              line: 9
+              column: 95
+          text: "# Indirect-steam kiln-dried planed temperate non-coniferous sawnwood, thickness exceeding 6 mm"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 9703
+              line: 66
+              column: 1
+            end:
+              offset: 9724
+              line: 66
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_87329"
+      family: "allocation"
+      span:
+        start:
+          offset: 87329
+          line: 1386
+          column: 1
+        end:
+          offset: 89261
+          line: 1394
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_separate` | physical graph and burden account | Keep the unallocated physical process graph, dry-matter/water/carbon balances, equal internal links and complete co-product masses separate from the environmental burden ledger. Never multiply physical co-product outputs or internal handoffs by an allocation share. Allocate original shared energy/upstream/emission burdens only after reconciling measured physical totals; do not break the terminal 1 kg object. | corrim-hardwood-2020; usda-wood-handbook-2021 |\n| `allocation_steps` | joint wood-producing steps | First subdivide metered steps and assign exclusive operations directly. For inseparable same-material wood co-products use measured oven-dry mass shares a_i=m_od_i/sum(m_od_j) for products leaving that joint step; this is a PCR methodological choice informed by the report’s mass-allocation case, not reported site shares. Include internally used fuel residues in the joint-step product denominator and carry their production burden to heat. Green bark/chips leaving before drying receive no subsequent kiln/planing burden. Drying burdens attach to the lumber actually dried; planing shares apply only at planing. | corrim-hardwood-2020; usda-wood-handbook-2021 |\n| `allocation_destination` | residue and waste destinations | Separate each residue’s sold, internally burned and discarded portions using transfers and sales/treatment evidence. Waste without product function gets treatment burden, not a manufactured negative credit. Internal fuel cannot be simultaneously exported or assigned zero inherited burden. No automatic avoided fossil-fuel/disposal credit. Keep economic allocation or substitution as separately justified sensitivity cases with prices/time/boundary and results, not mixed with the baseline. | corrim-hardwood-2020 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 338
+              line: 9
+              column: 1
+            end:
+              offset: 432
+              line: 9
+              column: 95
+          text: "# Indirect-steam kiln-dried planed temperate non-coniferous sawnwood, thickness exceeding 6 mm"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 87329
+              line: 1386
+              column: 1
+            end:
+              offset: 87369
+              line: 1386
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_131546"
+      family: "validation"
+      span:
+        start:
+          offset: 131546
+          line: 1443
+          column: 1
+        end:
+          offset: 134093
+          line: 1453
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | one dataset reference | Require 1 kg net kiln-dried planed temperate non-coniferous >6-mm sawnwood and exactly one linked finished_kiln_product. Reject tropical, green/air-dried, rough, sliced/peeled, treated or alternate-kiln use of this reference. Check all qualifiers and identical EN/ZH denominators, formulas, row and source counts. | corrim-hardwood-2020; usda-wood-handbook-2021 |\n| `validate_balances` | all stages | Check dry wood, water, energy and carbon physical balances, stock movements, source-specific losses and equal internal links. Check burden shares separately and trace to original totals; do not scale co-product physical outputs. Explain residuals with measured uncertainty, not an invented tolerance. | corrim-hardwood-2020; usda-wood-handbook-2021 |\n| `validate_emissions` | air and other releases | No coniferous resin factors as hardwood measurements, no CORRIM secondary boiler LCI as kiln-specific monitoring, no PTE capacity factors as actual emissions and no sawmill dust memo for boilers. Require matched chemical/source/fossil-biogenic/medium and measured controls, disjoint PM; retain biogenic CO2. Report NOx as NO2-equivalent mass only when measurement basis supports it. | corrim-hardwood-2020; epa-wood-boiler-2022; epa-sawmill-pte-2014 |\n| `validate_energy_compatibility` | drying_heat; heat_out; heat_gas | Require site meter/supplier evidence and matching background quantitative-reference definitions. For steam check common delivery/loss boundary, condensate return and enthalpy datum; require evidence for any conversion and equal internal handoffs. A Gross calorific value label or common MJ units cannot prove equality of fuel HHV, total boiler heat and receiver net useful heat. For gas require pipeline-gaseous state, actual composition and matching temperature/absolute-pressure/dryness volume convention. Unsupported or missing compatibility is pending review/incomplete applicability, never a validated binding merely because the flow UUID is known. Builder reference-basis checks do not verify these site conditions. | corrim-hardwood-2020; epa-wood-boiler-2022 |\n| `validate_completeness` | site dataset readiness | Confirm every applicable identity, site-screened missing exchange and upstream boundary before claiming a complete resolved dataset. Blank identities are review gaps, not a pass; no scientific approval follows from builder checks. | corrim-hardwood-2020 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 338
+              line: 9
+              column: 1
+            end:
+              offset: 432
+              line: 9
+              column: 95
+          text: "# Indirect-steam kiln-dried planed temperate non-coniferous sawnwood, thickness exceeding 6 mm"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 131546
+              line: 1443
+              column: 1
+            end:
+              offset: 131568
+              line: 1443
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_operations"
+      identity_kind: "explicit"
+      unit_id: "normative_9703"
+      source_span:
+        start:
+          offset: 10932
+          line: 81
+          column: 1
+        end:
+          offset: 11382
+          line: 81
+          column: 451
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_screening"
+      identity_kind: "explicit"
+      unit_id: "normative_9703"
+      source_span:
+        start:
+          offset: 11383
+          line: 82
+          column: 1
+        end:
+          offset: 11777
+          line: 82
+          column: 395
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_separate"
+      identity_kind: "explicit"
+      unit_id: "normative_87329"
+      source_span:
+        start:
+          offset: 87442
+          line: 1390
+          column: 1
+        end:
+          offset: 87965
+          line: 1390
+          column: 524
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_steps"
+      identity_kind: "explicit"
+      unit_id: "normative_87329"
+      source_span:
+        start:
+          offset: 87966
+          line: 1391
+          column: 1
+        end:
+          offset: 88681
+          line: 1391
+          column: 716
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_destination"
+      identity_kind: "explicit"
+      unit_id: "normative_87329"
+      source_span:
+        start:
+          offset: 88682
+          line: 1392
+          column: 1
+        end:
+          offset: 89259
+          line: 1392
+          column: 578
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_131546"
+      source_span:
+        start:
+          offset: 131641
+          line: 1447
+          column: 1
+        end:
+          offset: 132053
+          line: 1447
+          column: 413
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_balances"
+      identity_kind: "explicit"
+      unit_id: "normative_131546"
+      source_span:
+        start:
+          offset: 132054
+          line: 1448
+          column: 1
+        end:
+          offset: 132441
+          line: 1448
+          column: 388
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_131546"
+      source_span:
+        start:
+          offset: 132442
+          line: 1449
+          column: 1
+        end:
+          offset: 132943
+          line: 1449
+          column: 502
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_energy_compatibility"
+      identity_kind: "explicit"
+      unit_id: "normative_131546"
+      source_span:
+        start:
+          offset: 132944
+          line: 1450
+          column: 1
+        end:
+          offset: 133782
+          line: 1450
+          column: 839
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_131546"
+      source_span:
+        start:
+          offset: 133783
+          line: 1451
+          column: 1
+        end:
+          offset: 134091
+          line: 1451
+          column: 309
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_9703"
+      source_span:
+        start:
+          offset: 9703
+          line: 66
+          column: 1
+        end:
+          offset: 9724
+          line: 66
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_9703"
+      source_span:
+        start:
+          offset: 9752
+          line: 70
+          column: 1
+        end:
+          offset: 10859
+          line: 77
+          column: 183
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_87329"
+      source_span:
+        start:
+          offset: 87329
+          line: 1386
+          column: 1
+        end:
+          offset: 87369
+          line: 1386
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_131546"
+      source_span:
+        start:
+          offset: 131546
+          line: 1443
+          column: 1
+        end:
+          offset: 131568
+          line: 1443
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:598a03265161c74d45d8e3ae5fbe08dd9ad191a15b5e83dc4039f9276467e45a"
+  generated_content_sha256: "sha256:6be6a8f62a429adb1ee2e8c2075efc8dab414fe9ce180500fa376f7c1385b766"

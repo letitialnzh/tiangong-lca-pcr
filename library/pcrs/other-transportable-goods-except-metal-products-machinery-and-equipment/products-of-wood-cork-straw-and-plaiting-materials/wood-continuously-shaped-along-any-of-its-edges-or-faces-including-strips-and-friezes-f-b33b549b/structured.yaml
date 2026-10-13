@@ -1,10 +1,987 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31212"
-  title: "Wood, continuously shaped along any of its edges or faces (including strips and friezes for parquet flooring, not assembled, and beadings and mouldings) of bamboo"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.wood-continuously-shaped-along-any-of-its-edges-or-faces-including-strips-and-friezes-f-b33b549b"
+  classification_refs: "CPC 3.0 31212; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Single-culm unglued unassembled continuously profiled bamboo strips; documented coated or uncoated state"
+  excluded_products: "Glued/engineered bamboo; bamboo plywood; assembled flooring; plain-planed stock; untreated culms; other coating routes without review"
+  representative_product: "One unglued bamboo moulding with declared continuous cross-section"
+  production_route: "Received dry strip → profile/sand/extract dust → conditional UV polyurethane coat → inspect/pack"
+  market_state: "Finished strip, unassembled, at factory gate; no service-life equivalence claim"
+functional_unit:
+  what: "Supply continuously profiled unglued bamboo strip for subsequent use"
+  how_much: "1 kg accepted net finished product at declared moisture/coating state"
+  how_well: "Verified continuous profile, dimensions/tolerances, species, grade and absence of adhesive/assembly"
+  how_long_or_cycle: "One factory-gate production cohort; no installation or service duration assumed"
+  reference_flow_link: "profile_reference"
+system_boundary:
+  rules:
+    - rule_id: boundary_identity
+      applies_to: "foreground_system_boundary"
+      rule: "Require physical proof of single-culm, non-glued continuous shaping and unassembled market form. Reject laminated/scrimber feedstock and assembled floors before guidance is applied."
+      source_ids:
+        - un-cpc3-2025
+        - inbar-industrial-bamboo-2015
+        - yu-bamboo-flooring-2019
+    - rule_id: boundary_complete
+      applies_to: "foreground_system_boundary"
+      rule: "Include handling, profiling, sanding, dust collection, optional compatible UV polyurethane finish and packing with actual losses. Source inventories do not replace site data. Upstream thermal processing and any residue combustion must retain complete separate supplier inventories, including biogenic CO2; GHG accounting conventions cannot delete LCI flows."
+      source_ids:
+        - inbar-industrial-bamboo-2015
+        - yu-bamboo-flooring-2019
+boundary_abstraction:
+  declared_starting_condition: "Dry unglued single-culm strip blank received at the profiling site"
+  starting_condition_role: "foreground_start"
+  product_classification_scope: "CPC 3.0 31212 subset; material shape/construction overrides sales labels"
+  recursive_input_rule: "Same-category previously profiled input is one separately quantified purchased or internal transfer with declared state and origin; do not recursively regenerate its prior profile production or double count reused scrap"
+  upstream_dataset_requirement: "Compatible bamboo harvesting/transport/strip preparation/treatment/drying and purchased electricity, abrasives, coating, packaging and external waste treatment; retain provider boundary and allocation"
+  disclosure: "Declare omitted upstream coverage; no onsite drying/boiler/gluing and no installation/use/end-of-life included. Do not turn excluded heat supply into zero upstream emissions"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Wood, continuously shaped along any of its edges or faces (including strips and friezes for parquet flooring, not assembled, and beadings and mouldings) of bamboo"
+    uuid: "0fe2e549-0389-46bd-b0e0-a5cd53585138"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "bamboo species"
+    - "single-culm unglued construction"
+    - "continuous profile drawing"
+    - "dimensions/tolerances"
+    - "product grade"
+    - "moisture and dry/wet basis"
+    - "coating chemistry/state"
+    - "no assembled flooring"
+    - "blank upstream treatment/drying"
+    - "factory/period"
+    - "grid voltage/mix"
+    - "packaging excluded from net reference mass"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "profile_reference"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Weigh accepted net finished strip including retained coating and measured moisture; exclude all transport packaging. Use cp_reference. All inventory rows use the same final-product kg denominator."
+  - id: moisture_basis
+    applies_to: "bamboo material rows"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Measure paired wet and oven-dry uncoated bamboo specimen masses; dry-basis moisture u = (wet mass - dry mass) / dry mass, dimensionless. Record sampling and constant-mass drying method. For coated specimens separate coating solids; do not count fossil coating carbon as bamboo. Wood Handbook equations are measurement definitions only, not bamboo property defaults."
+  - id: solid_volume
+    applies_to: "bamboo material rows"
+    required_property_ref:
+      name: "Mass / solid volume"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Mass = measured solid material volume × paired measured density at the same moisture and coating state. Measure actual shaped cross-section, excluding grooves/voids; bounding-box, stacked/bulk volume and nominal wood density cannot substitute. Preserve a precise volume-reference flow where applicable with this verified conversion."
+  - id: electric_energy
+    applies_to: "shaping_electricity; coating_electricity; pack_electricity"
+    required_property_ref:
+      name: "Energy"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Record meter kWh and convert using 1 kWh = 3.6 MJ; retain raw readings and supply condition. Do not sum a parent meter and its child meter amounts."
+process_map:
+  - id: profile_production
+    name: "Integrated profiling, conditional finishing and packing"
+    inclusion: "required"
+    inclusion_condition: "Received dry unglued strip; coating only when individually proven"
+    role: "foreground"
+    quantitative_reference: "profile_reference"
+process_inventory:
+  - id: profile_production
+    label: "Integrated profiling, conditional finishing and packing"
+    inputs:
+      product:
+        - row_id: bamboo_blank
+          role: "Dry unglued single-culm bamboo strip blank"
+          name: "Dry unglued single-culm bamboo strip blank"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Received dry, non-impregnated strips from one culm, with no adhesive or laminated layers. Verify upstream drying/treatment history and specimen moisture; no green-culm processing is included."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - inbar-industrial-bamboo-2015
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: shaping_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Meter profiling, trimming, sanding and dust extraction separately; this UUID applies only to grid-average customer-side alternating current below 1 kV."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: abrasive_paper
+          role: "Abrasive paper, at plant"
+          name: "Abrasive paper, at plant"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ba6c99d4-60d9-46a5-9ef5-ca3d0b877d57"
+          property_unit: "Mass / kg"
+          description: "Only paper-backed sanding consumable when used; keep belt substrate, grit and replacement records. A textile-backed belt requires its own flow."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: polyurethane_coating
+          role: "Solvent-free UV-curable polyurethane coating for bamboo"
+          name: "Solvent-free UV-curable polyurethane coating for bamboo"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only documented solvent-free UV polyurethane finishing compatible with the single-strip product; weigh supplied formulation, record solids/composition, and separate any independently supplied hardener or cleaner in an additional exact atomic row."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_coating
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: coating_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Only operating coating application, UV curing and extraction; use the same below-1-kV customer-side grid condition and no overlap with shaping meter totals."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: pe_film
+          role: "Polyethylene film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass / kg"
+          description: "Only polyethylene packaging film if used; weigh net film consumed, keep polymer and shrink-process records, and exclude foam or other polymers from this row."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: carton
+          role: "Corrugated paperboard packaging carton"
+          name: "Corrugated paperboard packaging carton"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only a finished corrugated paperboard carton if used; record fibre composition and net empty carton mass, excluding film and cushioning."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: pack_electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Only inspection and electric shrink-wrapping when used under the same below-1-kV grid condition; fuel-fired shrink or drying requires an independently justified route."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: bamboo_shavings
+          role: "Unglued bamboo planer shavings coproduct"
+          name: "Unglued bamboo planer shavings coproduct"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only clean separately weighed shavings sold as a documented coproduct; retain dry mass, purchaser and value. Material sent for disposal belongs in a waste record instead."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - inbar-industrial-bamboo-2015
+            ranges: []
+        - row_id: profile_reference
+          role: "Wood, continuously shaped along any of its edges or faces (including strips and friezes for parquet flooring, not assembled, and beadings and mouldings) of bamboo"
+          name: "Wood, continuously shaped along any of its edges or faces (including strips and friezes for parquet flooring, not assembled, and beadings and mouldings) of bamboo"
+          flow_type: "product"
+          flow_ref:
+            uuid: "0fe2e549-0389-46bd-b0e0-a5cd53585138"
+          property_unit: "Mass / kg"
+          description: "Final accepted continuously shaped unglued bamboo strip, sold unassembled, at declared moisture and coating state, with packaging excluded from reference mass."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - un-cpc3-2025
+                - yu-bamboo-flooring-2019
+            ranges: []
+      waste:
+        - row_id: bamboo_offcuts
+          role: "Untreated unglued bamboo offcut waste"
+          name: "Untreated unglued bamboo offcut waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only separately weighed unglued untreated offcuts sent to external treatment; no glued/impregnated rejects."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: collected_dust
+          role: "Collected unglued bamboo sanding dust waste"
+          name: "Collected unglued bamboo sanding dust waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only captured bamboo sanding dust sent to external treatment; never count captured dust as air emission or again as shavings."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: spent_abrasive
+          role: "Spent abrasive paper from bamboo sanding"
+          name: "Spent abrasive paper from bamboo sanding"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only discarded paper-backed abrasive; weigh bamboo dust attached to it separately in the balance without duplicating collected dust."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: coating_waste
+          role: "Uncured UV polyurethane coating waste"
+          name: "Uncured UV polyurethane coating waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only unused uncured UV polyurethane paint sent to treatment; separately record cured solid scrap if present rather than merge it with this exchange."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+      elementary:
+        - row_id: shaping_pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Only this disjoint particle size fraction actually emitted to outdoor air after controls, measured under cp_air. Cumulative PM10/TSP measurements require documented differences before entry; no wood-industry factor is prescribed."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: shaping_pm25_10
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Only this disjoint particle size fraction actually emitted to outdoor air after controls, measured under cp_air. Cumulative PM10/TSP measurements require documented differences before entry; no wood-industry factor is prescribed."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: shaping_pm_gt10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Only this disjoint particle size fraction actually emitted to outdoor air after controls, measured under cp_air. Cumulative PM10/TSP measurements require documented differences before entry; no wood-industry factor is prescribed."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+        - row_id: coating_formaldehyde
+          role: "formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Only chemically confirmed formaldehyde released during foreground coating/curing to outdoor air; measure outlet concentration, flow and hours. No formaldehyde-containing adhesive is assumed; a product chamber limit is not a factory release factor."
+          amount:
+            expression: "Unallocated physical total for this exchange in the selected production cohort divided by the same accepted final net product kg; retain raw total, routing and paired handoff records. No attribution share changes this physical amount. Verify absence when inapplicable."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - yu-bamboo-flooring-2019
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_avoid
+    applies_to: "foreground_burden_allocation"
+    rule: "First separate measured directly attributable electricity/materials and product cohorts; use line/submeter or documented causal runtime partition only where tested against joint meters. Do not borrow coniferous sawmill allocation shares."
+    source_ids:
+      - yu-bamboo-flooring-2019
+  - rule_id: allocation_coproduct
+    applies_to: "foreground_burden_allocation"
+    rule: "Document whether shavings are saleable coproducts or wastes with destination, dry mass and value. If shared burdens cannot be separated causally, require a justified allocation decision and sensitivity analysis before claiming complete product LCI; no automatic mass or economic share is prescribed. Physical shavings and internal handoffs keep original amounts."
+    source_ids:
+      - inbar-industrial-bamboo-2015
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "profile_production"
+      flow_role: "profile_reference"
+      record_type: "scale"
+      raw_fields: "cohort; species; configuration; continuous profile; accepted final net mass; moisture; coating solids; packaging tare; rejects"
+      collection_method: "Calibrated scale of accepted finished strips excluding packaging; pair sample moisture with constant-mass dry weighing and retain drawings/BOM proving no glue or assembly"
+      unit: "kg"
+      frequency: "each batch; operating-period meters and representative tests"
+      temporal_coverage: "same declared production period, covering all shifts, states and rejects"
+      site_scope: "selected site and matched product cohort; separately trace upstream suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; raw records; drawings/specifications; routing closure; uncertainty and detection limits"
+    - protocol_id: cp_material
+      process_id: "profile_production"
+      flow_role: "material exchanges"
+      record_type: "weighing"
+      raw_fields: "lot; row; process; origin/destination; gross/tare/net mass; treatment; moisture; solid volume; paired density; rejects; same handoff id"
+      collection_method: "Weigh lot flows on calibrated scales; inspect substrate and physical profile; paired specimens/actual solid cross-section for density; reconcile source/destination without allocation"
+      unit: "kg"
+      frequency: "each batch; operating-period meters and representative tests"
+      temporal_coverage: "same declared production period, covering all shifts, states and rejects"
+      site_scope: "selected site and matched product cohort; separately trace upstream suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; raw records; drawings/specifications; routing closure; uncertainty and detection limits"
+    - protocol_id: cp_energy
+      process_id: "profile_production"
+      flow_role: "electricity"
+      record_type: "meter"
+      raw_fields: "meter id; process; start/end kWh; voltage; supply mix; standby; extraction/UV/shrink runtime; parent/child coverage"
+      collection_method: "Read calibrated process/utility meters, including extraction and curing; reconcile parent/child meter totals and cohort routing"
+      unit: "MJ"
+      frequency: "each batch; operating-period meters and representative tests"
+      temporal_coverage: "same declared production period, covering all shifts, states and rejects"
+      site_scope: "selected site and matched product cohort; separately trace upstream suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; raw records; drawings/specifications; routing closure; uncertainty and detection limits"
+    - protocol_id: cp_coating
+      process_id: "profile_production"
+      flow_role: "polyurethane_coating"
+      record_type: "weighing"
+      raw_fields: "coating code; SDS; chemistry; solvent-free UV proof; solids; gross/tare; issued/returned/retained/waste mass; cure; species screening"
+      collection_method: "Weigh actual formulation and returned material; supplier specification and trial/acceptance confirm suitability for single strips; measure retained dry coating rather than assume purchased amount adheres"
+      unit: "kg"
+      frequency: "each batch; operating-period meters and representative tests"
+      temporal_coverage: "same declared production period, covering all shifts, states and rejects"
+      site_scope: "selected site and matched product cohort; separately trace upstream suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; raw records; drawings/specifications; routing closure; uncertainty and detection limits"
+    - protocol_id: cp_residue
+      process_id: "profile_production"
+      flow_role: "residues"
+      record_type: "weighing"
+      raw_fields: "row; process; gross/tare/net; bamboo dry matter; coating solids; moisture; sale price; recipient; waste status; attached dust; routing"
+      collection_method: "Separate offcuts, shavings, captured sanding dust, spent paper and uncured coating; weigh and reconcile manifests/invoices and overlapping dust routes"
+      unit: "kg"
+      frequency: "each batch; operating-period meters and representative tests"
+      temporal_coverage: "same declared production period, covering all shifts, states and rejects"
+      site_scope: "selected site and matched product cohort; separately trace upstream suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; raw records; drawings/specifications; routing closure; uncertainty and detection limits"
+    - protocol_id: cp_air
+      process_id: "profile_production"
+      flow_role: "air emissions"
+      record_type: "measurement"
+      raw_fields: "species; compartment; outlet; flow; concentration; detection limit; blank; hours; control state; fugitive scope; cumulative TSP/PM10/PM2.5; method; moisture"
+      collection_method: "Representative calibrated outlet sampling plus documented fugitive assessment over actual operating conditions; retain chemically specific formaldehyde and particle fractions; chamber product limits and impact scores cannot replace emitted mass"
+      unit: "kg"
+      frequency: "each batch; operating-period meters and representative tests"
+      temporal_coverage: "same declared production period, covering all shifts, states and rejects"
+      site_scope: "selected site and matched product cohort; separately trace upstream suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; raw records; drawings/specifications; routing closure; uncertainty and detection limits"
+    - protocol_id: cp_pack
+      process_id: "profile_production"
+      flow_role: "pe_film; carton"
+      record_type: "weighing"
+      raw_fields: "material id; polymer; fibre composition; unit mass; issued/returned; actual rejects; contained packaging mass; shipments"
+      collection_method: "Weigh net empty cartons and film separately and reconcile stock/shipment; packaging stays outside reference product mass"
+      unit: "kg"
+      frequency: "each batch; operating-period meters and representative tests"
+      temporal_coverage: "same declared production period, covering all shifts, states and rejects"
+      site_scope: "selected site and matched product cohort; separately trace upstream suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; raw records; drawings/specifications; routing closure; uncertainty and detection limits"
+  calculation_rules:
+    - id: physical_normalization
+      applies_to: "all inventory rows"
+      rule: "Divide each unallocated cohort exchange total by the same accepted final net product kg. Keep matched handoff totals equal; profile_reference = 1 kg. Preserve raw totals."
+      inputs:
+        - cp_reference
+        - cp_material
+        - cp_energy
+        - cp_coating
+        - cp_residue
+        - cp_air
+        - cp_pack
+      output: "physical amount per 1 kg reference flow"
+      source_ids:
+        - yu-bamboo-flooring-2019
+    - id: bamboo_dry_mass
+      applies_to: "bamboo material rows"
+      rule: "Dry bamboo mass = uncoated wet bamboo mass / (1 + measured dry-basis moisture); for coated material first exclude measured coating solids and separately establish water. Do not assume all finished mass is biogenic dry matter."
+      inputs:
+        - cp_material
+        - cp_reference
+        - cp_coating
+      output: "dry bamboo and water ledgers"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: air_mass
+      applies_to: "shaping_pm25; shaping_pm25_10; shaping_pm_gt10; coating_formaldehyde"
+      rule: "Concentration × matching gas volume over operating period after blank/moisture/unit corrections gives species mass. From comparable cumulative measurements: middle fraction = PM10 - PM2.5; coarse fraction = TSP - PM10. Require nonnegative compatible totals and propagated uncertainty; incompatible or incomplete sampling is unresolved, never zero. Do not add cumulative PM10 or TSP again."
+      inputs:
+        - cp_air
+        - cp_reference
+      output: "disjoint species emissions per 1 kg reference flow"
+      source_ids:
+        - yu-bamboo-flooring-2019
+    - id: balance_and_attribution
+      applies_to: "all inventory rows"
+      rule: "Reconcile original process input, retained product, separate residues, air releases and storage changes for bamboo dry matter, water and coating solids; investigate residuals against measured uncertainty. Match internal edges first. Build separate burden account using measured causal attribution or an explicitly reviewed allocation decision; do not multiply physical product/coproduct/transfers by burden shares. Track bamboo biogenic carbon separately from coating fossil carbon with measured composition; do not claim storage credits from mass alone."
+      inputs:
+        - cp_material
+        - cp_reference
+        - cp_coating
+        - cp_residue
+        - cp_air
+        - cp_energy
+      output: "closed physical accounts plus separate attributable LCI"
+      source_ids:
+        - inbar-industrial-bamboo-2015
+        - yu-bamboo-flooring-2019
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "all inventory rows"
+      requirement: "Match physical role/state, Tiangong type, full route qualifiers, reference property/unit and emission compartment. Missing identity does not authorize an approximate UUID."
+      evidence: "flow original and product specification"
+    - id: quality_complete
+      applies_to: "all processes"
+      requirement: "Screen site BOM, permits, cleaning, lubricants, retained moisture, coating release species and wastes. Additional observed exchanges require individual specific rows, measurement and identity review before complete dataset use. Distinguish zero, absence, below detection and unknown; quantify missing upstream coverage."
+      evidence: "cp_material; cp_coating; cp_residue; cp_air; supplier evidence"
+    - id: quality_variability
+      applies_to: "all protocols"
+      requirement: "Cover actual shifts and representative lots, moisture/coating and controls; report time, geography, sample counts, meter reconciliation, uncertainty and limits. No literature industry range or default bamboo density is prescribed."
+      evidence: "raw records and calibration"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "foreground_dataset_conformance"
+    rule: "Fail applicability if adhesive/laminated/strand-compressed substrate, assembled floor, missing continuous profile or unproven single-culm state occurs. Compare cohort routing with actual purchase/sales evidence; status labels cannot establish product boundary."
+    source_ids:
+      - un-cpc3-2025
+      - inbar-industrial-bamboo-2015
+      - yu-bamboo-flooring-2019
+  - rule_id: validate_inventory
+    applies_to: "foreground_dataset_conformance"
+    rule: "Require one atomic exchange per row, equal internal links, one final denominator, true conditional absence and no dust/residue double counting. Keep physical quantities separate from attributed burden. Unresolved identities, missing upstream inventories, unclosed balances or unsupported allocation leave a dataset incomplete."
+    source_ids:
+      - yu-bamboo-flooring-2019
+  - rule_id: validate_air_carbon
+    applies_to: "foreground_dataset_conformance"
+    rule: "Air UUIDs use emissions to outdoor air, unspecified subcompartment, kg mass. Refine site compartments only with matching direct identity. Reject cumulative particle overlap and product-test-limit substitution. Do not delete upstream biogenic CO2 or grant universal carbon-negative credits; classify biogenic and fossil carbon from actual material composition."
+    source_ids:
+      - inbar-industrial-bamboo-2015
+      - yu-bamboo-flooring-2019
+published_dataset_profile:
+  dataset_role: "secondary_dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Documented factory-gate supply of this unglued profiled strip; compatible upstream chain only when verified"
+  excluded_use: "Generic bamboo board/laminate/scrimber/flooring LCI; installed service comparison; automatic CPC-wide coverage; unverified carbon storage or end-of-life benefit"
+  required_metadata: "All reference qualifiers; process map; raw cohort basis; upstream boundary; chosen flow/property/unit; conditional routes; co-product/waste status; attributed burden decision"
+  required_quality_disclosure: "Measured vs absent vs unknown; identity gaps; omitted scope; uncertain partition/air balance; sampling/time/geography; no industry recipe defaults"
+  update_trigger: "Changed bamboo construction/profile, treatments, coating chemistry, meters, control, supply boundary, routing, allocation or flow identity"
+data_sources:
+  - id: "un-cpc3-2025"
+    type: "official_guidance"
+    reference: "UNSD, CPC 3.0 Explanatory Notes, 30 June 2025, printed pp.137, 141, 143; 31212, 31450, 31626. [Original](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
+    used_for: "Continuous-shape/unassembled classification boundary; labels do not prove engineered-route applicability"
+  - id: "inbar-industrial-bamboo-2015"
+    type: "official_guidance"
+    reference: "Vogtländer and van der Lugt, INBAR Technical Report 35, second edition, 2015, pp.4, 15–20. [Original held by TU Delft](https://repository.tudelft.nl/file/File_877d4812-8c8d-446e-a048-5c14cb9994b9)"
+    used_for: "Distinguish strip lamination, compression and flattening; separate carbon boundaries. MOSO-specific case: no recipe/density/yield/carbon-credit defaults adopted"
+  - id: "yu-bamboo-flooring-2019"
+    type: "literature"
+    reference: "Yu, Zeng, Zhang and Wang (2019), Environmental Impact of Bamboo Laminated Flooring and Bamboo Scrimber Flooring Investigated via Life Cycle Assessment, BioResources 14(4), 9132–9145; Fig.1 and pp.9135–9138. [Publisher full text](https://bioresources.cnr.ncsu.edu/resources/environmental-impact-of-bamboo-laminated-flooring-and-bamboo-scrimber-flooring-investigated-via-life-cycle-assessment/)"
+    used_for: "Qualitative separation of planing/panel-making/mortise/coating/packing; polyurethane, abrasive paper, PE film and carton prompts subject to site proof. Three Zhejiang/Sichuan makers, 2005–2009. Engineering route data, borrowed wood combustion emissions, estimated formaldehyde limits and omission of TSP are rejected as actual strip inventory"
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory, Wood Handbook, FPL-GTR-282 (2021), Chapter 4 pp.4–1 and 4–11. [Original](https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf)"
+    used_for: "Only dry-basis moisture and mass/solid-volume definitions, applied to measured bamboo specimens; no wood species density, drying schedule or softwood survey value transferred"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:2bb113aae60bb64074eeba878506df0df4d04f83e7c943e3436d427bb500e3e3"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6561"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6561
+          line: 63
+          column: 1
+        end:
+          offset: 8374
+          line: 83
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Dry unglued single-culm strip blank received at the profiling site |\n| starting_condition_role | foreground_start |\n| product_classification_scope | CPC 3.0 31212 subset; material shape/construction overrides sales labels |\n| recursive_input_rule | Same-category previously profiled input is one separately quantified purchased or internal transfer with declared state and origin; do not recursively regenerate its prior profile production or double count reused scrap |\n| upstream_dataset_requirement | Compatible bamboo harvesting/transport/strip preparation/treatment/drying and purchased electricity, abrasives, coating, packaging and external waste treatment; retain provider boundary and allocation |\n| disclosure | Declare omitted upstream coverage; no onsite drying/boiler/gluing and no installation/use/end-of-life included. Do not turn excluded heat supply into zero upstream emissions |\n\n### Boundary rules\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `boundary_identity` | Require physical proof of single-culm, non-glued continuous shaping and unassembled market form. Reject laminated/scrimber feedstock and assembled floors before guidance is applied. | `un-cpc3-2025`; `inbar-industrial-bamboo-2015`; `yu-bamboo-flooring-2019` |\n| `boundary_complete` | Include handling, profiling, sanding, dust collection, optional compatible UV polyurethane finish and packing with actual losses. Source inventories do not replace site data. Upstream thermal processing and any residue combustion must retain complete separate supplier inventories, including biogenic CO2; GHG accounting conventions cannot delete LCI flows. | `inbar-industrial-bamboo-2015`; `yu-bamboo-flooring-2019` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 386
+              line: 11
+              column: 1
+            end:
+              offset: 429
+              line: 11
+              column: 44
+          text: "# Unglued continuously shaped bamboo strips"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6561
+              line: 63
+              column: 1
+            end:
+              offset: 6582
+              line: 63
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_26210"
+      family: "allocation"
+      span:
+        start:
+          offset: 26210
+          line: 377
+          column: 1
+        end:
+          offset: 27021
+          line: 384
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `allocation_avoid` | First separate measured directly attributable electricity/materials and product cohorts; use line/submeter or documented causal runtime partition only where tested against joint meters. Do not borrow coniferous sawmill allocation shares. | `yu-bamboo-flooring-2019` |\n| `allocation_coproduct` | Document whether shavings are saleable coproducts or wastes with destination, dry mass and value. If shared burdens cannot be separated causally, require a justified allocation decision and sensitivity analysis before claiming complete product LCI; no automatic mass or economic share is prescribed. Physical shavings and internal handoffs keep original amounts. | `inbar-industrial-bamboo-2015` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 386
+              line: 11
+              column: 1
+            end:
+              offset: 429
+              line: 11
+              column: 44
+          text: "# Unglued continuously shaped bamboo strips"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 26210
+              line: 377
+              column: 1
+            end:
+              offset: 26250
+              line: 377
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_37190"
+      family: "validation"
+      span:
+        start:
+          offset: 37190
+          line: 416
+          column: 1
+        end:
+          offset: 38457
+          line: 424
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `validate_scope` | Fail applicability if adhesive/laminated/strand-compressed substrate, assembled floor, missing continuous profile or unproven single-culm state occurs. Compare cohort routing with actual purchase/sales evidence; status labels cannot establish product boundary. | `un-cpc3-2025`; `inbar-industrial-bamboo-2015`; `yu-bamboo-flooring-2019` |\n| `validate_inventory` | Require one atomic exchange per row, equal internal links, one final denominator, true conditional absence and no dust/residue double counting. Keep physical quantities separate from attributed burden. Unresolved identities, missing upstream inventories, unclosed balances or unsupported allocation leave a dataset incomplete. | `yu-bamboo-flooring-2019` |\n| `validate_air_carbon` | Air UUIDs use emissions to outdoor air, unspecified subcompartment, kg mass. Refine site compartments only with matching direct identity. Reject cumulative particle overlap and product-test-limit substitution. Do not delete upstream biogenic CO2 or grant universal carbon-negative credits; classify biogenic and fossil carbon from actual material composition. | `inbar-industrial-bamboo-2015`; `yu-bamboo-flooring-2019` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 386
+              line: 11
+              column: 1
+            end:
+              offset: 429
+              line: 11
+              column: 44
+          text: "# Unglued continuously shaped bamboo strips"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 37190
+              line: 416
+              column: 1
+            end:
+              offset: 37212
+              line: 416
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_6561"
+      source_span:
+        start:
+          offset: 7645
+          line: 80
+          column: 1
+        end:
+          offset: 7928
+          line: 80
+          column: 284
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_complete"
+      identity_kind: "explicit"
+      unit_id: "normative_6561"
+      source_span:
+        start:
+          offset: 7929
+          line: 81
+          column: 1
+        end:
+          offset: 8372
+          line: 81
+          column: 444
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_avoid"
+      identity_kind: "explicit"
+      unit_id: "normative_26210"
+      source_span:
+        start:
+          offset: 26304
+          line: 381
+          column: 1
+        end:
+          offset: 26594
+          line: 381
+          column: 291
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_coproduct"
+      identity_kind: "explicit"
+      unit_id: "normative_26210"
+      source_span:
+        start:
+          offset: 26595
+          line: 382
+          column: 1
+        end:
+          offset: 27019
+          line: 382
+          column: 425
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_37190"
+      source_span:
+        start:
+          offset: 37266
+          line: 420
+          column: 1
+        end:
+          offset: 37625
+          line: 420
+          column: 360
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_inventory"
+      identity_kind: "explicit"
+      unit_id: "normative_37190"
+      source_span:
+        start:
+          offset: 37626
+          line: 421
+          column: 1
+        end:
+          offset: 38007
+          line: 421
+          column: 382
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_air_carbon"
+      identity_kind: "explicit"
+      unit_id: "normative_37190"
+      source_span:
+        start:
+          offset: 38008
+          line: 422
+          column: 1
+        end:
+          offset: 38455
+          line: 422
+          column: 448
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6561"
+      source_span:
+        start:
+          offset: 6561
+          line: 63
+          column: 1
+        end:
+          offset: 6582
+          line: 63
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6561"
+      source_span:
+        start:
+          offset: 6610
+          line: 67
+          column: 1
+        end:
+          offset: 7571
+          line: 74
+          column: 191
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_26210"
+      source_span:
+        start:
+          offset: 26210
+          line: 377
+          column: 1
+        end:
+          offset: 26250
+          line: 377
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_37190"
+      source_span:
+        start:
+          offset: 37190
+          line: 416
+          column: 1
+        end:
+          offset: 37212
+          line: 416
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:2bb113aae60bb64074eeba878506df0df4d04f83e7c943e3436d427bb500e3e3"
+  generated_content_sha256: "sha256:293f9c135f6bf906e56a1cee36d18c83a3af400fd0ffc5adfc35503f0cb21e1e"

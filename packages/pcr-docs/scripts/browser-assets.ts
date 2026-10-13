@@ -20,12 +20,12 @@ export function compileDocsBrowserAssets({root=repositoryRoot,outputRoot}:{root?
   const compiled=spawnSync(process.execPath,[compiler,"-p",path.join(root,"tsconfig.docs-worker.json"),"--outDir",temporary],{cwd:root,encoding:"utf8",maxBuffer:8*1024*1024});
   if(compiled.error||compiled.status!==0)throw new Error("Browser TypeScript compilation failed: "+(compiled.error?.message??compiled.stdout+compiled.stderr));
   const outputs=new Map<string,Buffer>();
-  for(const name of ["search-worker.js", "search-terms.js", "search-codec.js"]){const source=path.join(temporary,name);const stat=lstatSync(source);if(!stat.isFile()||stat.isSymbolicLink())throw new Error("Compiled browser asset is not a regular file: "+name);outputs.set(name,readFileSync(source));}
+  for(const name of ["search-worker.js", "search-terms.js", "search-wire.js"]){const source=path.join(temporary,name);const stat=lstatSync(source);if(!stat.isFile()||stat.isSymbolicLink())throw new Error("Compiled browser asset is not a regular file: "+name);outputs.set(name,readFileSync(source));}
   mkdirSync(outputRoot,{recursive:true});
-  const worker=outputs.get("search-worker.js");const terms=outputs.get("search-terms.js");const codec=outputs.get("search-codec.js");if(!worker||!terms||!codec)throw new Error("Required browser outputs are missing");
-  const workerText=worker.toString("utf8").replaceAll('"./search-terms.js"','"./search-terms.mjs"').replaceAll('"./search-codec.js"','"./search-codec.mjs"');
-  writeFileSync(path.join(outputRoot,"search-worker.mjs"),workerText);writeFileSync(path.join(outputRoot,"search-terms.mjs"),terms);writeFileSync(path.join(outputRoot,"search-codec.mjs"),codec);
-  return {compilerVersion:expected,files:["search-worker.mjs","search-terms.mjs","search-codec.mjs"]};
+  const worker=outputs.get("search-worker.js");const terms=outputs.get("search-terms.js");const wire=outputs.get("search-wire.js");if(!worker||!terms||!wire)throw new Error("Required browser outputs are missing");
+  const workerText=worker.toString("utf8").replaceAll('"./search-terms.js"','"./search-terms.mjs"').replaceAll('"./search-wire.js"','"./search-wire.mjs"');
+  writeFileSync(path.join(outputRoot,"search-worker.mjs"),workerText);writeFileSync(path.join(outputRoot,"search-terms.mjs"),terms);writeFileSync(path.join(outputRoot,"search-wire.mjs"),wire);
+  return {compilerVersion:expected,files:["search-worker.mjs","search-terms.mjs","search-wire.mjs"]};
  }finally{rmSync(temporary,{recursive:true,force:true});}
 }
 
@@ -34,7 +34,7 @@ export function checkDocsBrowserAssets({root=repositoryRoot}:{root?:string}={}) 
  const temporary=mkdtempSync(path.join(realpathSync(tmpdir()),"pcr-browser-check-"));
  try {
   compileDocsBrowserAssets({root,outputRoot:temporary});
-  for(const name of ["search-worker.mjs","search-terms.mjs","search-codec.mjs"]){
+  for(const name of ["search-worker.mjs","search-terms.mjs","search-wire.mjs"]){
    const output=path.join(root,"packages/pcr-docs/public/generated",name);
    const stat=lstatSync(output);
    if(!stat.isFile()||stat.isSymbolicLink()||realpathSync(output)!==path.resolve(output))throw new Error("Generated search asset must be a regular file: "+name);

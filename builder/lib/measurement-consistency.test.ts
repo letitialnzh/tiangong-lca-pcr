@@ -573,3 +573,99 @@ for (const expression of ["q_item / M", "q_ref = q_item / M", "M * q_item"]) {
     assert.equal(result.coverage.complete, false);
   });
 }
+
+function sharedProductIdentity(referenceLink: string | null = "finished_baler", duplicateLink = false) {
+  const input = pair({ referenceAmount: "1", basis: "per reference flow", outputBasis: "per reference flow", expression: "Metered energy per reference flow", collectionBasis: "per reference flow" });
+  const uuid = "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98";
+  const update = (source: string) => source
+    .replace(/\| Reference product flow \| ([^|]+) \|/u, `| Reference product flow | $1 \`${uuid}\` |`)
+    .replace(/(- Selected flow: (?:Finished baler|成品打捆机))/u, `$1 \`${uuid}\``)
+    .replace(/^(\| cp_mass \|.*\|)\s*[^|]+\s*\|$/mu, "$1 per reference flow |")
+    .replace("| reference_flow_link | finished_baler |", referenceLink === null ? "" : `| reference_flow_link | ${referenceLink} |`)
+    .replace("## 8. Foreground", `###### Wood coproduct (\`${duplicateLink ? "finished_baler" : "wood_coproduct"}\`)
+- Selected flow: Wood coproduct \`${uuid}\`
+- Flow property / unit: Mass / kg
+- Amount rule: Measured coproduct quantity per reference flow.
+- Normalization basis: per reference flow
+- Collection protocol: \`cp_mass\`
+
+## 8. Foreground`);
+  return { english: update(input.english), chinese: update(input.chinese) };
+}
+
+test("explicit finished-row link disambiguates coproducts sharing the reference UUID", () => {
+  const result = checkMeasurementConsistency(sharedProductIdentity());
+  assert.equal(result.status, "pass", JSON.stringify(result.findings));
+  assert.equal(result.coverage.complete, true);
+  assert.ok(!codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("a broken explicit finished-row link cannot fall back to a unique UUID match", () => {
+  const input = sharedProductIdentity("missing_output");
+  input.english = input.english.replace(/- Selected flow: Wood coproduct `[^`]+`/u, "- Selected flow: Wood coproduct");
+  input.chinese = input.chinese.replace(/- Selected flow: Wood coproduct `[^`]+`/u, "- Selected flow: Wood coproduct");
+  const result = checkMeasurementConsistency(input);
+  assert.equal(result.status, "manual_review");
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("duplicate explicit finished-row links remain unresolved", () => {
+  const result = checkMeasurementConsistency(sharedProductIdentity("finished_baler", true));
+  assert.equal(result.status, "manual_review");
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("an explicit reference ID duplicated on a product input remains unresolved", () => {
+  const input = sharedProductIdentity();
+  input.english = input.english.replace("###### Electricity (`electricity`)", "###### Electricity (`finished_baler`)");
+  input.chinese = input.chinese.replace("###### Electricity (`electricity`)", "###### Electricity (`finished_baler`)");
+  const result = checkMeasurementConsistency(input);
+  assert.equal(result.status, "manual_review");
+  assert.equal(result.coverage.complete, false);
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("an explicit reference ID duplicated on a waste output remains unresolved", () => {
+  const input = sharedProductIdentity();
+  const makeWaste = (source: string) => source
+    .replace("###### Wood coproduct (`wood_coproduct`)", "##### Waste flows\n###### Wood residue (`finished_baler`)")
+    .replace(/- Selected flow: Wood coproduct `[^`]+`/u, "- Selected flow: Wood residue");
+  input.english = makeWaste(input.english);
+  input.chinese = makeWaste(input.chinese);
+  const result = checkMeasurementConsistency(input);
+  assert.equal(result.status, "manual_review");
+  assert.equal(result.coverage.complete, false);
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("without an explicit link, shared product UUIDs remain ambiguous", () => {
+  const result = checkMeasurementConsistency(sharedProductIdentity(null));
+  assert.equal(result.status, "manual_review");
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+for (const referenceLink of [null, " "]) {
+  test(`a unique product UUID resolves when the explicit link is ${referenceLink === null ? "absent" : "empty"}`, () => {
+    const input = sharedProductIdentity(referenceLink);
+    input.english = input.english.replace(/- Selected flow: Wood coproduct `[^`]+`/u, "- Selected flow: Wood coproduct");
+    input.chinese = input.chinese.replace(/- Selected flow: Wood coproduct `[^`]+`/u, "- Selected flow: Wood coproduct");
+    const result = checkMeasurementConsistency(input);
+    assert.equal(result.status, "pass", JSON.stringify(result.findings));
+    assert.equal(result.coverage.complete, true);
+  });
+}
+
+test("an explicit input-row link cannot select a product output by UUID", () => {
+  const result = checkMeasurementConsistency(sharedProductIdentity("electricity"));
+  assert.equal(result.status, "manual_review");
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("a disambiguated finished output still requires the declared reference amount", () => {
+  const input = sharedProductIdentity();
+  input.english = input.english.replace("- Amount rule: 1 kg", "- Amount rule: 2 kg");
+  input.chinese = input.chinese.replace("- Amount rule: 1 kg", "- Amount rule: 2 kg");
+  const result = checkMeasurementConsistency(input);
+  assert.equal(result.status, "error");
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_MISMATCH"));
+});

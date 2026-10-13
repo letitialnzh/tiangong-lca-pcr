@@ -1,6 +1,6 @@
 ---
-lastReviewedAt: 2026-10-12
-lastReviewedNote: "Retained lossless search v3 and added bounded, exactly reversible inspector record packs without deleting native navigation or raw downloads. Full CI qualification remains required."
+lastReviewedAt: 2026-10-13
+lastReviewedNote: "Combined upstream search-wire v3 with inspector record packs; retained source bytes, compatibility and candidate boundaries. Local synchronization does not establish publication acceptance."
 lastReviewedCommit: null
 title: Generated PCR Documentation Site Contract
 docType: contract
@@ -26,7 +26,7 @@ related:
 
 # Generated PCR Documentation Site
 
-This contract implements the accepted Plan v2 in PCR #12. The site is a read-only,
+This contract defines the generated documentation site as a read-only,
 reproducible view of a pinned repository snapshot. Website production deployment
 does not promote candidate PCR methodology or certify a translation.
 
@@ -160,20 +160,14 @@ Distinct historical versions are not blindly canonicalized to different text.
 
 ### Search wire-format compatibility
 
-New search manifests use `schemaVersion: 3`. FlexSearch export map entries store
-the original score-array length and each non-null score position with its complete
-posting list; the Worker restores the original null slots before engine import.
-Empty posting lists, trailing nulls, term order, document identifiers and scores
-are preserved. Other engine exports remain native arrays, and search-result records
-are unchanged. Every generated shard must restore each engine export string exactly
-or generation fails. Tokenization, ranking and source coverage are not reduced.
-
-The Worker continues reading v1 string exports and v2 native-array exports without
-interpreting them as v3. Malformed v3 score positions, lengths or posting lists fail
-closed and remain retryable. The compiled codec is emitted with the Worker; no
-runtime dependency or remote service is added. Existing per-language limits remain
-20,000,000 raw wire bytes and 4,000,000 gzip bytes; compaction does not claim to
-reduce the restored engine's resident-memory requirement.
+New search manifests use `schemaVersion: 3` and the shared `search-wire.ts` codec.
+Each shard retains native export arrays in `entries` and identifies compressed map keys in `sparseMaps`.
+A compressed term retains its original score-vector length and every non-null slot with unchanged IDs.
+The reader restores the exact native arrays before importing the engine exports. Only smaller, supported
+map shapes are compressed; other values remain native. The pinned nine-slot bound prevents unbounded
+allocation. Missing, duplicate, foreign or malformed sparse metadata fails initialization and remains
+retryable. Version 1 string exports and version 2 native arrays remain readable and reject v3 sparse
+metadata. Inspector record packing is independent of this search representation.
 
 ### Inspector data transport
 
@@ -397,6 +391,20 @@ lossless compaction and compatibility with v1 string and v2 native-array exports
 Unsupported manifest versions and inconsistent entry types fail initialization;
 failed loads remain retryable. The 2 MB text buckets, tokenization, 30-candidate
 limit per shard, global ranking and browser size budgets are unchanged.
+
+Search manifest version 3 retains native export arrays and complete result records,
+but marks supported FlexSearch map keys in each shard's `sparseMaps` list. Each
+marked term stores its original score-vector length and ordered non-null slot
+positions with unchanged posting lists. The Worker restores every null slot and
+stringifies the exact original engine export before import. The pinned nine-slot
+bound prevents malformed sparse lengths from allocating unbounded arrays. Dense
+or unsupported map shapes stay native; compression is used only when smaller.
+Version 1 string entries and version 2 native arrays remain readable and reject
+version 3 sparse metadata. Missing, duplicate, foreign or malformed sparse metadata
+fails initialization and remains retryable. Export key order, terms, posting IDs,
+slot positions, complete records, tokenization, text buckets, ranking and both
+browser budgets remain unchanged. The shared codec is an emitted TypeScript
+browser module with the same executable MIME/noindex checks as the Worker.
 
 Large documents split preferentially before semantic H2/H3 boundaries; bounded
 continuations retain their chapter context. Chapter URLs use source heading

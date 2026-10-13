@@ -1,10 +1,1198 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31912"
-  title: "Tableware and kitchenware, of wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.tableware-and-kitchenware-of-wood"
+  classification_refs: "CPC 3.0 31912; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Uncoated unglued single-piece face-grain sugar maple cutting boards"
+  excluded_products: "Spoons; bowls; bamboo; glued/end-grain boards; coated/oiled/waxed boards; impregnated or thermally modified stock"
+  representative_product: "One accepted complete sugar maple cutting board of the declared dimensions and moisture state"
+  production_route: "Purchased kiln-dried solid lumber → sawing → planing/routing → belt sanding and dust extraction → dry cleaning/inspection → self-locking box packing"
+  market_state: "Accepted unfinished-by-coating board; packed at factory gate; no retail transport included"
+functional_unit:
+  what: "Provide a rigid wooden food-preparation cutting surface"
+  how_much: "1 kg accepted net cutting-board mass at declared delivery moisture"
+  how_well: "Declare dimensions, flatness, face-grain orientation, surface condition, intended food contact and destination acceptance evidence"
+  how_long_or_cycle: "One manufacturing and factory-gate delivery cycle; no use-phase lifetime assumed"
+  reference_flow_link: "accepted_board"
+system_boundary:
+  rules:
+    - rule_id: sb_route
+      applies_to: "p_board"
+      rule: "Verify the single-piece uncoated route. Include actual machining, extraction, inspection, packaging and attributable site utilities; no foreground kiln, boiler, coating, lamination or wet wash is permitted by this boundary."
+      source_ids:
+        - usda-wood-handbook-2021
+    - rule_id: sb_supply
+      applies_to: "maple_blank; electricity; abrasive_belt; machine_oil; box"
+      rule: "Complete the upstream supply and delivery chain using compatible supplier data. A flow UUID confirms exchange identity only. Missing moisture, formulation, voltage, delivery scope or inventory quantity compatibility prevents a complete background link."
+      source_ids: []
+    - rule_id: sb_waste
+      applies_to: "p_board"
+      rule: "Declare each waste receiver and treatment outside the foreground; never give avoided-product or combustion credits automatically. Internal collection/recirculation is not an external output until actual dispatch."
+      source_ids: []
+    - rule_id: sb_carbon
+      applies_to: "p_board"
+      rule: "Retain wood biogenic carbon in the physical material account and upstream LCI, including any upstream biogenic CO2. This no-combustion foreground does not justify deleting such flows from the supply chain. Use-phase release/storage, future disposal and carbon-neutrality claims are outside this production result."
+      source_ids:
+        - usda-wood-handbook-2021
+boundary_abstraction:
+  declared_starting_condition: "Untreated kiln-dried single-piece sugar maple blanks received at the machining plant"
+  starting_condition_role: "foreground_input"
+  product_classification_scope: "Specific cutting-board subset of wooden kitchenware; CPC 31912 narrower candidate only"
+  recursive_input_rule: "Finished cutting boards are not purchased normal inputs. Internal rework stays inside the unit; any purchased same-category board requires separate starting-condition review and excludes reusing this primary-manufacture result without disclosure."
+  upstream_dataset_requirement: "Match wood forestry, sawing and actual kiln drying through delivery to receipt; match electricity, complete belts, actual applicable oil and box supply. Add inbound freight separately when not included in a verified delivered-input dataset; record actual route, mode, load and distance. Do not double count freight or drying."
+  disclosure: "Supplier/site/year/species/moisture, actual recipe and starting state, foreground map, upstream delivery scope, waste receivers, omissions and uncertainty"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Tableware and kitchenware, of wood"
+    uuid: "53ff8f39-08e3-4648-971e-b9851a4b5d44"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Acer saccharum supplier identity"
+    - "single-piece face grain"
+    - "no glue/coating/oil/wax/impregnation"
+    - dimensions
+    - "accepted surface and food-contact evidence"
+    - "delivery moisture and net weighing"
+    - "purchased kiln-dried starting condition"
+    - "abrasive grade and actual formulation"
+    - "dust capture system"
+    - "low-voltage consumer supply"
+    - "self-locking unprinted box"
+    - "geographic/temporal scope"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use 1 kg accepted net board at its recorded delivery moisture; exclude boxes. Collect using cp_mass. All inventory rows and collection aggregation use per 1 kg reference flow."
+  - id: dry_basis
+    applies_to: "wood material balance"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "MC is percent water per oven-dry wood, not wet-basis percentage. Convert each measured stream separately; never substitute a survey density or common moisture for measured stream states. [usda-wood-handbook-2021]"
+  - id: energy_basis
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "The property is the database energy identity. Use the energy-unit conversion 1 kWh = 3.6 MJ for electrical work; identify consumer voltage and background supply boundaries. It does not imply fuel or net steam heat."
+  - id: air_size
+    applies_to: "pm25; pmcoarse; pmover10"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use mutually exclusive outdoor-air particulate bins for the same measurement scope and period. Keep captured waste dust and air release separate."
+process_map:
+  - id: p_board
+    name: "Blank receipt, electric machining, conditioning, inspection and packing"
+    inclusion: "required"
+    inclusion_condition: "Declared single-piece sugar maple route"
+    role: "foreground_production"
+    quantitative_reference: "accepted_board; 1 kg"
+process_inventory:
+  - id: p_board
+    label: "Blank receipt, electric machining, conditioning, inspection and packing"
+    inputs:
+      product:
+        - row_id: maple_blank
+          role: "Purchased kiln-dried sugar maple blank"
+          name: "Kiln-dried wood boards and blanks"
+          flow_type: "product"
+          flow_ref:
+            uuid: "92c2e870-95ba-46bf-a6f6-f4680080df1d"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Receive untreated single-piece sugar maple (Acer saccharum) lumber suitable for machining a cutting board. Record supplier, species, dimensions, moisture and kiln-drying route; no resin, impregnation or laminated stock. This broad intermediate identity covers the specified solid hardwood subset; require a supplier background at the same as-received kg moisture basis and delivery boundary. The raw identity specifies non-coniferous sawn stock thicker than 6 mm and a kiln-dried at-plant GLO intermediate supply context. Measure actual incoming thickness, verify sugar-maple species, kiln route, moisture and provider gate/period/reference quantity; stock at or below 6 mm requires a separately verified compatible identity. GLO does not establish the actual supplier background."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: electricity
+          role: "Electric machining and extraction"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Purchased low-voltage alternating current below 1 kV, metered at the consumer. Include saw, planer, router, sanding, extractor, inspection, packaging and attributable services. Preserve supplier geography, year, voltage and loss boundary; this UUID does not select a generation dataset. Convert measured kWh to MJ using the energy unit group, not a fuel heating value. The raw geography is CN. Verify the actual supplier/region/year, below-1-kV delivery gate, loss convention and MJ reference-quantity compatibility; this physical AC identity does not establish a globally applicable background."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges: []
+        - row_id: abrasive_belt
+          role: "Whole abrasive belt for sanding"
+          name: "Abrasive belt"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8240432e-9d1c-43e0-aa76-70e9905b2895"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record one purchased coated abrasive belt as a complete consumable, not bare alumina. Capture actual grain species, grit, backing, binder formulation information, supplier grade, dimensions, dry new mass and replacement count. Do not infer binder or food-contact coating use from sanding. Prevent abrasive contamination of accepted boards. The source records at-plant CN grinding/polishing consumables. Verify actual supplier geography/period, complete backing-binder-grain grade/formulation and Mass/kg gate compatibility; the broad belt identity is not an exact supplier inventory."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_aux
+              source_ids: []
+            ranges: []
+        - row_id: machine_oil
+          role: "Formulated mineral machine lubricating oil"
+          name: "Lubricating oil"
+          flow_type: "product"
+          flow_ref:
+            uuid: "66628f20-9d33-4997-bd6c-6357453fa268"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional actual as-supplied formulated petroleum/mineral machinery lubricating oil, recorded as one complete purchased liquid mixture including its additives; never a board coating. Collect SKU/SDS, actual base-oil and additive constituents, petroleum mass fraction, measured consumed mass, campaign attribution, opening/closing stock, retained oil and dispatched used oil. The raw petroleum-fraction route and CPC class for preparations containing at least 70% petroleum oil require supplier compatibility; actual formulation remains to be verified. Its 40.5 MJ/kg name descriptor is source grade/quantity metadata requiring provider clarification, not a default actual calorific value, maintenance fuel/heat or a second energy exchange. Verify supplier gate/period and native Mass/kg basis; do not duplicate separate base/additive purchases on top of the whole mixture. Pure Mineral Oil and full-synthetic candidates remain incompatible substitutes. Document absence if unused; resolve actual formulation/background compatibility before a complete dataset."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_aux
+              source_ids: []
+            ranges: []
+        - row_id: box
+          role: "Self-locking corrugated box"
+          name: "corrugated board boxes"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f197bec-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One unprinted self-locking corrugated box delivered as a finished packaging component; no tape, film, glued closure or label in this delivery configuration. Weigh actual boxes including their purchased construction; obtain actual paper grades, supplier composition and upstream manufacturing data. Box manufacturing adhesive, if present upstream, belongs to the supplied box background and is not an invented foreground input. The raw name descriptor states 16.6% primary fibre and 83.4% recycled fibre. These are source supplier-composition/quantity compatibility constraints, not this factory's recipe, an assumed actual fibre mix or a recycling credit. Retain only a supplier-supported compatible finished box; a differing actual composition requires unresolved compatibility or another verified identity before completeness. Collect actual composition and provider gate/year/Mass reference basis, without changing the actual box formulation."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_board
+          role: "Accepted uncoated single-piece cutting board"
+          name: "Tableware and kitchenware, of wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "53ff8f39-08e3-4648-971e-b9851a4b5d44"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "The sole reference output: sugar maple, single-piece face-grain board, mechanically finished, dry-cleaned and accepted for food preparation. Its broad wooden kitchenware UUID is bound by these physical qualifiers; it cannot authorize spoon, bowl, bamboo or glued-board alternatives. Packaging accompanies delivery but is excluded from the net reference mass."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass
+              source_ids:
+                - fda-food-code-2022
+            ranges: []
+      waste:
+        - row_id: offcut
+          role: "Segregated solid maple offcut"
+          name: "Offcut"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "acc22294-8e77-4784-988f-2499be3c60eb"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Untreated non-agglomerated machining offcut only, segregated from dust and rejected whole boards. Record moisture, actual absence or presence of adhesive/abrasive/oil contamination and receiving facility; contaminated material cannot be treated as clean fuel by default. The source CPC agglomerated-wood classification conflicts with its woodworking name/comment and empty treatment field; physical use is conditional pending source clarification."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: sawdust
+          role: "Captured clean sawing dust"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Separately captured pure wood sawing dust leaving for a declared receiver, weighed with its measured moisture. Keep sanding abrasive dust out of this stream; capture is not an elementary air emission. The untreated combustion/recovery locator is usable only with a confirmed compatible receiver; do not assume combustion, emission credits or an energy content."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: shavings
+          role: "Segregated planer shavings"
+          name: "Wood waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2ef9d37a-2fbf-42f6-8ccf-5d6677d5cfd8"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Pure sugar maple planer shavings, independently weighed and moisture-tested with documented receiver. Broad wood-waste identity includes this uncoated material; disclose source route wording primary production route and clarify its applicability with the receiver/background. Do not assume the municipal proportions described in its comment. Actual shavings must remain non-agglomerated. Source CPC39282 instead denotes agglomerated wood waste; the concordant broad physical wood identity is conditionally retained, with classification clarification by the source owner and receiver/provider compatibility pending. Do not claim all database metadata verified or infer agglomeration/treatment."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: rejected_board
+          role: "Rejected whole maple board"
+          name: "Wood waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2ef9d37a-2fbf-42f6-8ccf-5d6677d5cfd8"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Whole uncoated boards rejected at inspection and actually dispatched as wood waste. Record defect, net mass, moisture and receiver separately from offcut/shavings. Reworked boards remaining inside the unit are not additional boundary outputs; accepted rework enters accepted_board only once. The broad wood-waste identity requires the same source route clarification as shavings. Actual whole rejected boards must remain non-agglomerated. Source CPC39282 instead denotes agglomerated wood waste; conditional broad physical identity requires source-owner classification clarification plus receiver/provider compatibility, including the existing primary-production wording debt. Do not invent agglomeration or treatment, or claim all source metadata verified."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: sanding_dust
+          role: "Captured wood sanding dust with spent abrasive particles"
+          name: "Dust"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2a6c9b60-a075-45ec-b611-c3b4dd255935"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One actual separately captured post-sanding mixed wood/mineral/binder dust stream, weighed as collected with its actual moisture. Record collection origin, actual wood/abrasive/binder constituents, their measured dry masses and contamination, biogenic/fossil carbon attribution, container/stock change and named receiver. The broad industrial-collector Dust waste identity does not establish a composition or treatment background: verify receiver acceptance and provider route/reference-quantity compatibility before linking it. Keep distinct from pure sawing dust, removed whole abrasive belts and emitted stack/fugitive PM; do not substitute metal sludge, coal, cork, pure alumina or clean wood. Preserve the actual wood fraction in the physical carbon/water balance; no mixture ratio is assumed."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: spent_belt
+          role: "Spent whole sanding belt"
+          name: "Spent abrasive waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "f0a52dd6-0027-4033-9068-f293526f958f"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Whole exhausted belt from wood surface finishing, weighed as dispatched with residual wood contamination. This broad spent-abrasive surface-finishing record has no metal-only restriction; confirm the full belt/backing identity and receiver background, not loose mineral powder. Reconcile abrasive input, wear in captured dust or air and remaining belt; do not transfer any candidate record percentage estimate."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residue
+              source_ids: []
+            ranges: []
+        - row_id: used_oil
+          role: "Used machinery lubricating oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional spent machinery lubricant, measured in kg with actual oil grade, contamination, waste classification and receiver/treatment. Resolve the matching input formulation and use/stock/retained-oil balance; do not infer an oil consumption or disposal fraction."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_aux
+              source_ids: []
+            ranges: []
+        - row_id: box_scrap
+          role: "Damaged corrugated box at packing"
+          name: "Packaging waste, cardboard"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "72270223-04b1-4986-a546-94e5a0821317"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual unused/damaged box scrap dispatched from pack-out, separated from delivered packaging. Use measured mass; the database comment estimate of 2% is not a PCR default and is not evidence for this factory."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: pm25
+          role: "Outdoor fine particulate"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Air release with aerodynamic diameter at or below 2.5 micrometres; outdoor air, unspecified subcompartment, contemporaneous, Mass/kg. Use site measurements after capture and add fugitive releases once. Not occupational dust exposure, soil deposition or stratospheric emission. Wood/abrasive particulate is not assigned fossil or biogenic CO2 identity."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: pmcoarse
+          role: "Outdoor particulate between 2.5 and 10 micrometres"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Exclusive size band above 2.5 and at or below 10 micrometres, outdoor air unspecified, Mass/kg. Derive from compatible cumulative PM10 minus PM2.5 measurements for the same stack/fugitive scope and period. Never add cumulative PM10 again."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: pmover10
+          role: "Outdoor particulate above 10 micrometres"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Exclusive particles above 10 micrometres, outdoor air unspecified, Mass/kg. Derive from compatible total particulate minus PM10 measurements with matching test definition; particle-size-unspecified or correction flows cannot replace this band. No PTE factors or assumed fractions."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: water_vapour
+          role: "Measured ambient moisture loss"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Water (CAS 7732-18-5) released as vapour during ambient conditioning, only when net evaporation is established by a consistent measured water balance. Outdoor air unspecified, contemporaneous, Mass/kg. No purchased steam, boiler, kiln or evapotranspiration identity. Do not force a negative evaporation residual to zero: moisture uptake needs its own specific resource exchange and review before dataset completion."
+          amount:
+            expression: "Unallocated physical exchange total in the matching production period divided once by accepted net board mass in kg; retain stage records and stock reconciliation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "The listed residue cards represent waste dispatches. If no genuine co-product leaves a joint stage, the board receives all its burdens. If actual evidence establishes a co-product, add its specifically verified product-output identity and applicable collection before using the allocation method; do not relabel a waste UUID as a product."
+    source_ids: []
+  - rule_id: allocation_rule_2
+    applies_to: "foreground_burden_allocation"
+    rule: "The following physical-allocation method is an author adaptation of the CORRIM softwood case, not a transfer of that survey to sugar maple factories. No survey density, yield, energy, price or allocation share is adopted. Establish whether a dispatched residue is waste or a co-product from actual contracts, specification, demand and handling; a sale alone does not erase waste treatment. [corrim-northern-lumber-2025]"
+    source_ids: []
+  - rule_id: al_separate
+    applies_to: "p_board"
+    rule: "First separate product-specific stages using measured electricity/work and material records. Assign board-only sanding, acceptance and packaging burdens directly to boards; do not allocate their burdens to residues that left at earlier stages."
+    source_ids:
+      - corrim-northern-lumber-2025
+  - rule_id: al_joint
+    applies_to: "p_board"
+    rule: "For an inseparable joint stage with genuine wood co-products, use measured oven-dry wood mass fractions within that stage. If every residue is waste, the board fraction is 1. Treat actual waste disposal as a board-production burden; exclude wastes, packaging, water and abrasive mass from the co-product denominator. Disclose stage outputs, causal limits and an economic sensitivity using measured revenues when physical shares may distort value."
+    source_ids:
+      - corrim-northern-lumber-2025
+  - rule_id: al_physical
+    applies_to: "p_board"
+    rule: "Keep a complete unallocated physical ledger and a separate allocated environmental-burden ledger. Preserve actual product/co-product/waste quantities and carbon/water balances; never multiply real co-product outputs or internal transfers by a burden share. Internal reuse is measured once with no external substitution credit."
+    source_ids:
+      - corrim-northern-lumber-2025
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_mass
+      process_id: "p_board"
+      flow_role: "accepted_board"
+      record_type: "weighing"
+      raw_fields: "lot; species; dimensions; accepted count; delivery moisture; net accepted board mass B; box tare; rejects; stock change; surface acceptance"
+      collection_method: "Calibrated net weighing of accepted bare boards before pack-out, reconcile packed gross minus actual tare and actual matched-period packed dispatches and stocks; inspect declared material/surface; retain item-level records without using count as denominator"
+      unit: "kg"
+      frequency: "each lot and acceptance"
+      temporal_coverage: "Same documented representative production period and lots as cp_mass"
+      site_scope: "Specified sugar maple board line plus attributable services"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, supplier originals, timestamps, coverage and reconciliation evidence"
+    - protocol_id: cp_material
+      process_id: "p_board"
+      flow_role: "maple_blank; water_vapour"
+      record_type: "weighing_and_moisture"
+      raw_fields: "supplier; species; drying/delivery data; blank net mass; receipts/stock; each stream wet and oven-dry sample mass; MC; ambient humidity/time; sample location; carbon fraction test"
+      collection_method: "Calibrated receipt and dispatch weighing with representative species/stream-specific moisture samples; immediate sample weighing and oven-dry constant mass per USDA ch.13 (101–105°C; no appreciable change at 3-hour intervals), or a validated corrected moisture meter cross-checked to this basis; record volatilization bias and sample coverage"
+      unit: "kg; % dry basis"
+      frequency: "each receipt/lot and balance campaign"
+      temporal_coverage: "Same documented representative production period and lots as cp_mass"
+      site_scope: "Specified sugar maple board line plus attributable services"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, supplier originals, timestamps, coverage and reconciliation evidence"
+    - protocol_id: cp_energy
+      process_id: "p_board"
+      flow_role: "electricity"
+      record_type: "meter"
+      raw_fields: "stage meter start/end; kWh; dates; voltage; supplier mix/loss boundary; machine/extractor hours; shared-service attribution"
+      collection_method: "Read calibrated submeter or attributable plant meters; retain stage totals and shared-use driver; include idle and auxiliary demand attributable to the campaign without double counting"
+      unit: "kWh; MJ"
+      frequency: "meter intervals and each lot"
+      temporal_coverage: "Same documented representative production period and lots as cp_mass"
+      site_scope: "Specified sugar maple board line plus attributable services"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, supplier originals, timestamps, coverage and reconciliation evidence"
+    - protocol_id: cp_aux
+      process_id: "p_board"
+      flow_role: "abrasive_belt; machine_oil; used_oil"
+      record_type: "stock_and_supplier_records"
+      raw_fields: "SKU; supplier; actual grain/backing/binder or complete oil base/additives; petroleum mass fraction; supplier grade/40.5 descriptor and gate/reference-basis compatibility; SDS; new unit mass; replacements; used belt/oil mass; receipts/returns; opening/closing stock; machine retained oil; cross-contamination"
+      collection_method: "Actual supplier composition and purchasing/maintenance records with calibrated mass measurements; complete product mass includes actual formulation; track belt abrasion separately and do not infer recipe from trade names"
+      unit: "kg"
+      frequency: "each replacement and stock period"
+      temporal_coverage: "Same documented representative production period and lots as cp_mass"
+      site_scope: "Specified sugar maple board line plus attributable services"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, supplier originals, timestamps, coverage and reconciliation evidence"
+    - protocol_id: cp_residue
+      process_id: "p_board"
+      flow_role: "offcut; sawdust; shavings; rejected_board; sanding_dust; spent_belt"
+      record_type: "weighing_and_dispatch"
+      raw_fields: "stream/container id; gross/tare/net; moisture; wood fraction; actual mineral/binder constituents and measured dry component masses; moisture/carbon attribution; receiver acceptance and provider quantity basis; abrasive/adhesive/oil contamination; rejected-board defect; receiver; treatment; revenue/specification; dispatch and stored mass"
+      collection_method: "Weigh segregated actual streams and reconcile bins, collector, rejected boards and dispatch/stock. Test composition of sanding dust and residual belt wood; define mutually exclusive bins for sawdust and shavings. Confirm receiver and waste/co-product legal/commercial status"
+      unit: "kg; %"
+      frequency: "each bin/dispatch; campaign composition tests"
+      temporal_coverage: "Same documented representative production period and lots as cp_mass"
+      site_scope: "Specified sugar maple board line plus attributable services"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, supplier originals, timestamps, coverage and reconciliation evidence"
+    - protocol_id: cp_pack
+      process_id: "p_board"
+      flow_role: "box; box_scrap"
+      record_type: "packing_stock_records"
+      raw_fields: "box SKU/construction; actual supplier fibre composition; source 16.6/83.4 descriptor/gate/quantity-basis compatibility; net new box mass; box count; receipts/stock; dispatched accompanying packaging mass; damaged box mass; no closure/label/film declaration"
+      collection_method: "Weigh complete purchased boxes and scrap separately, reconcile stock and delivered packaging; count conversion uses measured actual box mass, never a default percentage"
+      unit: "kg"
+      frequency: "each packing lot"
+      temporal_coverage: "Same documented representative production period and lots as cp_mass"
+      site_scope: "Specified sugar maple board line plus attributable services"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, supplier originals, timestamps, coverage and reconciliation evidence"
+    - protocol_id: cp_air
+      process_id: "p_board"
+      flow_role: "pm25; pmcoarse; pmover10"
+      record_type: "emission_monitoring"
+      raw_fields: "outlet/fugitive points; test method; aerodynamic fraction; total/PM10/PM2.5 cumulative or exclusive status; concentration; dry/wet gas basis; flow/time; capture/bypass; background subtraction; wood/abrasive composition; uncertainty; species screen"
+      collection_method: "Use representative post-control stack and fugitive measurements for actual wood machinery; integrate compatible concentration and gas volume/time. Reconcile collected dust separately; document outlet, worker exposure and off-site boundary distinctions. Screen actual nonparticulate releases and add detected species as individually verified atomic rows before dataset completeness; do not assume zero from absence of a boiler"
+      unit: "kg; concentration; gas volume/time"
+      frequency: "representative campaign across operating/control conditions"
+      temporal_coverage: "Same documented representative production period and lots as cp_mass"
+      site_scope: "Specified sugar maple board line plus attributable services"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, supplier originals, timestamps, coverage and reconciliation evidence"
+  calculation_rules:
+    - id: normalize_batch
+      applies_to: "all inventory rows"
+      rule: "For each row, q = A / B; A is its matched-period measured or calculated amount in the row unit; B is accepted net board mass in kg crossing the packed factory-gate boundary in the matched period from cp_mass. q is per 1 kg reference flow. Preserve actual unallocated outputs before any burden allocation."
+      inputs:
+        - A
+        - B
+        - cp_mass
+      output: "row amount per 1 kg reference flow"
+      source_ids: []
+    - id: moisture_balance
+      applies_to: "maple_blank; accepted_board; offcut; sawdust; shavings; rejected_board; sanding_dust; spent_belt; water_vapour"
+      rule: "MC = 100*(wet_sample - dry_sample)/dry_sample; dry_wood = measured_wood_mass/(1 + MC/100). For mixed waste first separate measured dry non-wood content from dry wood. In each balance, input = output + closing_stock - opening_stock + documented_residual; retained wood includes accepted boards, all wood residues, wood in spent belt and emitted wood particles. Water input in wood = water in all dispatched/stored streams + net evaporation + water stock change. Do not label an unexplained residual as water, carbon or particulate release."
+      inputs:
+        - cp_material
+        - cp_residue
+        - cp_mass
+        - cp_air
+      output: "Dry wood and water ledgers with explicit uncertainty"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: electric_work
+      applies_to: "electricity"
+      rule: "Electrical MJ = measured kWh * 3.6. Reconcile stage submeters with attributable plant supply; apply normalize_batch only after unit conversion."
+      inputs:
+        - cp_energy
+      output: "MJ per period, then MJ per 1 kg reference flow"
+      source_ids: []
+    - id: particulate_bins
+      applies_to: "pm25; pmcoarse; pmover10"
+      rule: "At each compatible measurement scope: fine = PM2.5; coarse = PM10 - PM2.5; over10 = total_particulate - PM10. Require total_particulate >= PM10 >= PM2.5 >= 0 within uncertainty. Sum mutually exclusive bins across stack and separately evidenced fugitive outlets once. Reject incompatible wet/dry gas, averaging periods, condensable definitions or test cut-offs; remeasure rather than force a bin."
+      inputs:
+        - cp_air
+      output: "Exclusive kg air emissions, then per 1 kg reference flow"
+      source_ids:
+        - epa-sawmill-pte-2014
+    - id: joint_burdens
+      applies_to: "p_board"
+      rule: "For each inseparable joint stage, f_board = dry_board_equivalent / sum(dry genuine wood co-product equivalents leaving that stage, including board precursor). All fractions sum to 1. Board burden = f_board * joint_stage_burden + direct_board_stage_burden. Preserve actual physical outputs; allocation changes only attributed joint burdens. Use stage-specific measured dry masses, not final-stage wet masses."
+      inputs:
+        - cp_material
+        - cp_residue
+        - cp_energy
+      output: "Allocated burden ledger separate from physical ledger"
+      source_ids:
+        - corrim-northern-lumber-2025
+    - id: wood_carbon
+      applies_to: "p_board"
+      rule: "Wood carbon = measured oven-dry wood mass * measured supplier/site carbon mass fraction for each actual stream. Reconcile input carbon with accepted board, residues, stored wood, emitted wood particles and any measured carbon-containing gaseous release. Track biogenic and fossil carbon separately where binder/oil occurs. No default wood-carbon fraction, negative carbon credit or deletion of upstream biogenic CO2."
+      inputs:
+        - cp_material
+        - cp_residue
+        - cp_air
+      output: "Physical carbon ledger with residual and evidence"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_route
+      applies_to: "p_board"
+      requirement: "Match actual species, material/recipe, finishing route and packaging; no hidden coating or adhesive. A broad UUID never substitutes for physical applicability."
+      evidence: "Drawings, supplier composition, bills and acceptance records"
+    - id: dq_complete
+      applies_to: "all inventory rows"
+      requirement: "Resolve every applicable identity, support unit and background quantity basis. Prove absence to mark a conditional row not applicable; missing measurement is not zero. Add actual unlisted inputs/emissions atomically before completeness."
+      evidence: "Protocol coverage and gap register"
+    - id: dq_period
+      applies_to: "p_board"
+      requirement: "Use matched periods and measured stock changes; retain raw stage data, detector limits, uncertainty and mass/water/carbon reconciliation without hiding residuals."
+      evidence: "Calibrations, timestamps, raw data and balance report"
+    - id: dq_transfer
+      applies_to: "p_board"
+      requirement: "No CORRIM Northern softwood parameter, EPA sawmill PTE factor, database estimate or guessed supplier formula becomes a board-factory default."
+      evidence: "Source-scope and foreground compatibility review"
+validation_rules:
+  - rule_id: vr_reference
+    applies_to: "accepted_board"
+    rule: "Require exactly one accepted_board product output linked to the 1 kg net reference with declared qualifiers and matched cp_mass denominator in both languages. Broad kitchenware identity cannot be switched to another product."
+    source_ids:
+      - fda-food-code-2022
+  - rule_id: vr_flow
+    applies_to: "all inventory rows"
+    rule: "Check flow type, physical species/material, treatment, medium/submedium, reference property/unit, supplier formulation and compatible background. Reject correction flows, particle-size substitutions and contradictory hard process/CAS restrictions. Applicable unresolved rows keep the dataset incomplete."
+    source_ids: []
+  - rule_id: vr_balance
+    applies_to: "p_board"
+    rule: "Reconcile unallocated wood/water/carbon, package, abrasive and oil accounts with stock changes and uncertainty. Stage internal transfers match at both ends. Retain real co-product quantities after burden allocation; no lost moisture is invented as emissions."
+    source_ids:
+      - usda-wood-handbook-2021
+      - corrim-northern-lumber-2025
+  - rule_id: vr_air
+    applies_to: "pm25; pmcoarse; pmover10; water_vapour"
+    rule: "Require actual consistent outlet/fugitive sampling or documented justified nonoccurrence, exclusive particulate bins and evidence for net evaporation. Do not turn PTE capacity, missing monitoring or a no-boiler route into measured zero emissions."
+    source_ids:
+      - epa-sawmill-pte-2014
+  - rule_id: vr_recipe
+    applies_to: "p_board"
+    rule: "Verify no glue, coating, wax or applied oil on the reference board. Discovering one stops applicability and requires actual ingredient/formulation collection and separately reviewed methodology. Machine oil is not food-contact finishing oil."
+    source_ids: []
+  - rule_id: vr_review
+    applies_to: "p_board"
+    rule: "Report identity, measurement and source-scope coverage separately from methodological approval; candidate authorship or a CLI pass does not establish scientific review, food-contact certification or accepted mapping."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground_dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Production supply modelling of the same physically qualified sugar maple cutting board after all applicable collection/identity/background gaps are closed"
+  excluded_use: "Automatic modelling of spoons/bowls/bamboo/glued/coated boards; lifetime comparison; carbon neutrality; food-contact certification; applying factory inventory to all CPC 31912 products"
+  required_metadata: "Product qualifiers, source PCR/version, supplier/site/time, species and moisture, net output denominator, actual recipe, electricity supply boundary, upstream routes/freight, stage map, protocols and receivers"
+  required_quality_disclosure: "Coverage, unresolved identities/metadata, actual measurements, uncertainty/residuals, unallocated physical and allocated burden accounts, source transfer limits and independent review state"
+  update_trigger: "Species, single-piece construction, coating/glue, abrasive/oil recipe, moisture/drying supplier, energy, capture control, packaging, receiver or evidence changes"
+data_sources:
+  - id: "fda-food-code-2022"
+    type: "official_guidance"
+    reference: "[FDA Food Code 2022](https://www.fda.gov/media/184685/download), §§4-101.11 and 4-101.17(B)(1), printed pp.91–93"
+    used_for: "Hard-maple cutting-board and surface acceptance example; no recipe, lifetime or global compliance claim"
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "[USDA Forest Products Laboratory, Wood Handbook, FPL-GTR-282 (2021)](https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf), ch.4 p.4–1, ch.13 p.13–2; sugar maple scientific-name list"
+    used_for: "Dry-basis moisture and specimen/oven-dry method; sugar maple identity; no factory density, target moisture, carbon fraction or yield default"
+  - id: "epa-sawmill-pte-2014"
+    type: "official_guidance"
+    reference: "[EPA Region 10, Particulate Matter PTE factors for sawmill activities excluding boilers (8 May 2014)](https://www.epa.gov/sites/default/files/2016-09/documents/spmpteef_memo.pdf), memo p.1 and nested PM tables p.2"
+    used_for: "PTE limitation and cumulative particle-size accounting caution only; no sawmill, kiln, boiler or control factor adopted"
+  - id: "corrim-northern-lumber-2025"
+    type: "literature"
+    reference: "[CORRIM, LCA of Softwood Lumber Production – Northern Region (22 July 2025 revision)](https://corrim.org/wp-content/uploads/2025/07/LCA-Report-Northern-Lumber-Report-07222025.pdf), §3.2.6 p.16"
+    used_for: "Limited physical-allocation/packaging worked example adapted by author using actual site measurements; no Northern softwood survey parameters transferred"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:871688b777a06979cb49ddf50d1f53a06231b4d675dc344b9814959dd054decb"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5267"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5267
+          line: 60
+          column: 1
+        end:
+          offset: 7730
+          line: 80
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Untreated kiln-dried single-piece sugar maple blanks received at the machining plant |\n| starting_condition_role | foreground_input |\n| product_classification_scope | Specific cutting-board subset of wooden kitchenware; CPC 31912 narrower candidate only |\n| recursive_input_rule | Finished cutting boards are not purchased normal inputs. Internal rework stays inside the unit; any purchased same-category board requires separate starting-condition review and excludes reusing this primary-manufacture result without disclosure. |\n| upstream_dataset_requirement | Match wood forestry, sawing and actual kiln drying through delivery to receipt; match electricity, complete belts, actual applicable oil and box supply. Add inbound freight separately when not included in a verified delivered-input dataset; record actual route, mode, load and distance. Do not double count freight or drying. |\n| disclosure | Supplier/site/year/species/moisture, actual recipe and starting state, foreground map, upstream delivery scope, waste receivers, omissions and uncertainty |\n\n| rule_id | applies_to | Rule | source_ids |\n| --- | --- | --- | --- |\n| sb_route | p_board | Verify the single-piece uncoated route. Include actual machining, extraction, inspection, packaging and attributable site utilities; no foreground kiln, boiler, coating, lamination or wet wash is permitted by this boundary. | usda-wood-handbook-2021 |\n| sb_supply | maple_blank; electricity; abrasive_belt; machine_oil; box | Complete the upstream supply and delivery chain using compatible supplier data. A flow UUID confirms exchange identity only. Missing moisture, formulation, voltage, delivery scope or inventory quantity compatibility prevents a complete background link. |  |\n| sb_waste | p_board | Declare each waste receiver and treatment outside the foreground; never give avoided-product or combustion credits automatically. Internal collection/recirculation is not an external output until actual dispatch. |  |\n| sb_carbon | p_board | Retain wood biogenic carbon in the physical material account and upstream LCI, including any upstream biogenic CO2. This no-combustion foreground does not justify deleting such flows from the supply chain. Use-phase release/storage, future disposal and carbon-neutrality claims are outside this production result. | usda-wood-handbook-2021 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 305
+              line: 10
+              column: 1
+            end:
+              offset: 355
+              line: 10
+              column: 51
+          text: "# Uncoated single-piece sugar maple cutting boards"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5267
+              line: 60
+              column: 1
+            end:
+              offset: 5288
+              line: 60
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_30294"
+      family: "allocation"
+      span:
+        start:
+          offset: 30294
+          line: 385
+          column: 1
+        end:
+          offset: 32358
+          line: 397
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\nThe listed residue cards represent waste dispatches. If no genuine co-product leaves a joint stage, the board receives all its burdens. If actual evidence establishes a co-product, add its specifically verified product-output identity and applicable collection before using the allocation method; do not relabel a waste UUID as a product.\n\nThe following physical-allocation method is an author adaptation of the CORRIM softwood case, not a transfer of that survey to sugar maple factories. No survey density, yield, energy, price or allocation share is adopted. Establish whether a dispatched residue is waste or a co-product from actual contracts, specification, demand and handling; a sale alone does not erase waste treatment. [corrim-northern-lumber-2025]\n\n| rule_id | applies_to | Rule | source_ids |\n| --- | --- | --- | --- |\n| al_separate | p_board | First separate product-specific stages using measured electricity/work and material records. Assign board-only sanding, acceptance and packaging burdens directly to boards; do not allocate their burdens to residues that left at earlier stages. | corrim-northern-lumber-2025 |\n| al_joint | p_board | For an inseparable joint stage with genuine wood co-products, use measured oven-dry wood mass fractions within that stage. If every residue is waste, the board fraction is 1. Treat actual waste disposal as a board-production burden; exclude wastes, packaging, water and abrasive mass from the co-product denominator. Disclose stage outputs, causal limits and an economic sensitivity using measured revenues when physical shares may distort value. | corrim-northern-lumber-2025 |\n| al_physical | p_board | Keep a complete unallocated physical ledger and a separate allocated environmental-burden ledger. Preserve actual product/co-product/waste quantities and carbon/water balances; never multiply real co-product outputs or internal transfers by a burden share. Internal reuse is measured once with no external substitution credit. | corrim-northern-lumber-2025 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 305
+              line: 10
+              column: 1
+            end:
+              offset: 355
+              line: 10
+              column: 51
+          text: "# Uncoated single-piece sugar maple cutting boards"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 30294
+              line: 385
+              column: 1
+            end:
+              offset: 30334
+              line: 385
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_44825"
+      family: "validation"
+      span:
+        start:
+          offset: 44825
+          line: 434
+          column: 1
+        end:
+          offset: 46727
+          line: 445
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | Rule | source_ids |\n| --- | --- | --- | --- |\n| vr_reference | accepted_board | Require exactly one accepted_board product output linked to the 1 kg net reference with declared qualifiers and matched cp_mass denominator in both languages. Broad kitchenware identity cannot be switched to another product. | fda-food-code-2022 |\n| vr_flow | all inventory rows | Check flow type, physical species/material, treatment, medium/submedium, reference property/unit, supplier formulation and compatible background. Reject correction flows, particle-size substitutions and contradictory hard process/CAS restrictions. Applicable unresolved rows keep the dataset incomplete. |  |\n| vr_balance | p_board | Reconcile unallocated wood/water/carbon, package, abrasive and oil accounts with stock changes and uncertainty. Stage internal transfers match at both ends. Retain real co-product quantities after burden allocation; no lost moisture is invented as emissions. | usda-wood-handbook-2021; corrim-northern-lumber-2025 |\n| vr_air | pm25; pmcoarse; pmover10; water_vapour | Require actual consistent outlet/fugitive sampling or documented justified nonoccurrence, exclusive particulate bins and evidence for net evaporation. Do not turn PTE capacity, missing monitoring or a no-boiler route into measured zero emissions. | epa-sawmill-pte-2014 |\n| vr_recipe | p_board | Verify no glue, coating, wax or applied oil on the reference board. Discovering one stops applicability and requires actual ingredient/formulation collection and separately reviewed methodology. Machine oil is not food-contact finishing oil. |  |\n| vr_review | p_board | Report identity, measurement and source-scope coverage separately from methodological approval; candidate authorship or a CLI pass does not establish scientific review, food-contact certification or accepted mapping. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 305
+              line: 10
+              column: 1
+            end:
+              offset: 355
+              line: 10
+              column: 51
+          text: "# Uncoated single-piece sugar maple cutting boards"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 44825
+              line: 434
+              column: 1
+            end:
+              offset: 44847
+              line: 434
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "sb_route"
+      identity_kind: "explicit"
+      unit_id: "normative_5267"
+      source_span:
+        start:
+          offset: 6515
+          line: 75
+          column: 1
+        end:
+          offset: 6789
+          line: 75
+          column: 275
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "sb_supply"
+      identity_kind: "explicit"
+      unit_id: "normative_5267"
+      source_span:
+        start:
+          offset: 6790
+          line: 76
+          column: 1
+        end:
+          offset: 7121
+          line: 76
+          column: 332
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "sb_waste"
+      identity_kind: "explicit"
+      unit_id: "normative_5267"
+      source_span:
+        start:
+          offset: 7122
+          line: 77
+          column: 1
+        end:
+          offset: 7362
+          line: 77
+          column: 241
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "sb_carbon"
+      identity_kind: "explicit"
+      unit_id: "normative_5267"
+      source_span:
+        start:
+          offset: 7363
+          line: 78
+          column: 1
+        end:
+          offset: 7728
+          line: 78
+          column: 366
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 30336
+          line: 387
+          column: 1
+        end:
+          offset: 30674
+          line: 387
+          column: 339
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 30676
+          line: 389
+          column: 1
+        end:
+          offset: 31095
+          line: 389
+          column: 420
+    - pointer: "/allocation_rules/2"
+      rule_id: "al_separate"
+      identity_kind: "explicit"
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 31168
+          line: 393
+          column: 1
+        end:
+          offset: 31469
+          line: 393
+          column: 302
+    - pointer: "/allocation_rules/3"
+      rule_id: "al_joint"
+      identity_kind: "explicit"
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 31470
+          line: 394
+          column: 1
+        end:
+          offset: 31971
+          line: 394
+          column: 502
+    - pointer: "/allocation_rules/4"
+      rule_id: "al_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 31972
+          line: 395
+          column: 1
+        end:
+          offset: 32356
+          line: 395
+          column: 385
+    - pointer: "/validation_rules/0"
+      rule_id: "vr_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_44825"
+      source_span:
+        start:
+          offset: 44920
+          line: 438
+          column: 1
+        end:
+          offset: 45201
+          line: 438
+          column: 282
+    - pointer: "/validation_rules/1"
+      rule_id: "vr_flow"
+      identity_kind: "explicit"
+      unit_id: "normative_44825"
+      source_span:
+        start:
+          offset: 45202
+          line: 439
+          column: 1
+        end:
+          offset: 45543
+          line: 439
+          column: 342
+    - pointer: "/validation_rules/2"
+      rule_id: "vr_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_44825"
+      source_span:
+        start:
+          offset: 45544
+          line: 440
+          column: 1
+        end:
+          offset: 45884
+          line: 440
+          column: 341
+    - pointer: "/validation_rules/3"
+      rule_id: "vr_air"
+      identity_kind: "explicit"
+      unit_id: "normative_44825"
+      source_span:
+        start:
+          offset: 45885
+          line: 441
+          column: 1
+        end:
+          offset: 46208
+          line: 441
+          column: 324
+    - pointer: "/validation_rules/4"
+      rule_id: "vr_recipe"
+      identity_kind: "explicit"
+      unit_id: "normative_44825"
+      source_span:
+        start:
+          offset: 46209
+          line: 442
+          column: 1
+        end:
+          offset: 46479
+          line: 442
+          column: 271
+    - pointer: "/validation_rules/5"
+      rule_id: "vr_review"
+      identity_kind: "explicit"
+      unit_id: "normative_44825"
+      source_span:
+        start:
+          offset: 46480
+          line: 443
+          column: 1
+        end:
+          offset: 46725
+          line: 443
+          column: 246
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5267"
+      source_span:
+        start:
+          offset: 5267
+          line: 60
+          column: 1
+        end:
+          offset: 5288
+          line: 60
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5267"
+      source_span:
+        start:
+          offset: 5316
+          line: 64
+          column: 1
+        end:
+          offset: 6442
+          line: 71
+          column: 172
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 30294
+          line: 385
+          column: 1
+        end:
+          offset: 30334
+          line: 385
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 30336
+          line: 387
+          column: 1
+        end:
+          offset: 30674
+          line: 387
+          column: 339
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 30676
+          line: 389
+          column: 1
+        end:
+          offset: 31095
+          line: 389
+          column: 420
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 31168
+          line: 393
+          column: 1
+        end:
+          offset: 31469
+          line: 393
+          column: 302
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 31470
+          line: 394
+          column: 1
+        end:
+          offset: 31971
+          line: 394
+          column: 502
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_30294"
+      source_span:
+        start:
+          offset: 31972
+          line: 395
+          column: 1
+        end:
+          offset: 32356
+          line: 395
+          column: 385
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_44825"
+      source_span:
+        start:
+          offset: 44825
+          line: 434
+          column: 1
+        end:
+          offset: 44847
+          line: 434
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:871688b777a06979cb49ddf50d1f53a06231b4d675dc344b9814959dd054decb"
+  generated_content_sha256: "sha256:c07327a8d2fa93df8ef33165c867c49413ffa752458a75a2fe44514e4563f50d"

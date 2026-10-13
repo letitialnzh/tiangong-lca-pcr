@@ -282,7 +282,7 @@ Only boiler-based thermal route. Define furnace, boiler supplied package and aux
 
 - Selected flow: Power-generation steam boiler
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -297,7 +297,7 @@ Use for actual steam cycle, including thermal, combined-cycle or nuclear turbine
 
 - Selected flow: Steam turbine assembly
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -312,7 +312,7 @@ Only actual combustion turbine with identified compressor/combustor/turbine pack
 
 - Selected flow: Industrial gas turbine assembly
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -327,7 +327,7 @@ Only actual combined-cycle heat-recovery equipment; record pressure circuit, sup
 
 - Selected flow: Heat-recovery boiler assembly (HRSG)
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -342,7 +342,7 @@ Only an actual reciprocating-engine generating route; specify engine and whether
 
 - Selected flow: Stationary reciprocating generating engine
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -357,7 +357,7 @@ Only actual standalone generator of the thermal/nuclear package; reconcile ratin
 
 - Selected flow: Synchronous electrical generator
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -372,7 +372,7 @@ Only condensing steam cycle with actual heat-exchange equipment; identify coolin
 
 - Selected flow: Steam surface condenser
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -387,7 +387,7 @@ Only actual wet recirculating cooling configuration and supplied tower boundary.
 
 - Selected flow: Wet recirculating cooling tower
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -408,7 +408,7 @@ Only a nuclear configuration using this vessel; identify reactor design and deli
 
 - Selected flow: Reactor pressure vessel
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -423,7 +423,7 @@ Only actual indirect steam-cycle nuclear configuration using separate steam gene
 
 - Selected flow: Nuclear steam generator
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -453,7 +453,7 @@ Only actual safety-injection configuration; identify qualified pump, drive and s
 
 - Selected flow: Nuclear safety injection pump
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -489,7 +489,7 @@ Only complete vertical Francis hydraulic turbine at factory gate, with actual he
 
 - Selected flow: Vertical Francis hydraulic turbine `f762dd15-89d4-4b91-abc3-38ba6d4539ea`
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -504,7 +504,7 @@ Only actual hydroelectric generator supplied at its manufacturing/factory gate; 
 
 - Selected flow: Hydro generator `46310235-eeca-4dee-84fb-50da9b4a99dc`
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -525,7 +525,7 @@ Only actual factory-supplied onshore wind turbine of rated power below 2 MW. Rec
 
 - Selected flow: wind turbine `e4ae4246-b93d-44ab-bb73-58671139c50b`
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -540,7 +540,7 @@ Only actual CN polycrystalline silicon module supplied at photovoltaic station i
 
 - Selected flow: Polycrystalline Silicon Solar Module `5bdcaef5-1689-4ad5-8ce2-c1543b0ff811`
 - Flow property / unit: Area `93a60a56-a3c8-19da-a746-0800200c9a66` / m2
-- Amount rule: Sum measured actual module area from dimensions and installed/returned counts using the same gross-area convention; retain m2, never replace its primary Area property with Mass or energy.
+- Amount rule: Sum measured gross area of every attributable module consumed, including damaged/rejected replacements, using same-configuration dimensions and the cp_renewable receipts/stock/returns ledger. Keep accepted installed area separately; retain m2, never replace Area with Mass or energy.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -555,7 +555,7 @@ Only actual CN monocrystalline silicon module at the photovoltaic-station supply
 
 - Selected flow: Monocrystalline Silicon Solar Module `fbfc81aa-aefd-49ec-aaf6-81b9416a7b78`
 - Flow property / unit: Area `93a60a56-a3c8-19da-a746-0800200c9a66` / m2
-- Amount rule: Measure actual module area and reconcile configuration/count/rating with acceptance records; preserve Area/m2.
+- Amount rule: Measure gross area of all attributable modules consumed, including pre-acceptance failure/rework replacements; reconcile configuration, counts, ratings, receipts, stock changes and verified returns/transfers under cp_renewable. Keep accepted installed area separate; preserve Area/m2.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -576,7 +576,7 @@ Only actual factory-supplied 400 kVA, 10/0.4 kV transformer used for transmissio
 
 - Selected flow: Transformer `734249ea-34e6-471b-a05a-f5b26b818167`
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -591,7 +591,7 @@ Only actual CN factory-gate low-voltage cable conforming to the original GB/T 12
 
 - Selected flow: Low-voltage cable `49101b44-20cc-46a0-adfb-af07e4cc8908`
 - Flow property / unit: Length `838aaa23-0117-11db-92e3-0800200c9a66` / m
-- Amount rule: Measure reel delivery lengths minus returns; reconcile installed circuits and separately documented offcuts. Retain primary Length/m, not assumed cable kg per metre.
+- Amount rule: Use attributable cable consumption in m = gross receipts + opening stock - verified returns/transfers - closing reusable stock. Include installation offcuts, pre-acceptance damage and replacement consumption; reconcile accepted installed lengths and retained slack separately. Preserve Length/m and do not infer cable mass per metre.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -602,11 +602,11 @@ Only actual CN factory-gate low-voltage cable conforming to the original GB/T 12
 
 ###### Metal-enclosed AC switchgear (`switchgear`)
 
-Only actual plant switchgear at the specified voltage/current and supplied configuration; gas-insulated variants must add each actual gas charge and actual release as separate chemical rows. No assumed SF6 emission.
+Only actual plant switchgear at the specified voltage/current and supplied configuration. For gas-insulated variants record each gas and actual charge in the supplied-equipment contents/specification ledger. Gas already included in the complete supplied unit and its manufacturing inventory is not an additional chemical input. Separately purchased site filling or top-up gas is a separate actual chemical input; independently evidenced actual releases are separate elementary rows. Retain actual installation and release burdens; no assumed SF6 emission.
 
 - Selected flow: Metal-enclosed AC switchgear
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -621,7 +621,7 @@ Only actual PV plant DC-to-AC conversion unit; retain rating, topology, quantity
 
 - Selected flow: Photovoltaic DC-to-AC inverter
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Count the actual accepted units of the same specified configuration within this plant; reconcile serial numbers and included subassemblies.
+- Amount rule: Count actual attributable units consumed for this plant, including damaged/rejected units replaced before acceptance. Use gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock in the linked protocol. Reconcile serial numbers, specified configuration and included subassemblies; retain accepted installed count separately, without cancelling failed-unit manufacture.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
@@ -979,11 +979,11 @@ These attribution rules require the explicit foreground measurement and cross-pr
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_ground | ground | Each actual atomic exchange and same declared plant | foreground_records | Site survey, starting state, geology, bank/loose earth/rock volumes, fill grading, transport/export destinations and remediation flags | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
 | cp_civil | civil | Each actual atomic exchange and same declared plant | foreground_records | Work-package/drawing ids, concrete batch/grade/density/moisture, reinforcement tickets, geometry, placement/vibration/curing, structural and leak tests | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
-| cp_thermal | thermal | Each actual atomic exchange and same declared plant | foreground_records | Cycle type, unit/serial/rating, supplied assembly boundaries, foundations/alignment, piping, welds, cooling/fuel-handling and installation tests | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
-| cp_nuclear | nuclear | Each actual atomic exchange and same declared plant | foreground_records | Reactor design, nuclear-island configuration, qualified materials, liner and primary components, safety BOM, weld/test and construction stage; fuel-load status | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
-| cp_hydro | hydro | Each actual atomic exchange and same declared plant | foreground_records | Intake/waterway/penstock/powerhouse/tailrace as-built geometry, head/discharge, turbine-generator configuration and shared dam attribution | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
-| cp_renewable | renewable | Each actual atomic exchange and same declared plant | foreground_records | Wind turbine rating/onshore/offshore and included tower/rotor/nacelle; PV cell technology, module area/count, mounts and inverter; construction scope | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
-| cp_electrical | electrical | Each actual atomic exchange and same declared plant | foreground_records | Circuit ids, supply voltage/country, transformer ratings, supplied package boundary, cable lengths/specifications, protection/earthing and cold acceptance | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
+| cp_thermal | thermal | Each actual atomic exchange and same declared plant | foreground_records | Cycle type, unit/serial/rating, supplied assembly boundaries, foundations/alignment, piping, welds, cooling/fuel-handling and installation tests; gross attributable receipts; opening/closing reusable stock; verified returns/transfers; failed/replaced units; separate accepted installed counts | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors; equipment input counts and module manufacture areas include all attributable consumed units, including failed/rejected replacements. Reconcile gross receipts + opening stock - verified returns/transfers - closing reusable stock; accepted installed configuration and waste are separate ledgers, not exclusions from consumed input manufacture. | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
+| cp_nuclear | nuclear | Each actual atomic exchange and same declared plant | foreground_records | Reactor design, nuclear-island configuration, qualified materials, liner and primary components, safety BOM, weld/test and construction stage; fuel-load status; gross attributable receipts; opening/closing reusable stock; verified returns/transfers; failed/replaced units; separate accepted installed counts | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors; equipment input counts and module manufacture areas include all attributable consumed units, including failed/rejected replacements. Reconcile gross receipts + opening stock - verified returns/transfers - closing reusable stock; accepted installed configuration and waste are separate ledgers, not exclusions from consumed input manufacture. | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
+| cp_hydro | hydro | Each actual atomic exchange and same declared plant | foreground_records | Intake/waterway/penstock/powerhouse/tailrace as-built geometry, head/discharge, turbine-generator configuration and shared dam attribution; gross attributable receipts; opening/closing reusable stock; verified returns/transfers; failed/replaced units; separate accepted installed counts | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors; equipment input counts and module manufacture areas include all attributable consumed units, including failed/rejected replacements. Reconcile gross receipts + opening stock - verified returns/transfers - closing reusable stock; accepted installed configuration and waste are separate ledgers, not exclusions from consumed input manufacture. | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
+| cp_renewable | renewable | Each actual atomic exchange and same declared plant | foreground_records | Wind turbine rating/onshore/offshore and included tower/rotor/nacelle; PV cell technology, module area/count, mounts and inverter; construction scope; gross attributable receipts; opening/closing reusable stock; verified returns/transfers; failed/replaced units; separate accepted installed counts | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors; equipment input counts and module manufacture areas include all attributable consumed units, including failed/rejected replacements. Reconcile gross receipts + opening stock - verified returns/transfers - closing reusable stock; accepted installed configuration and waste are separate ledgers, not exclusions from consumed input manufacture. | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
+| cp_electrical | electrical | Each actual atomic exchange and same declared plant | foreground_records | Circuit ids, supply voltage/country, transformer ratings, supplied package boundary, cable lengths/specifications, protection/earthing and cold acceptance; gross attributable receipts; opening/closing reusable stock; verified returns/transfers; failed/replaced units; separate accepted installed counts ; attributable opening/closing cable stock in m; gross received cable m; verified return/transfer m; consumed damage/offcut/replacement m | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors; equipment input counts and module manufacture areas include all attributable consumed units, including failed/rejected replacements. Reconcile gross receipts + opening stock - verified returns/transfers - closing reusable stock; accepted installed configuration and waste are separate ledgers, not exclusions from consumed input manufacture.  Cable consumption in m = attributable gross receipts + opening stock - verified returns/transfers - closing reusable stock; include consumed offcuts/damage/replacements, while reconciling installed lengths and reusable surplus separately. Record these terms for every cable row; the balance is not limited to equipment counts or module areas. | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
 | cp_utilities | utilities | Each actual atomic exchange and same declared plant | foreground_records | Equipment/activity/stage ids, diesel stock/grade/density/carbon/LHV, power meters and voltage, water end use and internal generation | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
 | cp_waste | waste | Each actual atomic exchange and same declared plant | foreground_records | Segregated stream, material/state, wet/dry mass, washout volume/solids, tests, transfer and actual receiver/treatment/gate | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
 | cp_transport | transport | Each actual atomic exchange and same declared plant | foreground_records | Cargo mass/dimensions, origin/destination, real leg distance/mode/load, equipment mobilisation, return/load attribution and included upstream freight | Use signed drawings/tests, original supplier tickets, calibrated weighing/meters, equipment logs and configuration evidence; reconcile field work packages and subcontractors | Row-specific kg, m3, m2, m, MJ, item, t*km; raw capacity MW and geometry retained separately | Every delivery/return, activity/meter interval, installation test and final handover | Entire actual included construction period, rework and subcontracted stages; each gap explicit | Same defined plant/site, actual interfaces and attributable off-site work | per declared reference flow | Original records, calibration/density/state checks, geometry/BOM reconciliation, identity/gate matches, uncertainty and signed acceptance |
@@ -999,7 +999,7 @@ These attribution rules require the explicit foreground measurement and cross-pr
 | calc_electricity | lv_power; mv_power | E_MJ = E_kWh * 3.6; preserve actual meter/gate and allocate construction energy once. | cp_utilities | MJ per declared reference flow |  |
 | calc_density | fresh_concrete; diesel; sea_intake | Mass in kg = measured volume times independently evidenced same-material/state density in compatible units; retain raw volume and density provenance. Unknown density is review, not a guessed factor. | cp_civil; cp_utilities; cp_environment | kg per declared reference flow |  |
 | calc_freight | road_freight | Sum actual cargo tonnes * actual route kilometres by leg, with supported shared-load and return convention; distinguish raw vehicle-km from t*km and included supply freight. | cp_transport | t*km per declared reference flow |  |
-| calc_modules | poly_module; mono_module | Sum measured module gross areas using the same area convention and accepted installed counts; reconcile rejected/returned modules. Rated capacity and electricity are distinct qualifiers/outputs. | cp_renewable | m2 per declared reference flow |  |
+| calc_modules | poly_module; mono_module | For each same-configuration module lot, multiply measured gross area per module by attributable consumed count = gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock; sum across lots under the same gross-area convention. Include modules consumed by damage, rejection and rework before acceptance. Record accepted installed area and count separately; reconcile discarded modules under cp_waste without subtracting their manufacture burden. Rated capacity and electricity remain distinct qualifiers/outputs. | cp_renewable | m2 per declared reference flow |  |
 | calc_attribution | plywood_form; excavator; mobile_crane | Attributable asset manufacture = measured asset amount * evidenced share; cumulative shares across every beneficiary and period ≤1. Keep physical transfer ledger and operating fuel separate; unsupported use/lifetime denominator is review. | cp_assets | attributed asset amount per declared reference flow |  |
 | calc_releases | fossil_co2; nitrogen_monoxide; nitrogen_dioxide; pm_fine; pm_coarse | Use measured emitted species mass or an independently supported source-specific site model. Fossil CO2 may use measured oxidized fossil carbon * 44/12 with composition/oxidation evidence; molecular NO and NO2 require independent speciation, and PM fractions are disjoint. No universal engine/plant emission factors are given. | cp_environment | kg per declared reference flow |  |
 

@@ -72,8 +72,9 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 | rule_id | applies_to | rule | source_ids |
 | --- | --- | --- | --- |
 | boundary_delivery | all inventory rows | 核算交付整栋实体及结构、核心系统、专有与共同工程中每项实际交换。条件行是最低检查提示，不是封闭通用材料表。真实存在的屋面面材、装置、楼梯、外部工程、供热/制冷设备、共同厨房、安防/消防系统及具体材料须增加独立原子行。不默换或遗漏路线。 | jrc-levels-boq-2021; rics-wlca-2024 |
+| boundary_consumed_inputs | 永久供货或消耗材料总成；排除可复用资产制造 | 局部安装、交付、调试或竣工配置措辞限定目标路线配置及验收证据，不排除在实际尝试安装、损坏、拒收报废或验收前替换中消耗的可归属材料总成。各原生单位消耗投入=可归属总收货+期初库存−经核实退回或转移−期末可用库存。保留真实供货身份配置与总成内含范围，失败替换件按自身身份追溯，不套用最终替换件身份。安装验收与废物分别核对。经核实退回或可用余料排除消耗，但可归属运输搬运返工仍保留。本公式不计量可复用设备模板制造：实体退回转移或留在期末库存时仍保留第7节守恒全寿命使用份额，同一资产不同时计全额消耗与使用份额。 |  |
 | boundary_stages | dataset | 安装设备/材料制造归上游；装配、吊装、现场调理、压力试验和调试归前景。运营、日后真实维护/更新和最终拆除为另定范围后续阶段。实际初始拆除与清理为施工先期活动，不是未来拆除。披露缺失 A1–A3/A4/A5 覆盖。 | rics-wlca-2024 |
-| boundary_common | common_facilities | 整栋账本包括真实共同楼梯、核心筒、设备房及共同居住设施，即使另行承包。识别中央系统与服务分区。共用地下室的连接建筑须先建立联合评价账本，再归属各栋份额；披露母评价与守恒。不得以不属于专有住宅面积为由排除全部共同工程。 | rics-wlca-2024 |
+| boundary_common | common_facilities | 整栋账本包括真实共同楼梯、核心筒、设备房及共同居住设施，即使另行承包。识别中央系统与服务分区。共用地下室的连接建筑须先建立联合评价账本，再归属各栋份额；披露母评价与守恒。不得以不属于专有住宅面积为由排除全部共同工程。  对永久共同设施的外供投入，局部安装或调试措辞限定目标配置路线，不以成功安装作为计入制造的条件。按cp_common_facilities纳入可归属验收前损坏、报废拒收品、切割损耗及替换消耗；经核实退回及可复用未用库存不计消耗投入。原生单位投入=可归属总收货+期初库存−经核实退回或转移−期末可用库存。安装验收量与真实废物作为独立核对记录。本消耗公式排除可复用临时设备模板制造，后者保留allocation_reuse的全寿命份额。 | rics-wlca-2024 |
 | boundary_releases | site_utilities | 技术圈供水与自然资源取水分开；按去向与化学状态跟踪降水回流。洗涤液/固体不是淡水。真实尾气/扬尘/排水须有排放证据才列入；施工噪声依真实设备/受体/时段证据评价，披露表征缺口，不编造质量流。 | epa-concrete-washout-2012; epa-construction-dust-2010 |
 
 ## 6. 过程清单结构
@@ -457,7 +458,7 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 
 - 选定流：陶瓷坐便器
 - 流属性/单位：物品数量 `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- 数量规则：采用 cp_fixed_systems 采集实际安装总成数量及完整配置，不以质量替代件数。
+- 数量规则：采用 cp_fixed_systems 采集归属本项目的实际净消耗总成件数，包括验收前损坏、拒收后报废及替换件；合格安装件数另列并保留完整配置，不以质量替代件数。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -468,11 +469,11 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 
 ###### LED 灯具总成 （`led_luminaire`）
 
-仅纳入属于交付的已安装完整 LED 灯具；记录驱动、外壳、光源是否包含及控制。调试电力归 site_utilities，不是全寿命照明能耗。
+纳入为声明交付实际消耗的完整 LED 灯具，包括安装前报废的替换投入；记录驱动、外壳、光源是否包含及控制。调试电力归 site_utilities，不是全寿命照明能耗。
 
 - 选定流：LED 灯具总成
 - 流属性/单位：物品数量 `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- 数量规则：采用 cp_fixed_systems 采集实际安装总成数量及完整配置，不以质量替代件数。
+- 数量规则：采用 cp_fixed_systems 采集归属本项目的实际净消耗总成件数，包括验收前损坏、拒收后报废及替换件；合格安装件数另列并保留完整配置，不以质量替代件数。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -483,11 +484,11 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 
 ###### 空气源热泵机组 （`heat_pump`）
 
-仅纳入交付合同内真实安装的空气源机组；保留类型、供热/制冷容量、所含部件、制冷剂种类/充注量及调试。单独供应或实际释放制冷剂须按具体物质独立行；不默认泄漏或运营寿命。
+纳入交付合同内实际消耗的空气源机组，包括验收前损坏报废及替换投入；保留类型、供热/制冷容量、所含部件、制冷剂种类/充注量及调试。单独供应或实际释放制冷剂须按具体物质独立行；不默认泄漏或运营寿命。
 
 - 选定流：空气源热泵机组
 - 流属性/单位：物品数量 `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- 数量规则：采用 cp_fixed_systems 采集实际安装总成数量及完整配置，不以质量替代件数。
+- 数量规则：采用 cp_fixed_systems 采集归属本项目的实际净消耗总成件数，包括验收前损坏、拒收后报废及替换件；合格安装件数另列并保留完整配置，不以质量替代件数。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -983,12 +984,12 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_groundworks | groundworks | 真实行交换 | foreground_records | 初始场地、开挖原状/松散几何、填料级配/重量、污染及去向 | 施工前后测量及地磅记录；保留勘察与处置票据 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
-| cp_structure | structure | 真实行交换 | foreground_records | 竣工构件明细、材料状态/等级、混凝土票据、钢筋切割、模板资产部署、养护/泵送/吊装 | 核对竣工图、交付/退货票据、实测量和临时工程日志 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
-| cp_enclosure | enclosure | 真实行交换 | foreground_records | 屋面/立面层次、洞口/构造面积、厚度、等级、安装及废弃量 | 测量真实构造，核对供应规格及领退记录 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
-| cp_fitout | fitout | 真实行交换 | foreground_records | 专有/共同房间账本、隔墙/地面/饰面安装状态、数量及完整性 | 逐房核对装修明细及交付/计量记录，包括真实未交付工程 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
-| cp_fixed_systems | fixed_systems | 真实行交换 | foreground_records | 电路/管道明细、长度、截面、材料身份、设备接口、安装装置数量/完整配置、制冷剂充注/真实损失及测试记录 | 测量已安装网络；核对供应质量/长度及压力/电气测试报告 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
-| cp_common_facilities | common_facilities | 真实行交换 | foreground_records | 资产/型号、完整总成质量/数量、容量、服务分区、共同/专有归属、调试消耗 | 读取厂家/竣工明细及签署调试记录；使用 kg 时称量或保留可追溯产品质量 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
+| cp_groundworks | groundworks | 真实行交换 | foreground_records | 初始场地、开挖原状/松散几何、填料级配/重量、污染及去向 ；外供材料总成投入：准确身份、总收货、期初期末可用库存、经核实退回转移、实际消耗损坏拒收替换及独立安装验收 | 施工前后测量及地磅记录；保留勘察与处置票据  对永久供货或消耗投入应用boundary_consumed_inputs；可复用资产制造保留单独守恒全寿命份额台账。 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
+| cp_structure | structure | 真实行交换 | foreground_records | 竣工构件明细、材料状态/等级、混凝土票据、钢筋切割、模板资产部署、养护/泵送/吊装 ；外供材料总成投入：准确身份、总收货、期初期末可用库存、经核实退回转移、实际消耗损坏拒收替换及独立安装验收 | 核对竣工图、交付/退货票据、实测量和临时工程日志  对永久供货或消耗投入应用boundary_consumed_inputs；可复用资产制造保留单独守恒全寿命份额台账。 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
+| cp_enclosure | enclosure | 真实行交换 | foreground_records | 屋面/立面层次、洞口/构造面积、厚度、等级、安装及废弃量 ；外供材料总成投入：准确身份、总收货、期初期末可用库存、经核实退回转移、实际消耗损坏拒收替换及独立安装验收 | 测量真实构造，核对供应规格及领退记录  对永久供货或消耗投入应用boundary_consumed_inputs；可复用资产制造保留单独守恒全寿命份额台账。 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
+| cp_fitout | fitout | 真实行交换 | foreground_records | 专有/共同房间账本、隔墙/地面/饰面安装状态、数量及完整性 ；外供材料总成投入：准确身份、总收货、期初期末可用库存、经核实退回转移、实际消耗损坏拒收替换及独立安装验收 | 逐房核对装修明细及交付/计量记录，包括真实未交付工程  对永久供货或消耗投入应用boundary_consumed_inputs；可复用资产制造保留单独守恒全寿命份额台账。 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
+| cp_fixed_systems | fixed_systems | 真实行交换 | foreground_records | 电路/管道明细、长度、截面、材料身份、设备接口、总收货与期初库存件数、已核实退回/转出和期末可用库存、净消耗及另列合格安装件数、损坏/拒收报废和替换关联、完整配置、制冷剂充注/真实损失及测试记录 | 按 equipment_consumption 核对收货、库存、退回/转移、安装验收和废物票据；保留损坏报废设备的制造投入及独立废物处理。测量已安装网络，核对供应质量/长度及压力/电气测试报告；已核实退回供应方的设备不作为本项目消耗。 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
+| cp_common_facilities | common_facilities | 真实行交换 | foreground_records | 资产/型号、完整总成质量/数量、容量、服务分区、共同/专有归属、调试消耗 ；逐行逐型号总收货；期初期末可用库存；经核实退回转移；拒收损坏报废及替换；分别记录原生单位消耗量与安装验收量 | 读取厂家/竣工明细及签署调试记录；使用 kg 时称量或保留可追溯产品质量  在各行原生单位应用equipment_consumption（总成用件，泵水箱风管用kg）；纳入验收前实际消耗的失败与损耗，与安装验收及废物分别核对。保留真实配置总成内含范围及消耗替换品制造，排除经核实退回和可用结存。 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
 | cp_site_utilities | site_utilities | 真实行交换 | foreground_records | 计量表、电压/场址、燃料批次/密度/净热值/碳、发动机工时/负荷、水源/回流、尾气组分与扬尘/控制/气象 | 读取校准表及燃料领退日志；采用实测场址尾气/资源数据，无法实测时记录适用模型及依据 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
 | cp_waste_transfer | waste_transfer | 真实行交换 | foreground_records | 原子废物身份、状态、数量、污染、运输者及接收/处理；洗涤废水 pH 和固体 | 使用分选地磅/体积票据及接收凭证；分别跟踪场内回用和场外处理 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
 | cp_inbound_delivery | inbound_delivery | 真实行交换 | foreground_records | 每票质量、车辆、实际路线长度、载荷、空返及供应商已含数据门 | 读取真实运输日志与供应商边界声明；逐段依证据计算，不假设距离 | 各行 kg、m3、m2、MJ、item、t*km | 每交付/事件及计量时段；每次验收 | 实际完整施工期间至签署交付；披露缺口 | 声明整栋建筑及归属分包/共同工程 | 每参考流 | 校准、签署票据、测量、原始测试、核对及不确定性 |
@@ -999,7 +1000,8 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| project_ledger | all inventory rows | 核对真实交付、退货、工程包领料、废物转移及计量记录；将有记录数量归至这一参考建筑，不按默认住户数或面积相除。保留内部转移且不重复计入。 | cp_groundworks; cp_structure; cp_enclosure; cp_fitout; cp_fixed_systems; cp_common_facilities; cp_site_utilities; cp_waste_transfer; cp_inbound_delivery; cp_handover | 每参考流的行数量 | rics-wlca-2024 |
+| project_ledger | all inventory rows | 核对真实交付、退货、工程包领料、废物转移及计量记录；将有记录数量归至这一参考建筑，不按默认住户数或面积相除。保留内部转移且不重复计入。  对永久供货或消耗材料总成应用boundary_consumed_inputs，按真实原生单位及准确供货身份保留全部可归属安装失败和替换消耗。安装验收与真实废物分开；可复用设备模板制造保留allocation_reuse份额，不用净库存消耗公式。 | cp_groundworks; cp_structure; cp_enclosure; cp_fitout; cp_fixed_systems; cp_common_facilities; cp_site_utilities; cp_waste_transfer; cp_inbound_delivery; cp_handover | 每参考流的行数量 | rics-wlca-2024 |
+| equipment_consumption | ceramic_toilet; led_luminaire; heat_pump; water_booster; passenger_lift; ventilation_fan; fire_door; water_tank; steel_duct | 各行原生单位净消耗量=总收货+期初库存−经核实退回或转移−期末可用库存。件数总成保留件数，质量基准的泵水箱风管保留实测kg，不虚构件数质量换算。纳入验收前损坏、拒收报废件、切割损耗与替换消耗。安装验收量另记；核对消耗量与留置安装、可归属废料及其他有据消耗去向。废物处理不能替代报废件制造投入，不设默认损失率。 | cp_fixed_systems; cp_common_facilities | 每声明参考流各原生单位外供投入 | jrc-levels-boq-2021 |
 | electricity_conversion | lv_electricity; mv_electricity | 真实计量 kWh 乘 3.6 报告 MJ；保留相同交付电量及电压门；另证变压损耗。 | cp_site_utilities | 每参考流的 MJ |  |
 | fuel_conversion | site_diesel | 使用实测燃料质量和批次净热值确定 MJ；升数须有记录条件下批次/现场密度。化石 CO2 部分另由真实碳/氧化证据确定。 | cp_site_utilities | 每参考流的燃料 MJ |  |
 | freight_legs | road_freight | 每一真实运输段以有记录载货吨数乘行驶 km，汇总归属段。报告分配/空返，排除供应数据已含段。 | cp_inbound_delivery | 每参考流的 t*km | rics-wlca-2024 |
@@ -1023,6 +1025,7 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 | validate_stages | dataset | 分别核验制造链接、运输及施工覆盖；缺阶段或必需数量时不得声明完整 cradle-to-gate/全寿命。验收证据不表示 PCR 科学批准或当地入住许可。 | rics-wlca-2024 |
 | validate_releases | site_utilities; waste_transfer | 检查化石/生物来源、NO 与 NO2/N2O、无重叠颗粒区间、自然取水与技术圈水/废水及真实受纳介质。避免背景燃烧/处理重复，必需环境数据未解决须保持覆盖不完整。 | epa-concrete-washout-2012; epa-construction-dust-2010 |
 | validate_asset_shares | plywood_formwork; site_utilities | 核验复用资产身份、寿命活动证据及跨项目/期间累计制造份额不超过一。缺失分母须审查，不重置资产制造。 | rics-wlca-2024; ghg-allocation-2011 |
+| validate_equipment_consumption | ceramic_toilet; led_luminaire; heat_pump; water_booster; passenger_lift; ventilation_fan; fire_door; water_tank; steel_duct | 按equipment_consumption以各原生单位核验逐行逐型号收货库存及退回转移。分别核对损坏替换实际消耗、安装验收及废物，永久共同设施亦纳入。经核实已退回拒收品及可用结存排除消耗，最终安装件数或质量不能替代投入消耗。可复用临时资产制造采用allocation_reuse而非本消耗公式。 | jrc-levels-boq-2021 |
 
 ## 10. 发布数据集画像
 
@@ -1038,7 +1041,7 @@ item 表示公开 Item(s) 单位：一栋建筑，而非一户或一名住户。
 
 ## 11. 数据源
 
-| source_id | type | reference | PCR 用途及限制 |
+| 来源 id | 类型 | 引用 | 用途 |
 | --- | --- | --- | --- |
 | un-cpc-3-53112 | official_guidance | UN Statistics Division, CPC Version 3.0 subclass 53112 explanatory note. https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/53112 | 类别边界：三户及以上住宅和共同居住住所。分类不证明施工配方或法定许可。 |
 | jrc-levels-boq-2021 | official_guidance | European Commission JRC, Level(s) indicator 2.1 Bill of Quantities, publication v1.1 January 2021, PDF/printed pp.23–24, Table 2. https://susproc.jrc.ec.europa.eu/product-bureau/sites/default/files/2021-01/UM3_Indicator_2.1_v1.1_34pp.pdf | 仅采用要素/安装系统覆盖提示，不采用案例数量、默认材料强度或寿命。每项数量由真实工程记录决定。 |

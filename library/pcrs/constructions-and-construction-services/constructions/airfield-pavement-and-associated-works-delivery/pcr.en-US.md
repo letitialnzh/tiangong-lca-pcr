@@ -54,7 +54,7 @@ The reference includes its share of the complete construction, not an isolated s
 | reference_area | reference product | Area `93a60a56-a3c8-19da-a746-0800200c9a66` | m2 | Use cp_handover to measure accepted plan area; collect every inventory row per declared reference flow. Divide attributable work totals by accepted area of the same scope, preserving totals, attribution and denominator; never sum layer areas as extra output. |
 | energy_units | cn_lv; cn_mv | Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` | MJ | Preserve the public Net calorific value property and energy unit group. Convert metered kWh using the unit-group relation 3.6 MJ/kWh; never relabel this property as Mass. |
 | material_state | fresh_concrete; topsoil; supplied_water; washout_liquid | Volume `93a60a56-a3c8-22da-a746-0800200c9a66` | m3 | Record physical state and measured volume. Volume-to-mass conversion needs measured density of the same material state and batch; excavated, loose and compacted soil volumes are not equal by assumption. |
-| asset_area | plywood_form; pp_geotextile; grass_sod | Area `93a60a56-a3c8-19da-a746-0800200c9a66` | m2 | Use actual installed/deployed area retaining thickness, composition and areal mass; never change a public Mass property into Area on name similarity. |
+| asset_area | auxiliary installed/deployed geometry linked to plywood_form; pp_geotextile; grass_sod | Area `93a60a56-a3c8-19da-a746-0800200c9a66` | m2 | Measure installed/deployed geometry, thickness, composition and areal mass as auxiliary records; it does not replace the native inventory numerator. Purchased fabric/sod uses actual attributable consumed area including losses, reconciled to receipts, returns and stock. Reusable formwork manufacture uses panel stock area times the conserved manufacture share under cp_formwork_assets, not repeated deployed area as new manufacture. Never change a public Mass property to Area by name similarity. |
 | transport_units | road_freight | mass*distance `118f2a40-50ec-457c-aa60-9bc6b6af9931` | t*km | Preserve public mass*distance with group reference kg*km; 1 t*km = 1000 kg*km. Use actual consignment mass and distance without assumed distance or load. |
 
 | Field | Value |
@@ -81,6 +81,7 @@ The reference includes its share of the complete construction, not an isolated s
 | rule_id | applies_to | rule | source_ids |
 | --- | --- | --- | --- |
 | boundary_delivery | dataset | Record actual earthworks, layers, drainage, marking/grooving, lighting and tests/handover by process. Listed materials are not a universal complete recipe; individually add every additional actual material, packaging, lubricant, planting input, ancillary and temporary work exchange, documenting absent processes. | faa-airport-construction-2018 |
+| boundary_consumed_inputs | purchased consumable/permanently supplied product inputs in all selected or actually attempted construction routes; reusable-asset manufacture excluded | Input amounts include all actual attributable consumption, including pre-installation damage, rejected loads, cutting/application losses and replacements before handover. This is an explicit exception to local installed/applied/used wording: that wording identifies the intended route and configuration, not a successful-installation-only numerator. Reconcile native-unit input = gross attributable receipts + opening stock - verified returns/transfers - closing reusable stock; retain installed accepted quantities and actual waste separately. Keep supplied identity/state and assembly boundaries exact; do not duplicate internal constituents or reusable-asset manufacture.  This stock-consumption equation does not apply to reusable equipment or plywood-panel manufacturing shares under cp_assets/cp_formwork_assets. Those rows retain their supported cumulative-use manufacture attribution under allocation_assets/asset_share even if the physical asset is returned, transferred or held in reusable closing stock; physical stock movements remain separate and cannot cancel the current use share. | |
 | boundary_stages | dataset | Link manufacture and transport separately; paving does not represent material production. Operating electricity, aircraft, post-handover maintenance/replacement, final demolition and destinations are excluded; separately model those stages only with real scenarios and redeclared scope. | fhwa-pavement-lca-2016 |
 | boundary_environment | utilities; waste | Include actual utilities and evidenced direct releases, distinguishing fuel supply/combustion, purchased water/resource abstraction, dewatering transfer/discharge, liquid waste/settled solids. Retain actual equipment, duration, location and measurements for noise without inventing default sound-energy exchanges; any evidenced emissions are separate exact substances and media. | epa-construction-dust-1995; epa-concrete-washout-2012 |
 
@@ -192,7 +193,7 @@ Only an actual hydrated-lime treatment specified for the site; distinguish quick
 
 ###### Polypropylene geotextile separation sheet (`pp_geotextile`)
 
-Only installed polypropylene separation fabric matching the actual construction function and supplied material state; retain grade, areal mass and footprint.
+Actual supplied polypropylene separation fabric consumed for the declared route, including pre-installation damage and rejected/cut material; preserve exact function, supplied state, grade and areal mass. Record supplied/consumed area and installed footprint separately.
 
 - Selected flow: Polypropylene geotextile separation sheet
 - Flow property / unit: Area `93a60a56-a3c8-19da-a746-0800200c9a66` / m2
@@ -292,7 +293,7 @@ Only actual fresh cement concrete for rigid pavement or lean-concrete layer; use
 
 ###### Steel pavement joint dowel bar (`steel_dowel`)
 
-Only installed dowel bars; record steel grade, coating and geometry, actual bar count and supplier mass. Reinforcement and tie bars, if used, require separate actual rows.
+Actual supplied dowel bars consumed for the declared route, including pre-installation damaged/rejected replacements; record steel grade, coating, geometry, consumed count and supplier mass, with installed accepted count separate. Reinforcement and tie bars, if used, require separate actual rows.
 
 - Selected flow: Steel pavement joint dowel bar
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -337,17 +338,17 @@ Only if this membrane-curing formulation is applied; retain concentration, appli
 
 ###### Plywood concrete formwork panel (`plywood_form`)
 
-Only actual reusable plywood forms. Record panel thickness, composition, deployment area and reuse ledger; count manufacturing burden once across uses through cp_assets, not once per pour.
+Only actual reusable plywood forms. Record panel thickness, composition, deployment area and reuse ledger; count manufacturing burden once across uses through cp_formwork_assets, not once per pour.
 
 - Selected flow: Plywood concrete formwork panel
 - Flow property / unit: Area `93a60a56-a3c8-19da-a746-0800200c9a66` / m2
-- Amount rule: Use cp_rigid to collect the actual exchange amount, normalized by measured accepted area of the same scope; retain m2 and original work totals.
+- Amount rule: Use cp_formwork_assets to collect attributable panel manufacture area from cp_rigid deployment/stock records and the supported cumulative manufacture share; normalize by measured accepted package area, retaining m2 and original records. Deployment area alone is not new panel manufacture.
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
 - Normalization basis: per declared reference flow
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
-- Collection protocol: `cp_rigid`
+- Collection protocol: `cp_formwork_assets`
 - Sources: `faa-airport-construction-2018`
 
 ##### Waste flows
@@ -422,7 +423,7 @@ Apply this process to actual design and site records. Attribute equipment, water
 
 ###### Precast cement-concrete storm-drain pipe (`concrete_pipe`)
 
-Only actual installed concrete drainage pipe; retain diameter, length, class, reinforcement and measured supplier mass. Include actual bedding, headwalls and outfall work as distinct products and processes.
+Actual concrete drainage pipe consumed for the declared route, including damage/rejection before installation and replacement; retain diameter, length, class, reinforcement and measured supplier mass, with installed accepted quantity separate. Include actual bedding, headwalls and outfall work as distinct products and processes.
 
 - Selected flow: Precast cement-concrete storm-drain pipe
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -487,7 +488,7 @@ Only actual yellow acrylic waterborne marking paint; retain colour, formulation,
 
 ###### Glass retroreflective beads for pavement markings (`glass_beads`)
 
-Only actual applied glass beads, separately weighed from paint; retain grading and supplier treatment.
+Actual glass beads consumed for the declared marking route, including attributable application losses and damaged/rejected material; weigh separately from paint, retain grading and supplier treatment, and distinguish consumed from successfully applied quantity.
 
 - Selected flow: Glass retroreflective beads for pavement markings
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -502,7 +503,7 @@ Only actual applied glass beads, separately weighed from paint; retain grading a
 
 ###### Complete inset airfield LED luminaire (`airfield_light`)
 
-Only this actual installed complete fixture with model, function and count. Edge lights, isolating transformers, regulators, conduits and bases, when installed, need distinct product rows; no whole lighting system row.
+Actual complete fixtures of this model and function consumed for the declared route, including failed/rejected replacements before installation or acceptance; keep consumed and installed accepted counts separate. Edge lights, isolating transformers, regulators, conduits and bases, when installed, need distinct product rows; no whole lighting system row.
 
 - Selected flow: Complete inset airfield LED luminaire
 - Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
@@ -517,7 +518,7 @@ Only this actual installed complete fixture with model, function and count. Edge
 
 ###### Insulated copper airfield lighting cable (`copper_cable`)
 
-Only installed copper cable with conductor cross-section, insulation, voltage rating, length and measured mass. Supplier kg-per-metre needs verified cable-specific evidence.
+Actual copper cable consumed for the declared route, including cutting, damage and rejected/replaced lengths before acceptance; retain conductor cross-section, insulation, voltage rating, consumed length and measured mass, with installed length separate. Supplier kg-per-metre needs verified cable-specific evidence.
 
 - Selected flow: Insulated copper airfield lighting cable
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -563,7 +564,6 @@ Only an actually used asset manufacture contribution. Retain asset identity/conf
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_assets`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Complete self-propelled road roller (`roller_asset`)
 
@@ -578,7 +578,6 @@ Only an actually used asset manufacture contribution. Retain asset identity/conf
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_assets`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Complete asphalt paving machine (`paver_asset`)
 
@@ -593,7 +592,6 @@ Only an actually used asset manufacture contribution. Retain asset identity/conf
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_assets`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Complete cement-concrete pump (`pump_asset`)
 
@@ -608,7 +606,6 @@ Only an actually used asset manufacture contribution. Retain asset identity/conf
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_assets`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Diesel fuel (`site_diesel`)
 
@@ -623,7 +620,6 @@ Actual supplied diesel consumed by excavators, graders, rollers, pavers, pumps o
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Alternating current (`cn_lv`)
 
@@ -638,7 +634,6 @@ Only site consumption on a Chinese grid supply below 1 kV; supplier, voltage, si
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Alternating current (`cn_mv`)
 
@@ -653,7 +648,6 @@ Only site consumption on a Chinese grid supply of 1–35 kV; do not duplicate th
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Treated mains water delivered to construction site (`supplied_water`)
 
@@ -668,7 +662,6 @@ Meter actual purchased water used for compaction, dust control, saw cutting, cle
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ##### Waste flows
 
@@ -687,7 +680,6 @@ Only direct site abstraction from a river, as a resource input with location, da
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### ground water (`ground_water`)
 
@@ -702,7 +694,6 @@ Only direct groundwater extraction with source and volume; distinguish construct
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 #### Outputs
 
@@ -725,7 +716,6 @@ Only measured or fuel-carbon-derived actual fossil CO2 released during site comb
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### carbon monoxide (fossil) (`fossil_co`)
 
@@ -740,7 +730,6 @@ Only evidenced actual fossil CO emitted to air, unspecified subcompartment; meas
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### nitrogen monoxide (`nitric_oxide`)
 
@@ -755,7 +744,6 @@ Only measured or valid separately speciated NO emitted to air, unspecified subco
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### nitrogen dioxide (`nitrogen_dioxide`)
 
@@ -770,7 +758,6 @@ Only evidenced separate NO2 emissions to air, unspecified subcompartment; distin
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Particulate matter, particle size unspecified (`dust_unspecified`)
 
@@ -785,7 +772,6 @@ Only quantified site dust to air with unspecified size fraction and subcompartme
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### particles (PM2.5 - PM10) (`coarse_pm`)
 
@@ -800,7 +786,6 @@ Only a separately quantified 2.5–10 micrometre fraction released to air, unspe
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ###### particles (PM10) (`pm10_total`)
 
@@ -815,7 +800,6 @@ Only measured or validly quantified total PM10 to air, unspecified subcompartmen
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_utilities`
-- Sources: `epa-concrete-washout-2012`
 
 ### Process: Inbound and construction-waste transport (`transport`)
 
@@ -883,11 +867,10 @@ Only soil exported as waste; retain measured mass, moisture, contamination tests
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_waste`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Removed asphalt pavement milling waste (`asphalt_waste`)
 
-Only actual clearance, milling, rejected mix or correction material discarded during this construction cycle; record source and recovery route. Post-handover removal is excluded.
+Only actual previously laid asphalt pavement removed or milled during clearance or correction in this construction cycle; record laid state, source and recovery route. Unlaid rejected or surplus supplied mix is not pavement milling waste: record it separately with its actual unlaid state, measured mass and receiver under cp_waste before inventory completeness, retaining its attributable upstream manufacture and transport. Verified returns and internal reuse are separately reconciled, not relabelled as milling waste. Post-handover removal is excluded.
 
 - Selected flow: Removed asphalt pavement milling waste
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
@@ -898,7 +881,6 @@ Only actual clearance, milling, rejected mix or correction material discarded du
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_waste`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Hardened cement-concrete construction waste (`concrete_waste`)
 
@@ -913,7 +895,6 @@ Only actual segregated hardened cement-concrete debris or acceptance-test cores 
 - Basis kind: `reference_flow`
 - Evidence kind: `collected_record`
 - Collection protocol: `cp_waste`
-- Sources: `epa-concrete-washout-2012`
 
 ###### Cement-concrete equipment washout slurry (`washout_liquid`)
 
@@ -972,7 +953,7 @@ One square metre of accepted plan area linked to the entire declared runway, tax
 | rule_id | applies_to | rule | source_ids |
 | --- | --- | --- | --- |
 | allocation_project | all inventory rows | First partition airport work using submeters, weights, equipment time, actual zones and lots; direct attribution precedes allocation. Shared activities use measured causal physical drivers, preserving all beneficiary projects and denominator with shares summing to one. Area normalizes the reference within a consistent use/structure package; it is not a default allocation among heterogeneous works. |  |
-| allocation_assets | plywood_form; utilities | Use cp_assets to record each asset/component manufacture burden, project/period activity and supported cumulative service. Across projects, periods and repeated uses, total manufacture shares of the same asset cannot exceed one. Unknown life/cumulative activity remains a review and completeness gap, never reset per project. |  |
+| allocation_assets | plywood_form; utilities | Use cp_assets / cp_formwork_assets to record each asset/component manufacture burden, project/period activity and supported cumulative service. Across projects, periods and repeated uses, total manufacture shares of the same asset cannot exceed one. Unknown life/cumulative activity remains a review and completeness gap, never reset per project. |  |
 | allocation_recovery | waste | Construction waste, reused pavement and exported millings do not automatically earn credits. Document actual treatment/recovery gates, quality and receiver. Any substitution benefit or recycling allocation needs a declared sourced method and sensitivity, without simultaneously claiming avoided manufacture and zero burden. | fhwa-pavement-lca-2016 |
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
@@ -990,9 +971,10 @@ One square metre of accepted plan area linked to the entire declared runway, tax
 | cp_finish | finish | row-specific exchange | foreground_records | Marking colour/formulation; actual paint/bead mass; groove length/depth; luminaire model/count; cable mass/length; commissioning | Retain calibrated issue/return records, as-built markings/grooves, equipment meters, installation schedules and tests | row-specific kg, m3, m2, MJ, item, t*km | Each delivery, lot, task/meter interval and acceptance event | Complete actual start-to-handover period; disclose unmetered intervals | Declared package and all attributable subcontractors | per declared reference flow | Calibration, original tickets, as-built surveys, lot tests, corrections, attribution and uncertainty |
 | cp_utilities | utilities | row-specific exchange | foreground_records | Fuel stock/receipts; plant/task time; electricity meters/geography/voltage; supplied/abstracted water, dewatering and returns; emission species, medium and control | Submeter by work package; reconcile fuel consumed with stocks and contractors; retain batch density/carbon/NCV, source-specific validated emission method and uncertainty | row-specific kg, m3, m2, MJ, item, t*km | Each delivery, lot, task/meter interval and acceptance event | Complete actual start-to-handover period; disclose unmetered intervals | Declared package and all attributable subcontractors | per declared reference flow | Calibration, original tickets, as-built surveys, lot tests, corrections, attribution and uncertainty |
 | cp_transport | transport | row-specific exchange | foreground_records | Consignment kg; actual km each leg; vehicle/load; returns; included service gates | Use waybills, weighing, routes and vehicle logs; convert actual kg to tonnes for t*km; partition project deliveries and background inclusion | row-specific kg, m3, m2, MJ, item, t*km | Each delivery, lot, task/meter interval and acceptance event | Complete actual start-to-handover period; disclose unmetered intervals | Declared package and all attributable subcontractors | per declared reference flow | Calibration, original tickets, as-built surveys, lot tests, corrections, attribution and uncertainty |
-| cp_waste | waste | row-specific exchange | foreground_records | Stream identity/state; weight/volume; water/solids; treatment, recycling or disposal destination; transfer date | Use segregated containers, calibrated weights/meters, analysis and licensed receiver tickets; document containment, settling and actual water routing | row-specific kg, m3, m2, MJ, item, t*km | Each delivery, lot, task/meter interval and acceptance event | Complete actual start-to-handover period; disclose unmetered intervals | Declared package and all attributable subcontractors | per declared reference flow | Calibration, original tickets, as-built surveys, lot tests, corrections, attribution and uncertainty |
+| cp_waste | waste | row-specific exchange | foreground_records | Stream identity/state; weight/volume; water/solids; treatment, recycling or disposal destination; transfer date; asphalt laid/unlaid state; separate unlaid rejects and pavement milling; verified returns/reuse | Use segregated containers, calibrated weights/meters, analysis and licensed receiver tickets; document containment, settling and actual water routing | row-specific kg, m3, m2, MJ, item, t*km | Each delivery, lot, task/meter interval and acceptance event | Complete actual start-to-handover period; disclose unmetered intervals | Declared package and all attributable subcontractors | per declared reference flow | Calibration, original tickets, as-built surveys, lot tests, corrections, attribution and uncertainty |
 | cp_handover | handover | row-specific exchange | foreground_records | Project/package boundary; accepted plan area in m2; runway/taxiway/apron length and widths; layers; capacity/load-use requirements; associated works; tests and signed date | Survey as-built accepted horizontal surface polygons without overlapping intersections; trace lot acceptance, geometry, actual function, finish and related structures to signed handover | row-specific kg, m3, m2, MJ, item, t*km | Each delivery, lot, task/meter interval and acceptance event | Complete actual start-to-handover period; disclose unmetered intervals | Declared package and all attributable subcontractors | per declared reference flow | Calibration, original tickets, as-built surveys, lot tests, corrections, attribution and uncertainty |
-| cp_assets | utilities; rigid | Asset and reused-component manufacture shares | asset_ledger | Asset id; original manufacture burden; each project activity; prior shares; cumulative-service evidence; retirement/transfers | Read manufacture, lease and plant/formwork deployment ledgers; reconcile cumulative shares across projects; unknowns remain gaps | dimensionless shares and source units | Each deployment and period closure | All prior usage periods and supported service total | All projects using the same asset | per declared reference flow | Traceable asset records; independent share reconciliation |
+| cp_assets | utilities | equipment manufacture shares | asset_ledger | Asset id; original manufacture burden; each project activity; prior shares; cumulative-service evidence; retirement/transfers | Read manufacture, lease and plant/formwork deployment ledgers; reconcile cumulative shares across projects; unknowns remain gaps; retain actual process ID utilities and the common asset ledger shared with cp_formwork_assets, preventing duplicate shares across the two protocols | dimensionless shares and source units | Each deployment and period closure | All prior usage periods and supported service total | All projects using the same asset | per declared reference flow | Traceable asset records; independent share reconciliation |
+| cp_formwork_assets | rigid | reusable plywood-panel manufacture shares | asset_ledger | Asset id; original manufacture burden; each project activity; prior shares; cumulative-service evidence; retirement/transfers; panel stock area; deployed area by pour; panel thickness/composition; link to cp_rigid | Read panel manufacture and deployment/stock ledgers with cp_rigid; distinguish actual panel stock area from repeated deployed area, apply supported cumulative-use shares to stock manufacture area, and reconcile the same asset ledger with cp_assets. Retain actual process ID rigid; unknown life or stock remains a gap, not a default share. | dimensionless shares and source units | Each deployment and period closure | All prior usage periods and supported service total | All projects using the same asset | per declared reference flow | Traceable asset records; independent share reconciliation |
 
 ### Calculation Rules
 
@@ -1001,7 +983,7 @@ One square metre of accepted plan area linked to the entire declared runway, tax
 | normalize_area | all inventory rows | Divide each attributable exchange total of the consistent use/structure package by actual accepted plan area in m2 from cp_handover, yielding amounts per declared reference flow; output is fixed at 1 m2. Preserve original totals and survey denominator, never substituting layer area or cost. | cp_handover; project exchange records | Exchange amounts per declared reference flow |  |
 | preserve_units | all inventory rows | Convert same-dimension units using declared unit groups; mass/volume conversion uses actual same-batch density only, and electricity kWh to MJ multiplies by 3.6. Preserve raw measurements and uncertainty. | cp_utilities; cp_transport; supplier records | Row-unit quantities |  |
 | direct_emissions | utilities | Calculate each species release from actual measurement or validated methods applicable to the particular plant/fuel/controls, preserving original method units and attribution. Fossil carbon balance uses actual fuel carbon and combustion evidence; no default factors or NOx split, and no addition of dust totals to their fractions. | cp_utilities; site measurements; applicable method evidence | kg of each exact species | epa-construction-dust-1995 |
-| asset_share | plywood_form; utilities | Apply the actual project share of supported cumulative activity to manufacturing burden, then normalize by the same package area. The cumulative ledger proves all assigned shares are no greater than one; unknown denominators remain review without a numeric result. | cp_assets; cp_handover | Attributable manufacture burden per declared reference flow |  |
+| asset_share | plywood_form; utilities | Apply the actual project share of supported cumulative activity to manufacturing burden, then normalize by the same package area. The cumulative ledger proves all assigned shares are no greater than one; unknown denominators remain review without a numeric result. | cp_assets / cp_formwork_assets; cp_handover | Attributable manufacture burden per declared reference flow |  |
 
 ### Data Quality Requirements
 
@@ -1010,7 +992,7 @@ One square metre of accepted plan area linked to the entire declared runway, tax
 | quality_scope | dataset | Preserve surveyed area and complete configuration by use, layer structure and acceptance scope; equal area does not establish equal load/use function. | cp_handover; faa-airport-construction-2018 |
 | quality_records | all inventory rows | Retain whole-period records, calibration, rejections/corrections and subcontracting; reconcile net receipts, installed work and waste. Missing records preclude complete data claims; no default losses fill gaps. | cp_site; cp_base; cp_flexible; cp_rigid; cp_waste |
 | quality_environment | utilities; waste | Require evidence for water routes, particle fractions, release media and fossil origin. Historical AP-42 aggregate factors are not airport-site defaults; ambient monitoring concentrations do not directly establish project emission mass. | cp_utilities; epa-construction-dust-1995; epa-concrete-washout-2012 |
-| quality_gaps | dataset | Disclose unresolved UUIDs, missing upstream coverage, unmetered intervals, asset-manufacture share gaps, method applicability and scientific review status. | cp_assets; supplier records |
+| quality_gaps | dataset | Disclose unresolved UUIDs, missing upstream coverage, unmetered intervals, asset-manufacture share gaps, method applicability and scientific review status. | cp_assets / cp_formwork_assets; supplier records |
 
 ## 9. Validation Rules
 
@@ -1038,7 +1020,7 @@ One square metre of accepted plan area linked to the entire declared runway, tax
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
 | un-cpc3-2025 | official_guidance | UNSD, CPC Version 3.0 Explanatory Notes, 30 June 2025, p. 279. https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf | 53213 entity boundary including taxiways, aprons and related non-building structures; classification scope only |
-| faa-airport-construction-2018 | official_guidance | FAA AC 150/5370-10H, Standard Specifications for Construction of Airports, 21 December 2018, updated errata 19 August 2020. https://www.faa.gov/documentLibrary/media/Advisory_Circular/150-5370-10H.pdf | P-152 pp.103–115 earthworks; P-154 pp.121–128 subbase; P-209 pp.173–182 crushed base; P-217 pp.207–214 aggregate/turf; P-401 pp.263–290 asphalt; P-501 pp.347–396 concrete; P-605 p.499 onward joints; P-620 p.521 onward markings; P-621 p.537 onward grooves; D-701 p.575 onward drains; L-125 p.713 onward lighting; T-901 p.613 onward seeding, T-904 p.627 onward sodding, T-905 p.633 onward topsoiling. US qualitative construction/acceptance evidence, without importing numeric limits, recipes, load thresholds or compliance requirements |
+| faa-airport-construction-2018 | official_guidance | FAA AC 150/5370-10H, Standard Specifications for Construction of Airports, 21 December 2018, updated errata 19 August 2020. https://www.faa.gov/documentLibrary/media/Advisory_Circular/150-5370-10H.pdf | P-152 pp.103–116 earthworks; P-154 pp.121–128 subbase; P-209 pp.173–182 crushed base; P-217 pp.207–214 aggregate/turf; P-401 pp.263–293 asphalt; P-501 pp.347–390 concrete; P-605 p.499 onward joints; P-620 p.521 onward markings; P-621 p.537 onward grooves; D-701 p.575 onward drains; L-125 p.713 onward lighting; T-901 p.613 onward seeding, T-904 p.627 onward sodding, T-905 p.633 onward topsoiling. US qualitative construction/acceptance evidence, without importing numeric limits, recipes, load thresholds or compliance requirements |
 | fhwa-pavement-lca-2016 | official_guidance | FHWA-HIF-16-014, Pavement Life-Cycle Assessment Framework, July 2016, §1.2 p.1-4; §3.2.3; Chapter 4. https://rosap.ntl.bts.gov/view/dot/38470/dot_38470_DS1.pdf | Road-framework stage distinctions and boundary disclosure for production/construction/use/maintenance/end-of-life; no road-vehicle impacts or airport service-life values transferred |
 | epa-construction-dust-1995 | official_guidance | US EPA AP-42 §13.2.3 Heavy Construction Operations, January 1995, pp.13.2.3-1–2. https://www.epa.gov/sites/default/files/2020-10/documents/13.2.3_heavy_construction_operations.pdf | Historical qualitative construction-dust mechanisms and site conditions only; no old aggregate TSP factor or inferred PM fractions adopted |
 | epa-concrete-washout-2012 | official_guidance | US EPA, Stormwater Best Management Practice: Concrete Washout, EPA 833-F-11-006, February 2012, pp.1–2. https://www.epa.gov/sites/default/files/2015-11/documents/concretewashout_0.pdf | Concrete washout liquid, settled solids, containment and actual water-route distinction; no assumed soil/water discharge or default pH/concentration |

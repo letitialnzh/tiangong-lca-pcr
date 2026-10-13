@@ -76,7 +76,7 @@ test("alias registry omits canonical leaf ids and routes unmapped leaves to cove
   assert.equal(registry.aliases[0]!.source_pcr_id, unmapped.pcr_id);
 });
 
-test("alias registry emits a terminal canonical redirect when acceptance replaces the old id", () => {
+test("a mapping to a different semantic PCR preserves the old id's coverage locator", () => {
   const source = leaf("100", "old-name");
   const registry = createPcrIdAliasRegistry({
     leafSlugs: inventory([source]),
@@ -84,10 +84,12 @@ test("alias registry emits a terminal canonical redirect when acceptance replace
   });
 
   assert.deepEqual(registry.aliases[0]!.target, {
-    kind: "canonical_pcr",
-    pcr_id: "pcr.domain.subdomain.reviewed-name",
+    kind: "classification_coverage",
+    classification_system: "cpc",
+    classification_version: "3.0",
+    code: "100",
   });
-  assert.equal(registry.aliases[0]!.reason, "canonical_pcr_replacement");
+  assert.equal(registry.aliases[0]!.reason, "empty_scaffold_migration");
 });
 
 test("alias registry rejects duplicate leaf-derived identities", () => {

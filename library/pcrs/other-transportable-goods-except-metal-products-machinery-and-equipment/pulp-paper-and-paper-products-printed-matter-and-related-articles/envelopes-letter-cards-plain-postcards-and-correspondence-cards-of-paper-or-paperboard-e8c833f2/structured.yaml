@@ -1,10 +1,1154 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "32192"
-  title: "Envelopes, letter cards, plain postcards and correspondence cards of paper or paperboard; boxes, pouches, wallets and writing compendiums, of paper or paperboard, containing paper stationery"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.pulp-paper-and-paper-products-printed-matter-and-related-articles.envelopes-letter-cards-plain-postcards-and-correspondence-cards-of-paper-or-paperboard-e8c833f2"
+  classification_refs: "CPC 3.0 32192; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Unprinted windowless gummed correspondence envelopes, empty at converter gate"
+  excluded_products: "Letter cards, postcards, stationery kits, writing compendiums, padded mailers, windowed/printed/peel-seal/self-seal envelopes, onsite papermaking"
+  representative_product: "Unprinted windowless remoistenable-gummed paper envelopes"
+  production_route: "Sheet die cutting on hydraulic press; blank scoring/folding; separate seam and flap gumming; electric drying; tuck-closed corrugated carton"
+  market_state: "Empty dry-gummed accepted envelopes with open fillable flap, ready for dispatch"
+functional_unit:
+  what: "An empty correspondence enclosure of the specified sheet and closure route"
+  how_much: "1 kg"
+  how_well: "Accepted dimensions, paper grammage/moisture, seam integrity and customer-agreed rewetting/sealing performance; declare actual test method and results"
+  how_long_or_cycle: "One manufacture and dispatch cycle; shelf life and mailing performance only as tested and declared"
+  reference_flow_link: "envelope_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_converting
+      applies_to: "converting"
+      rule: "Include press cutting, all scoring/folding/gumming, electric drying, extraction, water cleaning, material losses, maintenance additions and attributable packing/onsite storage."
+      source_ids:
+        - lefavor-envelope-manufacturing
+        - eukalin-envelope-adhesives
+    - rule_id: boundary_upstream
+      applies_to: "all inventory rows"
+      rule: "Complete upstream paper production with applicable pulp/paper originals and matched provider conditions; no wood-product survey transferred to paper and no duplicate mill emissions at converter."
+      source_ids:
+        - jrc-converted-paper-2018
+        - eu-paper-bref-2015
+    - rule_id: boundary_route
+      applies_to: "converting"
+      rule: "Exclude onsite pulp/papermaking, coating, printing, windows and release liners in this selected route. No onsite boiler, steam delivery, biological effluent treatment or direct surface-water discharge is assumed. Expand and reassess actual deviations; no default zeros."
+      source_ids:
+        - jrc-converted-paper-2018
+    - rule_id: boundary_waste
+      applies_to: "all waste outputs"
+      rule: "Record external transfers by actual waste identity and receiving treatment; internal recirculation stays internal. If offsite treatment is modelled within the study boundary, add its emissions once through that background."
+      source_ids: []
+    - rule_id: boundary_completeness
+      applies_to: "all inventory rows"
+      rule: "Audit site material/utility/maintenance/emission ledgers and supplier SDS, including lubrication, volatile additives, contaminated wipes, spills and inbound packaging. Add each present atomic exchange before dataset completeness claims; no unmeasured species can be declared absent."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Purchased finished uncoated sheets and separately supplied aqueous gums arriving at converter; all upstream manufacture is linked as background, not recreated as foreground"
+  starting_condition_role: "Foreground gate entry with required cradle-to-gate background completion"
+  product_classification_scope: "Only the specified envelope subset of CPC32192"
+  recursive_input_rule: "Purchased same-category envelopes are outside this sheet-converting route; do not recurse or treat rework as new product input. Change scope explicitly before using purchased blanks/finished envelopes."
+  upstream_dataset_requirement: "Compatible pulp/papermaking, adhesive formulation, carton, tap water, fluid, grid supply and inbound freight datasets; unresolved UUID or provider basis remains disclosed, never zero burden"
+  disclosure: "Declared site/year, input condition, cut-off, logistics, waste receivers, returnable glue-container background, supply utilities and product mass basis"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Envelopes, letter cards, plain postcards and correspondence cards of paper or paperboard, boxes, pouches, wallets and writing compendiums, of paper or paperboard, containing paper stationery"
+    uuid: "e75a08f8-57bd-4900-b01b-8482a1dc7546"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - unprinted
+    - "no window/aperture"
+    - "open dry remoistenable flap"
+    - "uncoated woodfree grade/furnish/recycled fraction"
+    - grammage
+    - dimensions
+    - "net moisture basis"
+    - "two adhesive trade grades/solids/carrier water"
+    - "seam construction"
+    - "electric drying"
+    - "site/year"
+    - "accepted net output"
+    - packing
+    - "actual suppliers and backgrounds"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "envelope_output"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use net accepted conditioned empty-envelope mass excluding dispatch packaging and contents. All cards and collection aggregation are per 1 kg reference flow; measure accepted period mass, not counts or dry fibre."
+  - id: wet_adhesive
+    applies_to: "seam_glue_input; flap_gum_input"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Wet delivered product mass and measured solids/carrier-water fractions must match the provider reference quantity. Keep component balance separate; do not link whole wet mass to a dry-polymer dataset or count its embedded water twice."
+  - id: electric_delivery
+    applies_to: "electricity_input"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Convert metered kWh to MJ using 1 kWh = 3.6 MJ from the verified unit group; match delivered electricity and supply-loss boundaries. No thermal efficiency or steam enthalpy assumption."
+  - id: hydraulic_volume
+    applies_to: "hydraulic_input"
+    required_property_ref:
+      name: "Volume"
+      uuid: "93a60a56-a3c8-22da-a746-0800200c9a66"
+    required_unit: "m3"
+    rule: "External fluid additions use volume reference; determine batch density when mass-balance conversion is needed. Existing circulating inventory and internal recirculation are not repeated inputs."
+  - id: disjoint_pm
+    applies_to: "pm25_output; pmcoarse_output; pmover10_output"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use disjoint size intervals at the same outdoor-air boundary; cumulative PM10 cannot be added to PM2.5. Retained dust and released PM are separately measured."
+process_map:
+  - id: converting
+    name: "Sheet cutting to packed dry-gummed envelopes"
+    inclusion: "required"
+    inclusion_condition: "selected route"
+    role: "foreground"
+    quantitative_reference: "1 kg"
+process_inventory:
+  - id: converting
+    label: "Sheet cutting to packed dry-gummed envelopes"
+    inputs:
+      product:
+        - row_id: paper_input
+          role: "Sheet stock"
+          name: "Uncoated printing, writing and packaging paper"
+          flow_type: "product"
+          flow_ref:
+            uuid: "936bdcb2-06b6-4ee9-8e7c-2f7762aba298"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Purchased uncoated woodfree envelope-grade sheets, with chemical-pulp furnish and actual recycled fraction declared. Record received and issued mass, moisture, grammage, dimensions and stocks; do not substitute wet web or coated paper. The broad UUID contains this uncoated grade; it does not choose a furnish, supplier or paper-production dataset."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_materials"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - lefavor-envelope-manufacturing
+            ranges: []
+        - row_id: seam_glue_input
+          role: "Seam dispersion"
+          name: "Adhesives"
+          flow_type: "product"
+          flow_ref:
+            uuid: "279b6b7f-519f-4f32-aab0-99bb61cb90dc"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One supplied wet seam formulation, applied to the side/bottom seam. Require trade grade, full supplier composition or confidential mass-accounting disclosure, resin identity, solids, carrier water, density, VOC species and supplier production basis. Weigh wet product actually consumed, keeping tank returns separate. The broad manufactured-adhesive UUID covers this one qualified supplied aqueous seam formulation; it does not define its wet reference quantity or select a supplier background. Pure PVAc identity is not the identity of the whole formulation; no default resin, concentration or coat weight."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_adhesive"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_adhesive
+              source_ids:
+                - eukalin-envelope-adhesives
+            ranges: []
+        - row_id: flap_gum_input
+          role: "Rewettable flap gum"
+          name: "Adhesives"
+          flow_type: "product"
+          flow_ref:
+            uuid: "279b6b7f-519f-4f32-aab0-99bb61cb90dc"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One actual supplied aqueous dextrin-based remoistenable flap formulation fits the broad manufactured adhesive family; examples of heavy substrates in the source do not limit it exclusively to construction. Require actual dextrin chemistry, any resin component, all additives, carrier water and measured solids, wet mass and compatible supplier reference quantity/production basis. The complete wet adhesive is neither dry dextrin nor the separately supplied synthetic-resin seam adhesive. Keep the two formulations and their physical quantities separate despite their shared broad UUID. Purchased carrier water is not another fresh-water purchase. No default composition, concentration or coating weight; exclude peel/seal hot melt, latex self-seal and release liners."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_adhesive"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_adhesive
+              source_ids:
+                - jrc-converted-paper-2018
+                - eukalin-envelope-adhesives
+            ranges: []
+        - row_id: water_input
+          role: "Dilution and cleaning water"
+          name: "Tap water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d1e0e36c-07f0-4a75-bdcb-efb5d9e2ac36"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Treated tap water for actual adhesive dilution and water-only cleaning. Record metered volume and measured event density for mass conversion; no database secondary density default. Water already in purchased gum stays within that gum. Require compatible supplier treatment/supply background. Recirculation is internal, not a new withdrawal."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids: []
+            ranges: []
+        - row_id: electricity_input
+          role: "Delivered electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "User-side grid-average AC supply below 1 kV for the press, folding/gluing, electric gum dryer, extraction fan, compressors and attributable packing/storage utilities. Submeter stages and reconcile the common meter. Reference property is Net calorific value, recorded in MJ; electrical delivery uses metered kWh converted by the verified unit-group factor, not a fuel combustion efficiency. Source location of supply is CN; actual site voltage, geography, year, mix, loss boundary and provider must match or another verified flow/provider is required; higher-voltage site transformation requires an explicit additional model."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_energy"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges: []
+        - row_id: box_input
+          role: "Dispatch carton"
+          name: "Corrugated fibreboard dispatch box"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One actual dispatch carton including its supplied integral seam, identified by dimensions, flute/board grade, fibre composition and empty mass. Packaging mass is excluded from reference mass but its burdens are included. No default virgin/recycled fractions; a UUID requiring a fixed fibre blend cannot stand for arbitrary cartons. Specify a tuck-closed carton; additional tape, labels, film or pallets require separate actual rows and applicability review."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_materials"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_materials
+              source_ids:
+                - lefavor-envelope-manufacturing
+            ranges: []
+        - row_id: hydraulic_input
+          role: "Press fluid additions"
+          name: "Hydraulic Fluid"
+          flow_type: "product"
+          flow_ref:
+            uuid: "30691a38-a947-4b41-991e-194f6c9aa88f"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66 / m3"
+          description: "One mineral-base hydraulic working fluid formulation for the die press, measured as external additions/replacement volume. Confirm grade, additives, measured density and actual mineral-base identity. Reservoir recirculation is not consumed volume; retain opening/closing fluid stocks, additions, drained volume and leakage. The broad Hydraulic Fluid UUID permits the declared mineral-base subset but supplies no density, lifetime or allocation share."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_maintenance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_maintenance
+              source_ids:
+                - lefavor-envelope-manufacturing
+            ranges: []
+        - row_id: transport_input
+          role: "Inbound freight"
+          name: "freight transport"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f1a3f30-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "mass*distance 118f2a40-50ec-457c-aa60-9bc6b6af9931; unit group 3620148f-c5db-48ce-9065-a10092089aca / kg*km"
+          description: "One actual inbound diesel-road freight service, with measured gross consignment mass including packaging, actual route km, vehicle/fuel/emission class, loading and return convention. This broad road-freight identity has no fixed truck-size restriction but does not choose a provider. Native reference is mass*distance in kg*km: multiply measured tonne-kilometres by exactly1000, or sum gross kg times km; preserve original tonnes/distance records and the same accepted-envelope denominator. Do not count service plus its embedded fuel/exhaust again. Other modes require separate reviewed rows."
+          amount:
+            expression: "Measured gross tonne-kilometres multiplied by1000 to native kg*km per 1 kg reference flow; cp_transport"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_transport
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: envelope_output
+          role: "Accepted envelope output"
+          name: "Envelopes, letter cards, plain postcards and correspondence cards of paper or paperboard, boxes, pouches, wallets and writing compendiums, of paper or paperboard, containing paper stationery"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e75a08f8-57bd-4900-b01b-8482a1dc7546"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Accepted empty finished envelope, unprinted and without aperture/window, with bonded seams and dry rewettable flap gum; the flap remains open for filling. Net as-dispatched conditioned mass includes paper, retained adhesive solids and residual water, excludes carton and contents. Weigh accepted lots on calibrated scales; reject lots are not denominator output. The broad finished-product UUID is limited to this declared subset."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_output
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: trim_output
+          role: "Clean paper trim"
+          name: "waste paper (unspecified)"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "f140a5a2-5318-4d06-956f-a87b9c6fda25"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Separately collected clean unprinted unglued paper die-cut trim transferred to an identified accepting recycler. Weigh at transfer, declare moisture and receiver. This is waste paper, not saleable envelope output; internal rework never becomes an external waste flow. No automatic avoided virgin-paper credit."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_waste"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - lefavor-envelope-manufacturing
+            ranges: []
+        - row_id: reject_output
+          role: "Gummed rejects"
+          name: "waste paper (unspecified)"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "f140a5a2-5318-4d06-956f-a87b9c6fda25"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Separately collected paper-envelope rejects bearing the actual two adhesive formulations. Record paper/adhesive/water fractions, moisture, waste status and receiver acceptance; the broad waste-paper identity is conditional on predominantly paper waste and does not establish treatment. Keep this stream separate from clean trim, bulk glue residues and captured dust."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_waste"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: dust_output
+          role: "Collected paper dust"
+          name: "Dust"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2a6c9b60-a075-45ec-b611-c3b4dd255935"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual dry paper-cutting dust retained by extraction/cleaning and exported as one separately weighed industrial dust stream. Verify fibre/filler composition, moisture, actual clean state, no mixed oil/chemical sweepings and receiver acceptance. The dedicated captured-dust Waste identity does not imply emitted PM or merge dust with trim/rejected envelopes. Full captured mass and any internal return remain distinct; no assumed receiver treatment or capture efficiency."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_waste"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - eu-paper-bref-2015
+            ranges: []
+        - row_id: effluent_output
+          role: "Wash-liquid transfer"
+          name: "Waste liquid"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "bdfc32cf-8028-40a8-a2e4-2d73422ece34"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual combined liquid effluent from water-only cleaning of the two stated aqueous gums fits the industrial-cleaning Waste liquid family only with verified liquid state, whole composition, tank origin and accepted offsite receiver. Weigh whole wet transfer or use actual V*rho(T); measure H2O fraction independently and multiply it by wet mass for the water ledger. Suspended/dissolved gum solids, additives, COD/TOC and pH are characterized separately, not summed as overlapping physical masses. No generic hazard class or treatment is inferred. This is not direct freshwater release; unused concentrated gum, gel/dry residue, oil and spills require their own physical rows when present."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_water"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids: []
+            ranges: []
+        - row_id: spent_hydraulic_output
+          role: "Drained working oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual petroleum/mineral-base hydraulic fluid used for power transfer and lubrication and contaminated through use fits this used-lubricating-oil family. Require actual base-oil/additive composition, lubricating function, water/solid contamination, full as-drained kg, measured volume/density and accepting receiver. The supplied hydraulic fluid remains native Volume/m3 and its oil-reservoir/additions/drainage balance uses actual density, never a database secondary-property factor. No metal-machining origin, fixed replacement period, hazard status, regeneration or combustion credit is assumed. Oil-bearing wipes/filters and leaks remain separate actual streams."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_maintenance"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_maintenance
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: water_vapour_output
+          role: "Drying water release"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Net evaporation from aqueous gum drying/cleaning to outdoor air, unspecified, water CAS 7732-18-5. Determine from measured adhesive carrier water, added water, paper/product moisture, wastewater water fraction and stock changes, with uncertainty and ventilation discharge records. Not stratospheric release or freshwater discharge. Unknown balance stays pending; no fixed evaporation fraction."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_evaporation"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_evaporation
+              source_ids: []
+            ranges: []
+        - row_id: pm25_output
+          role: "Fine outdoor particles"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Actual paper-cutting particulate mass at or below 2.5 micrometres reaching outdoor air, unspecified, after capture. Require outlet/fugitive-path survey and size-resolved measurements over actual operating periods. Paper/filler/adhesive composition and biogenic/fossil carbon content remain disclosed; this mass is not CO2 or a correction flow. No BREF emission factor or default zero."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_air"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - eu-paper-bref-2015
+            ranges: []
+        - row_id: pmcoarse_output
+          role: "Intermediate outdoor particles"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Outdoor-air unspecified particles above 2.5 and at or below 10 micrometres. Where measured cumulative PM10 and PM2.5 share the same method/period/outlet, this is their nonnegative difference with propagated uncertainty. Never sum cumulative PM10 again with PM2.5. Separate captured waste from mass actually released."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_air"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - eu-paper-bref-2015
+            ranges: []
+        - row_id: pmover10_output
+          role: "Coarse outdoor particles"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Outdoor-air unspecified particulate mass above 10 micrometres from actual cutting/handling releases. Derive from compatible total-particle and cumulative PM10 measurements only where methods and sampled ranges support the difference; otherwise measure this interval or retain it pending. The three intervals are disjoint, and total particles is a reconciliation check rather than another inventory sum."
+          amount:
+            expression: "Measured attributable amount per 1 kg reference flow; cp_air"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - eu-paper-bref-2015
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_subdivide
+    applies_to: "converting"
+    rule: "Attribute consumption with stage/batch meters and production records before sharing burdens. For mixed orders, use observed causal machine time/load or throughput only where the measured relationship supports it; document denominator, idle/changeover and excluded orders. No fixed allocation share."
+    source_ids: []
+  - rule_id: allocation_physical
+    applies_to: "all inventory rows"
+    rule: "Keep the complete physical material/water/carbon ledger and equal internal links before allocating environmental burdens. Do not multiply physical product, trim, waste or internal-transfer quantities by an allocation share. Separate burden shares from physical output masses."
+    source_ids: []
+  - rule_id: allocation_waste
+    applies_to: "trim_output; reject_output; dust_output"
+    rule: "Classify the actual receiver/legal-economic status; this route reports paper scraps as waste for offsite treatment/recycling. No automatic substitution credit or co-product share. If scraps become co-products, independently justify the allocation method and positive data before using it."
+    source_ids: []
+  - rule_id: allocation_recycle
+    applies_to: "all inventory rows"
+    rule: "Document upstream recycled-paper accounting and the downstream recycling boundary consistently. Internal paper/gum returns do not create saleable output or duplicate avoided burdens."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_output
+      process_id: "converting"
+      flow_role: "envelope_output"
+      record_type: "measurement_record"
+      raw_fields: "order; accepted lot mass; tare; moisture; counts; rejected lots; dimensions; stock/dispatch reconciliation"
+      collection_method: "Calibrated scales and lot acceptance records; weigh conditioned empty envelopes excluding carton/contents. Counts and sample mass are QA, not an unmeasured count-to-mass denominator."
+      unit: "kg"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_materials
+      process_id: "converting"
+      flow_role: "paper_input; box_input"
+      record_type: "measurement_record"
+      raw_fields: "lot; supplier; net received/issued/returned quantities; stocks; full packaging dispatch/return/discard; moisture; carton empty mass; paper grade/grammage/furnish"
+      collection_method: "Weigh issue/return stocks and cartons; reconcile invoices and stage cutting/scrap records with attributable accepted output. Keep fibre/dry-solids and as-received mass separate."
+      unit: "kg"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_adhesive
+      process_id: "converting"
+      flow_role: "seam_glue_input; flap_gum_input"
+      record_type: "measurement_record"
+      raw_fields: "separate grade/lot; full formula; SDS/TDS; supplier mass basis; wet issued/returned/stocks; solids; carrier water; additives; viscosity; density; application stage"
+      collection_method: "Separate wet weighings for seam and flap gums, validated solids/water tests and supplier records. Keep recovered gum internal; audit each volatile species and mass fraction. Declare uncertainty and no invented formulation."
+      unit: "kg"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_water
+      process_id: "converting"
+      flow_role: "water_input; effluent_output"
+      record_type: "measurement_record"
+      raw_fields: "meter volumes; event density; dilution/cleaning location; tank stocks; effluent kg/m3; water fraction; COD/TOC; TSS; pH; additives; receiver"
+      collection_method: "Meter fresh tap water; sample the actual waste tank and weigh/measure transfer before accepted offsite treatment. Separate pollutant loads from bulk waste mass and from the water balance. No water withdrawal/emission double counting."
+      unit: "kg; m3"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_energy
+      process_id: "converting"
+      flow_role: "electricity_input"
+      record_type: "measurement_record"
+      raw_fields: "meter ID; stage/shift kWh; idle/changeover; pressure-air load; dryer/fan runtime; voltage; grid supplier/year; supply loss boundary"
+      collection_method: "Use calibrated process submeters and reconciled common meter, retain actual causal attribution and verified kWh-MJ conversion. Electric drying is measured, not borrowed from steam demand."
+      unit: "MJ"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_waste
+      process_id: "converting"
+      flow_role: "trim_output; reject_output; dust_output"
+      record_type: "measurement_record"
+      raw_fields: "separate stream mass; moisture; paper/gum fractions; stocks; internal rework; receipt; recipient acceptance/treatment; dust-capture records"
+      collection_method: "Weigh separate bins at dispatch and record composition, hazard and actual receiver. Remove internal rework from external transfer totals without losing its physical production ledger."
+      unit: "kg"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_maintenance
+      process_id: "converting"
+      flow_role: "hydraulic_input; spent_hydraulic_output"
+      record_type: "measurement_record"
+      raw_fields: "press ID; fluid grade/composition; supplied litres; additions; reservoir and store stocks; drained kg/litres; density; leaks; receiver"
+      collection_method: "Meter/weigh actual external additions and drained oil, survey leaks and maintain an in-use fluid balance. Attribute actual maintenance over covered use; do not equate circulating reservoir volume with consumption."
+      unit: "m3; kg"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_transport
+      process_id: "converting"
+      flow_role: "transport_input"
+      record_type: "measurement_record"
+      raw_fields: "supplier leg; gross tonnes; actual road km; vehicle class; load fraction; return leg; already-included supply freight"
+      collection_method: "Use bills of lading, measured consignment mass and route records; calculate freight service per leg and reconcile overlap with supplied-material backgrounds."
+      unit: "kg*km"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_evaporation
+      process_id: "converting"
+      flow_role: "water_vapour_output"
+      record_type: "measurement_record"
+      raw_fields: "gum carrier water; added water; paper/product moisture; water fraction in all wastes; opening/closing stocks; ventilation discharge; uncertainty"
+      collection_method: "Close actual water input-output-stock balance on water components; verify nonnegative physically plausible evaporation and discharge location. Retain unexplained residual as pending."
+      unit: "kg"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+    - protocol_id: cp_air
+      process_id: "converting"
+      flow_role: "pm25_output; pmcoarse_output; pmover10_output"
+      record_type: "measurement_record"
+      raw_fields: "outlet/fugitive location; sampled air volume/time; operating hours; controls; size fractions; captured mass; blanks; uncertainty; paper/filler/gum composition"
+      collection_method: "Site-specific size-resolved air monitoring with actual method, comparable conditions and uncertainty; reconcile captured waste separately. BREF only identifies a cutting-dust question, not a sampling standard or factor."
+      unit: "kg"
+      frequency: "Each batch/shift; transfers and maintenance per event"
+      temporal_coverage: "Declared representative period covering all orders, startup/idle and seasonal conditions; disclose gaps"
+      site_scope: "Named converter, matched lines and orders"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, raw logs, supplier/receiver receipts, tests, uncertainty and reconciliation"
+  calculation_rules:
+    - id: normalize_period
+      applies_to: "all inventory rows"
+      rule: "For each non-reference exchange, normalized amount = attributable total physical exchange for the period / accepted net finished envelope kg for that period. Preserve physical totals and units; only envelope_output is fixed at 1 kg."
+      inputs:
+        - "period row totals"
+        - cp_output
+        - "applicable row protocol"
+      output: "exchange amount per 1 kg reference flow"
+      source_ids: []
+    - id: component_balance_worksheet
+      applies_to: "converting physical material/water/carbon and packaging/container/oil ledgers"
+      rule: "Keep component worksheets before normalization: dry paper issued plus dry adhesive solids equals accepted-envelope dry solids plus the dry components of external trim/rejects/dust/effluent plus stock change, with any additional measured loss disclosed. Packaging and hydraulic-fluid balances are separate. For the actual carton and each supplier-owned returnable gum container, record full receipts plus opening stock equal full dispatch/return transfers plus actual discarded mass plus closing stock. Outgoing packaging is additional to net envelopes; never shrink physical transfers by reuse or burden shares. Material providers cover container manufacture/service only when documented; avoid double-counting while preserving physical return records. Water entering in paper, supplied wet gums and added tap water equals water retained in envelopes and all wastes plus evaporation and water stock change. Determine water content separately from gross effluent kg. Record biogenic and fossil carbon fractions of actual paper and additives through product, waste and any actual air/water releases; no biogenic CO2 removal by GHG-reporting convention. No carbon reaction or direct combustion is assumed. Record uncertainty and explain residuals; a balance cannot infer unknown recipe proportions."
+      inputs:
+        - cp_materials
+        - cp_adhesive
+        - cp_water
+        - cp_output
+        - cp_waste
+        - cp_maintenance
+        - cp_evaporation
+        - "actual composition and stocks"
+      output: "unnormalized physical component/water/carbon and gross package/container/oil stock ledgers; residuals and uncertainty"
+      source_ids: []
+    - id: native_quantity_worksheet
+      applies_to: "electricity_input; transport_input; pm25_output; pmcoarse_output; pmover10_output; water_vapour_output"
+      rule: "Electricity: retain 3.6 times actual kWh in MJ. Freight: retain measured gross tonnes and actual leg kilometres, multiply their per-leg product by1000 to native kg*km, removing overlap with already included transport. PM2.5-to-10 may be compatible cumulative PM10 minus PM2.5; above-10 may be compatible total particles minus PM10. Differences need comparable size methods and nonnegative results. Water-vapour estimation uses the measured water-component balance; unresolved carrier water cannot be guessed. These supporting worksheets do not change the common reference denominator."
+      inputs:
+        - cp_energy
+        - cp_transport
+        - cp_air
+        - cp_evaporation
+        - cp_water
+        - cp_output
+      output: "raw native-unit worksheets and compatible particle/water evidence; normalization remains once under normalize_period"
+      source_ids: []
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "all inventory rows"
+      requirement: "Verify physical composition/state, supplier and receiver reference basis separately from UUID identity; empty UUID is explicit missing linkage."
+      evidence: "Supplier grade/formula, raw identity and unit records, receiver acceptance"
+    - id: quality_coverage
+      applies_to: "converting"
+      requirement: "No generic recipe, yield, moisture, density, emission factor or background selected from historical/single-factory observations; use actual period coverage and uncertainty."
+      evidence: "Site protocols, logs and balances"
+    - id: quality_sources
+      applies_to: "converting"
+      requirement: "JRC draft is qualitative context, BREF applies to pulp/paper and paper finishing, producers establish described capabilities only. Foreground measurement remains required; source dates and conditions must be disclosed."
+      evidence: "Located originals with bounded applicability"
+validation_rules:
+  - rule_id: validation_route
+    applies_to: "envelope_output"
+    rule: "Require every declared qualifier and reject data from windows, printed/security-coated stock, peel-seal, latex self-seal or onboard papermaking unless separately reviewed. The broad reference name never expands scope automatically."
+    source_ids: []
+  - rule_id: validation_denominator
+    applies_to: "all inventory rows"
+    rule: "Exactly one reference product output is 1 kg accepted net conditioned empty envelopes. All collection/aggregation/inventory bases use this same denominator; intermediate blanks remain internal."
+    source_ids: []
+  - rule_id: validation_balance
+    applies_to: "converting"
+    rule: "Reconcile physical paper/adhesive/water/carbon and separate oil/packaging stocks before burden attribution; identify all residuals and uncertainties. Negative incompatible PM differences or unexplained stock loss remain pending."
+    source_ids: []
+  - rule_id: validation_linkage
+    applies_to: "all inventory rows"
+    rule: "UUID identity alone does not establish a provider dataset. Verify complete route, grade, reference property/unit, moisture/concentration, geography/year and treatment boundary. Blank identities and unsupported bases remain disclosed gaps, not matched backgrounds or zeros."
+    source_ids: []
+  - rule_id: validation_emissions
+    applies_to: "all elementary outputs"
+    rule: "Require actual outlet/medium/species/size evidence; separate air releases from captured waste and bulk effluent transfers. No size double counting, correction-flow substitution, unmeasured zero or biogenic-CO2 deletion. Expand actual chemistry/combustion route inventory before completeness claims."
+    source_ids:
+      - eu-paper-bref-2015
+  - rule_id: validation_readiness
+    applies_to: "converting"
+    rule: "This candidate methodology is unreviewed. A quantified dataset is incomplete until foreground protocols, supplier formulas, unresolved flow/provider links, actual emissions and receiver acceptance are supplied; methodology authorship is not scientific approval."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground_dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "After data completeness checks: supplier-specific unprinted windowless gummed envelope manufacture, per 1 kg net gate output"
+  excluded_use: "All CPC32192 products by label alone; postal service; printed/windowed/liner variants; Ecolabel certification; uncollected recipe; approval or universal benchmark"
+  required_metadata: "Reference qualifiers, source scope, measured period, site, process map, physical balances, allocation method, raw protocols, backgrounds and waste treatment"
+  required_quality_disclosure: "Independent review absent; missing identities/providers/measurements, uncertainty, exclusions, chemical/particulate completeness and representativeness"
+  update_trigger: "Paper grade/furnish, either adhesive formulation, window/printing/closure route, energy supply, transport mode, output quality or waste treatment changes"
+data_sources:
+  - id: "jrc-converted-paper-2018"
+    type: "official_guidance"
+    reference: "https://susproc.jrc.ec.europa.eu/product-bureau/sites/default/files/contentype/product_group_documents/1581681202/Preliminary%20report_final.pdf"
+    used_for: "Qualitative substrate/converting and closure/window distinctions; historical draft, no current legal requirement or formula/factor"
+  - id: "eu-paper-bref-2015"
+    type: "official_guidance"
+    reference: "https://bureau-industrial-transformation.jrc.ec.europa.eu/sites/default/files/2019-11/PP_revised_BREF_2015.pdf"
+    used_for: "Upstream paper scope and qualitative cutting-dust investigation only; mill broke return is not an envelope-converter default; no particle-size factor"
+  - id: "lefavor-envelope-manufacturing"
+    type: "extension_guidance"
+    reference: "https://www.lefavor.com/manufacturing"
+    used_for: "Sheet die cutting, blank folding/gluing and dispatch capability; a single producer, no generic sheet count, speed, input quantity or mandatory optional printing"
+  - id: "eukalin-envelope-adhesives"
+    type: "extension_guidance"
+    reference: "https://www.eukalin.de/en/applications/envelopes/"
+    used_for: "Aqueous synthetic dispersion seam function versus dextrin remoist flap function; no actual supplied full formula, solids or coat-weight default"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:c377ebad4eaed7fdfccb6a0c14a4e720c5b85129538ae39de599bf70e14aeb65"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5938"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5938
+          line: 61
+          column: 1
+        end:
+          offset: 8604
+          line: 82
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased finished uncoated sheets and separately supplied aqueous gums arriving at converter; all upstream manufacture is linked as background, not recreated as foreground |\n| starting_condition_role | Foreground gate entry with required cradle-to-gate background completion |\n| product_classification_scope | Only the specified envelope subset of CPC32192 |\n| recursive_input_rule | Purchased same-category envelopes are outside this sheet-converting route; do not recurse or treat rework as new product input. Change scope explicitly before using purchased blanks/finished envelopes. |\n| upstream_dataset_requirement | Compatible pulp/papermaking, adhesive formulation, carton, tap water, fluid, grid supply and inbound freight datasets; unresolved UUID or provider basis remains disclosed, never zero burden |\n| disclosure | Declared site/year, input condition, cut-off, logistics, waste receivers, returnable glue-container background, supply utilities and product mass basis |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_converting | converting | Include press cutting, all scoring/folding/gumming, electric drying, extraction, water cleaning, material losses, maintenance additions and attributable packing/onsite storage. | lefavor-envelope-manufacturing; eukalin-envelope-adhesives |\n| boundary_upstream | all inventory rows | Complete upstream paper production with applicable pulp/paper originals and matched provider conditions; no wood-product survey transferred to paper and no duplicate mill emissions at converter. | jrc-converted-paper-2018; eu-paper-bref-2015 |\n| boundary_route | converting | Exclude onsite pulp/papermaking, coating, printing, windows and release liners in this selected route. No onsite boiler, steam delivery, biological effluent treatment or direct surface-water discharge is assumed. Expand and reassess actual deviations; no default zeros. | jrc-converted-paper-2018 |\n| boundary_waste | all waste outputs | Record external transfers by actual waste identity and receiving treatment; internal recirculation stays internal. If offsite treatment is modelled within the study boundary, add its emissions once through that background. |  |\n| boundary_completeness | all inventory rows | Audit site material/utility/maintenance/emission ledgers and supplier SDS, including lubrication, volatile additives, contaminated wipes, spills and inbound packaging. Add each present atomic exchange before dataset completeness claims; no unmeasured species can be declared absent. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 382
+              line: 10
+              column: 1
+            end:
+              offset: 441
+              line: 10
+              column: 60
+          text: "# Unprinted windowless remoistenable-gummed paper envelopes"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5938
+              line: 61
+              column: 1
+            end:
+              offset: 5959
+              line: 61
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_28742"
+      family: "allocation"
+      span:
+        start:
+          offset: 28742
+          line: 380
+          column: 1
+        end:
+          offset: 30113
+          line: 389
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_subdivide | converting | Attribute consumption with stage/batch meters and production records before sharing burdens. For mixed orders, use observed causal machine time/load or throughput only where the measured relationship supports it; document denominator, idle/changeover and excluded orders. No fixed allocation share. |  |\n| allocation_physical | all inventory rows | Keep the complete physical material/water/carbon ledger and equal internal links before allocating environmental burdens. Do not multiply physical product, trim, waste or internal-transfer quantities by an allocation share. Separate burden shares from physical output masses. |  |\n| allocation_waste | trim_output; reject_output; dust_output | Classify the actual receiver/legal-economic status; this route reports paper scraps as waste for offsite treatment/recycling. No automatic substitution credit or co-product share. If scraps become co-products, independently justify the allocation method and positive data before using it. |  |\n| allocation_recycle | all inventory rows | Document upstream recycled-paper accounting and the downstream recycling boundary consistently. Internal paper/gum returns do not create saleable output or duplicate avoided burdens. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 382
+              line: 10
+              column: 1
+            end:
+              offset: 441
+              line: 10
+              column: 60
+          text: "# Unprinted windowless remoistenable-gummed paper envelopes"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 28742
+              line: 380
+              column: 1
+            end:
+              offset: 28782
+              line: 380
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_43654"
+      family: "validation"
+      span:
+        start:
+          offset: 43654
+          line: 429
+          column: 1
+        end:
+          offset: 45542
+          line: 440
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validation_route | envelope_output | Require every declared qualifier and reject data from windows, printed/security-coated stock, peel-seal, latex self-seal or onboard papermaking unless separately reviewed. The broad reference name never expands scope automatically. |  |\n| validation_denominator | all inventory rows | Exactly one reference product output is 1 kg accepted net conditioned empty envelopes. All collection/aggregation/inventory bases use this same denominator; intermediate blanks remain internal. |  |\n| validation_balance | converting | Reconcile physical paper/adhesive/water/carbon and separate oil/packaging stocks before burden attribution; identify all residuals and uncertainties. Negative incompatible PM differences or unexplained stock loss remain pending. |  |\n| validation_linkage | all inventory rows | UUID identity alone does not establish a provider dataset. Verify complete route, grade, reference property/unit, moisture/concentration, geography/year and treatment boundary. Blank identities and unsupported bases remain disclosed gaps, not matched backgrounds or zeros. |  |\n| validation_emissions | all elementary outputs | Require actual outlet/medium/species/size evidence; separate air releases from captured waste and bulk effluent transfers. No size double counting, correction-flow substitution, unmeasured zero or biogenic-CO2 deletion. Expand actual chemistry/combustion route inventory before completeness claims. | eu-paper-bref-2015 |\n| validation_readiness | converting | This candidate methodology is unreviewed. A quantified dataset is incomplete until foreground protocols, supplier formulas, unresolved flow/provider links, actual emissions and receiver acceptance are supplied; methodology authorship is not scientific approval. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 382
+              line: 10
+              column: 1
+            end:
+              offset: 441
+              line: 10
+              column: 60
+          text: "# Unprinted windowless remoistenable-gummed paper envelopes"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 43654
+              line: 429
+              column: 1
+            end:
+              offset: 43676
+              line: 429
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_converting"
+      identity_kind: "explicit"
+      unit_id: "normative_5938"
+      source_span:
+        start:
+          offset: 7106
+          line: 76
+          column: 1
+        end:
+          offset: 7382
+          line: 76
+          column: 277
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_upstream"
+      identity_kind: "explicit"
+      unit_id: "normative_5938"
+      source_span:
+        start:
+          offset: 7383
+          line: 77
+          column: 1
+        end:
+          offset: 7669
+          line: 77
+          column: 287
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_route"
+      identity_kind: "explicit"
+      unit_id: "normative_5938"
+      source_span:
+        start:
+          offset: 7670
+          line: 78
+          column: 1
+        end:
+          offset: 8000
+          line: 78
+          column: 331
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_waste"
+      identity_kind: "explicit"
+      unit_id: "normative_5938"
+      source_span:
+        start:
+          offset: 8001
+          line: 79
+          column: 1
+        end:
+          offset: 8267
+          line: 79
+          column: 267
+    - pointer: "/system_boundary/rules/4"
+      rule_id: "boundary_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_5938"
+      source_span:
+        start:
+          offset: 8268
+          line: 80
+          column: 1
+        end:
+          offset: 8602
+          line: 80
+          column: 335
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_subdivide"
+      identity_kind: "explicit"
+      unit_id: "normative_28742"
+      source_span:
+        start:
+          offset: 28855
+          line: 384
+          column: 1
+        end:
+          offset: 29196
+          line: 384
+          column: 342
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_28742"
+      source_span:
+        start:
+          offset: 29197
+          line: 385
+          column: 1
+        end:
+          offset: 29522
+          line: 385
+          column: 326
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_waste"
+      identity_kind: "explicit"
+      unit_id: "normative_28742"
+      source_span:
+        start:
+          offset: 29523
+          line: 386
+          column: 1
+        end:
+          offset: 29879
+          line: 386
+          column: 357
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_recycle"
+      identity_kind: "explicit"
+      unit_id: "normative_28742"
+      source_span:
+        start:
+          offset: 29880
+          line: 387
+          column: 1
+        end:
+          offset: 30111
+          line: 387
+          column: 232
+    - pointer: "/validation_rules/0"
+      rule_id: "validation_route"
+      identity_kind: "explicit"
+      unit_id: "normative_43654"
+      source_span:
+        start:
+          offset: 43749
+          line: 433
+          column: 1
+        end:
+          offset: 44024
+          line: 433
+          column: 276
+    - pointer: "/validation_rules/1"
+      rule_id: "validation_denominator"
+      identity_kind: "explicit"
+      unit_id: "normative_43654"
+      source_span:
+        start:
+          offset: 44025
+          line: 434
+          column: 1
+        end:
+          offset: 44271
+          line: 434
+          column: 247
+    - pointer: "/validation_rules/2"
+      rule_id: "validation_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_43654"
+      source_span:
+        start:
+          offset: 44272
+          line: 435
+          column: 1
+        end:
+          offset: 44541
+          line: 435
+          column: 270
+    - pointer: "/validation_rules/3"
+      rule_id: "validation_linkage"
+      identity_kind: "explicit"
+      unit_id: "normative_43654"
+      source_span:
+        start:
+          offset: 44542
+          line: 436
+          column: 1
+        end:
+          offset: 44863
+          line: 436
+          column: 322
+    - pointer: "/validation_rules/4"
+      rule_id: "validation_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_43654"
+      source_span:
+        start:
+          offset: 44864
+          line: 437
+          column: 1
+        end:
+          offset: 45235
+          line: 437
+          column: 372
+    - pointer: "/validation_rules/5"
+      rule_id: "validation_readiness"
+      identity_kind: "explicit"
+      unit_id: "normative_43654"
+      source_span:
+        start:
+          offset: 45236
+          line: 438
+          column: 1
+        end:
+          offset: 45540
+          line: 438
+          column: 305
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5938"
+      source_span:
+        start:
+          offset: 5938
+          line: 61
+          column: 1
+        end:
+          offset: 5959
+          line: 61
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5938"
+      source_span:
+        start:
+          offset: 5987
+          line: 65
+          column: 1
+        end:
+          offset: 7033
+          line: 72
+          column: 169
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_28742"
+      source_span:
+        start:
+          offset: 28742
+          line: 380
+          column: 1
+        end:
+          offset: 28782
+          line: 380
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_43654"
+      source_span:
+        start:
+          offset: 43654
+          line: 429
+          column: 1
+        end:
+          offset: 43676
+          line: 429
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:c377ebad4eaed7fdfccb6a0c14a4e720c5b85129538ae39de599bf70e14aeb65"
+  generated_content_sha256: "sha256:446f8a5e37fcf2e1ec71cfa0ff7eaf5615e33d51eee8e1b450724af8e078ff16"

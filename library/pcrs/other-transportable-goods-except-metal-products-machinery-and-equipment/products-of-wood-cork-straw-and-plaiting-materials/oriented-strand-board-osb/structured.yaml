@@ -1,10 +1,1834 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31432"
-  title: "Oriented strand board (OSB)"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.oriented-strand-board-osb"
+  classification_refs: "CPC 3.0 31432; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Unoverlaid wood OSB with PF/pMDI binder and declared long-strand layered orientation"
+  excluded_products: "Random particleboard/waferboard; fibre/veneer panels; treated, overlaid or other-binder variants"
+  representative_product: "Accepted finished OSB at factory gate, actual dispatch wet mass, excluding packaging"
+  production_route: "Delivered panel logs or externally supplied unresinated strands → actual drying/screening → face/core resin and wax blending → oriented layer forming → hot pressing → cooling, trimming, conditional sanding/edge sealing → grading/packing"
+  market_state: "Finished factory-gate panel for further construction/manufacture; actual grade and moisture, no fixed end-use scenario"
+functional_unit:
+  what: "Supply an accepted OSB panel material, without claiming an equal building service across grades"
+  how_much: "1 kg net finished OSB at declared dispatch moisture, excluding packaging"
+  how_well: "Actual grade/standard, layer count/orientation, strand geometry, thickness, board density at defined moisture, layer binder recipe and surface state"
+  how_long_or_cycle: "One production accounting period; no use-stage service life assigned"
+  reference_flow_link: "finished_osb"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "Use one integrated foreground inventory p_osb through grading/packing. Preserve the following collection stages independently: s_receive (yard/conditioning/debarking/stranding only if inside the gate); s_dry (drying and screening, per face/core furnish); s_blend (separate layer recipe); s_form (orientation and layup); s_press (press cycle and cure); s_finish (cooling, trimming, optional sanding and edge sealing); s_pack; s_heat (boiler/thermal heater and actual internal heat recovery); s_control (dust collection/WESP/RTO/water treatment). [corrim-osb-us-2025; epa-osb-2002]"
+      source_ids: []
+    - rule_id: system_boundary_rule_2
+      applies_to: "foreground_system_boundary"
+      rule: "Assign direct-fired dryer fuel and the combined drying/combustion exhaust to s_dry; separate boiler fuel, ash and its stack to s_heat. Put RTO auxiliary fuel and final emissions at s_control. Shared dryer/press/RTO stacks are measured once after controls, with documented originating stages. Boiler AP-42 guidance does not supply direct-fired dryer factors. Recovered RTO heat lowers measured purchased fuel/heat; an internal loop is not a negative external heat export. Do not book useful onsite heat and its fuel as two purchased supplies. If heat leaves the plant, define one exact export flow and metered delivery boundary separately. [epa-osb-2002; epa-wood-boiler-2022]"
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Receiving gate for logs with explicit bark status, or receiving gate for externally supplied green/dried unresinated strands; disclose transport already included"
+  starting_condition_role: "foreground_entry"
+  product_classification_scope: "CPC 3.0 31432 OSB subset stated in section 1; classification does not define grade"
+  recursive_input_rule: "Purchased OSB is not a raw strand input and cannot be recursively substituted. Rework stays in physical stock/transfer records; no duplicate finished reference output."
+  upstream_dataset_requirement: "Matching forestry/log preparation, externally supplied strand production, each resin/wax/coating, fuel, electricity, water and packaging background; receiving-gate freight separately if absent upstream. External waste treatment must be linked."
+  disclosure: "Foreground gate-to-gate, including onsite heat and controls; cradle-to-gate requires explicit upstream connections. Excludes installation, use and end of life unless separately modelled."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Oriented strand board (OSB)"
+    uuid: "3291d1cf-a318-4271-9435-39534fa45e67"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Site/period and receiving gate"
+    - "botanical species mix"
+    - "strand dimensions and aspect-ratio distribution"
+    - "layer count"
+    - "face/core orientation and layup sequence"
+    - "actual thickness"
+    - "width/length and density at stated moisture"
+    - "dry-/wet-basis moisture and method"
+    - "net mass and rejected boards"
+    - "exact commercial PF/pMDI formulations"
+    - "solids and per-layer loading"
+    - "wax/carrier water"
+    - grade
+    - standard
+    - "exposure/performance class and actual acceptance tests"
+    - "sanding/edge coating"
+    - "supply and combustion/abatement route"
+    - "no presumed service life"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use calibrated net accepted finished-board dispatch mass in cp_reference; exclude packaging."
+  - id: same_denominator
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Reference product mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Every exchange uses per 1 kg reference flow; sum attributable period totals and divide by net accepted finished OSB mass from cp_reference."
+  - id: moisture_basis
+    applies_to: "wood and board measurements"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Collect actual wet and dry mass with cp_material/cp_reference. Dry-basis moisture u=(wet-dry)/dry; wet-basis w=(wet-dry)/wet; dry=wet/(1+u). Record denominator and method; adhesive/wax solids are not dry wood. [usda-wood-handbook-2021]"
+  - id: energy_boundary
+    applies_to: "in_electricity, in_purchased_steam"
+    required_property_ref:
+      name: "Energy"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Convert measured kWh to MJ using 3.6 MJ/kWh. For steam use measured delivered-minus-return enthalpy including condensate reference. A database MJ unit alone does not establish that boundary."
+  - id: nox_quantity_basis
+    applies_to: "air_nox"
+    required_property_ref:
+      name: "Mass; verified quantity convention"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Before calculation, document the actual measured or factor-derived NOx quantity convention, chemical/species scope, concentration and gas-state basis and its independently verified relation to the selected LCI flow and assessment method. Native Mass/kg does not establish an NO2-equivalent convention. Keep actual NO/NO2 species quantities and documented conversion/speciation evidence when an equivalent basis is used; no universal conversion or assumed split. Reconcile any aggregate with separately modelled NO/NO2 and keep N2O separately, without counting the same release twice. Missing convention/speciation or LCI/assessment compatibility leaves the raw result and its normalized exchange pending review; never silently label a mass as NO2-equivalent or invent zero."
+process_map:
+  - id: p_osb
+    name: "OSB conversion, onsite utilities and dispatch with stage metering"
+    inclusion: "required"
+    inclusion_condition: "Actual receiving gate to packaged dispatch"
+    role: "foreground"
+    quantitative_reference: "1 kg reference flow"
+process_inventory:
+  - id: p_osb
+    label: "OSB conversion, onsite utilities and dispatch with stage metering"
+    inputs:
+      product:
+        - row_id: in_softwood_logs
+          role: "Coniferous roundwood for wood-based panels, delivered"
+          name: "Coniferous roundwood for wood-based panels, delivered"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Coniferous panel logs at the declared receiving gate, only for the log route; collect botanical mix, bark status, wet mass and dry-basis moisture."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_hardwood_logs
+          role: "Non-coniferous roundwood for wood-based panels, delivered"
+          name: "Non-coniferous roundwood for wood-based panels, delivered"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Non-coniferous panel logs at the declared receiving gate, only for the log route; keep separate from coniferous input."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_green_strands
+          role: "Green unresinated wood strands for OSB"
+          name: "Green unresinated wood strands for OSB"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only externally supplied unresinated green long strands. Start at their receiving gate, include drying and screening actually performed, and link the supplier stranding inventory."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_dry_strands
+          role: "dried screened wood strands"
+          name: "dried screened wood strands"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7c588d40-4cd1-495f-803c-8ff4a1582f3b"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only externally supplied dried and screened unresinated OSB strands; verify receipt moisture and geometry. Supplier preparation is upstream; do not also book the logs used to make these strands as foreground input."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_pmdi
+          role: "Polymeric diphenylmethane diisocyanate resin"
+          name: "Polymeric diphenylmethane diisocyanate resin"
+          flow_type: "product"
+          flow_ref:
+            uuid: "6c4c13f5-d9aa-4c0d-b0bb-0b6d87c6dfa2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "pMDI resin actually consumed, separately metered for each face/core layer. Record supplied formulation, solids, water and free monomer. No assumed three-percent loading from identity comments."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_pf
+          role: "Phenolic resin"
+          name: "Phenolic resin"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9f10798f-ffb5-402d-b805-27d2db4e2caf"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use this phenolic-resin row only for an actual independently supplied PF prepolymer/powder state matching the selected identity and provider reference; record its supplied mass, measured resin solids, moisture and additives. If the actual purchase is a prepared aqueous PF formulation, require one specific complete-formulation supply row and compatible provider covering preparation/delivery before use; its resin, carrier water and included additives are analytical composition, not new onsite purchases. Actual independently bought additions and onsite mixing water/utilities remain separate. Never equate wet formulation kg to dry polymer kg."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_paraffin
+          role: "Petroleum paraffin wax for OSB blending"
+          name: "Petroleum paraffin wax for OSB blending"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use this row for petroleum paraffin wax actually supplied separately for water resistance, with measured supplied wax mass/state and provider basis. A bought wax emulsion is one complete formulation and requires its own specific compatible supply row/provider including preparation/delivery; its wax, carrier water and additives remain analytical subledgers only. Separately purchased constituents and actual onsite emulsification/mixing water/utilities are real separate exchanges. No universal wax loading or emulsion concentration."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_electricity
+          role: "Purchased electricity at OSB mill consumer meter"
+          name: "Purchased electricity at OSB mill consumer meter"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Purchased electricity measured by submeter at the consumer boundary; record voltage, supplier, grid mix and losses included. Sum stage-meter quantities without adding the main meter again."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_gas
+          role: "natural gas in the gaseous state"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Gaseous fossil natural gas delivered by pipeline, actual metered m3 use split among direct dryer, boiler/heater and thermal oxidizer. Declare meter absolute pressure, temperature, dry/wet basis, composition and compressibility. Match the supplier background m3 state using cp_gas and gas_volume_state; an unknown supplier/meter basis prevents completion of the background link. The database secondary mass coefficient is not gas density."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_gas
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - oiml-gas-volume-2007
+            ranges: []
+        - row_id: in_diesel
+          role: "Diesel fuel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Diesel fuel consumed by onsite yard/handling equipment, only if used; record density for any litre-to-kg conversion. Contracted upstream freight fuel is excluded here."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_lpg
+          role: "Liquefied petroleum gas"
+          name: "Liquefied petroleum gas"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3786072f-d3ce-4941-9249-ed5d346b21a6"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual petroleum-refinery LPG consumed by forklifts or backup combustion, if used; do not substitute natural gas or assume propane-only composition. Use measured or batch-specific supplier heating value; an ancillary calorific value attached to database identity is not a method default."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_bark_fuel
+          role: "Purchased untreated bark fuel"
+          name: "Purchased untreated bark fuel"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only purchased bark fuel crossing the plant gate. Internally generated bark goes in the physical transfer ledger, not another external purchase row. Identify dryer versus boiler destination."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_wood_fines_fuel
+          role: "Purchased untreated wood screening fines fuel"
+          name: "Purchased untreated wood screening fines fuel"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only purchased untreated wood screening fines used as fuel; distinguish them from resin-bearing sanding dust. Record moisture, ash and actual heating value."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_tap_water
+          role: "Tap water"
+          name: "Tap water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d1e0e36c-07f0-4a75-bdcb-efb5d9e2ac36"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only delivered treated tap water; split conditioning, process, cooling and abatement use. Recirculating water is a physical loop, not repeated new water. Direct well/surface abstraction requires its own exact elementary-resource rows and upstream ownership."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_purchased_steam
+          role: "Purchased net process heat delivered by steam"
+          name: "Purchased net process heat delivered by steam"
+          flow_type: "product"
+          property_unit: "Energy / MJ"
+          description: "Only externally supplied process heat carried by steam when the supply contract defines net delivered heat. Collect steam/condensate enthalpy and supply-return mass balance; identity remains unresolved until that definition matches. Onsite steam is an internal energy handoff."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_pe_film
+          role: "Polyethylene film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only polyethylene shipping film actually used; weigh consumed material and disclose virgin/recycled content. Exclude product mass from film and do not multiply by co-product allocation."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_steel_strap
+          role: "Steel baling band"
+          name: "Steel baling band"
+          flow_type: "product"
+          flow_ref:
+            uuid: "56fe4f71-b594-4b55-8553-c87f2516737d"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only steel baling band with actual supplier-certified 99% Fe / 1% C composition and the verified recycling/reprocessing route (mechanical decomposition and melting). Both qualifiers must match the actual supplied band; the UUID does not prove them for a supplier. Other composition or production requires its own exact identity. Count actual band, not iron wire."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_pp_strap
+          role: "Polypropylene flat packaging strap"
+          name: "Polypropylene flat packaging strap"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only polypropylene flat strapping actually used, not PP granulate, fibre, twine or a cable tie."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_cardboard_guard
+          role: "Cardboard corner protector"
+          name: "Cardboard corner protector"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only cardboard corner protectors actually used; distinguish finished protectors from generic cardboard, optical assembly material or cartons."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_wood_dunnage
+          role: "Wooden shipping batten"
+          name: "Wooden shipping batten"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only the actual wooden shipping batten dispatched with the board bundle; one finished packaging component, not a collection of wooden packaging. Reuse requires measured loss/replacement accounting."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: in_edge_coating
+          role: "Water-based OSB edge-sealing coating, identified formulation"
+          name: "Water-based OSB edge-sealing coating, identified formulation"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only an identified water-based edge-sealing coating formulation, if applied; record formulation and solids. Different commercial coatings require separate atomic formulation rows and exact identities."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_osb
+          role: "Oriented strand board (OSB)"
+          name: "Oriented strand board (OSB)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3291d1cf-a318-4271-9435-39534fa45e67"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One accepted finished factory-gate OSB reference output, at declared dispatch moisture, excluding packaging mass; packing activities and packaging inputs remain included."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: out_bark_sale
+          role: "Marketable untreated bark"
+          name: "Marketable untreated bark"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only marketable untreated bark sold outside the plant, measured at its actual gate. Internal fuel transfers and discarded bark are different destinations, never the same quantity twice."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+        - row_id: out_clean_fines_sale
+          role: "Marketable untreated wood screening fines"
+          name: "Marketable untreated wood screening fines"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only untreated screening fines marketed externally; record actual dry mass, moisture and buyer specification. Exclude internally burned fines and resin-bearing sanding dust."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+            ranges: []
+      waste:
+        - row_id: waste_bark
+          role: "Discarded untreated bark"
+          name: "Discarded untreated bark"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Untreated bark discarded externally; do not also count it as sold bark or internal boiler fuel."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: waste_clean_fines
+          role: "Discarded untreated wood screening fines"
+          name: "Discarded untreated wood screening fines"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Untreated screening fines discarded externally, separately weighed from sanding dust."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: waste_resin_trim
+          role: "Cured resin-bearing OSB trim waste"
+          name: "Cured resin-bearing OSB trim waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Cured resin-bearing OSB edge/cut trim transferred externally for treatment, not virgin wood offcuts."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: waste_sanding_dust
+          role: "Resin-bearing OSB sanding dust waste"
+          name: "Resin-bearing OSB sanding dust waste"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Resin-bearing OSB sanding dust sent externally; collected dust is waste only at its waste exit, not an air emission."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: waste_wet_sludge
+          role: "OSB wet-abatement sludge"
+          name: "OSB wet-abatement sludge"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Wet scrubber/WESP sludge leaving for external treatment; collect water content and solids, distinct from wastewater."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: waste_wastewater
+          role: "OSB process wastewater to treatment"
+          name: "OSB process wastewater to treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Collected OSB process/abatement wastewater sent to external treatment; record actual stream composition and wet mass. Do not treat it as a direct waterbody emission."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: waste_bottom_ash
+          role: "Wood-combustion bottom ash"
+          name: "Wood-combustion bottom ash"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Bottom ash from the identified onsite wood combustor, separately from fly ash and never as wastewater/alkaline liquor."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: waste_fly_ash
+          role: "Collected wood-combustion fly ash"
+          name: "Collected wood-combustion fly ash"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Collected wood-combustion fly ash at the control device, separately from bottom ash; not emitted PM and not coal fly ash."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+      elementary:
+        - row_id: air_co2_bio
+          role: "carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Retain biogenic CO2 in LCI irrespective of an LCIA convention excluding it from fossil GWP. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_co2_fossil
+          role: "carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_co_bio
+          role: "carbon monoxide (biogenic)"
+          name: "carbon monoxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "8a313a02-e251-11e6-bf01-fe55135034f3"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_co_fossil
+          role: "carbon monoxide (fossil)"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_ch4_bio
+          role: "methane (biogenic)"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_ch4_fossil
+          role: "methane (fossil)"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_n2o
+          role: "nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_nox
+          role: "Nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Use the verified NOx mixture identity and declare the measurement reporting basis; do not substitute NO. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_so2
+          role: "sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_pmcoarse
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_pmover10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_methanol
+          role: "methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_formaldehyde
+          role: "formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_phenol
+          role: "phenol"
+          name: "phenol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa41-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_acetaldehyde
+          role: "acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_propionaldehyde
+          role: "propanal"
+          name: "propanal"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-9f05-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_acrolein
+          role: "acrolein"
+          name: "acrolein"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91a4-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_mdi_emission
+          role: "methylene diphenyl diisocyanate"
+          name: "methylene diphenyl diisocyanate"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a625-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. This row covers monomeric 4,4′-MDI only; polymeric pMDI input is a different material. Other isomers require separate exact rows. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+        - row_id: air_water_vapour
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the named species or defined size fraction actually released to outdoor air after controls. Retain stage and stack attribution; add each shared stack once. Use actual measurement or a documented equipment/fuel/control-specific method, not a global factor. Compartment: emissions to outdoor air, unspecified subcompartment; this does not authorize selecting water/soil, delayed-emission correction or occupational-air records."
+          amount:
+            expression: "Measured unallocated physical period exchange divided by net accepted finished OSB mass; retain stage/stream breakdown and use the linked collection protocol. Keep allocated environmental burdens in the separate burden account."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - corrim-osb-us-2025
+                - epa-osb-2002
+                - epa-wood-boiler-2022
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "Maintain the unallocated physical wood/water/carbon ledger first. Internal bark, untreated fines, resin-bearing trims and sanding dust have separate transfer records with source/destination, moisture, composition and equal handoff quantities at both ends. Internal reuse cancels at the aggregate plant boundary but remains visible in stage balances. Sold co-products, internal fuels and externally discarded wastes are mutually exclusive destinations for each portion. Never multiply physical co-product output or an internal link by an allocation fraction. [corrim-osb-us-2025]"
+    source_ids: []
+  - rule_id: allocation_rule_2
+    applies_to: "foreground_burden_allocation"
+    rule: "Assign directly attributable resin, pressing, grade/finishing and packaging burdens to OSB. Subdivide joint stages before allocating residual shared burdens to marketed outputs; document a physically justified dry-material basis and test an economic alternative when the physical relationship is inadequate. The separate burden account may use a_j = d_j / sum(d_k), where d_j is measured eligible exported dry material of each joint output under one declared basis. Finished board dry solids include binder/wax and must not be called dry wood; disclose whether the causal allocation basis uses measured wood fraction or total dry solids. Internal fuel is not a marketed output in this export denominator: trace its processing and combustion to the heat consumer; shared exported energy requires a separate causal allocation. No automatic substitution credit. [corrim-osb-us-2025]"
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "p_osb"
+      flow_role: "finished OSB denominator"
+      record_type: "collected_record"
+      raw_fields: "batch grade, accepted/rejected count, net wet mass, packaging mass, dimensions, actual density, moisture basis and test"
+      collection_method: "Calibrated dispatch weighing excluding packaging; lot sampling for moisture and actual thickness/volume/density; reconcile production, stocks, grade test and dispatch. Sum net accepted finished mass; denominator for every per 1 kg reference flow quantity"
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_material
+      process_id: "p_osb"
+      flow_role: "each wood raw input"
+      record_type: "collected_record"
+      raw_fields: "lot/species, gate, bark status, wet/dry mass, moisture, strand dimensions, supplier steps, start/end stocks"
+      collection_method: "Weigh receipts and stocks; representative oven-dry sampling and strand geometry checks; distinguish raw logs, green strands and dry screened strands; verify supplier evidence. Receipts + opening stock - closing stock, adjusted for returns; divide actual consumed mass by net accepted finished OSB mass"
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_recipe
+      process_id: "p_osb"
+      flow_role: "each resin/wax/coating by layer"
+      record_type: "collected_record"
+      raw_fields: "commercial formulation, resin chemistry, solids, carrier water, free monomer, face/core layer ID, dosing mass, layup orientation, cure settings"
+      collection_method: "Calibrated dosing/load-cell and supplier certificate reconciliation by layer. Record each actual complete resin/wax/coating supply once in its verified wet/dry provider basis; retain PF/pMDI/wax/active/carrier/additive analytical subledgers without extra purchases. Require supplier formulation preparation/delivery once; real independently purchased additions and onsite mixing/utilities stay separate. Sum actual external consumption by supply and layer, divide by accepted net OSB mass, and preserve raw stock/loss/internal-transfer ledgers. No assumed recipe."
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_energy
+      process_id: "p_osb"
+      flow_role: "electricity, purchased heat, internal heat"
+      record_type: "collected_record"
+      raw_fields: "meter/stage, supply voltage/mix, kWh, steam mass/pressure/temperature, condensate return, reference enthalpy, useful heat, recovery routing"
+      collection_method: "Calibrated stage meters; steam supply-return enthalpy balance and thermal-oil/hot-water circuit measurements; separate boiler, dryer, press and RTO ownership. Sum attributable external energy once by carrier; divide by net accepted finished OSB mass; internal heat stays in stage ledger"
+      unit: "MJ"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_fuel
+      process_id: "p_osb"
+      flow_role: "each mass-based fuel by combustor; natural gas uses cp_gas"
+      record_type: "collected_record"
+      raw_fields: "fuel identity/route, receipts/stocks, wet mass, dry moisture, measured LHV, ash, carbon origin, boiler/dryer/RTO ID"
+      collection_method: "Calibrated fuel meters/weighing and stock balance with fuel analysis. Separate internal untreated bark/fines from resin-bearing trim fuel; fossil binder carbon remains fossil. Sum each externally consumed fuel separately by stage; divide by net accepted finished OSB mass; equal internal handoffs retained outside external totals"
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_water
+      process_id: "p_osb"
+      flow_role: "tap water and each water circuit"
+      record_type: "collected_record"
+      raw_fields: "source, makeup/return meter, stock, cooling, abatement, resin carrier, evaporation, discharge, water density"
+      collection_method: "Meter fresh supplied water and actual density; record circulation separately; reconcile wet wood/resin water with evaporation and liquid/wet-residue exits. Sum new externally supplied water once; divide by net accepted finished OSB mass; no repeated circulation"
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_packaging
+      process_id: "p_osb"
+      flow_role: "each packaging material"
+      record_type: "collected_record"
+      raw_fields: "material/route, stock, tare mass, packs dispatched, reuse/returns and replacements"
+      collection_method: "Weigh actual consumed individual material, reconcile dispatch and replacements; keep separate from net board mass. Sum consumed dispatch material separately by identity; divide by net accepted finished OSB mass"
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_residue
+      process_id: "p_osb"
+      flow_role: "each co-product, waste and internal transfer"
+      record_type: "collected_record"
+      raw_fields: "stream, source/destination stage, chemistry/resin, moisture/dry mass, sales/treatment route, stock, same handoff ID"
+      collection_method: "Separate calibrated weighing and moisture/chemistry testing; internal links use equal quantities and state at both ends; reconcile physical ledger before allocating burdens. Sum actual external exits by atomic stream; divide by net accepted finished OSB mass; internal transfers excluded from plant external totals"
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_emission
+      process_id: "p_osb"
+      flow_role: "each species/size fraction and stack"
+      record_type: "collected_record"
+      raw_fields: "stage/stack/control, measured species/CAS, carbon origin, concentration, dry/wet gas basis, actual gas flow/time, PM method/filterable/condensable definition, detection limits"
+      collection_method: "Post-control stack tests/CEMS or documented site-equipment-specific calculation; include mobile equipment separately. Record missing versus zero, shared stack once, emission speciation and disjoint PM. Sum actual post-control emission mass separately by species/origin or disjoint size fraction; divide by net accepted finished OSB mass"
+      unit: "kg"
+      frequency: "per lot and monthly reconciliation"
+      temporal_coverage: "One representative production period with seasonal/grade coverage"
+      site_scope: "Same site, grade/recipe and gate definition"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records, samples, supplier/test records and stock closure"
+    - protocol_id: cp_gas
+      process_id: "p_osb"
+      flow_role: "gaseous natural gas by combustor"
+      record_type: "collected_record"
+      raw_fields: "meter/stage; actual m3; absolute P in Pa; T in K; dry/wet basis; water mole fraction; composition; Z; supply volume definition; supplier background m3 state; calibration"
+      collection_method: "Calibrated gas meter and supplier billing/state records; collect matched pressure, temperature, water, composition and Z. Keep direct dryer, boiler/heater and RTO subtotals. Record quantity on its actual measured state first, then apply gas_volume_state only when both volume definitions are known. Sum consumed volume by stage in the same defined state and divide by net accepted finished OSB mass. Unknown basis leaves background linkage unresolved; no database secondary mass coefficient as density."
+      unit: "m3"
+      frequency: "continuous metering with monthly reconciliation"
+      temporal_coverage: "same representative period as cp_reference"
+      site_scope: "same site and gas supplier"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration, gas analysis, supplier volume-basis declaration and exact background-unit correspondence"
+  calculation_rules:
+    - id: gas_volume_state
+      applies_to: "in_gas"
+      rule: "For the same gas amount, V_supplier = V_meter × (P_meter/P_supplier) × (T_supplier/T_meter) × (Z_supplier/Z_meter) × f_water; P is absolute Pa, T is K and Z is composition-specific compressibility. When converting wet meter volume to dry supplier volume, f_water = 1 - measured water mole fraction; f_water = 1 only if both definitions have the same moisture basis. This relationship requires consistent composition, no gas loss and documented meter/supplier state. Do not assume standard conditions, dry gas or Z=1. Unknown state/composition or an incompatible supplier definition leaves the background link unresolved. Divide the verified matched-state period volume by cp_reference net accepted OSB mass."
+      inputs:
+        - cp_gas
+        - cp_reference
+        - "supplier state definition"
+      output: "supplier-matched m3 per 1 kg reference flow"
+      source_ids:
+        - oiml-gas-volume-2007
+    - id: period_normalization
+      applies_to: "all inventory rows"
+      rule: "For each atomic exchange, divide the attributable period total by net accepted finished OSB mass in the same period; finished_osb = 1 kg. Aggregate sites by summed amounts / summed reference masses only for comparable grades/routes and disclosed weighting."
+      inputs:
+        - cp_reference
+        - "linked collection protocol"
+      output: "amount per 1 kg reference flow"
+      source_ids:
+        - corrim-osb-us-2025
+    - id: volume_density
+      applies_to: "reference product"
+      rule: "Actual volume = sum(accepted panel length × width × thickness); actual wet density = corresponding net wet mass / actual volume. Convert area declarations using actual thickness and matched density/moisture, never nominal density or survey defaults."
+      inputs:
+        - cp_reference
+      output: "Matched product volume/density and mass conversion"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: wood_water_carbon
+      applies_to: "p_osb stage ledger"
+      rule: "Reconcile dry wood separately from dry resin/wax/coating solids and water: incoming plus opening stocks equals products, co-products, waste, combustion/emission exits plus closing stocks, with explicit unresolved residuals. Carbon inputs and stocks reconcile stored board/co-product carbon and measured gas/ash/waste carbon; separate biogenic wood and fossil resin/fuel carbon. Do not force balance by altering logs or dropping biogenic CO2."
+      inputs:
+        - cp_material
+        - cp_recipe
+        - cp_reference
+        - cp_residue
+        - cp_emission
+      output: "Unallocated physical mass/water/carbon ledgers"
+      source_ids:
+        - usda-wood-handbook-2021
+        - corrim-osb-us-2025
+    - id: pm_partition
+      applies_to: "air_pm25, air_pmcoarse, air_pmover10"
+      rule: "For one compatible post-control sampling method, disjoint PM2.5–10 = cumulative PM10 - cumulative PM2.5; PM>10 = compatible total PM - cumulative PM10. Use only nonnegative supported differences; otherwise keep missing fractions unresolved. Do not sum PM10 with its PM2.5 subset or add condensable PM twice."
+      inputs:
+        - cp_emission
+      output: "Disjoint outdoor-air fractions"
+      source_ids:
+        - epa-osb-2002
+        - epa-wood-boiler-2022
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_scope
+      applies_to: "p_osb"
+      requirement: "Verify actual long-strand architecture and layer-specific recipe, receipt gate and grade. Do not generalize regional species or survey recipes to this product."
+      evidence: "usda-wood-handbook-2021; corrim-osb-us-2025; epa-osb-2002"
+    - id: dq_data
+      applies_to: "all inventory rows"
+      requirement: "Retain meter/test calibration, representative periods, stocks and missing-versus-zero treatment. A conditional absent flow requires evidence of absence; missing measurement is not zero."
+      evidence: "collection protocols"
+    - id: dq_identity
+      applies_to: "all inventory rows"
+      requirement: "Exact physical/chemical flow, route, property and unit. Unresolved identities cannot be substituted by neighbouring products, mixed packaging, correction flows, generic VOC totals or mismatched medium."
+      evidence: "flow identity and supplier records"
+validation_rules:
+  - rule_id: v_reference
+    applies_to: "finished_osb"
+    rule: "Exactly one finished reference output; net mass excludes packaging; all qualifiers and the actual layer architecture/grade must be provided."
+    source_ids:
+      - corrim-osb-us-2025
+  - rule_id: v_basis
+    applies_to: "all inventory rows"
+    rule: "Reference amount, normalization basis and collection denominator agree in both languages; physical, water, carbon and energy ledgers reconcile before burden allocation."
+    source_ids:
+      - usda-wood-handbook-2021
+  - rule_id: v_emissions
+    applies_to: "p_osb"
+    rule: "Include biogenic CO2 and fossil binder/fuel carbon separately. Verify each emission species and medium; never replace sulfur dioxide with sulfur oxides, propanal with propanol, or MDI monomer with polymeric resin. Speciate remaining identified organics as additional atomic rows; a VOC total is a closure diagnostic, not added to its species."
+    source_ids:
+      - epa-osb-2002
+      - corrim-osb-us-2025
+  - rule_id: v_scope_extension
+    applies_to: "p_osb"
+    rule: "Add each actual unlisted fuel, chemical, refrigerant, packaging component, wastewater outlet pollutant or exported heat as a separate exact exchange with a collection protocol. Different binder/treatment/overlay variants require applicability review. No unexamined cut-off based on small mass."
+    source_ids:
+      - epa-osb-2002
+  - rule_id: v_case_limits
+    applies_to: "p_osb"
+    rule: "CORRIM is a 23-facility US 2022/2023 survey (report submitted 2025-03-21, edited 2025-07-22). Its numeric density, moisture, fuel mix, adhesive rates, yields and allocation percentages are not defaults. Resolve its repeated PM labels and conflicting by-product percentage/species labels against primary records before numerical use."
+    source_ids:
+      - corrim-osb-us-2025
+published_dataset_profile:
+  dataset_role: "foreground_dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Matching OSB material supply with declared grade, recipe, orientation, moisture and boundary; explicit upstream links for cradle-to-gate"
+  excluded_use: "Direct comparison of building service without scenario/function; fixed industry life/performance; random waferboard/particleboard; unreviewed treatment/overlay/binder variants"
+  required_metadata: "All reference qualifiers, linked foreground protocols, stage ownership, supplier background scope, physical and burden ledgers, allocation and uncertainty"
+  required_quality_disclosure: "Actual temporal/geographic/grade coverage, identity/measurement gaps, emission method and limits; no publication or scientific-review claim"
+  update_trigger: "Changed product grade/recipe, strand geometry/orientation, moisture/thickness/density, gate, supplier, energy/abatement route or new primary evidence"
+data_sources:
+  - id: "corrim-osb-us-2025"
+    type: "literature"
+    reference: "Maureen Puettmann, Life Cycle Assessment of Oriented Strand Board Production – United States; submitted 2025-03-21, revisions 2025-04-02/05-06, edited 2025-07-22. https://corrim.org/wp-content/uploads/2025/07/LCA-Report-OSB-07222025.pdf"
+    used_for: "Sections 3.2.3–3.2.6, 4.3–4.8, 5.2–5.4.5; Tables 7, 9–12 and Figure 4. US 23 mills, 2022/2023; route and collection evidence only, not universal numeric defaults; table-label conflicts require primary-data resolution."
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory, Wood handbook—wood as an engineering material, FPL-GTR-282 (2021). https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf"
+    used_for: "Chapter 11 pp.11–10–11–11, OSB/particleboard distinction and layer-specific resin; Chapters 4/13 moisture methods. Historical species/processing examples do not fix current grade, recipe, density or lifetime."
+  - id: "epa-osb-2002"
+    type: "official_guidance"
+    reference: "US EPA, AP-42 10.6.1 Waferboard/Oriented Strandboard Manufacturing (March 2002). https://www.epa.gov/sites/default/files/2020-10/documents/c10s06-1.pdf"
+    used_for: "Sections 10.6.1.1–10.6.1.3, Figure 10.6.1-1, pp.1–4: identity, route and emissions/control ownership. Historical US guidance combines WB/OSB; applicability and species/technology/fuel/control must be verified, no universal factors."
+  - id: "epa-wood-boiler-2022"
+    type: "official_guidance"
+    reference: "US EPA, AP-42 1.6 Wood Residue Combustion In Boilers (March 2022). https://www.epa.gov/system/files/documents/2022-03/c1s6_final.pdf"
+    used_for: "Sections 1.6.1–1.6.3 and Table 1.6-1 notes: separate boiler combustion, fuel/control dependence and filterable/condensable PM. Not a direct-fired OSB dryer factor or proof of contaminated-trim applicability."
+  - id: "oiml-gas-volume-2007"
+    type: "standard"
+    reference: "OIML R 140, Measuring systems for gaseous fuel (2007 E), sections 7.3.1–7.3.3, pp.30–32. https://www.oiml.org/en/files/pdf_r/r140-e07.pdf"
+    used_for: "Metering/reference conditions, pressure-temperature-compressibility volume conversion and associated measurements. Used for engineering state correspondence only, not current legal-compliance certification or fixed standard P/T. Wet-to-dry mole correction and OSB normalization are declared method derivations requiring actual composition and measured state."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:44b45793a0c67a25518a9ae24c9b22e02f89083f6cf55213e405d4d1c5ab2cce"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6238"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6238
+          line: 61
+          column: 1
+        end:
+          offset: 8617
+          line: 78
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Receiving gate for logs with explicit bark status, or receiving gate for externally supplied green/dried unresinated strands; disclose transport already included |\n| starting_condition_role | foreground_entry |\n| product_classification_scope | CPC 3.0 31432 OSB subset stated in section 1; classification does not define grade |\n| recursive_input_rule | Purchased OSB is not a raw strand input and cannot be recursively substituted. Rework stays in physical stock/transfer records; no duplicate finished reference output. |\n| upstream_dataset_requirement | Matching forestry/log preparation, externally supplied strand production, each resin/wax/coating, fuel, electricity, water and packaging background; receiving-gate freight separately if absent upstream. External waste treatment must be linked. |\n| disclosure | Foreground gate-to-gate, including onsite heat and controls; cradle-to-gate requires explicit upstream connections. Excludes installation, use and end of life unless separately modelled. |\n\nUse one integrated foreground inventory p_osb through grading/packing. Preserve the following collection stages independently: s_receive (yard/conditioning/debarking/stranding only if inside the gate); s_dry (drying and screening, per face/core furnish); s_blend (separate layer recipe); s_form (orientation and layup); s_press (press cycle and cure); s_finish (cooling, trimming, optional sanding and edge sealing); s_pack; s_heat (boiler/thermal heater and actual internal heat recovery); s_control (dust collection/WESP/RTO/water treatment). [corrim-osb-us-2025; epa-osb-2002]\n\nAssign direct-fired dryer fuel and the combined drying/combustion exhaust to s_dry; separate boiler fuel, ash and its stack to s_heat. Put RTO auxiliary fuel and final emissions at s_control. Shared dryer/press/RTO stacks are measured once after controls, with documented originating stages. Boiler AP-42 guidance does not supply direct-fired dryer factors. Recovered RTO heat lowers measured purchased fuel/heat; an internal loop is not a negative external heat export. Do not book useful onsite heat and its fuel as two purchased supplies. If heat leaves the plant, define one exact export flow and metered delivery boundary separately. [epa-osb-2002; epa-wood-boiler-2022]\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 297
+              line: 10
+              column: 1
+            end:
+              offset: 326
+              line: 10
+              column: 30
+          text: "# Oriented strand board (OSB)"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6238
+              line: 61
+              column: 1
+            end:
+              offset: 6259
+              line: 61
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_65492"
+      family: "allocation"
+      span:
+        start:
+          offset: 65492
+          line: 920
+          column: 1
+        end:
+          offset: 66995
+          line: 926
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\nMaintain the unallocated physical wood/water/carbon ledger first. Internal bark, untreated fines, resin-bearing trims and sanding dust have separate transfer records with source/destination, moisture, composition and equal handoff quantities at both ends. Internal reuse cancels at the aggregate plant boundary but remains visible in stage balances. Sold co-products, internal fuels and externally discarded wastes are mutually exclusive destinations for each portion. Never multiply physical co-product output or an internal link by an allocation fraction. [corrim-osb-us-2025]\n\nAssign directly attributable resin, pressing, grade/finishing and packaging burdens to OSB. Subdivide joint stages before allocating residual shared burdens to marketed outputs; document a physically justified dry-material basis and test an economic alternative when the physical relationship is inadequate. The separate burden account may use a_j = d_j / sum(d_k), where d_j is measured eligible exported dry material of each joint output under one declared basis. Finished board dry solids include binder/wax and must not be called dry wood; disclose whether the causal allocation basis uses measured wood fraction or total dry solids. Internal fuel is not a marketed output in this export denominator: trace its processing and combustion to the heat consumer; shared exported energy requires a separate causal allocation. No automatic substitution credit. [corrim-osb-us-2025]\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 297
+              line: 10
+              column: 1
+            end:
+              offset: 326
+              line: 10
+              column: 30
+          text: "# Oriented strand board (OSB)"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 65492
+              line: 920
+              column: 1
+            end:
+              offset: 65532
+              line: 920
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_80589"
+      family: "validation"
+      span:
+        start:
+          offset: 80589
+          line: 962
+          column: 1
+        end:
+          offset: 82237
+          line: 972
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_reference | finished_osb | Exactly one finished reference output; net mass excludes packaging; all qualifiers and the actual layer architecture/grade must be provided. | corrim-osb-us-2025 |\n| v_basis | all inventory rows | Reference amount, normalization basis and collection denominator agree in both languages; physical, water, carbon and energy ledgers reconcile before burden allocation. | usda-wood-handbook-2021 |\n| v_emissions | p_osb | Include biogenic CO2 and fossil binder/fuel carbon separately. Verify each emission species and medium; never replace sulfur dioxide with sulfur oxides, propanal with propanol, or MDI monomer with polymeric resin. Speciate remaining identified organics as additional atomic rows; a VOC total is a closure diagnostic, not added to its species. | epa-osb-2002; corrim-osb-us-2025 |\n| v_scope_extension | p_osb | Add each actual unlisted fuel, chemical, refrigerant, packaging component, wastewater outlet pollutant or exported heat as a separate exact exchange with a collection protocol. Different binder/treatment/overlay variants require applicability review. No unexamined cut-off based on small mass. | epa-osb-2002 |\n| v_case_limits | p_osb | CORRIM is a 23-facility US 2022/2023 survey (report submitted 2025-03-21, edited 2025-07-22). Its numeric density, moisture, fuel mix, adhesive rates, yields and allocation percentages are not defaults. Resolve its repeated PM labels and conflicting by-product percentage/species labels against primary records before numerical use. | corrim-osb-us-2025 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 297
+              line: 10
+              column: 1
+            end:
+              offset: 326
+              line: 10
+              column: 30
+          text: "# Oriented strand board (OSB)"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 80589
+              line: 962
+              column: 1
+            end:
+              offset: 80611
+              line: 962
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "system_boundary_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_6238"
+      source_span:
+        start:
+          offset: 7359
+          line: 74
+          column: 1
+        end:
+          offset: 7938
+          line: 74
+          column: 580
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "system_boundary_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_6238"
+      source_span:
+        start:
+          offset: 7940
+          line: 76
+          column: 1
+        end:
+          offset: 8615
+          line: 76
+          column: 676
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_65492"
+      source_span:
+        start:
+          offset: 65534
+          line: 922
+          column: 1
+        end:
+          offset: 66112
+          line: 922
+          column: 579
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_65492"
+      source_span:
+        start:
+          offset: 66114
+          line: 924
+          column: 1
+        end:
+          offset: 66993
+          line: 924
+          column: 880
+    - pointer: "/validation_rules/0"
+      rule_id: "v_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_80589"
+      source_span:
+        start:
+          offset: 80684
+          line: 966
+          column: 1
+        end:
+          offset: 80878
+          line: 966
+          column: 195
+    - pointer: "/validation_rules/1"
+      rule_id: "v_basis"
+      identity_kind: "explicit"
+      unit_id: "normative_80589"
+      source_span:
+        start:
+          offset: 80879
+          line: 967
+          column: 1
+        end:
+          offset: 81108
+          line: 967
+          column: 230
+    - pointer: "/validation_rules/2"
+      rule_id: "v_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_80589"
+      source_span:
+        start:
+          offset: 81109
+          line: 968
+          column: 1
+        end:
+          offset: 81512
+          line: 968
+          column: 404
+    - pointer: "/validation_rules/3"
+      rule_id: "v_scope_extension"
+      identity_kind: "explicit"
+      unit_id: "normative_80589"
+      source_span:
+        start:
+          offset: 81513
+          line: 969
+          column: 1
+        end:
+          offset: 81853
+          line: 969
+          column: 341
+    - pointer: "/validation_rules/4"
+      rule_id: "v_case_limits"
+      identity_kind: "explicit"
+      unit_id: "normative_80589"
+      source_span:
+        start:
+          offset: 81854
+          line: 970
+          column: 1
+        end:
+          offset: 82235
+          line: 970
+          column: 382
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6238"
+      source_span:
+        start:
+          offset: 6238
+          line: 61
+          column: 1
+        end:
+          offset: 6259
+          line: 61
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6238"
+      source_span:
+        start:
+          offset: 6287
+          line: 65
+          column: 1
+        end:
+          offset: 7357
+          line: 72
+          column: 204
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_65492"
+      source_span:
+        start:
+          offset: 65492
+          line: 920
+          column: 1
+        end:
+          offset: 65532
+          line: 920
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_80589"
+      source_span:
+        start:
+          offset: 80589
+          line: 962
+          column: 1
+        end:
+          offset: 80611
+          line: 962
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:44b45793a0c67a25518a9ae24c9b22e02f89083f6cf55213e405d4d1c5ab2cce"
+  generated_content_sha256: "sha256:2b36510323daf68bca6bdc46a0b8ec44bd9678b7ce260c93fe253d3a167a3914"

@@ -48,7 +48,7 @@ import {
 } from "./markdown.ts";
 import { SUMMARY_LIMIT, catalogSummary, documentSummary } from "./summaries.ts";
 import { searchTerms } from "../lib/search-terms.ts";
-import { encodeSearchEntries, decodeSearchEntries } from "../lib/search-codec.ts";
+import { encodeSearchEntries, SEARCH_SCORE_SLOTS } from "../lib/search-wire.ts";
 const app = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { values: options } = parseArgs({
   options: {
@@ -976,20 +976,19 @@ async function generate() {
       if (!bucket.length) return;
       const index = new Index({
         tokenize: "strict",
+        resolution: SEARCH_SCORE_SLOTS,
         encode: (value: unknown) => searchTerms(value, language),
       });
       for (const doc of bucket) index.add(Number(doc.record.id), doc.text);
-      const exported: Record<string,string> = {};
+      const entries: Record<string,unknown[]> = {};
       await index.export((key, value) => {
-        exported[key] = value;
+        const parsed: unknown = JSON.parse(value);
+        if (!Array.isArray(parsed) || JSON.stringify(parsed) !== value)
+          throw new Error("Unsupported serialized search export: " + language + "/" + key);
+        entries[key] = parsed;
       });
-      const entries = encodeSearchEntries(exported);
-      const restored = decodeSearchEntries(entries, 3);
-      if (Object.keys(restored).length !== Object.keys(exported).length ||
-          Object.entries(exported).some(([key, value]) => restored[key] !== value))
-        throw new Error("Search compaction changed engine exports: " + language);
       const payload = JSON.stringify({
-        entries,
+        ...encodeSearchEntries(entries),
         records: bucket.map((d) => d.record),
       });
       if (Buffer.byteLength(payload) > 20_000_000)

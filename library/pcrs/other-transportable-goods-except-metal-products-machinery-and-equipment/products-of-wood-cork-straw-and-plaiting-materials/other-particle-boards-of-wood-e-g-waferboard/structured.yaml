@@ -1,10 +1,1448 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31439"
-  title: "Other particle boards of wood (e.g. waferboard)"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.other-particle-boards-of-wood-e-g-waferboard"
+  classification_refs: "CPC 3.0 31439; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Random broad-thin wood waferboard, powdered PF route and the declared indirect steam/dry-control pilot"
+  excluded_products: "Fine-particle UF board; deliberately oriented OSB/waferboard; fibreboard; veneer panels; nonwood panels; coated/overlaid/treated panels; other binder and heat/control routes"
+  representative_product: "Net accepted finished random wide-wafer PF panel at factory gate; historical Figure 2/W-series anchors are not supplier inventory data"
+  production_route: "Delivered logs → debarking/optional thawing/crosscutting/waferizing → indirect drying/screening → powdered PF and optional neat wax blending → random layup → hot pressing → cooling/trimming → grading/packing"
+  market_state: "Finished uncoated unpreserved board at actual dispatch moisture; declared grade and suitability without automatic building approval"
+functional_unit:
+  what: "Supply an accepted random-wafer wood board material; no assumed equal structural service to OSB or UF board"
+  how_much: "1 kg net accepted finished waferboard at factory gate, excluding packaging"
+  how_well: "Actual broad wafer geometry/orientation, powdered PF formulation, declared grade, thickness, density and dispatch moisture with method"
+  how_long_or_cycle: "One production accounting period; no use-stage service life assigned"
+  reference_flow_link: "finished_waferboard"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "Use one integrated foreground unit p_wafer through packing. Preserve independent stage records s_receive (yard/thaw/debark/crosscut), s_wafer (waferizing), s_dry (indirect drying and screening), s_blend (powder PF/neat wax), s_form (gravity random forming), s_press, s_finish (cooling/trim), s_pack and s_control (dry collection/cleaning). Internal transfer pairs must agree in actual quantity and state; no intermediate board shares the final reference UUID. [epa-waferboard-2002]"
+      source_ids: []
+    - rule_id: b_route
+      applies_to: "p_wafer"
+      rule: "Verify the full declared route. Direct-fired dryers, onsite fuel-burning boilers/RTOs, wet controls, sanding and surface treatments are outside this pilot and cannot disappear behind purchased-heat wording; review and add their exact inventories before applying an expanded method."
+      source_ids:
+        - epa-waferboard-2002
+    - rule_id: b_stack
+      applies_to: "p_wafer"
+      rule: "Record outlet emissions after actual dry controls once per stack/source. Capture is a solid residue, not an atmospheric release. Dryer, press/cooling and trim sources remain separately traceable."
+      source_ids:
+        - epa-waferboard-2002
+    - rule_id: b_heat
+      applies_to: "steam, condensate"
+      rule: "External steam generation is upstream. Include physical incoming steam, returned condensate, actual losses and net enthalpy reconciliation; do not additionally book provider fuel as onsite fuel or create an unmetered heat export."
+      source_ids:
+        - epa-waferboard-2002
+boundary_abstraction:
+  declared_starting_condition: "Receiving gate for untreated coniferous/non-coniferous panel logs with recorded bark and moisture; electric in-yard handling"
+  starting_condition_role: "foreground_entry"
+  product_classification_scope: "Physical random-wafer PF pilot subset of CPC 3.0 31439"
+  recursive_input_rule: "Purchased finished waferboard is not raw log furnish. Internal wafers, mats, rework and dust returns stay in stage transfer/stock records; one final finished reference output only."
+  upstream_dataset_requirement: "Matching log forestry/preparation and receiving freight; powdered PF/wax, electricity at stated voltage, delivered steam with agreed return convention, water and packaging supply; each external waste treatment. All upstream combustion emissions remain in linked inventories."
+  disclosure: "Gate-to-gate foreground plus explicit upstream links for cradle-to-gate use. Installation, use and end of life are separately modelled. Disclose capital equipment/cut-offs and any missing supply activity."
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Other particle boards of wood (e.g. waferboard)"
+    uuid: "dc4d3259-45c1-4d98-8264-35a90058e65c"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Site/period and gate"
+    - "botanical species mix and log/bark state"
+    - "wafer length/width/thickness distribution and random orientation evidence"
+    - "actual PF supplier/formulation/solids/cure suitability"
+    - "neat wax grade if used"
+    - "board grade and actual acceptance standard/tests"
+    - "panel dimensions/net mass/density"
+    - "moisture basis/method"
+    - "uncoated/unpreserved state"
+    - "indirect steam definition"
+    - "electricity voltage"
+    - "dust controls"
+    - "packaging and residue destinations"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Calibrated net accepted dispatch board mass in cp_reference, excluding packaging and rejects."
+  - id: same_denominator
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Reference product mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Every row uses per 1 kg reference flow; sum actual attributable period totals and divide by Q, the net accepted finished-board mass from cp_reference."
+  - id: moisture_basis
+    applies_to: "wood and board"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "For untreated wood collect wet and ovendry mass: u=(wet-dry)/dry, dry=wet/(1+u). Distinguish percent from fractions and wet-basis moisture. For bonded panels use a validated moisture method distinguishing water loss from volatile/cure losses; wood dry mass excludes binder/wax solids. [usda-wood-moisture-2021]"
+  - id: energy_basis
+    applies_to: "electricity, steam, condensate"
+    required_property_ref:
+      name: "Energy and mass"
+      uuid: ""
+    required_unit: "MJ; kg"
+    rule: "Meter electricity at the declared voltage; 1 kWh = 3.6 MJ. Steam inventory uses measured kg and a separate net enthalpy account from inlet/return/loss states. Match supplier background delivery and return credit definitions before linkage."
+process_map:
+  - id: p_wafer
+    name: "Random PF waferboard manufacturing and dispatch"
+    inclusion: "required"
+    inclusion_condition: "Declared pilot receiving gate through packing"
+    role: "foreground"
+    quantitative_reference: "1 kg reference flow"
+process_inventory:
+  - id: p_wafer
+    label: "Random PF waferboard manufacturing and dispatch"
+    inputs:
+      product:
+        - row_id: conifer_logs
+          role: "Untreated coniferous panel logs with bark"
+          name: "Untreated coniferous panel logs with bark"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the separately weighed coniferous log stream; record species, bark, supply grade and actual moisture. Do not count the same log in hardwood input."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: hardwood_logs
+          role: "Untreated non-coniferous panel logs with bark"
+          name: "Untreated non-coniferous panel logs with bark"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the separately weighed non-coniferous log stream; record botanical mix, bark, supply grade and moisture."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: pf_powder
+          role: "Powdered uncured PF resole resin"
+          name: "Phenolic resin"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9f10798f-ffb5-402d-b805-27d2db4e2caf"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Uncured powdered PF resole for wafer bonding; record actual formulation, solids, free phenol/formaldehyde and cure suitability. Generic resin identity does not establish the supplier background state or a loading. Other binder chemistry or liquid/emulsified supply is outside this route."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: wax
+          role: "Petroleum paraffin wax"
+          name: "Paraffin wax"
+          flow_type: "product"
+          flow_ref:
+            uuid: "17bff97f-179d-49d4-9e97-5128bd6020a6"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional neat or molten petroleum paraffin sizing, weighed as supplied; this identity excludes wax emulsion and recycled-plastic wax. Catalog calorific metadata is not a dosing or energy default."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: electricity
+          role: "Low-voltage grid alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Equipment-use grid alternating current below 1 kV, including electric yard handling, fans and dry collectors. Reconcile supply voltage, transformer losses and meter boundary with the linked background; higher-voltage supply is not interchangeable."
+          amount:
+            expression: "Metered kWh × 3.6 MJ/kWh / Q; cp_utility retains declared voltage, attributable metering and losses."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utility
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: steam
+          role: "Purchased heating steam"
+          name: "Purchased heating steam"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Incoming purchased steam for indirect drying, optional log thawing and press heating. Record inlet mass separately from returned condensate; measure pressure, temperature, steam quality and supply definition. No fixed enthalpy, gross heating value or 0.45 MPaG assumption."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_steam
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: water
+          role: "Tap water"
+          name: "Water, tap"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c6fb2442-d527-4e3d-bf01-4c94ea2b71ec"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Purchased tap water used for thawing/cleaning when present; exclude supplier boiler water and closed-loop recirculation. Other water sources require their own exact rows."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_utility
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: oil
+          role: "Petroleum lubricating oil for waferboard machinery"
+          name: "Petroleum lubricating oil for waferboard machinery"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional petroleum machinery lubricating oil; reconcile purchases, stock and measured use. Identify grade and additives; no database calorific coefficient substitutes actual formulation."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: film
+          role: "Polyethylene dispatch film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional finished polyethylene film for dispatch, separately weighed; exclude packaging from the board reference mass."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: strap
+          role: "Polypropylene packaging strap"
+          name: "Polypropylene packaging strap"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional finished polypropylene flat strap, measured by mass or verified count/length-to-mass conversion. Polymer resin and twine are not this exchange."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_waferboard
+          role: "Finished random wood waferboard"
+          name: "Other particle boards of wood (e.g. waferboard)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "dc4d3259-45c1-4d98-8264-35a90058e65c"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One net accepted finished random-wafer PF board output after cooling, trimming, grading and packing. The broad class UUID is used only within this physical subset; its official Chinese display is retained, with geometry specified separately."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: bark
+          role: "Untreated bark fuel coproduct"
+          name: "Untreated bark fuel coproduct"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only separately collected untreated bark actually sold as a fuel coproduct; record sale evidence and dry/wet mass. The same physical bark cannot also be bark waste."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: fines
+          role: "Unresinated dry wood wafer fines fuel coproduct"
+          name: "Unresinated dry wood wafer fines fuel coproduct"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only dry unresinated wafer-screen fines actually sold as a fuel coproduct. Keep separate from bark and resin-bound material; unused fines return internally or enter fines_waste, without duplicate booking."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: condensate
+          role: "Steam condensate returned to supplier"
+          name: "Steam condensate returned to supplier"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual condensate crossing the gate back to the steam supplier, measured mass and return temperature/pressure. The supplier agreement determines any separate return credit; no assumed equal incoming/return quantity."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_steam
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+      waste:
+        - row_id: trim_waste
+          role: "Cured PF waferboard offcut waste"
+          name: "Cured PF waferboard offcut waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only solid cured PF board offcuts/rejects leaving as waste; keep captured saw dust in bonded_dust and internal rework in transfer records."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: bonded_dust
+          role: "Collected cured PF waferboard sawing dust waste"
+          name: "Collected cured PF waferboard sawing dust waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only collected cured PF board sawing dust sent offsite; separate from solid offcuts, airborne dust and unresinated sawdust."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: dust_waste
+          role: "Untreated wood crosscutting sawdust waste"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only collected unresinated log crosscutting sawdust sent offsite for combustion/recovery. Resin-bound board dust is bonded_dust; screened wafer fines are separate."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: fines_waste
+          role: "Unresinated wood wafer screening fines waste"
+          name: "Unresinated wood wafer screening fines waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only unresinated screened wafer fines disposed of offsite; keep sold fines and internal returns exclusive."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: bark_waste
+          role: "Debarking bark waste"
+          name: "Bark"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "a2536c07-fbe1-4a12-90fb-21bd2e99b74e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only debarking bark actually leaving as waste, with documented destination. Product bark is booked exclusively in bark; do not invent coproduct revenue."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: wastewater
+          role: "Waferboard cleaning wastewater sent to external treatment"
+          name: "Waferboard cleaning wastewater sent to external treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only cleaning/thawing effluent actually sent to external treatment; measure mass, composition and destination. Not a direct environmental water release."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: oil_waste
+          role: "Used lubricating oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only drained used lubricating oil sent to treatment; retain actual composition, hazardous status and destination without assuming the database treatment route."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: pf_waste
+          role: "Uncured PF resin powder waste"
+          name: "Uncured PF resin powder waste"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Uncured PF powder lost in handling or rejected and sent offsite, separately from cured resin-bearing board waste. Reconcile free constituents and retained resin solids."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+      elementary:
+        - row_id: pm25
+          role: "Filterable particles ≤2.5 micrometres"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: pmcoarse
+          role: "Filterable particles >2.5 to ≤10 micrometres"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: pmover10
+          role: "Filterable particles >10 micrometres"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: condensable_pm
+          role: "Condensable organic particulate matter"
+          name: "Condensable organic particulate matter"
+          flow_type: "elementary"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Separately sample condensable organic particulate matter after indirect wafer drying; disclose sampling conditions. Do not add it to size fractions/VOC mass already containing the same material. No generic PM identity is substituted. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: formaldehyde
+          role: "Formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: phenol
+          role: "Phenol"
+          name: "phenol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa41-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: methanol
+          role: "Methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: alpha_pinene
+          role: "Alpha-pinene without enantiomer selection"
+          name: "pin-2(3)-ene"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "0a701083-c7e6-43d1-8ae5-e62050edc5dc"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: acetaldehyde
+          role: "Acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: acrolein
+          role: "Acrolein"
+          name: "acrolein"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91a4-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: propionaldehyde
+          role: "Propanal"
+          name: "propanal"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-9f05-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Outdoor-air discharge only, unspecified subcompartment; measure the named species/size at actual outlets. Retain source, sampling method, uncertainty and phase. No indoor, long-term, soil/water, correction or enantiomer substitution. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured physical period exchange / Q; retain stage and stream breakdown with the linked protocol. Allocation applies separately to environmental burdens, not to physical outputs."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_emission
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+        - row_id: water_vapour
+          role: "Water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Evaporated wood moisture and any steam vent reaching outdoor air; use measured water balance, excluding returned condensate and background steam-generation water. This is a conditional species/phase screening card, not presumed presence or a default emission. Prove absence or measure actual release; unknown measurement is not zero. OSB direct-fired dryer tables only supply candidate species/CAS labels and do not supply indirect-waferboard quantities."
+          amount:
+            expression: "Measured evaporation and actual vent-water mass / Q; cp_water reconciles all incoming, retained, discharged and returned water."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water
+              source_ids:
+                - epa-waferboard-2002
+            ranges: []
+allocation_rules:
+  - rule_id: a_separate
+    applies_to: "p_wafer"
+    rule: "Keep the unallocated physical mass/water/carbon/energy account and internal transfers separately from the product-attributed environmental-burden account. Coproduct physical mass remains actual mass."
+    source_ids:
+      - ghg-allocation-2011
+  - rule_id: a_hierarchy
+    applies_to: "p_wafer"
+    rule: "Use stage/source metering to avoid allocation. For remaining common burdens demonstrate a causal physical relationship; dry mass is admissible only when justified. Otherwise document consistent period-specific economic relationships and sensitivity; disclose prices and markets, with no automatic zero value or avoided-fuel credit."
+    source_ids:
+      - ghg-allocation-2011
+  - rule_id: a_residue
+    applies_to: "bark, fines, bark_waste, fines_waste"
+    rule: "Classify each actual residue lot as sold coproduct, internal return or waste using destination evidence. These quantities are exclusive. Resin-bound residues stay distinct from unresinated wood and require their own treatment datasets."
+    source_ids:
+      - epa-waferboard-2002
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "p_wafer"
+      flow_role: "finished board and denominator"
+      record_type: "weighing_acceptance"
+      raw_fields: "site; period; lot; accepted net mass Q; moisture; grade/tests; actual dimensions/density; wafer geometry/orientation; PF recipe"
+      collection_method: "Calibrated weighing excluding packaging/rejects; traceable acceptance and validated board moisture tests; sample wafer geometry and direction with forming-machine records; Aggregation calculation: Sum accepted net board mass Q; board output per 1 kg reference flow"
+      unit: "kg"
+      frequency: "each dispatch lot"
+      temporal_coverage: "complete declared period"
+      site_scope: "same site and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "scale calibration; tickets; recipe; photographs; tests"
+    - protocol_id: cp_material
+      process_id: "p_wafer"
+      flow_role: "each input material and packaging"
+      record_type: "stock_batch"
+      raw_fields: "row_id; lot; stage; supplier; composition and measured biogenic/fossil carbon fractions; uncured/cured state; wet/dry mass; moisture; opening/purchases/closing stock; returns"
+      collection_method: "Calibrated separate weighing, stock reconciliation, supplier certificates, untreated-wood oven-dry sampling and laboratory/supplier component carbon records; verify PF solids/cure suitability and petroleum wax grade; Aggregation calculation: Separate physical attributable totals / Q; per 1 kg reference flow"
+      unit: "kg"
+      frequency: "each batch and stock close"
+      temporal_coverage: "complete declared period"
+      site_scope: "same site and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "weighing/calibration; stock closure; formulation"
+    - protocol_id: cp_utility
+      process_id: "p_wafer"
+      flow_role: "electricity and tap water separately"
+      record_type: "submeter"
+      raw_fields: "row_id; stage; meter; voltage; kWh; tap-water kg; density if volume measured; stock/losses; shared-use drivers"
+      collection_method: "Calibrated stage meters reconciled to supplier bills; electricity transformation/loss boundary and water supply identity verified; Aggregation calculation: Each attributable total / Q; electricity converted to MJ; per 1 kg reference flow"
+      unit: "kWh; kg"
+      frequency: "continuous meters and monthly reconciliation"
+      temporal_coverage: "complete declared period"
+      site_scope: "same site/voltage/source"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter calibration; bills; loss reconciliation"
+    - protocol_id: cp_steam
+      process_id: "p_wafer"
+      flow_role: "steam inlet and condensate return separately"
+      record_type: "enthalpy_balance"
+      raw_fields: "stage; inlet/return mass; pressure; temperature; steam quality; vent/leak mass; stock; supplier enthalpy convention and return credit"
+      collection_method: "Calibrated mass meters and state sensors; validated steam-property method; signed supply/background definition; reconcile each stage and whole delivery system; Aggregation calculation: Incoming steam kg / Q and outgoing condensate kg / Q separately; net enthalpy separately reconciled; per 1 kg reference flow"
+      unit: "kg; MJ"
+      frequency: "continuous with each supply-state change"
+      temporal_coverage: "complete declared period"
+      site_scope: "same supplier and site delivery/return gate"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; states; supplier boundary; uncertainty"
+    - protocol_id: cp_residue
+      process_id: "p_wafer"
+      flow_role: "each coproduct and waste"
+      record_type: "weighing_destination"
+      raw_fields: "row_id; stage; lot; wet/dry mass; resin contamination; sale value; destination; waste status; stock; internal-return id"
+      collection_method: "Separate calibrated weighing and destination tickets; sample composition/moisture; audit that sold/waste/internal lots are exclusive; Aggregation calculation: Each actual external stream total / Q; physical outputs are not allocation-weighted; per 1 kg reference flow"
+      unit: "kg"
+      frequency: "each residue lot"
+      temporal_coverage: "complete declared period"
+      site_scope: "same site and identified destination"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "tickets; classification; stock/transfer closure"
+    - protocol_id: cp_emission
+      process_id: "p_wafer"
+      flow_role: "each species and particle fraction"
+      record_type: "outlet_sampling"
+      raw_fields: "row_id; source/stage; control; species/CAS; phase; outlet gas flow; concentration; wet/dry/standard conditions; time; detection limit; filterable/condensable basis"
+      collection_method: "Representative controlled-outlet tests plus run-hour/flow records, with fugitive estimates separately justified; verify three nonoverlapping filterable PM fractions and VOC/condensable overlap; Aggregation calculation: Each species/fraction integrated physical mass / Q; per 1 kg reference flow; no second shared-stack count"
+      unit: "kg"
+      frequency: "representative campaigns and each recipe/control change"
+      temporal_coverage: "all declared operating regimes and seasonality"
+      site_scope: "same site and controlled outlet"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "test method; detection/uncertainty; control/run logs"
+    - protocol_id: cp_water
+      process_id: "p_wafer"
+      flow_role: "evaporation and water closure"
+      record_type: "water_balance"
+      raw_fields: "wood/carrier water; steam; tap water; board/residue water; wastewater; condensate; vents; opening/closing water stock"
+      collection_method: "Traceable moisture and flow measurements; reconcile all water paths with cp_material, cp_reference, cp_steam and cp_residue; Aggregation calculation: Actual emitted water mass / Q; per 1 kg reference flow; retain closure error and uncertainty"
+      unit: "kg"
+      frequency: "each campaign and period close"
+      temporal_coverage: "complete declared period"
+      site_scope: "same integrated site boundary"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "paired water paths; moisture method; closure"
+    - protocol_id: cp_allocation
+      process_id: "p_wafer"
+      flow_role: "burden attribution separately from physical inventory"
+      record_type: "attribution_account"
+      raw_fields: "direct stage burdens; common burdens; causal driver; measured product dry masses; sales/prices; boundary; sensitivity"
+      collection_method: "Audit metered subdivision first, then documented physical/economic relationships; retain separate allocation matrix and immutable physical stream account; Aggregation calculation: Attributed environmental burden / Q; physical stream totals unchanged; per 1 kg reference flow"
+      unit: "kg; MJ; currency"
+      frequency: "each declared period and allocation change"
+      temporal_coverage: "same period as inventory"
+      site_scope: "same site and common process"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "driver justification; prices; reconciliation; sensitivity"
+  calculation_rules:
+    - id: period_normalization
+      applies_to: "all inventory rows"
+      rule: "For each actual physical exchange use its attributable period total divided by Q; the finished output is exactly 1 kg. Q is positive net accepted wet dispatch mass."
+      inputs:
+        - Q
+        - "period totals"
+        - cp_reference
+      output: "each exchange per 1 kg reference flow"
+      source_ids:
+        - epa-waferboard-2002
+    - id: dry_wood_account
+      applies_to: "conifer_logs, hardwood_logs"
+      rule: "For each untreated wood batch dry wood = wet wood/(1+u); water = wet wood-dry wood. Retain separate binder/wax solids and carbon origins in the board and wastes; do not equate oven-dry board with dry wood."
+      inputs:
+        - "wet mass"
+        - "dry-basis u"
+        - cp_material
+      output: "physical dry matter and water ledgers"
+      source_ids:
+        - usda-wood-moisture-2021
+    - id: steam_enthalpy
+      applies_to: "steam, condensate"
+      rule: "Net delivery enthalpy = incoming mass × inlet enthalpy minus returned mass × return enthalpy minus other outgoing stream enthalpies minus increase in stored energy, with explicit common datum. Resolve heat loss, vents and useful stage heat separately. Supplier return credits require its background convention; neither incoming steam mass nor catalog energy unit alone is net useful heat."
+      inputs:
+        - "inlet/return/outgoing states"
+        - mass
+        - stock
+        - cp_steam
+      output: "reconciled energy account and compatible steam linkage"
+      source_ids:
+        - epa-waferboard-2002
+    - id: pm_partition
+      applies_to: "pm25, pmcoarse, pmover10, condensable_pm"
+      rule: "For paired compatible filterable measurements: fine=PM2.5; coarse=PM10-PM2.5; large=total filterable PM-PM10. All are nonnegative; uncertainty and matching sampling conditions are mandatory. Do not add cumulative PM10/total again. Condensable measurements and molecular VOC mass remain phase-resolved without duplication."
+      inputs:
+        - "paired outlet tests"
+        - cp_emission
+      output: "disjoint physical particulate and molecular species inventory"
+      source_ids:
+        - epa-waferboard-2002
+    - id: physical_closure
+      applies_to: "p_wafer"
+      rule: "Reconcile opening stock + external inputs with finished board + actual coproducts + waste + elemental releases + closing stock in separate dry-matter, water and biogenic/fossil carbon accounts. Include binder/wax solids and volatile losses. Internal transfer ends agree in quantity/state and cancel at plant level. Report residual errors with measured uncertainty."
+      inputs:
+        - "all stream totals"
+        - stock
+        - "material carbon composition"
+        - cp_material
+        - cp_water
+        - cp_residue
+        - cp_emission
+      output: "unallocated balance accounts"
+      source_ids:
+        - epa-waferboard-2002
+    - id: burden_attribution
+      applies_to: "p_wafer"
+      rule: "Attribute direct burdens first. Apply justified allocation shares only to remaining common environmental burdens, with shares summing to one for the same scope. Preserve all physical product quantities; product-attributed burden divided by Q forms the downstream dataset."
+      inputs:
+        - "direct/common burdens"
+        - "allocation drivers"
+        - cp_allocation
+        - Q
+      output: "separate product-attributed burden account"
+      source_ids:
+        - ghg-allocation-2011
+  data_quality_requirements:
+    - id: dq_identity
+      applies_to: "p_wafer"
+      requirement: "Verify actual wood-wafer geometry/random architecture, uncured PF recipe, product acceptance and exclusions. A trade name or class label is insufficient."
+      evidence: "forming logs; geometry photos/tests; supplier certificates"
+    - id: dq_coverage
+      applies_to: "all inventory rows"
+      requirement: "Cover a complete representative operating period and all measured regimes; distinguish measured zero, below detection, absence and missing measurement. Missing UUID or supplier quantity/background compatibility remains explicit; complete datasets cannot silently substitute."
+      evidence: "row coverage; calibration; uncertainty; supplier definitions"
+    - id: dq_limits
+      applies_to: "p_wafer"
+      requirement: "Historical EPA/FPL sources supply method context only. Do not transfer softwood-sawmill CORRIM quantities, sawmill dust factors or boiler factors to waferboard indirect drying/pressing. Add individual rows for additional actual exchanges and retain phase-specific emissions."
+      evidence: "scope/route comparison; site screening; original methods"
+validation_rules:
+  - rule_id: v_reference
+    applies_to: "finished_waferboard"
+    rule: "Exactly one finished reference output has 1 kg net accepted board; Q is positive and every row/protocol uses the same denominator. Reject duplicate reference intermediates, packaged-mass denominators and mismatched EN/ZH definitions."
+    source_ids:
+      - epa-waferboard-2002
+  - rule_id: v_architecture
+    applies_to: "p_wafer"
+    rule: "Require broad-thin wafer geometry and nondeliberate random forming proof, actual PF chemistry/grade and declared heat/control route. Reject long-strand oriented OSB, fine UF particleboard and excluded variants."
+    source_ids:
+      - usda-waferboard-types-1986
+  - rule_id: v_balance
+    applies_to: "p_wafer"
+    rule: "Audit dry matter/water/energy and origin-separated carbon closure before burden allocation; transfer pairs agree. Supplier steam conventions, voltage, PF/wax state and missing identities must be resolved before a complete linked dataset is claimed."
+    source_ids:
+      - usda-wood-moisture-2021
+  - rule_id: v_emission
+    applies_to: "p_wafer"
+    rule: "Use controlled-outlet species/phase quantities once, with nonoverlapping PM bins. Retain actual biogenic and fossil CO2 in upstream LCI and any separately reviewed onsite-combustion expansion; a GHG reporting convention cannot remove biogenic CO2 from the physical inventory. Disclose unmeasured species and do not claim complete coverage."
+    source_ids:
+      - epa-waferboard-2002
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Verified site/period random-wafer PF board production burden per 1 kg net accepted finished material"
+  allowed_use: "Matching physical architecture, formulation and pilot route; link actual upstream supply and destination processes with disclosed allocation"
+  excluded_use: "Generic other-board or OSB/UF proxy; structural-service equivalence; current legal/grade certification; incomplete UUID/steam/PF/wax background links"
+  required_metadata: "Required qualifiers; site/period; upstream gates; methods; all flow quantities and identities; physical balance and allocation accounts; original source locators"
+  required_quality_disclosure: "Missing/conditional rows, detection/uncertainty, identity versus quantity/background compatibility, exclusions, representativeness and historical-source limits"
+  update_trigger: "Species/wafer architecture, PF/wax supply, product grade, steam/electricity boundary, controls, destination, missing identity or site-period changes"
+data_sources:
+  - id: "epa-waferboard-2002"
+    type: "official_guidance"
+    reference: "US EPA. AP-42 §10.6.1 Waferboard/Oriented Strandboard Manufacturing, March 2002. https://www.epa.gov/sites/default/files/2020-10/documents/c10s06-1.pdf"
+    used_for: "§10.6.1.1–.3, printed pp.10.6.1-1–4 and Figure 10.6.1-1: historical route/random layup/pressing/finish. Table 10.6.1-3 p.12 describes direct wood-fired softwood OSB drying; only candidate species/CAS labels used for site screening, no transfer of presence, rates or control performance to this indirect route."
+  - id: "usda-waferboard-types-1986"
+    type: "handbook"
+    reference: "Carll, C.G. Wood particleboard and flakeboard: types, grades, and uses. FPL-GTR-53, November 1986. https://research.fs.usda.gov/download/treesearch/5677.pdf"
+    used_for: "Printed pp.1,5 and Figure 2: broad terminology, typical PF type-2 context, real broad-wafer specimen, narrower oriented OSB; no current grade/strength defaults."
+  - id: "usda-commercial-panels-1999"
+    type: "literature"
+    reference: "Laufenberg, T.L.; Palka, L.C.; McNatt, J.D. Creep and creep-rupture behavior of wood-based structural panels. FPL-RP-574, June 1999. https://research.fs.usda.gov/download/treesearch/5817.pdf"
+    used_for: "Abstract, printed pp.1–2 and Table 1: real 1985 commercial minimally aligned waferboard W1–W7 and sampling limitations. Not evidence for W4 species, PF chemistry, heat route, modern recipes, service life or emissions."
+  - id: "usda-wood-moisture-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory. Wood handbook—wood as an engineering material. FPL-GTR-282, 2021. https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf"
+    used_for: "Chapter 4, printed p.4-1, equations 4-1/4-2: dry-basis wood moisture definition, not an assumed species moisture/density or a resin-panel oven-loss rule."
+  - id: "ghg-allocation-2011"
+    type: "standard"
+    reference: "WRI/WBCSD. Product Life Cycle Accounting and Reporting Standard, 2011, Chapter 9 p.63 Tables 9.1–9.2. https://ghgprotocol.org/sites/default/files/standards/Product-Life-Cycle-Accounting-Reporting-Standard_041613.pdf"
+    used_for: "Allocation avoidance and documented physical/economic relationships only. No GHG-only exclusion of physical LCI emissions or predefined residue prices/shares."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:67ec935dcc95d3022285f0e9270dfc5e7bd63073d9452801b0f64cbf49b21e8e"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6535"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6535
+          line: 62
+          column: 1
+        end:
+          offset: 9063
+          line: 83
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Receiving gate for untreated coniferous/non-coniferous panel logs with recorded bark and moisture; electric in-yard handling |\n| starting_condition_role | foreground_entry |\n| product_classification_scope | Physical random-wafer PF pilot subset of CPC 3.0 31439 |\n| recursive_input_rule | Purchased finished waferboard is not raw log furnish. Internal wafers, mats, rework and dust returns stay in stage transfer/stock records; one final finished reference output only. |\n| upstream_dataset_requirement | Matching log forestry/preparation and receiving freight; powdered PF/wax, electricity at stated voltage, delivered steam with agreed return convention, water and packaging supply; each external waste treatment. All upstream combustion emissions remain in linked inventories. |\n| disclosure | Gate-to-gate foreground plus explicit upstream links for cradle-to-gate use. Installation, use and end of life are separately modelled. Disclose capital equipment/cut-offs and any missing supply activity. |\n\nUse one integrated foreground unit p_wafer through packing. Preserve independent stage records s_receive (yard/thaw/debark/crosscut), s_wafer (waferizing), s_dry (indirect drying and screening), s_blend (powder PF/neat wax), s_form (gravity random forming), s_press, s_finish (cooling/trim), s_pack and s_control (dry collection/cleaning). Internal transfer pairs must agree in actual quantity and state; no intermediate board shares the final reference UUID. [epa-waferboard-2002]\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| b_route | p_wafer | Verify the full declared route. Direct-fired dryers, onsite fuel-burning boilers/RTOs, wet controls, sanding and surface treatments are outside this pilot and cannot disappear behind purchased-heat wording; review and add their exact inventories before applying an expanded method. | epa-waferboard-2002 |\n| b_stack | p_wafer | Record outlet emissions after actual dry controls once per stack/source. Capture is a solid residue, not an atmospheric release. Dryer, press/cooling and trim sources remain separately traceable. | epa-waferboard-2002 |\n| b_heat | steam, condensate | External steam generation is upstream. Include physical incoming steam, returned condensate, actual losses and net enthalpy reconciliation; do not additionally book provider fuel as onsite fuel or create an unmetered heat export. | epa-waferboard-2002 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 316
+              line: 10
+              column: 1
+            end:
+              offset: 366
+              line: 10
+              column: 51
+          text: "# Uncoated randomly laid PF-bonded wood waferboard"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6535
+              line: 62
+              column: 1
+            end:
+              offset: 6556
+              line: 62
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_41371"
+      family: "allocation"
+      span:
+        start:
+          offset: 41371
+          line: 615
+          column: 1
+        end:
+          offset: 42429
+          line: 623
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| a_separate | p_wafer | Keep the unallocated physical mass/water/carbon/energy account and internal transfers separately from the product-attributed environmental-burden account. Coproduct physical mass remains actual mass. | ghg-allocation-2011 |\n| a_hierarchy | p_wafer | Use stage/source metering to avoid allocation. For remaining common burdens demonstrate a causal physical relationship; dry mass is admissible only when justified. Otherwise document consistent period-specific economic relationships and sensitivity; disclose prices and markets, with no automatic zero value or avoided-fuel credit. | ghg-allocation-2011 |\n| a_residue | bark, fines, bark_waste, fines_waste | Classify each actual residue lot as sold coproduct, internal return or waste using destination evidence. These quantities are exclusive. Resin-bound residues stay distinct from unresinated wood and require their own treatment datasets. | epa-waferboard-2002 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 316
+              line: 10
+              column: 1
+            end:
+              offset: 366
+              line: 10
+              column: 51
+          text: "# Uncoated randomly laid PF-bonded wood waferboard"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 41371
+              line: 615
+              column: 1
+            end:
+              offset: 41411
+              line: 615
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_52205"
+      family: "validation"
+      span:
+        start:
+          offset: 52205
+          line: 657
+          column: 1
+        end:
+          offset: 53558
+          line: 666
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| v_reference | finished_waferboard | Exactly one finished reference output has 1 kg net accepted board; Q is positive and every row/protocol uses the same denominator. Reject duplicate reference intermediates, packaged-mass denominators and mismatched EN/ZH definitions. | epa-waferboard-2002 |\n| v_architecture | p_wafer | Require broad-thin wafer geometry and nondeliberate random forming proof, actual PF chemistry/grade and declared heat/control route. Reject long-strand oriented OSB, fine UF particleboard and excluded variants. | usda-waferboard-types-1986 |\n| v_balance | p_wafer | Audit dry matter/water/energy and origin-separated carbon closure before burden allocation; transfer pairs agree. Supplier steam conventions, voltage, PF/wax state and missing identities must be resolved before a complete linked dataset is claimed. | usda-wood-moisture-2021 |\n| v_emission | p_wafer | Use controlled-outlet species/phase quantities once, with nonoverlapping PM bins. Retain actual biogenic and fossil CO2 in upstream LCI and any separately reviewed onsite-combustion expansion; a GHG reporting convention cannot remove biogenic CO2 from the physical inventory. Disclose unmeasured species and do not claim complete coverage. | epa-waferboard-2002 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 316
+              line: 10
+              column: 1
+            end:
+              offset: 366
+              line: 10
+              column: 51
+          text: "# Uncoated randomly laid PF-bonded wood waferboard"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 52205
+              line: 657
+              column: 1
+            end:
+              offset: 52227
+              line: 657
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "system_boundary_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 7653
+          line: 75
+          column: 1
+        end:
+          offset: 8134
+          line: 75
+          column: 482
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_route"
+      identity_kind: "explicit"
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 8207
+          line: 79
+          column: 1
+        end:
+          offset: 8534
+          line: 79
+          column: 328
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_stack"
+      identity_kind: "explicit"
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 8535
+          line: 80
+          column: 1
+        end:
+          offset: 8776
+          line: 80
+          column: 242
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "b_heat"
+      identity_kind: "explicit"
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 8777
+          line: 81
+          column: 1
+        end:
+          offset: 9061
+          line: 81
+          column: 285
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_separate"
+      identity_kind: "explicit"
+      unit_id: "normative_41371"
+      source_span:
+        start:
+          offset: 41484
+          line: 619
+          column: 1
+        end:
+          offset: 41732
+          line: 619
+          column: 249
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_hierarchy"
+      identity_kind: "explicit"
+      unit_id: "normative_41371"
+      source_span:
+        start:
+          offset: 41733
+          line: 620
+          column: 1
+        end:
+          offset: 42114
+          line: 620
+          column: 382
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_residue"
+      identity_kind: "explicit"
+      unit_id: "normative_41371"
+      source_span:
+        start:
+          offset: 42115
+          line: 621
+          column: 1
+        end:
+          offset: 42427
+          line: 621
+          column: 313
+    - pointer: "/validation_rules/0"
+      rule_id: "v_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_52205"
+      source_span:
+        start:
+          offset: 52300
+          line: 661
+          column: 1
+        end:
+          offset: 52595
+          line: 661
+          column: 296
+    - pointer: "/validation_rules/1"
+      rule_id: "v_architecture"
+      identity_kind: "explicit"
+      unit_id: "normative_52205"
+      source_span:
+        start:
+          offset: 52596
+          line: 662
+          column: 1
+        end:
+          offset: 52866
+          line: 662
+          column: 271
+    - pointer: "/validation_rules/2"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_52205"
+      source_span:
+        start:
+          offset: 52867
+          line: 663
+          column: 1
+        end:
+          offset: 53167
+          line: 663
+          column: 301
+    - pointer: "/validation_rules/3"
+      rule_id: "v_emission"
+      identity_kind: "explicit"
+      unit_id: "normative_52205"
+      source_span:
+        start:
+          offset: 53168
+          line: 664
+          column: 1
+        end:
+          offset: 53556
+          line: 664
+          column: 389
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 6535
+          line: 62
+          column: 1
+        end:
+          offset: 6556
+          line: 62
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 6584
+          line: 66
+          column: 1
+        end:
+          offset: 7651
+          line: 73
+          column: 222
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 7653
+          line: 75
+          column: 1
+        end:
+          offset: 8134
+          line: 75
+          column: 482
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 8207
+          line: 79
+          column: 1
+        end:
+          offset: 8534
+          line: 79
+          column: 328
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 8535
+          line: 80
+          column: 1
+        end:
+          offset: 8776
+          line: 80
+          column: 242
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_6535"
+      source_span:
+        start:
+          offset: 8777
+          line: 81
+          column: 1
+        end:
+          offset: 9061
+          line: 81
+          column: 285
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_41371"
+      source_span:
+        start:
+          offset: 41371
+          line: 615
+          column: 1
+        end:
+          offset: 41411
+          line: 615
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_52205"
+      source_span:
+        start:
+          offset: 52205
+          line: 657
+          column: 1
+        end:
+          offset: 52227
+          line: 657
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:67ec935dcc95d3022285f0e9270dfc5e7bd63073d9452801b0f64cbf49b21e8e"
+  generated_content_sha256: "sha256:7e33679db0172201f6ca02bb6fb8e10427f8f73beb583d2606a6c9e39177c2d7"

@@ -1,10 +1,2505 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31703"
-  title: "Casks, barrels, vats, tubs and other coopers' products and parts thereof, of wood, including staves"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.casks-barrels-vats-tubs-and-other-coopers-products-and-parts-thereof-of-wood-including-staves"
+  classification_refs: "CPC 3.0 31703; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "New all-oak wine barrels, bare black or galvanized steel hoops, declared bending and toast configuration"
+  excluded_products: "Staves/heads sold alone; used/refurbished barrels; non-oak or composite barrels; vats/tubs; charred spirits casks"
+  representative_product: "One specified new oak wine barrel model; no fixed oak origin, capacity or service life"
+  production_route: "Declared split/sawn oak receipt or verified seasoned blank; natural seasoning; machining; rosing; steam/fire bending; toast; head/hoop assembly; leak test; net-mass acceptance and packing"
+  market_state: "New, unused, empty, accepted complete barrel at factory gate"
+functional_unit:
+  what: "Provide a complete new oak container for the declared wine maturation or fermentation application"
+  how_much: "1 kg accepted net new oak wine barrel; also report accepted barrel count and each model capacity, without converting capacity to product mass"
+  how_well: "Meet the declared model, stave/head construction, hoop specification, toast profile and documented leak-test criterion; compare only equivalent configurations"
+  how_long_or_cycle: "One manufacture and factory acceptance cycle. Wine use cycles and useful life require independent user evidence; no default years or fills"
+  reference_flow_link: "accepted_new_oak_barrel"
+system_boundary:
+  rules:
+    - rule_id: boundary_states
+      applies_to: "new_barrel_production"
+      rule: "Retain separate rough/seasoned/stave-shell/complete-barrel states and all actually executed stages. Model the integrated cooperage unit from receipt through accepted dispatch once; stage transfers are metered internal ledgers, not extra reference outputs."
+      source_ids:
+        - seguin-process
+        - taransaud-quality
+    - rule_id: boundary_thermal
+      applies_to: "thermal and boiler stages"
+      rule: "Distinguish bending heat from sensory toast, direct fuel burning from degradation of retained oak, and separate boiler outlets. Use EPA boiler evidence only for a matching actual boiler; open fires require their own site emission evidence."
+      source_ids:
+        - seguin-toasts
+        - thermal-wood-2005
+        - epa-wood-boilers
+    - rule_id: boundary_material
+      applies_to: "all inventory rows"
+      rule: "Include actual raw materials, utility use, rejects, wastewater, wastes and emissions. A UUID gap does not authorize omitting a physically present flow; preserve a concrete atomic exchange and provider/identity gap. Document any actual treatment additive, adhesive, oil, packaging component or direct natural-water release with its own row before completeness."
+      source_ids:
+        - usda-wood-2021
+        - taransaud-quality
+    - rule_id: boundary_carbon
+      applies_to: "wood and air outputs"
+      rule: "Keep dry wood, retained toasted-layer carbon, exported residues, collected char/ash carbon and emitted chemical carbon as a reconciled physical account; retain biogenic CO2 in LCI. Upstream forest uptake is counted once in the linked boundary and not inferred as a negative cooperage emission."
+      source_ids:
+        - usda-wood-2021
+        - thermal-wood-2005
+        - epa-wood-boilers
+boundary_abstraction:
+  declared_starting_condition: "Untreated green split/sawn oak blanks delivered to seasoning/cooperage, or separately identified purchased air-seasoned oak blanks with verified upstream seasoning coverage"
+  starting_condition_role: "Foreground cut-in with upstream cradle burdens explicitly linked; not a burden-free raw material or universal industry start"
+  product_classification_scope: "New oak wine barrel subset of CPC3.0 31703; covers no stave-only/reference vat or refurbishment datasets"
+  recursive_input_rule: "A purchased prepared blank or part requires an upstream provider for its actual prior manufacturing/seasoning. Internal retained wood and recirculated water are physical stage records, not new purchases or duplicate cradle burdens"
+  upstream_dataset_requirement: "Species/route/state-compatible forestry and blank preparation, delivery transport, steel hoop fabrication/coating, delivered utilities, packaging and waste treatment; unresolved providers disclosed and completed before cradle-to-gate claims"
+  disclosure: "Receipt state, upstream coverage, measured stage map, utilities/purchased versus internal heat, waste destination, test acceptance, allocation, exclusions and omitted evidence. Finished barrel ready for dispatch at factory gate; wine use and end-of-life outside this production dataset"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Casks, barrels, vats, tubs and other coopers' products and parts thereof, of wood, including staves"
+    uuid: "8b100f0f-21c2-4373-b469-a67b4f87973e"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "new/unused state"
+    - "wine function"
+    - "oak species and verified origin or explicitly unknown origin"
+    - "split/sawn route and receipt moisture"
+    - "seasoning start/end and supplier boundary"
+    - "measured barrel net mass and moisture"
+    - "accepted count"
+    - "nominal/verified capacity"
+    - "stave/head dimensions"
+    - "permanent hoop material/coating/mass"
+    - "supplied closure"
+    - "bending method"
+    - "toast label and actual temperature/time program"
+    - "fuel and oxygen conditions"
+    - "leak-test method/criterion/result"
+    - "factory/year"
+    - "delivery boundary"
+    - "packaging separately"
+    - "biogenic carbon basis"
+    - "dataset allocation and missing evidence"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "accepted_new_oak_barrel"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Q is measured accepted net mass of a compatible batch of complete barrels after test drainage, including installed hoops and supplied closure but excluding test water and dispatch packaging. Use cp_acceptance. All inventory rows use per 1 kg reference flow; keep raw batch totals."
+  - id: wood_water_basis
+    applies_to: "separately measured wood components with state-validated methods"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Record actual wood-component wet mass and dry-basis moisture u for each stage, using a method independently validated for the actual species and physical/thermal/chemical state. m_wood_dry = m_wood_wet/(1+u), where u is kg water/kg oven-dry wood measured on that same component; retain non-wood constituents separately. Use oak-appropriate sampling and report extractive/volatile-loss uncertainty; no generic density or softwood MC. This component rule never replaces whole accepted barrel Q including installed hoops/closure, whole rejected-barrel mass or native whole residue exchange mass. Inorganic ash, carbonized/chemically transformed char, metal, plastic and liquid residues require their own compatible solids/water/composition measurements; do not automatically apply ordinary wood MC or wood-carbon fractions to transformed material. Valid unchanged wood components after thermal processing remain included only with actual-state validation. Moisture loss is not automatically wood yield loss. [usda-wood-2021]"
+  - id: power_basis
+    applies_to: "all electricity rows"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "For verified <1 kV alternating current, measured kWh × 3.6 = MJ electrical energy. Match supplier voltage and delivered boundary; no fuel calorific or generation-efficiency conversion is inferred from the database property label."
+  - id: gas_volume_basis
+    applies_to: "all natural gas rows"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Use cp_heat for measured volume at stated T/P, composition, wet/dry state and compressibility; match the background reference-volume convention. Unknown compatibility remains pending; no assumed density from secondary flow coefficients."
+  - id: steam_basis
+    applies_to: "bending_purchased_steam"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Collect delivered steam mass, pressure, temperature, dryness and return conditions. A net delivered heat calculation needs supplier enthalpy definition and a site steam/condensate/blowdown balance; a MJ property alone is insufficient. Do not select high-pressure or source-specific paper/chemical steam for unspecified cooperage supply."
+  - id: elementary_basis
+    applies_to: "all elementary output rows"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Keep chemical/CAS identity, carbon origin, source stage and receiving air subclass. NOx mass versus NO2-equivalent requires explicit compatible definitions; exclude N2O and avoid double-counting NO/NO2. PM2.5, PM2.5-PM10 and >PM10 are disjoint emitted fractions, not three cumulative PM totals. [epa-wood-boilers; epa-sawmill-pte-scope]"
+process_map:
+  - id: new_barrel_production
+    name: "New oak wine barrel production"
+    inclusion: "required"
+    inclusion_condition: "All actual stages of the declared receipt/configuration"
+    role: "foreground production"
+    quantitative_reference: "per 1 kg reference flow"
+process_inventory:
+  - id: new_barrel_production
+    label: "New oak wine barrel production"
+    inputs:
+      product:
+        - row_id: green_split_oak_blank
+          role: "Green split oak cooperage blank"
+          name: "Cleft timber"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7f0b2ade-9ce4-4cbb-a05f-6a30d7fbf0cc"
+          property_unit: "Mass / kg"
+          description: "Receive only untreated split oak blanks; weigh each compatible lot and retain species, split route, dimensions and moisture. This row does not cover sawn or pre-seasoned receipts. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_wood."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wood
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: green_sawn_oak_blank
+          role: "Green rough-sawn oak board"
+          name: "Green non-coniferous sawnwood, rough-sawn"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e882cc86-ffc0-4470-8534-84fef54f20a0"
+          property_unit: "Mass / kg"
+          description: "Only rough-sawn, undried oak boards thicker than 6 mm with grain and watertightness acceptance; record supplier route and upstream transport. Never substitute this record for split wood. The source names an upstream P3 intermediate at plant; actual supplier preparation, transport and gate compatibility remain pending, without replacing the declared untreated green >6 mm rough-sawn oak state. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_wood."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wood
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: seasoned_oak_blank
+          role: "Air-seasoned rough oak cooperage blank"
+          name: "Wood material"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+          property_unit: "Mass / kg"
+          description: "Actual untreated all-oak cooperage blanks received after natural air seasoning, separately from green receipt. Retain measured delivered moisture, dimensions, species and batch mass, verified upstream preparation/seasoning history and its water, losses and energy, and the supplier delivery boundary; do not repeat supplier seasoning at this site. The broad wood-material locator has no specified form, moisture, route or provider and does not establish an oak-specific background; quantity and provider compatibility remain pending. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_wood."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wood
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: season_electricity
+          role: "Seasoning pumps electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when artificial sprinkling operates; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: machining_electricity
+          role: "Trimming, planing, jointing and head machining electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when machinery operates; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: bending_electricity
+          role: "Steam or mechanical bending auxiliaries electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when powered auxiliaries operate; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: toasting_electricity
+          role: "Toasting controls or electric heaters electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when electrical equipment operates; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: hooping_electricity
+          role: "Hoop fitting and finish sanding electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when powered equipment operates; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: testing_electricity
+          role: "Leak-test pump and compressor electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when powered test equipment operates; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: packing_electricity
+          role: "Drying after test and dispatch preparation electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when powered finishing equipment operates; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: boiler_electricity
+          role: "On-site steam-generation auxiliaries electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value / MJ"
+          description: "Stage-specific metered low-voltage grid electricity when an on-site boiler operates; this UUID is restricted to customer-side alternating current below 1 kV. Retain the meter boundary; attribute shared compressor/extraction demand once. The source geographic context is CN. Actual site/provider geography, supply mix and delivery/loss-boundary compatibility remain pending; the locator does not establish a universal electricity background. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: season_spray_water
+          role: "Seasoning spray tap water"
+          name: "Water, tap"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c6fb2442-d527-4e3d-bf01-4c94ea2b71ec"
+          property_unit: "Mass / kg"
+          description: "Record artificial sprinkling separately from rain and recirculated water. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: bending_water
+          role: "Bending wetting tap water"
+          name: "Water, tap"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c6fb2442-d527-4e3d-bf01-4c94ea2b71ec"
+          property_unit: "Mass / kg"
+          description: "Record actual fire-bending wetting or immersion makeup. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: test_water
+          role: "Leak-test tap water"
+          name: "Water, tap"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c6fb2442-d527-4e3d-bf01-4c94ea2b71ec"
+          property_unit: "Mass / kg"
+          description: "Meter fresh test makeup; re-used water is a circulation record, not a repeated freshwater input. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - taransaud-quality
+            ranges: []
+        - row_id: boiler_makeup_water
+          role: "Boiler makeup tap water"
+          name: "Water, tap"
+          flow_type: "product"
+          flow_ref:
+            uuid: "c6fb2442-d527-4e3d-bf01-4c94ea2b71ec"
+          property_unit: "Mass / kg"
+          description: "Conditional on-site boiler input; reconcile steam, returned condensate, blowdown and losses. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_resources."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_resources
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: bending_purchased_steam
+          role: "Purchased steam for oak stave bending"
+          name: "Purchased steam for oak stave bending"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only external delivered steam mass. Record pressure, temperature, dryness, enthalpy and return conditions; keep its provider link unresolved until the supplier reference basis is compatible. Internal boiler steam is a stage ledger entry, not another external input."
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_heat."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - seguin-toasts
+            ranges: []
+        - row_id: bending_purchased_fuelwood
+          role: "Bending fire purchased non-coniferous fuel wood"
+          name: "Fuel wood of non-coniferous wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "aaabc17f-c8db-4493-aa7d-1acb67ee3fa2"
+          property_unit: "Mass / kg"
+          description: "Only separately purchased short logs or split billets meeting the non-coniferous fuel-wood record. Retain species, moisture, contamination and delivery route; internally consumed oak offcuts are tracked in the dry-wood ledger and receive no second upstream purchase. The source upstream gate is unprocessed fuelwood at forest roadside. Actual preparation, delivery/transport and provider compatibility remain pending; it does not cover internally generated factory offcut fuel. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_heat."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: bending_natural_gas
+          role: "Bending fire natural gas"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume / m3"
+          description: "Conditional gaseous pipeline natural gas, reference Volume/m3. Match temperature, absolute pressure, wet/dry composition, compressibility and supplier background m3 definition before linking a quantity; secondary database mass coefficients are not density. Identity support:flow property 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_heat."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: toasting_purchased_fuelwood
+          role: "Toasting fire purchased non-coniferous fuel wood"
+          name: "Fuel wood of non-coniferous wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "aaabc17f-c8db-4493-aa7d-1acb67ee3fa2"
+          property_unit: "Mass / kg"
+          description: "Only separately purchased short logs or split billets meeting the non-coniferous fuel-wood record. Retain species, moisture, contamination and delivery route; internally consumed oak offcuts are tracked in the dry-wood ledger and receive no second upstream purchase. The source upstream gate is unprocessed fuelwood at forest roadside. Actual preparation, delivery/transport and provider compatibility remain pending; it does not cover internally generated factory offcut fuel. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_heat."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: toasting_natural_gas
+          role: "Toasting fire natural gas"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume / m3"
+          description: "Conditional gaseous pipeline natural gas, reference Volume/m3. Match temperature, absolute pressure, wet/dry composition, compressibility and supplier background m3 definition before linking a quantity; secondary database mass coefficients are not density. Identity support:flow property 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_heat."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: boiler_purchased_fuelwood
+          role: "On-site wood boiler purchased non-coniferous fuel wood"
+          name: "Fuel wood of non-coniferous wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "aaabc17f-c8db-4493-aa7d-1acb67ee3fa2"
+          property_unit: "Mass / kg"
+          description: "Only separately purchased short logs or split billets meeting the non-coniferous fuel-wood record. Retain species, moisture, contamination and delivery route; internally consumed oak offcuts are tracked in the dry-wood ledger and receive no second upstream purchase. The source upstream gate is unprocessed fuelwood at forest roadside. Actual preparation, delivery/transport and provider compatibility remain pending; it does not cover internally generated factory offcut fuel. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_heat."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_natural_gas
+          role: "On-site wood boiler natural gas"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume / m3"
+          description: "Conditional gaseous pipeline natural gas, reference Volume/m3. Match temperature, absolute pressure, wet/dry composition, compressibility and supplier background m3 definition before linking a quantity; secondary database mass coefficients are not density. Identity support:flow property 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_heat."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_heat
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: black_steel_hoop
+          role: "Finished black carbon-steel cooperage hoop"
+          name: "Hoops, unspecified"
+          flow_type: "product"
+          flow_ref:
+            uuid: "1b7aae9d-e2c8-4cbe-b979-4966170154e3"
+          property_unit: "Mass / kg"
+          description: "Only actual purchased closed permanent black carbon-steel barrel hoops. Measure installed mass including the actual coating and retain grade, recycled content, ring dimensions, forming/welding and supplier boundary; temporary working hoops remain tools with actual usage/replacement records. Generic Hoops names/comment describe circular hoops without a hard treatment route, while source CPC42946 concerns fencing/barbed or twisted hoop wire. Retain this unresolved classification ambiguity for source-owner/provider clarification; the locator does not establish exact finished-ring manufacture, coating recipe or background compatibility. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_parts."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parts
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: galvanized_steel_hoop
+          role: "Finished galvanized carbon-steel cooperage hoop"
+          name: "Hoops, unspecified"
+          flow_type: "product"
+          flow_ref:
+            uuid: "1b7aae9d-e2c8-4cbe-b979-4966170154e3"
+          property_unit: "Mass / kg"
+          description: "Only actual purchased closed permanent galvanized carbon-steel barrel hoops. Measure installed mass including the actual zinc coating and retain grade, ring dimensions, forming/welding, coating and supplier boundary; do not invent additional zinc mass or substitute packaging straps. Generic Hoops names/comment describe circular hoops without a hard treatment route, while source CPC42946 concerns fencing/barbed or twisted hoop wire. Retain this unresolved classification ambiguity for source-owner/provider clarification; the locator does not establish exact finished-ring manufacture, galvanization recipe or background compatibility. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_parts."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parts
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: oak_bung
+          role: "Finished oak bung"
+          name: "Wood material"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+          property_unit: "Mass / kg"
+          description: "Only the actual finished all-oak bung supplied with an accepted barrel, measured separately and included in installed net mass. Retain dimensions, treatment state and fabrication/supplier boundary. The broad wood-material locator is not a confirmed bung-manufacturing background; quantity and provider compatibility remain pending. Silicone, cork, glued or composite closures require separate actual atomic rows/configuration. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_parts."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parts
+              source_ids:
+                - taransaud-quality
+            ranges: []
+        - row_id: packaging_ldpe
+          role: "LDPE dispatch film"
+          name: "Low-density polyethylene foil (PE-LD)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "2cecd3a7-d90e-44b4-aec5-1d9dfb907477"
+          property_unit: "Mass / kg"
+          description: "Conditional measured non-cellular, non-adhesive, unreinforced LDPE film. Keep transport packaging outside accepted barrel net mass; other wrapping polymers require their own atomic rows. This source film is also nonlaminated and unsupported; confirm the actual grade, thickness, physical form and provider boundary. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_parts."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_parts
+              source_ids:
+                - seguin-process
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_new_oak_barrel
+          role: "Accepted new oak wine barrel"
+          name: "Casks, barrels, vats, tubs and other coopers' products and parts thereof, of wood, including staves"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8b100f0f-21c2-4373-b469-a67b4f87973e"
+          property_unit: "Mass / kg"
+          description: "1 kg accepted net complete new oak wine barrel, including installed permanent hoops and supplied bung, excluding transport packaging and residual leak-test water. This is the only reference-product output. The official Chinese baseName mistranslates cooperage as copperware; retain the official display but disclose pending source-owner translation clarification. The coherent English name, wood classification and container description support this qualified complete wooden barrel, not copper material. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_acceptance
+              source_ids:
+                - taransaud-quality
+            ranges: []
+        - row_id: sold_sawdust
+          role: "Untreated oak sawdust for sale"
+          name: "Wood material"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+          property_unit: "Mass / kg"
+          description: "Actual separately collected and sold untreated oak sawdust, with measured wet mass, moisture, dry mass/carbon and contamination state. Confirm lawful coproduct status, sales contract, customer-accepted specification, actual use and receiver; payment alone does not establish product status. Keep this physical stream separate from discarded wood, internal fuel and returned stock. The broad wood-material locator leaves form, moisture, route and provider unspecified; supplier/customer quantity and gate compatibility remain pending. Burden shares never scale physical output. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-allocation-case
+            ranges: []
+        - row_id: sold_shavings
+          role: "Untreated oak planing shavings for sale"
+          name: "Wood material"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+          property_unit: "Mass / kg"
+          description: "Actual separately collected and sold untreated oak planing shavings, with measured wet mass, moisture, dry mass/carbon and contamination state. Confirm lawful coproduct status, sales contract, customer-accepted specification, actual use and receiver; payment alone does not establish product status. Keep this physical stream separate from discarded wood, internal fuel and returned stock. The broad wood-material locator leaves form, moisture, route and provider unspecified; supplier/customer quantity and gate compatibility remain pending. Burden shares never scale physical output. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-allocation-case
+            ranges: []
+        - row_id: sold_offcuts
+          role: "Untreated oak uncompacted offcuts for sale"
+          name: "Wood material"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+          property_unit: "Mass / kg"
+          description: "Actual separately collected and sold untreated oak non-agglomerated solid offcuts, with measured wet mass, moisture, dry mass/carbon and contamination state. Confirm lawful coproduct status, sales contract, customer-accepted specification, actual use and receiver; payment alone does not establish product status. Keep this physical stream separate from discarded wood, internal fuel and returned stock. The broad wood-material locator leaves form, moisture, route and provider unspecified; supplier/customer quantity and gate compatibility remain pending. Burden shares never scale physical output. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-allocation-case
+            ranges: []
+      waste:
+        - row_id: discarded_sawdust
+          role: "Discarded untreated oak sawdust"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass / kg"
+          description: "Only discarded collected sawdust leaving the unit, not sold sawdust, emitted PM or internally burned fuel. The source route is untreated for combustion/recycling: retain this adoption only for an actual compatible receiving route, with receiver evidence. Unknown or different destinations remain unresolved; do not infer fuel credits or actual treatment emissions. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: discarded_shavings
+          role: "Discarded untreated oak planing shavings"
+          name: "Wood waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2ef9d37a-2fbf-42f6-8ccf-5d6677d5cfd8"
+          property_unit: "Mass / kg"
+          description: "Actual separately collected non-agglomerated untreated oak planing shavings, independently weighed with measured moisture, material/contamination state and actual receiver. Broad Wood waste names/synonyms/comment include wood residues and its primary-production route is compatible with manufacturing residues; source CPC39282 agglomeration conflicts with this physical description. Retain unresolved source classification/receiver/provider clarification, not an exact agglomeration or treatment claim. Exclude sold coproducts, internal fuel/returns, stack particles and separated char; do not import the source municipal-waste percentages. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: discarded_offcuts
+          role: "Discarded uncompacted oak offcuts"
+          name: "Offcut"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "acc22294-8e77-4784-988f-2499be3c60eb"
+          property_unit: "Mass / kg"
+          description: "Weigh actual non-agglomerated oak pieces with glue/chemical contamination explicitly absent or characterized and a declared receiving operator. This is conditional physical identity use; the source classification conflict remains unresolved. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: rejected_barrel
+          role: "Rejected new oak barrel"
+          name: "Rejected new oak barrel"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only a rejected complete barrel leaving the unit; separate recovered hoops from wood if dismantled. Internal repair consumes resources but is not a second reference output."
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - taransaud-quality
+            ranges: []
+        - row_id: season_runoff
+          role: "Collected oak seasoning runoff"
+          name: "Collected oak seasoning runoff"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Measure collected leachate sent to treatment; separate rainfall, spray water and wood-extractive load. This is not a direct natural-water discharge."
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: test_wastewater
+          role: "Untreated barrel leak-test wastewater"
+          name: "Untreated barrel leak-test wastewater"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Measure exported test water after reuse; retain contamination, receiving treatment and all actual additives."
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - taransaud-quality
+            ranges: []
+        - row_id: thermal_bottom_ash
+          role: "Wood-fire bottom ash"
+          name: "ash"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "d74120f1-379f-4d45-a254-c2fd0b3f05e2"
+          property_unit: "Mass / kg"
+          description: "Separately collected actual inorganic bottom ash from wood fuel used in bending or toasting, with measured mass, fuel/source, inorganic composition, unburned carbon, moisture, contamination/hazard state and receiver. The generic ash locator has no opposing source/route but establishes no wood-fuel treatment background; quantity and provider compatibility remain pending. Keep sorted char, retained barrel toast layer, captured fly ash and stack particles separate. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_char
+          role: "Separated oak char residue"
+          name: "Separated oak char residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only removed char, not the retained toasted layer in the barrel. Record carbon, destination and combustion if subsequently burned."
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: boiler_bottom_ash
+          role: "Wood-boiler bottom ash"
+          name: "ash"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "d74120f1-379f-4d45-a254-c2fd0b3f05e2"
+          property_unit: "Mass / kg"
+          description: "Only separately collected actual inorganic bottom ash from the on-site wood-fuel boiler, with measured mass, fuel/source, inorganic composition, unburned carbon, moisture, contamination/hazard state and receiver. The generic ash locator has no opposing source/route but establishes no boiler-specific treatment background; quantity and provider compatibility remain pending. Keep sorted char, captured fly ash and stack particles separate. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_fly_ash
+          role: "Collected wood-boiler fly ash"
+          name: "dust collector ash"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2802116a-dd90-4bad-a456-5afe7d7fa1d6"
+          property_unit: "Mass / kg"
+          description: "Only actual wood-boiler ash captured and removed by a flue-gas purification control device, matching the source flow treatment route. Measure collected mass and retain fuel, device, inorganic chemistry, unburned carbon, moisture/contamination and receiver/provider boundary. Captured ash is neither stack particulate emissions nor bottom ash or machining dust; actual treatment and provider quantity compatibility remain pending. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_blowdown
+          role: "Untreated boiler blowdown water"
+          name: "Untreated boiler blowdown water"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Conditional on-site boiler exported blowdown; identify dissolved solids and destination."
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: hoop_steel_scrap
+          role: "Hoop-fitting steel scrap"
+          name: "Post-industrial steel scrap"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "c143745d-be4f-4d8f-b403-2dcbfe685349"
+          property_unit: "Mass / kg"
+          description: "Conditional scrap from on-site metal fitting, unprocessed at plant; record actual steel grade and recycling recipient. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - seguin-process
+            ranges: []
+        - row_id: packing_film_scrap
+          role: "Unprocessed waste LDPE film"
+          name: "Unprocessed waste LDPE film"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only production wrapping offcuts or rejects, not downstream packaging disposal; state contamination and treatment."
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - seguin-process
+            ranges: []
+      elementary:
+        - row_id: season_water_vapour
+          role: "Seasoning water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Calculate evaporated water from the corrected water balance, retaining rain, spray, runoff and inventory change; wet-mass loss alone also contains dry-material loss. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_balance."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_balance
+              source_ids:
+                - usda-wood-2021
+            ranges: []
+        - row_id: test_drying_vapour
+          role: "Post-test drying water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Account for water lost after leak testing; it is excluded from accepted net barrel mass. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_balance."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_balance
+              source_ids:
+                - usda-wood-2021
+            ranges: []
+        - row_id: machining_pm25
+          role: "Machining PM2.5"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-scope
+            ranges: []
+        - row_id: machining_pm_between
+          role: "Machining PM2.5 to PM10 fraction"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-scope
+            ranges: []
+        - row_id: machining_pm_coarse
+          role: "Machining PM above 10 micrometres"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-pte-scope
+            ranges: []
+        - row_id: thermal_pm25
+          role: "Bending and toasting exhaust PM2.5"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_pm_between
+          role: "Bending and toasting exhaust PM2.5 to PM10 fraction"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_pm_coarse
+          role: "Bending and toasting exhaust PM above 10 micrometres"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: boiler_pm25
+          role: "On-site boiler exhaust PM2.5"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_pm_between
+          role: "On-site boiler exhaust PM2.5 to PM10 fraction"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_pm_coarse
+          role: "On-site boiler exhaust PM above 10 micrometres"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure the emitted size fraction after actual controls, with outlet, aerodynamic size definition and filterable/condensable coverage. Size bins must be disjoint; do not add total PM or cumulative PM10 again, and never derive kg from visible smoke or captured dust. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: thermal_co2_bio
+          role: "Bending and toasting biogenic carbon dioxide"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Retain biogenic CO2 in LCI regardless of greenhouse-gas statistical exclusions; no automatic carbon-neutral or storage credit. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_co2_fossil
+          role: "Bending and toasting fossil carbon dioxide"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_co_bio
+          role: "Bending and toasting biogenic carbon monoxide"
+          name: "carbon monoxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "8a313a02-e251-11e6-bf01-fe55135034f3"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_co_fossil
+          role: "Bending and toasting fossil carbon monoxide"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_ch4_bio
+          role: "Bending and toasting biogenic methane"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_ch4_fossil
+          role: "Bending and toasting fossil methane"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_n2o
+          role: "Bending and toasting nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_nox
+          role: "Bending and toasting nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. NOx excludes N2O; do not also inventory constituent NO/NO2. Mass/kg does not prove NO2-equivalent quantity: monitoring, LCI record and LCIA definitions must agree before use. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_so2
+          role: "Bending and toasting sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: boiler_co2_bio
+          role: "On-site boiler biogenic carbon dioxide"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Retain biogenic CO2 in LCI regardless of greenhouse-gas statistical exclusions; no automatic carbon-neutral or storage credit. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_co2_fossil
+          role: "On-site boiler fossil carbon dioxide"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_co_bio
+          role: "On-site boiler biogenic carbon monoxide"
+          name: "carbon monoxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "8a313a02-e251-11e6-bf01-fe55135034f3"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_co_fossil
+          role: "On-site boiler fossil carbon monoxide"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_ch4_bio
+          role: "On-site boiler biogenic methane"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_ch4_fossil
+          role: "On-site boiler fossil methane"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_n2o
+          role: "On-site boiler nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_nox
+          role: "On-site boiler nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. NOx excludes N2O; do not also inventory constituent NO/NO2. Mass/kg does not prove NO2-equivalent quantity: monitoring, LCI record and LCIA definitions must agree before use. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_so2
+          role: "On-site boiler sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Measure or calculate actual atmospheric release by outlet and source stage. Separate fuel combustion from thermal degradation of barrel wood; verify biogenic/fossil origin, abatement and startup/shutdown. Absence requires documented route or detection-limit evidence, not an assumed zero. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: thermal_methanol
+          role: "Toasting Methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "A conditional species to assess in the thermal-degradation exhaust, not a presumed positive emission. Sample actual escaped species after any combustion/control; source pyrolysate percentages and aroma retained in wood are not air-emission factors. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_acetaldehyde
+          role: "Toasting Acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "A conditional species to assess in the thermal-degradation exhaust, not a presumed positive emission. Sample actual escaped species after any combustion/control; source pyrolysate percentages and aroma retained in wood are not air-emission factors. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_acrolein
+          role: "Toasting Acrolein"
+          name: "acrolein"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91a4-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "A conditional species to assess in the thermal-degradation exhaust, not a presumed positive emission. Sample actual escaped species after any combustion/control; source pyrolysate percentages and aroma retained in wood are not air-emission factors. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: thermal_acetic
+          role: "Toasting Acetic acid"
+          name: "acetic acid"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-92c3-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "A conditional species to assess in the thermal-degradation exhaust, not a presumed positive emission. Sample actual escaped species after any combustion/control; source pyrolysate percentages and aroma retained in wood are not air-emission factors. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: boiler_formaldehyde
+          role: "Boiler Formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Conditional wood-boiler species assessment supported by AP-42 Table 1.6-3. Use site measurements or a demonstrably matching boiler/fuel/control factor and uncertainty, never transfer a boiler factor to the open toasting fire. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: boiler_acetaldehyde
+          role: "Boiler Acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Conditional wood-boiler species assessment supported by AP-42 Table 1.6-3. Use site measurements or a demonstrably matching boiler/fuel/control factor and uncertainty, never transfer a boiler factor to the open toasting fire. Identity support:flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_air."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+        - row_id: thermal_water_vapour
+          role: "Bending and toasting water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Outdoor-air emission, unspecified subtype. Reconcile water evaporated from wood, fuel and applied water with separately evidenced chemical water formed during combustion; keep boiler/thermal outlets separate and do not re-use the seasoning or post-test evaporation total. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_balance."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_balance
+              source_ids:
+                - thermal-wood-2005
+            ranges: []
+        - row_id: boiler_water_vapour
+          role: "On-site boiler water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Outdoor-air emission, unspecified subtype. Reconcile water evaporated from wood, fuel and applied water with separately evidenced chemical water formed during combustion; keep boiler/thermal outlets separate and do not re-use the seasoning or post-test evaporation total. Identity support: flow property 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66"
+          amount:
+            expression: "Collected actual exchange per 1 kg reference flow using cp_balance."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_balance
+              source_ids:
+                - epa-wood-boilers
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_direct
+    applies_to: "new_barrel_production"
+    rule: "First use measured subdivision or causal direct attribution. Finishing, leak tests, permanent hoops and barrel-only packaging belong to the barrel. Saleable wood coproducts are identified by actual destination/contract; waste disposition alone does not establish a coproduct."
+    source_ids:
+      - corrim-allocation-case
+      - taransaud-quality
+  - rule_id: allocation_physical_ledger
+    applies_to: "all inventory rows"
+    rule: "Maintain the complete unallocated physical stage, dry-mass/water/carbon ledger. Internal offcut fuel is accounted once with matching produced and consumed mass and moisture. Whole-unit internal transfers cancel; do not assign avoided upstream fuel burden or duplicate purchases without a separately declared substitution scenario."
+    source_ids:
+      - usda-wood-2021
+      - thermal-wood-2005
+  - rule_id: allocation_shared_burden
+    applies_to: "shared environmental burdens"
+    rule: "If unavoidable shared burdens remain, justify a site-specific physical causal relationship for eligible coproducts; report the eligible masses and shares. If no physical relationship can be defended, justify economic attribution using same-period net revenues and test an alternative. The softwood case supplies no oak cooperage allocation share or default method."
+    source_ids:
+      - corrim-allocation-case
+  - rule_id: allocation_no_mass_scaling
+    applies_to: "coproduct outputs and internal links"
+    rule: "Apply allocation shares only to the burden account, never multiply actual barrel/coproduct output quantities, residual carbon, internal wood transfers or measured water by a share. Keep the full physical ledger alongside the allocated product dataset; reconcile that ledger rather than demanding mass closure in the reduced burden ledger."
+    source_ids:
+      - usda-wood-2021
+      - corrim-allocation-case
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_acceptance
+      process_id: "new_barrel_production"
+      flow_role: "accepted product"
+      record_type: "acceptance/weighing"
+      raw_fields: "model; batch; oak species; capacity; permanent hoop/closure mass; test result; accepted count; accepted net mass Q; drain state; MC; stock movement"
+      collection_method: "Calibrated weighing of every accepted configuration after draining test water; exclude dispatch packaging; compare batch and dispatch records; sum accepted net kg Q; denominator for every per 1 kg reference flow inventory"
+      unit: "kg; count; model capacity"
+      frequency: "each accepted batch"
+      temporal_coverage: "Cover manufacture dates, including returns and rejects"
+      site_scope: "Compatible model/toast batches only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Scale calibration and linked acceptance/dispatch receipts"
+    - protocol_id: cp_wood
+      process_id: "new_barrel_production"
+      flow_role: "oak receipt and stage state"
+      record_type: "stock/weighing/moisture"
+      raw_fields: "lot; botanical species; origin evidence/unknown; split/sawn/seasoned; wet mass; dimensions; MC samples; initial/final stocks; rejects; time"
+      collection_method: "Weigh lots and stage wood; moisture by representative oven-stable sample masses or calibrated oak-adjusted meter checked against oven method; record extractive-loss uncertainty; correct stock change; sum attributable wood per 1 kg reference flow using Q"
+      unit: "kg; dry-basis moisture"
+      frequency: "each lot and state change"
+      temporal_coverage: "Include multi-season seasoning cohort, not just current-year dispatch"
+      site_scope: "Seasoning yard and cooperage/supplier identified"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Lot traceability; sample representativeness; paired mass/MC records"
+    - protocol_id: cp_resources
+      process_id: "new_barrel_production"
+      flow_role: "stage electricity and water"
+      record_type: "meter/activity"
+      raw_fields: "stage; batch; meter; start/end; kWh; fresh water kg or volume/density; rain; reused water; pump/compressor/extraction boundary; stocks"
+      collection_method: "Stage meters and calibrated water meters; record shared loads by measured causal duty, reconcile utility invoices; convert water volume only with actual state/density; sum measured attributable quantities / Q; per 1 kg reference flow"
+      unit: "kWh; MJ; kg; m3"
+      frequency: "per stage/batch, bills per reporting period"
+      temporal_coverage: "Same manufacture/seasoning cohorts as Q"
+      site_scope: "Factory meter boundaries declared"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; invoice and shared-load closure"
+    - protocol_id: cp_heat
+      process_id: "new_barrel_production"
+      flow_role: "fuel, steam and internal heat"
+      record_type: "fuel/enthalpy"
+      raw_fields: "stage; batch; purchased fuel; internal offcut fuel; species; moisture; heating value measured basis; gas T/P wet/dry composition Z; supplier m3; steam mass P/T/x; condensate; blowdown; heat boundary"
+      collection_method: "Calibrated fuel/steam meters and weighing; obtain supplier reference definitions; use site steam-water enthalpy balance for heat conversions only when every relevant state is documented; sum compatible externally exchanged quantities / Q; per 1 kg reference flow; retain internal ledgers"
+      unit: "kg; m3; MJ with defined basis"
+      frequency: "batch and source changes, including startup/shutdown"
+      temporal_coverage: "Cover actual seasoning assistance/bending/toast/boiler operation"
+      site_scope: "Purchased and internal supply separately"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Supplier basis; instruments; heat and fuel balance; missing-state disclosure"
+    - protocol_id: cp_parts
+      process_id: "new_barrel_production"
+      flow_role: "hoops, closure and packing"
+      record_type: "bill of materials/weighing"
+      raw_fields: "model; component; material/coating; origin/provider; permanent/temporary; net mass; scrap; packing component; stock; tool replacement"
+      collection_method: "Weigh installed components and consumed wrapping separately; use compatible supplier BOM, reconcile temporary-tool service/replacement records; sum attributable components / Q; per 1 kg reference flow"
+      unit: "kg"
+      frequency: "batch/model/component change"
+      temporal_coverage: "Same acceptance period as Q"
+      site_scope: "Factory and suppliers declared"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Traceable BOM; coating included; separate transport packaging"
+    - protocol_id: cp_residues
+      process_id: "new_barrel_production"
+      flow_role: "individual coproduct/waste streams"
+      record_type: "weighing/destination"
+      raw_fields: "stage; stream; source; moisture; dry mass; carbon; sold/internal/discarded; contract; price; treatment recipient; stock; whole native exchange mass; separated component masses; actual-state validated water/solids method; wood-component MC; ash/char dry inorganic solids and independently assayed carbon; liquid water/non-water fractions; metal/plastic composition; carbon origin"
+      collection_method: "Segregated weighing and sampled carbon/moisture; reconcile waste manifests, sales and internal fuel use; collect runoff/test/blowdown flow and contamination; full physical outputs / Q; per 1 kg reference flow; allocation kept separately. Independently separate actual components; apply wood_water_basis/dry_wood only to measured wood with methods validated for its actual species/state. Retain whole liquid mass and independently measured water/non-water constituents, whole metal/plastic mass/composition and whole rejected barrel plus separately measured wood/hoops/other constituents. Inorganic ash and carbonized char use validated material-specific solids/water tests and independent carbon assays, never ordinary wood MC or a wood-carbon fraction. Preserve all native whole handover masses; unknown separation or actual-state method remains pending."
+      unit: "kg; water volume plus defined density"
+      frequency: "each removed or sold lot"
+      temporal_coverage: "Same stock-corrected production/seasoning cohorts"
+      site_scope: "Yard/cooperage and receiving treatment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Contracts/receipts; distinct streams and destinations"
+    - protocol_id: cp_air
+      process_id: "new_barrel_production"
+      flow_role: "each emitted species/outlet"
+      record_type: "source test/speciation"
+      raw_fields: "stage; outlet; operating time; fuel/wood carbon origin; species CAS; concentration; gas flow; T/P moisture O2; detection limit; size method; filterable/condensable; control; startup/shutdown"
+      collection_method: "Representative source sampling and calibrated exhaust flow integration after controls; species-specific validated factors only with matching fuel/technology/control/activity basis and uncertainty. Unknown values are missing, not zeros; sum emitted species mass per compatible source regime / Q; per 1 kg reference flow"
+      unit: "kg species; concentration and defined gas volume"
+      frequency: "representative regimes; every control/fuel/toast change"
+      temporal_coverage: "Integrate complete reporting period and transient regimes"
+      site_scope: "Thermal hood, machining outlet and boiler stack distinct"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Lab accreditation/method; calibration; uncertainty; speciation/source evidence"
+    - protocol_id: cp_balance
+      process_id: "new_barrel_production"
+      flow_role: "physical wood-water-carbon ledger"
+      record_type: "stage reconciliation"
+      raw_fields: "dry wood in/out; retained barrel wood; wood/hoop mass; internal fuel; water receipt/rain/spray/reuse/runoff/steam/evaporation; char/ash; emitted species carbon; C fractions; stock; separate whole/component mass; state-specific wood, ash/char, inorganic solids, liquid water/non-water and metal/plastic carbon evidence"
+      collection_method: "Reconcile stage ledgers using measured stock change, moisture and elemental carbon; investigate residuals, distinguish heat-induced dry loss from evaporation; verify emitted rather than generated species; stock-corrected full balances / Q; per 1 kg reference flow. Preserve complete-barrel Q and native whole exchange quantities; wood, water, inorganic solids and independently assayed material carbon remain separate component accounts, with unknown separation/state method disclosed."
+      unit: "kg dry matter; kg water; kg C"
+      frequency: "each cohort and reporting period"
+      temporal_coverage: "Cover seasoning and manufacture through Q acceptance"
+      site_scope: "Unallocated physical foreground including internal links"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Closure residual and uncertainty, no forced zero"
+  calculation_rules:
+    - id: normalize_batch
+      applies_to: "all inventory rows"
+      rule: "Divide stock-corrected attributable exchange totals by accepted net barrel mass Q from cp_acceptance; express per 1 kg reference flow. For the reference product, Q/Q = 1 kg/kg. Retain the physical and allocated burden accounts separately."
+      inputs:
+        - cp_acceptance
+        - cp_resources
+        - cp_wood
+        - cp_heat
+        - cp_parts
+        - cp_residues
+        - cp_air
+        - cp_balance
+      output: "batch-normalized exchanges"
+      source_ids:
+        - usda-wood-2021
+    - id: dry_wood
+      applies_to: "separately measured wood components with state-validated methods"
+      rule: "u = (m_wood_wet - m_wood_oven)/m_wood_oven; m_wood_dry = m_wood_wet/(1+u). Sample the same actual wood component/species/state with an independently validated water-only mass-loss endpoint, accounting for extractive/volatile or chemical degradation uncertainty; do not subtract water again from its measured oven-dry mass. Separate wood from hoops, coating, mineral, plastic and other constituents before applying this conversion; never convert the whole accepted/rejected barrel or a whole mixed waste as wood. Preserve native whole exchange masses. Ash/carbonized char use material-specific measured dry solids, water and independently assayed carbon, excluding inorganic solids from dry-wood mass and prohibiting ordinary wood-carbon fractions on transformed material. Liquids retain whole wet mass and separately measured water/non-water constituents; metals/plastics retain actual mass/composition. Unknown component separation or actual-state method remains pending."
+      inputs:
+        - m_wood_wet
+        - m_wood_oven
+        - cp_wood
+        - cp_residues
+      output: "separately measured dry wood and moisture; independent whole/component material ledgers"
+      source_ids:
+        - usda-wood-2021
+    - id: water_reconcile
+      applies_to: "season_water_vapour, test_drying_vapour, thermal_water_vapour, boiler_water_vapour"
+      rule: "Apply independently to each named stage and cohort: evaporation = incoming water (wood, fuel, fresh water, rain, imported steam and internal transfer) + independently evidenced chemical water formed - outgoing retained/exported water (wood, runoff, test water, blowdown, condensate and internal transfer) - stored-water change. Match internal transfers at both ends; cancel them only in the whole-unit ledger. Never assign a whole-unit evaporation total to multiple stage rows. Unknown infiltration, chemical formation or stage partition remains unresolved."
+      inputs:
+        - cp_balance
+        - cp_wood
+        - cp_resources
+        - cp_heat
+        - cp_residues
+      output: "water balance and evidenced vapour mass"
+      source_ids:
+        - usda-wood-2021
+    - id: carbon_reconcile
+      applies_to: "wood, fuel and air rows"
+      rule: "For each carbon origin, input carbon = retained barrel carbon + exported coproduct/waste carbon + removed char/ash carbon + emitted species carbon + stock change + disclosed residual. Use measured dry mass times measured compatible C fraction. Derive species carbon by molar stoichiometry; combustion and pyrolysis share the same carbon supply and cannot each receive all of it. Use actual component/state-compatible carbon assays; ash/char inorganic solids are not dry wood, transformed char/ash cannot use ordinary wood-carbon fractions, and metal/plastic/non-water liquid solids or whole mixed-barrel mass cannot be counted as wood carbon."
+      inputs:
+        - cp_balance
+        - cp_wood
+        - cp_heat
+        - cp_residues
+        - cp_air
+      output: "separate biogenic/fossil carbon ledger"
+      source_ids:
+        - thermal-wood-2005
+        - epa-wood-boilers
+    - id: particulate_partition
+      applies_to: "all PM rows"
+      rule: "From the same outlet, period, method and PM phase basis, the 2.5-10 fraction equals cumulative PM10 minus cumulative PM2.5; >10 equals comparable total PM minus PM10. Use only evidenced nonnegative differences with propagated uncertainty. Otherwise keep the size distribution unresolved. Do not add cumulative totals alongside these disjoint fractions."
+      inputs:
+        - cp_air
+        - "outlet and phase compatibility"
+      output: "disjoint emitted PM fractions"
+      source_ids:
+        - epa-sawmill-pte-scope
+        - epa-wood-boilers
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: quality_basis
+      applies_to: "all inventory rows"
+      requirement: "Use compatible receipt/model/toast cohorts and complete seasoning stock changes, never divide old stock inputs by only current dispatch Q"
+      evidence: "cp_acceptance, cp_wood"
+    - id: quality_uncertainty
+      applies_to: "all inventory rows"
+      requirement: "Unknown origin, capacity, life, quantities, provider basis, chemical definition or emission distribution remain explicit. No empirical default ranges until independent boundary-compatible evidence exists. Report instruments, variation and model uncertainty"
+      evidence: "cp_heat, cp_air, cp_balance"
+    - id: quality_evidence
+      applies_to: "new_barrel_production"
+      requirement: "Manufacturer route sources and laboratory pyrolysis cases support method design only. Do not transfer softwood survey yields/MC, regulatory PTE, generated pyrolysate percentages or aroma measurements to actual emitted kg"
+      evidence: "usda-wood-2021, thermal-wood-2005, epa-sawmill-pte-scope, corrim-allocation-case"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "reference flow"
+    rule: "Require new unused all-oak wine-barrel identity, finished completeness and leak acceptance; reject stave-only, refurbished or unqualified different toast/service configurations. UUID inclusion does not resolve background applicability."
+    source_ids:
+      - taransaud-quality
+      - seguin-toasts
+  - rule_id: validate_denominator
+    applies_to: "all inventory rows"
+    rule: "Exactly one accepted_new_oak_barrel reference output is 1 kg and every exchange uses the same stock-corrected Q denominator. Keep stages distinct, prevent duplicate product outputs and audit all internal links for equal physical quantity."
+    source_ids:
+      - usda-wood-2021
+  - rule_id: validate_flows
+    applies_to: "all inventory rows"
+    rule: "Verify exact physical/chemical identity against name, CAS, route, current classification, reference property and unit; a conflicting species/CAS or hard treatment/route blocks adoption even if a name looks right. An isolated source-classification error may permit conditional use of a coherent physical identity only with an explicit metadata debt, actual material/state/provider verification and source-owner clarification; it is not complete metadata validation. Each row is atomic, with exact Chinese baseName when provided; blank UUIDs retain their concrete exchange and missing-identity disclosure."
+    source_ids:
+      - usda-wood-2021
+  - rule_id: validate_energy
+    applies_to: "all utility rows"
+    rule: "Require measured delivered energy/volume/mass on a supplier-compatible basis. Distinguish purchased steam from internal boiler heat, apply kWh/MJ conversion only to electric energy, and leave gas/steam basis compatibility pending when unknown."
+    source_ids:
+      - epa-wood-boilers
+  - rule_id: validate_emissions
+    applies_to: "all elementary outputs"
+    rule: "Require outlet/medium, actual escaped species, carbon origin and quantity-definition evidence. Verify NOx convention excluding N2O, disjoint PM and filterable/condensable scope. Do not substitute correction flows or equate visible smoke with a PM mass; preserve biogenic CO2 despite GHG-reporting conventions."
+    source_ids:
+      - thermal-wood-2005
+      - epa-wood-boilers
+      - epa-sawmill-pte-scope
+  - rule_id: validate_closure
+    applies_to: "physical ledger and allocation"
+    rule: "Reconcile dry material, water, biogenic/fossil carbon and all measured destinations with stock changes and uncertainty; retain unexplained residuals. Review allocation against the full unallocated physical ledger and the separately allocated burden ledger; do not change coproduct mass to close allocated burdens."
+    source_ids:
+      - usda-wood-2021
+      - corrim-allocation-case
+  - rule_id: validate_completeness
+    applies_to: "dataset profile"
+    rule: "Before a complete cradle-to-gate dataset claim, resolve physically present UUID/provider gaps and all route quantities, add actual unlisted atomic flows and treatment releases, disclose skipped checks and uncertainty, and verify all required qualifiers. PCR authored status does not prove site-data or independent methodology approval."
+    source_ids:
+      - taransaud-quality
+      - usda-wood-2021
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Qualified new-oak-wine-barrel supply in a wine model or a secondary cooperage manufacturing dataset"
+  allowed_use: "Only matching new barrel material, state, capacity/model, bending/toast configuration and declared supply boundary; convert service amounts with independently measured barrel mass/capacity and use cycles"
+  excluded_use: "Stave-only, old/refurbished, spirits-charred, other-wood or unqualified wine-service comparisons; carbon-neutral claims or unsupported generic oak industry factors"
+  required_metadata: "Reference qualifiers; factory/year and cohort; upstream/provider boundary; atomic exchanges and property/unit; raw protocol records; physical mass/water/carbon ledger; emission definitions; allocation basis"
+  required_quality_disclosure: "Identity/provider/quantity gaps, missing ranges, sampling/MC/carbon uncertainty, omitted stages/flows, gas/steam basis compatibility, PM/NOx conventions and method/site review status"
+  update_trigger: "Species/source, receipt moisture/state, seasoning, geometry, hoop/coating, bending/toast/fuel/control, test method, supply/provider or allocation change"
+data_sources:
+  - id: "seguin-process"
+    type: "literature"
+    reference: "Seguin Moreau, From forest to product, current original snapshot; https://www.seguin-moreau.fr/en/innovation/from-forest-to-product/; retrieved 2026-10-12"
+    used_for: "Process order, air seasoning, machining, fire bending; manufacturer example, no quantitative defaults"
+  - id: "seguin-toasts"
+    type: "literature"
+    reference: "Seguin Moreau, Wine barrels, Toast levels; https://www.seguin-moreau.fr/en/wine-ranges/barrels-wine/; retrieved 2026-10-12"
+    used_for: "Steam tightening and sensory toast are distinct, with product-specific profiles"
+  - id: "taransaud-quality"
+    type: "literature"
+    reference: "Taransaud, Quality Control team; https://www.taransaud.com/en/craftsmanship/our-teams/quality-control-team/; retrieved 2026-10-12"
+    used_for: "Individual leak/final acceptance and traceability; manufacturer origin/seasoning durations not generalized"
+  - id: "usda-wood-2021"
+    type: "handbook"
+    reference: "USDA FPL, Wood Handbook FPL-GTR-282 (2021), Ch.4 pp.4-1/4-11; Ch.13 pp.13-2/13-6; Ch.18 p.18-14; https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf; retrieved 2026-10-12"
+    used_for: "General moisture/density basis, oven measurement, drying and distinction between optical smoke and particulate mass; no construction wood MC copied"
+  - id: "thermal-wood-2005"
+    type: "handbook"
+    reference: "Rowell and LeVan-Green (2005), Thermal Properties, Handbook of Wood Chemistry and Wood Composites, pp.121-125, Sec.6.1, Table6.1; https://research.fs.usda.gov/download/treesearch/22046.pdf; retrieved 2026-10-12"
+    used_for: "Wood pyrolysis versus combustion and conditional species screening; laboratory pyrolysate shares are not oak-barrel emission factors"
+  - id: "epa-wood-boilers"
+    type: "official_guidance"
+    reference: "US EPA AP-42 Section1.6 Wood Residue Combustion in Boilers (March2022), Sec.1.6.1-1.6.4, Tables1.6-1/1.6-3 and footnotes; https://www.epa.gov/system/files/documents/2022-03/c1s6_final.pdf; retrieved 2026-10-12"
+    used_for: "Conditional matching boilers only: species, fuel/control dependencies, factor basis, PM definitions; no factor or 99% carbon conversion default"
+  - id: "epa-sawmill-pte-scope"
+    type: "official_guidance"
+    reference: "US EPA Region10 (8May2014), Particulate Matter PTE Emission Factors for Activities at Sawmills, Excluding Boilers, pp.1-2; https://www.epa.gov/sites/default/files/2016-09/documents/spmpteef_memo.pdf; retrieved 2026-10-12"
+    used_for: "Scope restriction, opacity not a PM-mass conversion and cumulative size definitions; PTE factors not actual cooperage LCI"
+  - id: "corrim-allocation-case"
+    type: "literature"
+    reference: "CORRIM (22July2025), LCA of Softwood Lumber Production – Northern Region, Sec.3.2.6 p.16; https://corrim.org/wp-content/uploads/2025/07/LCA-Report-Northern-Lumber-Report-07222025.pdf; retrieved 2026-10-12"
+    used_for: "Illustrates burden partition and product-only packaging in a softwood case; no cooperage mass shares, yield, fuel or moisture imported"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:bacffb00600fd422eccbf672faed724f010461014e46b8fd80369eefc7431898"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_8076"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 8076
+          line: 65
+          column: 1
+        end:
+          offset: 11086
+          line: 86
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Untreated green split/sawn oak blanks delivered to seasoning/cooperage, or separately identified purchased air-seasoned oak blanks with verified upstream seasoning coverage |\n| starting_condition_role | Foreground cut-in with upstream cradle burdens explicitly linked; not a burden-free raw material or universal industry start |\n| product_classification_scope | New oak wine barrel subset of CPC3.0 31703; covers no stave-only/reference vat or refurbishment datasets |\n| recursive_input_rule | A purchased prepared blank or part requires an upstream provider for its actual prior manufacturing/seasoning. Internal retained wood and recirculated water are physical stage records, not new purchases or duplicate cradle burdens |\n| upstream_dataset_requirement | Species/route/state-compatible forestry and blank preparation, delivery transport, steel hoop fabrication/coating, delivered utilities, packaging and waste treatment; unresolved providers disclosed and completed before cradle-to-gate claims |\n| disclosure | Receipt state, upstream coverage, measured stage map, utilities/purchased versus internal heat, waste destination, test acceptance, allocation, exclusions and omitted evidence. Finished barrel ready for dispatch at factory gate; wine use and end-of-life outside this production dataset |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_states | new_barrel_production | Retain separate rough/seasoned/stave-shell/complete-barrel states and all actually executed stages. Model the integrated cooperage unit from receipt through accepted dispatch once; stage transfers are metered internal ledgers, not extra reference outputs. | seguin-process, taransaud-quality |\n| boundary_thermal | thermal and boiler stages | Distinguish bending heat from sensory toast, direct fuel burning from degradation of retained oak, and separate boiler outlets. Use EPA boiler evidence only for a matching actual boiler; open fires require their own site emission evidence. | seguin-toasts, thermal-wood-2005, epa-wood-boilers |\n| boundary_material | all inventory rows | Include actual raw materials, utility use, rejects, wastewater, wastes and emissions. A UUID gap does not authorize omitting a physically present flow; preserve a concrete atomic exchange and provider/identity gap. Document any actual treatment additive, adhesive, oil, packaging component or direct natural-water release with its own row before completeness. | usda-wood-2021, taransaud-quality |\n| boundary_carbon | wood and air outputs | Keep dry wood, retained toasted-layer carbon, exported residues, collected char/ash carbon and emitted chemical carbon as a reconciled physical account; retain biogenic CO2 in LCI. Upstream forest uptake is counted once in the linked boundary and not inferred as a negative cooperage emission. | usda-wood-2021, thermal-wood-2005, epa-wood-boilers |\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 365
+              line: 10
+              column: 1
+            end:
+              offset: 397
+              line: 10
+              column: 33
+          text: "# New oak wine barrel production"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 8076
+              line: 65
+              column: 1
+            end:
+              offset: 8097
+              line: 65
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_94516"
+      family: "allocation"
+      span:
+        start:
+          offset: 94516
+          line: 1544
+          column: 1
+        end:
+          offset: 96324
+          line: 1554
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_direct | new_barrel_production | First use measured subdivision or causal direct attribution. Finishing, leak tests, permanent hoops and barrel-only packaging belong to the barrel. Saleable wood coproducts are identified by actual destination/contract; waste disposition alone does not establish a coproduct. | corrim-allocation-case, taransaud-quality |\n| allocation_physical_ledger | all inventory rows | Maintain the complete unallocated physical stage, dry-mass/water/carbon ledger. Internal offcut fuel is accounted once with matching produced and consumed mass and moisture. Whole-unit internal transfers cancel; do not assign avoided upstream fuel burden or duplicate purchases without a separately declared substitution scenario. | usda-wood-2021, thermal-wood-2005 |\n| allocation_shared_burden | shared environmental burdens | If unavoidable shared burdens remain, justify a site-specific physical causal relationship for eligible coproducts; report the eligible masses and shares. If no physical relationship can be defended, justify economic attribution using same-period net revenues and test an alternative. The softwood case supplies no oak cooperage allocation share or default method. | corrim-allocation-case |\n| allocation_no_mass_scaling | coproduct outputs and internal links | Apply allocation shares only to the burden account, never multiply actual barrel/coproduct output quantities, residual carbon, internal wood transfers or measured water by a share. Keep the full physical ledger alongside the allocated product dataset; reconcile that ledger rather than demanding mass closure in the reduced burden ledger. | usda-wood-2021, corrim-allocation-case |\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 365
+              line: 10
+              column: 1
+            end:
+              offset: 397
+              line: 10
+              column: 33
+          text: "# New oak wine barrel production"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 94516
+              line: 1544
+              column: 1
+            end:
+              offset: 94556
+              line: 1544
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_110264"
+      family: "validation"
+      span:
+        start:
+          offset: 110264
+          line: 1589
+          column: 1
+        end:
+          offset: 113191
+          line: 1602
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validate_scope | reference flow | Require new unused all-oak wine-barrel identity, finished completeness and leak acceptance; reject stave-only, refurbished or unqualified different toast/service configurations. UUID inclusion does not resolve background applicability. | taransaud-quality, seguin-toasts |\n| validate_denominator | all inventory rows | Exactly one accepted_new_oak_barrel reference output is 1 kg and every exchange uses the same stock-corrected Q denominator. Keep stages distinct, prevent duplicate product outputs and audit all internal links for equal physical quantity. | usda-wood-2021 |\n| validate_flows | all inventory rows | Verify exact physical/chemical identity against name, CAS, route, current classification, reference property and unit; a conflicting species/CAS or hard treatment/route blocks adoption even if a name looks right. An isolated source-classification error may permit conditional use of a coherent physical identity only with an explicit metadata debt, actual material/state/provider verification and source-owner clarification; it is not complete metadata validation. Each row is atomic, with exact Chinese baseName when provided; blank UUIDs retain their concrete exchange and missing-identity disclosure. | usda-wood-2021 |\n| validate_energy | all utility rows | Require measured delivered energy/volume/mass on a supplier-compatible basis. Distinguish purchased steam from internal boiler heat, apply kWh/MJ conversion only to electric energy, and leave gas/steam basis compatibility pending when unknown. | epa-wood-boilers |\n| validate_emissions | all elementary outputs | Require outlet/medium, actual escaped species, carbon origin and quantity-definition evidence. Verify NOx convention excluding N2O, disjoint PM and filterable/condensable scope. Do not substitute correction flows or equate visible smoke with a PM mass; preserve biogenic CO2 despite GHG-reporting conventions. | thermal-wood-2005, epa-wood-boilers, epa-sawmill-pte-scope |\n| validate_closure | physical ledger and allocation | Reconcile dry material, water, biogenic/fossil carbon and all measured destinations with stock changes and uncertainty; retain unexplained residuals. Review allocation against the full unallocated physical ledger and the separately allocated burden ledger; do not change coproduct mass to close allocated burdens. | usda-wood-2021, corrim-allocation-case |\n| validate_completeness | dataset profile | Before a complete cradle-to-gate dataset claim, resolve physically present UUID/provider gaps and all route quantities, add actual unlisted atomic flows and treatment releases, disclose skipped checks and uncertainty, and verify all required qualifiers. PCR authored status does not prove site-data or independent methodology approval. | taransaud-quality, usda-wood-2021 |\n\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 365
+              line: 10
+              column: 1
+            end:
+              offset: 397
+              line: 10
+              column: 33
+          text: "# New oak wine barrel production"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 110264
+              line: 1589
+              column: 1
+            end:
+              offset: 110286
+              line: 1589
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_states"
+      identity_kind: "explicit"
+      unit_id: "normative_8076"
+      source_span:
+        start:
+          offset: 9568
+          line: 80
+          column: 1
+        end:
+          offset: 9905
+          line: 80
+          column: 338
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_thermal"
+      identity_kind: "explicit"
+      unit_id: "normative_8076"
+      source_span:
+        start:
+          offset: 9906
+          line: 81
+          column: 1
+        end:
+          offset: 10249
+          line: 81
+          column: 344
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_material"
+      identity_kind: "explicit"
+      unit_id: "normative_8076"
+      source_span:
+        start:
+          offset: 10250
+          line: 82
+          column: 1
+        end:
+          offset: 10690
+          line: 82
+          column: 441
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_carbon"
+      identity_kind: "explicit"
+      unit_id: "normative_8076"
+      source_span:
+        start:
+          offset: 10691
+          line: 83
+          column: 1
+        end:
+          offset: 11083
+          line: 83
+          column: 393
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_direct"
+      identity_kind: "explicit"
+      unit_id: "normative_94516"
+      source_span:
+        start:
+          offset: 94629
+          line: 1548
+          column: 1
+        end:
+          offset: 94996
+          line: 1548
+          column: 368
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_physical_ledger"
+      identity_kind: "explicit"
+      unit_id: "normative_94516"
+      source_span:
+        start:
+          offset: 94997
+          line: 1549
+          column: 1
+        end:
+          offset: 95417
+          line: 1549
+          column: 421
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_shared_burden"
+      identity_kind: "explicit"
+      unit_id: "normative_94516"
+      source_span:
+        start:
+          offset: 95418
+          line: 1550
+          column: 1
+        end:
+          offset: 95869
+          line: 1550
+          column: 452
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_no_mass_scaling"
+      identity_kind: "explicit"
+      unit_id: "normative_94516"
+      source_span:
+        start:
+          offset: 95870
+          line: 1551
+          column: 1
+        end:
+          offset: 96321
+          line: 1551
+          column: 452
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 110359
+          line: 1593
+          column: 1
+        end:
+          offset: 110667
+          line: 1593
+          column: 309
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_denominator"
+      identity_kind: "explicit"
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 110668
+          line: 1594
+          column: 1
+        end:
+          offset: 110971
+          line: 1594
+          column: 304
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_flows"
+      identity_kind: "explicit"
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 110972
+          line: 1595
+          column: 1
+        end:
+          offset: 111634
+          line: 1595
+          column: 663
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_energy"
+      identity_kind: "explicit"
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 111635
+          line: 1596
+          column: 1
+        end:
+          offset: 111938
+          line: 1596
+          column: 304
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 111939
+          line: 1597
+          column: 1
+        end:
+          offset: 112359
+          line: 1597
+          column: 421
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_closure"
+      identity_kind: "explicit"
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 112360
+          line: 1598
+          column: 1
+        end:
+          offset: 112770
+          line: 1598
+          column: 411
+    - pointer: "/validation_rules/6"
+      rule_id: "validate_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 112771
+          line: 1599
+          column: 1
+        end:
+          offset: 113188
+          line: 1599
+          column: 418
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_8076"
+      source_span:
+        start:
+          offset: 8076
+          line: 65
+          column: 1
+        end:
+          offset: 8097
+          line: 65
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_8076"
+      source_span:
+        start:
+          offset: 8125
+          line: 69
+          column: 1
+        end:
+          offset: 9495
+          line: 76
+          column: 303
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_94516"
+      source_span:
+        start:
+          offset: 94516
+          line: 1544
+          column: 1
+        end:
+          offset: 94556
+          line: 1544
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_110264"
+      source_span:
+        start:
+          offset: 110264
+          line: 1589
+          column: 1
+        end:
+          offset: 110286
+          line: 1589
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:bacffb00600fd422eccbf672faed724f010461014e46b8fd80369eefc7431898"
+  generated_content_sha256: "sha256:5e194ade54d4bb0f9c679b7d941261543bb2c7f37a53658bce42b4677c9e2de1"

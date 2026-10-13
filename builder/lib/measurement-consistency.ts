@@ -392,8 +392,9 @@ export function checkMeasurementConsistency({ english, chinese }: { english?: Me
     if (reference?.amount === "M") checkMass();
     const referenceLink = clean(parsed.functionalUnit?.reference_flow_link);
     const referenceUuid = sourceReference?.product_flow?.uuid;
+    const linkedRows = referenceLink ? rows.filter((entry) => entry.row.row_id === referenceLink) : null;
     const outputs = rows.filter((entry) => entry.direction === "outputs" && entry.flow_type === "product" &&
-      (referenceLink ? entry.row.row_id === referenceLink : Boolean(referenceUuid && entry.row.uuid === referenceUuid)));
+      (linkedRows ? linkedRows.length === 1 && linkedRows[0] === entry : referenceUuid && entry.row.uuid === referenceUuid));
     if (rows.length && outputs.length !== 1) {
       review("reference_output", "MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED", "Exactly one completed product output must be identified by reference_flow_link or the reference product UUID.", context);
     }

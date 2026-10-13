@@ -179,9 +179,9 @@ process_inventory:
           flow_ref:
             uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
           property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
-          description: "Electricity attributable to observation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity."
+          description: "Electricity attributable to observation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_observation; apply calculate_energy; do not duplicate provider-inclusive electricity."
           amount:
-            expression: "Measured attributable amount per declared reference flow; cp_energy."
+            expression: "Measured attributable amount per declared reference flow; cp_energy_observation."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -189,7 +189,7 @@ process_inventory:
               kind: "process_output"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_energy
+              collection_protocol_id: cp_energy_observation
               source_ids:
                 - gsf-sci110
             ranges: []
@@ -234,9 +234,9 @@ process_inventory:
           flow_ref:
             uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
           property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
-          description: "Electricity attributable to organization work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity."
+          description: "Electricity attributable to organization work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_organization; apply calculate_energy; do not duplicate provider-inclusive electricity."
           amount:
-            expression: "Measured attributable amount per declared reference flow; cp_energy."
+            expression: "Measured attributable amount per declared reference flow; cp_energy_organization."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -244,7 +244,7 @@ process_inventory:
               kind: "process_output"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_energy
+              collection_protocol_id: cp_energy_organization
               source_ids:
                 - gsf-sci110
             ranges: []
@@ -289,9 +289,9 @@ process_inventory:
           flow_ref:
             uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
           property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
-          description: "Electricity attributable to validation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity."
+          description: "Electricity attributable to validation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_validation; apply calculate_energy; do not duplicate provider-inclusive electricity."
           amount:
-            expression: "Measured attributable amount per declared reference flow; cp_energy."
+            expression: "Measured attributable amount per declared reference flow; cp_energy_validation."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -299,7 +299,7 @@ process_inventory:
               kind: "process_output"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_energy
+              collection_protocol_id: cp_energy_validation
               source_ids:
                 - gsf-sci110
             ranges: []
@@ -325,9 +325,9 @@ process_inventory:
           flow_ref:
             uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
           property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
-          description: "Electricity attributable to sealing work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity."
+          description: "Electricity attributable to sealing work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_sealing; apply calculate_energy; do not duplicate provider-inclusive electricity."
           amount:
-            expression: "Measured attributable amount per declared reference flow; cp_energy."
+            expression: "Measured attributable amount per declared reference flow; cp_energy_sealing."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -335,7 +335,7 @@ process_inventory:
               kind: "process_output"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_energy
+              collection_protocol_id: cp_energy_sealing
               source_ids:
                 - gsf-sci110
             ranges: []
@@ -459,11 +459,59 @@ dataset_production:
       aggregation_rule: "per declared reference flow"
       quality_evidence: "Signed version manifest and reproducible acceptance/integrity results"
     - protocol_id: cp_energy
-      process_id: "planning_observation_organization_validation_sealing"
-      flow_role: "stage electricity"
+      process_id: "planning"
+      flow_role: "planning_electricity"
       record_type: "meter_record"
       raw_fields: "meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap"
-      collection_method: "Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution"
+      collection_method: "Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers planning only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs."
+      unit: "kWh"
+      frequency: "Each run and creation interval"
+      temporal_coverage: "Full creation cycle including failed work"
+      site_scope: "Actual owned supply; provider scopes separately"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Calibration, workload logs, meter reconciliation and gap coverage"
+    - protocol_id: cp_energy_observation
+      process_id: "observation"
+      flow_role: "observation_electricity"
+      record_type: "meter_record"
+      raw_fields: "meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap"
+      collection_method: "Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers observation only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs."
+      unit: "kWh"
+      frequency: "Each run and creation interval"
+      temporal_coverage: "Full creation cycle including failed work"
+      site_scope: "Actual owned supply; provider scopes separately"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Calibration, workload logs, meter reconciliation and gap coverage"
+    - protocol_id: cp_energy_organization
+      process_id: "organization"
+      flow_role: "organization_electricity"
+      record_type: "meter_record"
+      raw_fields: "meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap"
+      collection_method: "Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers organization only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs."
+      unit: "kWh"
+      frequency: "Each run and creation interval"
+      temporal_coverage: "Full creation cycle including failed work"
+      site_scope: "Actual owned supply; provider scopes separately"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Calibration, workload logs, meter reconciliation and gap coverage"
+    - protocol_id: cp_energy_validation
+      process_id: "validation"
+      flow_role: "validation_electricity"
+      record_type: "meter_record"
+      raw_fields: "meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap"
+      collection_method: "Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers validation only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs."
+      unit: "kWh"
+      frequency: "Each run and creation interval"
+      temporal_coverage: "Full creation cycle including failed work"
+      site_scope: "Actual owned supply; provider scopes separately"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "Calibration, workload logs, meter reconciliation and gap coverage"
+    - protocol_id: cp_energy_sealing
+      process_id: "sealing"
+      flow_role: "sealing_electricity"
+      record_type: "meter_record"
+      raw_fields: "meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap"
+      collection_method: "Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers sealing only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs."
       unit: "kWh"
       frequency: "Each run and creation interval"
       temporal_coverage: "Full creation cycle including failed work"
@@ -512,6 +560,10 @@ dataset_production:
       rule: "Convert attributable metered kWh to MJ by multiplication by 3.6; preserve stage and supply interfaces."
       inputs:
         - cp_energy
+        - cp_energy_observation
+        - cp_energy_organization
+        - cp_energy_validation
+        - cp_energy_sealing
         - kWh
       output: "MJ"
       source_ids:
@@ -523,6 +575,10 @@ dataset_production:
       inputs:
         - cp_original
         - cp_energy
+        - cp_energy_observation
+        - cp_energy_organization
+        - cp_energy_validation
+        - cp_energy_sealing
         - cp_source
         - cp_provider
         - cp_device
@@ -549,7 +605,7 @@ dataset_production:
     - id: quality_cycle
       applies_to: "all processes"
       requirement: "Cover actual sites, collection and production periods, failed jobs, corrections, temporary replicas and sealing storage. Disclose missing meter periods, external source burdens and provider exclusions."
-      evidence: "cp_energy; cp_provider; unece-gsbpm52"
+      evidence: "cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_provider; unece-gsbpm52"
     - id: quality_identity
       applies_to: "all inputs"
       requirement: "Recheck public identities, reference properties/groups, supply conditions, actual hardware and upstream versions. Blank UUIDs remain candidate gaps and cannot establish available provider inventories."
@@ -557,7 +613,7 @@ dataset_production:
     - id: quality_uncertainty
       applies_to: "allocation and data representativeness"
       requirement: "Report workload/meter uncertainty, unknown shares, hardware-life sensitivity, observation coverage limits and reuse scenario sensitivity. No invented benchmark can replace foreground evidence."
-      evidence: "cp_energy; cp_device; source/reuse ledger"
+      evidence: "cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_device; source/reuse ledger"
 validation_rules:
   - rule_id: validate_product
     applies_to: "reference_data"
@@ -625,7 +681,7 @@ data_sources:
     used_for: "1 kWh = 3.6 × 10^6 J = 3.6 MJ, exact conversion only; historical table, not used for pre-2019 base-unit definitions or production coefficients"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:454bf1bbdc2f3295d1d452918ba9b27428a9d6af947e7c750aee20122b69a22e"
+  source_sha256: "sha256:83e87760862dea249a8031c78008f6706509f6556ad94cd5a2317e7fb2a8b529"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5309"
@@ -676,15 +732,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_20942"
+    - unit_id: "normative_21074"
       family: "allocation"
       span:
         start:
-          offset: 20942
+          offset: 21074
           line: 350
           column: 1
         end:
-          offset: 22648
+          offset: 22780
           line: 359
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_subdivide | shared data projects | Separate project and stage workloads using meters, collection logs and job IDs before allocating. Keep residual unassigned shares and failed work visible. Do not default to revenue, licenses, users or data byte shares without a causal measured relationship. | gsf-sci110; unece-gsbpm52 |\n| allocation_compute | shared electricity | Reconcile attributable measured job/storage/network shares to the same facility meter period, including reserved idle and cooling scope. A traffic or storage metric is an attribution driver requiring justification and reconciliation, never a universal kWh conversion. | gsf-sci110 |\n| allocation_device | server_hardware; logger_hardware | Use the actual device inventory fraction attributable to the creation cycle. For a reserved computing device, use reserved time divided by evidenced installed life and reserved resource divided by total resource. Noncomputing sensor duty allocation needs its own measured causal utilization evidence. Do not invent life or duplicate provider hardware. | gsf-sci110 |\n| allocation_reuse | source_data and joint original versions | Trace upstream source content and retained prior-version work separately from incremental creation. Maintain a conserved beneficiary ledger with an explicit finite output/use scenario when sharing original burdens downstream; report sensitivity to reuse assumptions. Copies never multiply information creation. Joint research/software outputs require actual subdivision; unresolved joint attribution needs review. | un-cpc3-data; w3c-dcat3 |\n\n"
@@ -704,11 +760,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 20942
+              offset: 21074
               line: 350
               column: 1
             end:
-              offset: 20982
+              offset: 21114
               line: 350
               column: 41
           text: "## 7. Allocation and Co-product Handling"
@@ -724,16 +780,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_28913"
+    - unit_id: "normative_32672"
       family: "validation"
       span:
         start:
-          offset: 28913
-          line: 390
+          offset: 32672
+          line: 394
           column: 1
         end:
-          offset: 30585
-          line: 400
+          offset: 34344
+          line: 404
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| validate_product | reference_data | Require one complete identified productive information original with actual ownership/control and declared quality evidence. Reject copies, licenses, file-format conversions, mere compilation services, software or consumption content counted as equivalent originals. | un-cpc3-data; w3c-dcat3 |\n| validate_basis | all inventory rows | Require consistent per declared reference flow in both languages, linked collection records, count output and numerator-unit preservation. Reject arbitrary mass, bytes-to-kWh or money-to-item conversions. | gsf-sci110; w3c-dcat3 |\n| validate_route | observation and processing | Fail dataset completeness if any actual observation route, provider interface, utility, material, waste, direct release or upstream source burden is unknown or omitted. A conditional row may be absent only with route evidence; do not invent emissions to fill empty subsections. | un-cpc3-data; unece-gsbpm52 |\n| validate_conservation | shared work and reused content | Reconcile stage meters, provider embedded flows, device shares, joint outputs and the finite reuse ledger. Reject duplicated original costs per copy and unexplained allocation residuals hidden as zero. | gsf-sci110; w3c-dcat3 |\n| validate_coverage | dataset claim | List checks performed/skipped, missing physical and upstream layers, identity gaps and uncertainties. Foreground creation alone is not a complete cradle-to-gate or lifecycle result; metadata conformance is not scientific, privacy or legal approval. | un-cpc3-data; w3c-dcat3; gsf-sci110 |\n\n"
       headings:
@@ -752,12 +808,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 28913
-              line: 390
+              offset: 32672
+              line: 394
               column: 1
             end:
-              offset: 28935
-              line: 390
+              offset: 32694
+              line: 394
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -828,119 +884,119 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_subdivide"
       identity_kind: "explicit"
-      unit_id: "normative_20942"
+      unit_id: "normative_21074"
       source_span:
         start:
-          offset: 21055
+          offset: 21187
           line: 354
           column: 1
         end:
-          offset: 21390
+          offset: 21522
           line: 354
           column: 336
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_compute"
       identity_kind: "explicit"
-      unit_id: "normative_20942"
+      unit_id: "normative_21074"
       source_span:
         start:
-          offset: 21391
+          offset: 21523
           line: 355
           column: 1
         end:
-          offset: 21717
+          offset: 21849
           line: 355
           column: 327
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_device"
       identity_kind: "explicit"
-      unit_id: "normative_20942"
+      unit_id: "normative_21074"
       source_span:
         start:
-          offset: 21718
+          offset: 21850
           line: 356
           column: 1
         end:
-          offset: 22141
+          offset: 22273
           line: 356
           column: 424
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_reuse"
       identity_kind: "explicit"
-      unit_id: "normative_20942"
+      unit_id: "normative_21074"
       source_span:
         start:
-          offset: 22142
+          offset: 22274
           line: 357
           column: 1
         end:
-          offset: 22646
+          offset: 22778
           line: 357
           column: 505
     - pointer: "/validation_rules/0"
       rule_id: "validate_product"
       identity_kind: "explicit"
-      unit_id: "normative_28913"
+      unit_id: "normative_32672"
       source_span:
         start:
-          offset: 29008
-          line: 394
+          offset: 32767
+          line: 398
           column: 1
         end:
-          offset: 29340
-          line: 394
+          offset: 33099
+          line: 398
           column: 333
     - pointer: "/validation_rules/1"
       rule_id: "validate_basis"
       identity_kind: "explicit"
-      unit_id: "normative_28913"
+      unit_id: "normative_32672"
       source_span:
         start:
-          offset: 29341
-          line: 395
+          offset: 33100
+          line: 399
           column: 1
         end:
-          offset: 29611
-          line: 395
+          offset: 33370
+          line: 399
           column: 271
     - pointer: "/validation_rules/2"
       rule_id: "validate_route"
       identity_kind: "explicit"
-      unit_id: "normative_28913"
+      unit_id: "normative_32672"
       source_span:
         start:
-          offset: 29612
-          line: 396
+          offset: 33371
+          line: 400
           column: 1
         end:
-          offset: 29969
-          line: 396
+          offset: 33728
+          line: 400
           column: 358
     - pointer: "/validation_rules/3"
       rule_id: "validate_conservation"
       identity_kind: "explicit"
-      unit_id: "normative_28913"
+      unit_id: "normative_32672"
       source_span:
         start:
-          offset: 29970
-          line: 397
+          offset: 33729
+          line: 401
           column: 1
         end:
-          offset: 30256
-          line: 397
+          offset: 34015
+          line: 401
           column: 287
     - pointer: "/validation_rules/4"
       rule_id: "validate_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_28913"
+      unit_id: "normative_32672"
       source_span:
         start:
-          offset: 30257
-          line: 398
+          offset: 34016
+          line: 402
           column: 1
         end:
-          offset: 30583
-          line: 398
+          offset: 34342
+          line: 402
           column: 327
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -969,27 +1025,27 @@ normative_context:
           column: 226
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_20942"
+      unit_id: "normative_21074"
       source_span:
         start:
-          offset: 20942
+          offset: 21074
           line: 350
           column: 1
         end:
-          offset: 20982
+          offset: 21114
           line: 350
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_28913"
+      unit_id: "normative_32672"
       source_span:
         start:
-          offset: 28913
-          line: 390
+          offset: 32672
+          line: 394
           column: 1
         end:
-          offset: 28935
-          line: 390
+          offset: 32694
+          line: 394
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -998,5 +1054,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:454bf1bbdc2f3295d1d452918ba9b27428a9d6af947e7c750aee20122b69a22e"
-  generated_content_sha256: "sha256:146a59abca19592f1a034c171ecb4d7dfba51f7189d1560dd2719d56f9bc2ad3"
+    sha256: "sha256:83e87760862dea249a8031c78008f6706509f6556ad94cd5a2317e7fb2a8b529"
+  generated_content_sha256: "sha256:7ea2d3aa09190e14a5707300acfd1e3e6546952d899f25f38b27a2f7925e78bc"

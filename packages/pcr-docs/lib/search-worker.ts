@@ -1,5 +1,5 @@
 import { searchTerms } from "./search-terms.ts";
-import { decodeSearchEntries } from "./search-codec.ts";
+import { decodeSearchEntries, SEARCH_SCORE_SLOTS } from "./search-wire.ts";
 import type {SearchResult} from "./types.ts";
 interface SearchIndex {import(key:string,payload:string):void;search(query:string,options:{limit:number}):(string|number)[]}
 interface SearchShard {index:SearchIndex;records:Map<string,SearchResult>}
@@ -13,7 +13,7 @@ function searchRecord(value:unknown):value is SearchResult {
 async function createIndex(language:string):Promise<SearchIndex> {
  const engine:unknown=await import(engineUrl);
  if(!record(engine)||typeof engine.Index!=="function")throw new Error("Search engine is unavailable.");
- const index:unknown=Reflect.construct(engine.Index,[{tokenize:"strict",encode:(value:unknown)=>searchTerms(value,language)}]);
+ const index:unknown=Reflect.construct(engine.Index,[{tokenize:"strict",resolution:SEARCH_SCORE_SLOTS,encode:(value:unknown)=>searchTerms(value,language)}]);
  if(!record(index)||typeof index.import!=="function"||typeof index.search!=="function")throw new Error("Invalid search engine.");
  const importEntry=index.import,search=index.search;
  return {import(key,payload){importEntry.call(index,key,payload);},search(query,options){const result:unknown=search.call(index,query,options);if(!Array.isArray(result)||!result.every((hit:unknown)=>typeof hit==="string"||typeof hit==="number"&&Number.isFinite(hit)))throw new Error("Invalid search results.");return result;}};
@@ -30,8 +30,13 @@ async function load(language:string):Promise<SearchShard[]> {
   const response=await fetch(item.url);if(!response.ok)throw new Error("Search shard is unavailable.");
   const data:unknown=await response.json();
   if(!record(data)||!record(data.entries)||!Array.isArray(data.records)||!data.records.every(searchRecord))throw new Error("Invalid serialized search data.");
+  if(manifest.schemaVersion!==3&&Object.hasOwn(data,"sparseMaps"))throw new Error("Invalid serialized search data.");
+  const entries=manifest.schemaVersion===3?decodeSearchEntries(data.entries,data.sparseMaps):data.entries;
   const index=await createIndex(language);
-  for(const [key,serialized]of Object.entries(decodeSearchEntries(data.entries,manifest.schemaVersion))){
+  for(const [key,payload]of Object.entries(entries)){
+   let serialized:string;
+   if(manifest.schemaVersion===1){if(typeof payload!=="string")throw new Error("Invalid serialized search data.");serialized=payload;}
+   else{if(!Array.isArray(payload))throw new Error("Invalid serialized search data.");serialized=JSON.stringify(payload);}
    index.import(key,serialized);
   }
   shards.push({index,records:new Map(data.records.map(record=>[record.id,record]))});

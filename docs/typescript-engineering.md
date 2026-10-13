@@ -21,9 +21,9 @@ checkPaths:
   - tests/agent/**
   - scripts/engineering/**
   - .github/workflows/**
-lastReviewedAt: 2026-10-09
-lastReviewedCommit: e9b91252307d0345defcb709e819799d1aa6ba42
-lastReviewedNote: "Reviewed PCR #107/#108 latest browser failure: explicit manual language switches load the verified exported HTML document directly, preserving counterpart, query/fragment, preference and storage-denial behavior; neutral detection remains unchanged. Guide browser acceptance additionally requires exact main-frame HTTP 200 HTML navigation. Unmarked RSC failures remain blocking; no classifier exemptions, dependency or methodology changes. Fresh full CI and updated independent review remain required."
+lastReviewedAt: 2026-10-13
+lastReviewedCommit: 3372bc9f3a0e3dcb41595a05f31c6d4114be08ef
+lastReviewedNote: "Reviewed PCR #114 combined 0.4.7 qualification repair: the POSIX signal-test fixture publishes readiness atomically and reaps its owned subprocess group before deleting temporary files. Controlled failure now exits with the original assertion instead of hanging; complete instrumented engineering tests and strict types pass locally. Production runner, coverage semantics, CI budgets, runtime pins and candidate methodology are unchanged; fresh complete CI and publication remain required."
 related:
   - repository-coding-guidelines.md
   - offline-distribution.md
@@ -153,7 +153,14 @@ no-follow and source-identity tests; it never relaxes production path checks or
 canonicalizes user-supplied artifact paths on their behalf. Preserve useful test
 logs separately from disposable fixtures.
 
-Cooperative POSIX signal forwarding has a real subprocess test. Windows
+Cooperative POSIX signal forwarding has a real subprocess test. Its readiness
+file is published atomically, and its fixture subprocesses share one owned
+process group. Failed assertions terminate that group and wait for stdio closure
+before deleting the fixture, so surviving descendants cannot hide a failure by
+keeping the test process alive. This fixture cleanup does not weaken assertions,
+change the production runner, or extend CI timeouts.
+
+Windows
 `process.kill(SIGTERM)` terminates its target without invoking that handler, so
 that specific case is explicitly reported as unsupported there. Ordinary child
 failure/status propagation and temporary-root cleanup still run on Windows.

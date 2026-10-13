@@ -103,7 +103,36 @@ test("catalog generator emits the current material index and complete CPC covera
     total: coverage.entries.length,
     ...coverageCounts,
   });
-  assert.equal(result.aliases.length, coverage.summary.unmapped);
+  const leafSlugs: unknown = JSON.parse(readFileSync(path.join(repositoryRoot, CPC_3_LEAF_SLUGS_PATH), "utf8"));
+  const classificationSystem = coverage.classification_system;
+  assert.ok(typeof classificationSystem === "string");
+  const expectedAliases = arrayField(leafSlugs, "leaves").flatMap((leaf) => {
+    const code = unknownField(leaf, "code");
+    const sourcePcrId = unknownField(leaf, "pcr_id");
+    const entry = coverage.entries.find((candidate) => candidate.code === code);
+    assert.ok(entry);
+    if (entry.mapping?.pcr_id === sourcePcrId) return [];
+    return [{
+      source_pcr_id: sourcePcrId,
+      source_pcr_path: unknownField(leaf, "pcr_dir"),
+      target: {
+        kind: "classification_coverage",
+        classification_system: classificationSystem.toLowerCase(),
+        classification_version: coverage.classification_version,
+        code,
+      },
+    }];
+  });
+  assert.deepEqual(
+    result.aliases.map(({ source_pcr_id, source_pcr_path, target }) => ({
+      source_pcr_id, source_pcr_path, target,
+    })),
+    expectedAliases.sort((left, right) => {
+      const a = String(left.source_pcr_id);
+      const b = String(right.source_pcr_id);
+      return a < b ? -1 : a > b ? 1 : 0;
+    }),
+  );
   assert.equal(new Set(coverage.entries.map((entry) => entry.code)).size, 2877);
   assert.equal(coverage.source.contract_version, "2");
   assert.equal(coverage.source.generator, "builder/scripts/build-catalog.mjs");

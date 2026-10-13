@@ -1,10 +1,1333 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31626"
-  title: "Assembled flooring panels made out of wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.assembled-flooring-panels-made-out-of-wood"
+  classification_refs: "CPC 3.0 31626; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "UF-bonded all-non-tropical-hardwood-veneer, clear UV-prefinished assembled multilayer flooring"
+  excluded_products: "Single-layer solid parquet; HDF laminate/composite; unassembled strips; alternate cores/glues/finishes"
+  representative_product: "A declared species-layer recipe of factory-finished profiled multilayer wood flooring; no invented thickness, density or proportions"
+  production_route: "Purchased dry veneers → conditioning and glue preparation → cross lay-up and hot pressing → trim/saw/sand/profile → clear UV finishing/curing → inspection/boxing"
+  market_state: "Accepted, fully cured, factory finished and packed; flooring net mass excludes package"
+functional_unit:
+  what: "Manufacturing supply of assembled wood floor covering"
+  how_much: "1 kg accepted flooring net mass at factory gate; effective coverable area is measured as a supplementary product descriptor"
+  how_well: "Declared layer species, thickness, profile, glue and coating recipe, delivery moisture, curing and product acceptance criteria"
+  how_long_or_cycle: "One manufacturing supply event; no assumed service life, resurfacing cycle or installation loss"
+  reference_flow_link: "reference_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_stages
+      applies_to: "foreground_system_boundary"
+      rule: "Include conditioning, glue preparation, lay-up/press cure, machining, dust collection, all clear-coating operations/UV cure, QC, electrical material handling and packing. Collect each stage independently, then aggregate one foreground unit; WIP handoffs retain equal physical quantities on both stage ledgers."
+      source_ids:
+        - corrim-flooring-2011
+    - rule_id: boundary_upstream
+      applies_to: "foreground_system_boundary"
+      rule: "Link upstream veneer, adhesive/coating, utilities and actual waste treatment once. Separate utility generation prevents duplicated boiler emissions; site integration does not justify dropping fuel emissions or ash. Retain biogenic CO2 in any linked combustion LCI irrespective of climate accounting treatment."
+      source_ids:
+        - corrim-flooring-2011
+    - rule_id: boundary_downstream
+      applies_to: "foreground_system_boundary"
+      rule: "Installation, underlay/installation adhesive, actual cutting loss, use, repair, replacement and end of life require a separately evidenced scenario. No lifetime or installation loss multiplier is supplied by this manufacturing PCR. Do not omit low-mass resins/coatings because of mass alone."
+      source_ids:
+        - corrim-flooring-2011
+        - nwfa-wood-definition
+boundary_abstraction:
+  declared_starting_condition: "Dry separate non-tropical hardwood veneer at flooring factory receiving gate; resin and coating preparations received as declared formulations"
+  starting_condition_role: "Foreground gate-to-gate assembly/finishing plus explicit upstream product, utility, transport and waste-treatment links for cradle-to-gate use"
+  product_classification_scope: "Only the specified multilayer assembled wood subset of CPC 3.0 31626"
+  recursive_input_rule: "Purchased assembled floor panels or recovered same-category material terminate tracing at a documented upstream dataset; disclose identity, previous processing and amount. Rework within this unit is internal WIP, not a new external reference product."
+  upstream_dataset_requirement: "Matched species/veneer drying/peeling, actual independently supplied UF resin or verified complete UF adhesive with compatible supplied-state/reference basis and supplier manufacture/preparation/delivery, coating formulation, grid region/year/voltage, thermal supplier reference and actual treatment; missing compatibility remains pending"
+  disclosure: "Gate, period, configurations, starting moisture, purchased/on-site split, WIP/stock changes, heat generation boundary, losses and excluded downstream scenarios"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Assembled flooring panels made out of wood"
+    uuid: "a68f3cc0-8df3-4e20-8793-599f95e254a2"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Species and source for each wood layer"
+    - "thickness of each layer and total"
+    - "grain arrangement and bond line"
+    - "UF formulation and supplied solids/water"
+    - "clear UV coating SKU and chemistry per stage"
+    - "retained coating/additive mass"
+    - "measured cover dimensions and joining profile"
+    - "moisture measurement basis"
+    - "net mass"
+    - "factory gate"
+    - "metered voltage"
+    - "heat supply definition"
+    - "acceptance grade/date"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh accepted finished flooring on a calibrated scale at declared moisture; subtract all package tare and reject mass. Denominator G is total accepted net flooring mass in the matched production period; no default product weight."
+  - id: effective_area
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Area"
+      uuid: ""
+    required_unit: "m2"
+    rule: "Measure a representative joined layout of accepted boards with actual joint engagement. Count only exposed coverable face, excluding tongue overlap, concealed edges and package nominal oversize. Reconcile a = A/G with thickness and measured mass; do not assume installation cutting waste."
+  - id: wood_moisture
+    applies_to: "wood layers"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use dry-basis moisture u = (wet wood mass - dry wood mass) / dry wood mass. Measure separate wood layers with a species-calibrated method verified against representative oven-dry samples; do not treat resin/coating volatilization as water. No default moisture or density."
+  - id: utility_basis
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Electricity retains the recorded NCV property; convert metered kWh using 3.6 MJ/kWh. This is electrical-energy unit conversion, not fuel heat or efficiency."
+  - id: utility_heat_basis
+    applies_to: "press_heat"
+    required_property_ref:
+      name: "Gross calorific value"
+      uuid: "93a60a56-a3c8-14da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Purchased steam heat retains its GCV reference and requires supplier-defined reference-energy and delivery/return compatibility. Preserve measured steam/condensate mass, state and physical net enthalpy separately; a bare MJ value does not establish net useful heat or a GCV conversion. Unknown provider correspondence remains pending."
+process_map:
+  - id: flooring
+    name: "Assembly, machining, clear UV cure and packing"
+    inclusion: "required"
+    inclusion_condition: "Declared UF/all-hardwood-veneer route"
+    role: "One aggregated foreground manufacture; stage measurements retained"
+    quantitative_reference: "1 kg reference_output"
+process_inventory:
+  - id: flooring
+    label: "Assembly, machining, clear UV cure and packing"
+    inputs:
+      product:
+        - row_id: face_veneer
+          role: "face veneer"
+          name: "Veneer sheets and sheets for plywood and other wood sawn lengthwise, sliced or peeled, of a thickness not exceeding 6 mm, of other non-coniferous wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a8c3cba-0c6b-422a-ac79-b7032d874bcb"
+          property_unit: "Mass / kg"
+          description: "This is a separate face veneer exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh the separate purchased dry face/wear veneer of one identified non-tropical hardwood species and supplier; record layer thickness, moisture and rejects. Split another species or supply route into a separate atomic row. No pooled wood input."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_layers
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: core_veneer
+          role: "core veneer"
+          name: "Veneer sheets and sheets for plywood and other wood sawn lengthwise, sliced or peeled, of a thickness not exceeding 6 mm, of other non-coniferous wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a8c3cba-0c6b-422a-ac79-b7032d874bcb"
+          property_unit: "Mass / kg"
+          description: "This is a separate core veneer exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh the separate purchased dry cross-grain core veneer of one identified non-tropical hardwood species and supplier; record layer thickness, moisture and rejects. Split another species or supply route into a separate atomic row. No pooled wood input."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_layers
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: back_veneer
+          role: "back veneer"
+          name: "Veneer sheets and sheets for plywood and other wood sawn lengthwise, sliced or peeled, of a thickness not exceeding 6 mm, of other non-coniferous wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a8c3cba-0c6b-422a-ac79-b7032d874bcb"
+          property_unit: "Mass / kg"
+          description: "This is a separate back veneer exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh the separate purchased dry balancing backing veneer of one identified non-tropical hardwood species and supplier; record layer thickness, moisture and rejects. Split another species or supply route into a separate atomic row. No pooled wood input."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_layers
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: uf_glue
+          role: "uf glue"
+          name: "Urea-formaldehyde resin"
+          flow_type: "product"
+          flow_ref:
+            uuid: "23e41b7b-0991-4cf7-8625-7a30d23bbb27"
+          property_unit: "Mass / kg"
+          description: "This is a separate uf glue exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Use this generic UF-resin row only for a real independently supplied resin state and mass reference supported by its native identity and actual provider; record supplied resin mass, measured solids/moisture and actual onsite mixing/application. A bought complete prepared aqueous or compounded UF adhesive requires one specific compatible complete-formulation supply row and provider retaining supplier resin manufacture, formulation preparation and delivery before use; the generic resin UUID alone does not establish that complete supply. Its included resin, catalyst, carrier water and additives are analytical composition, not new external purchases. Actual independently purchased additions and onsite dilution/mixing water, utilities and losses remain separate. Preserve supplier wet/active reference correspondence; never equate whole wet preparation kg to dry-resin kg or count included water twice. No default solids fraction."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: glue_hardener
+          role: "glue hardener"
+          name: "Separately supplied solid ammonium-chloride catalyst"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional one actually separately supplied solid ammonium-chloride catalyst at the flooring procurement boundary, supported by supplier/SDS assay, form and actual delivery/interface/reference evidence. The selected physical exchange has no verified UUID: chemical CAS and Mass/kg alone do not establish a matching delivered supplier state. Require positive actual delivered-state/interface and native-reference compatibility before linking a directly verified identity. A supplied solution or blend requires its own complete-product identity. Unknown composition, dose or route equivalence is not invented."
+          amount:
+            expression: "Only when ammonium chloride is separately dosed: weigh pure salt, record concentration/purity and mixing losses; embedded catalyst in purchased adhesive is not a duplicate input. Absent dosing requires evidence of absence. Retain actual supplier assay and delivered solid reference quantity; a supplied solution or blend needs its own compatible complete-formulation identity."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: process_water
+          role: "process water"
+          name: "Tap water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d1e0e36c-07f0-4a75-bdcb-efb5d9e2ac36"
+          property_unit: "Mass / kg"
+          description: "This is a separate process water exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Meter separately added treated tap water for glue dilution or cleaning, convert volume using measured water density at temperature, and separate internal recirculation; exclude resin-contained water from this input."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: electricity
+          role: "electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3d76981f-964a-4865-b588-0e067a2a1163"
+          property_unit: "Net calorific value / MJ"
+          description: "This is a separate electricity exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Sum attributable metered kWh for conditioning, glue spreading, pressing, sawing, sanding, profiling, UV lamps, extraction, electric handling and packing; convert to MJ with 1 kWh = 3.6 MJ. Use only a verified 1-35 kV user-side supply and separate measured transformer losses; no duplicate stage totals."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: press_heat
+          role: "press heat"
+          name: "Process heat from steam"
+          flow_type: "product"
+          flow_ref:
+            uuid: "fcf9e128-688f-42f0-9dca-85d2319cfac5"
+          property_unit: "Gross calorific value / MJ"
+          description: "This is a separate press heat exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "For supplied industrial-boiler steam heat, record supplier reference definition plus delivered steam mass, pressure, temperature, dryness and condensate return; calculate heat from measured enthalpies only on the supplier-defined basis. Gross calorific value/MJ identity does not prove net delivered heat; keep the background link pending when the reference basis is unknown. Do not record both steam heat and its upstream boiler fuel as external inputs."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: primer
+          role: "primer"
+          name: "UV-curable wood-flooring primer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is a separate primer exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh one purchased formulation/SKU issued to this coating stage less measured returns; retain SDS, solids, resin chemistry, reactive diluent, photoinitiator and water/solvent fractions. Record separately from other coating stages. Filler is conditional on actual use; clear uncoloured route has no stain input. Do not invent a default formulation or curing conversion."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: sealer
+          role: "sealer"
+          name: "UV-curable wood-flooring sealer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is a separate sealer exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh one purchased formulation/SKU issued to this coating stage less measured returns; retain SDS, solids, resin chemistry, reactive diluent, photoinitiator and water/solvent fractions. Record separately from other coating stages. Filler is conditional on actual use; clear uncoloured route has no stain input. Do not invent a default formulation or curing conversion."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: topcoat
+          role: "topcoat"
+          name: "UV-curable wood-flooring clear topcoat"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is a separate topcoat exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh one purchased formulation/SKU issued to this coating stage less measured returns; retain SDS, solids, resin chemistry, reactive diluent, photoinitiator and water/solvent fractions. Record separately from other coating stages. Filler is conditional on actual use; clear uncoloured route has no stain input. Do not invent a default formulation or curing conversion."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: filler
+          role: "filler"
+          name: "UV-curable wood-flooring pore filler"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is a separate filler exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh one purchased formulation/SKU issued to this coating stage less measured returns; retain SDS, solids, resin chemistry, reactive diluent, photoinitiator and water/solvent fractions. Record separately from other coating stages. Filler is conditional on actual use; clear uncoloured route has no stain input. Do not invent a default formulation or curing conversion."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: alumina
+          role: "alumina"
+          name: "Aluminum oxide (alumina)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "62905e17-33e8-4e73-a606-fdafc6e48aea"
+          property_unit: "Mass / kg"
+          description: "This is a separate alumina exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Only separately dosed primary-produced aluminium oxide: weigh addition and document particle grade, purity and supplier route; embedded alumina in purchased topcoat is not counted twice. Background grade compatibility must be demonstrated."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: cleaner
+          role: "cleaner"
+          name: "Acetone for coating-roller cleaning"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "This is a separate cleaner exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Only when SDS identifies acetone cleaning: weigh new solvent, purity, recovered quantity and losses. Another actual cleaning chemical requires its own row; no generic solvent total substitutes."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: carton
+          role: "carton"
+          name: "corrugated board boxes"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f197bec-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Mass / kg"
+          description: "This is a separate carton exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions. The selected corrugated-box record specifies16.6% primary and83.4% recycled fibre on its source fibre basis, production mix at plant and technology mix. Retain this locator only when actual whole supplied carton composition, construction, state and supplier/reference basis demonstrably match those constraints; these figures are source-identity conditions, never a factory recipe or universal recycled-content default. Other or unverified actual boxes remain whole physical exchanges requiring another compatible verified identity or a precise UUID gap, with supplier box manufacture and delivery retained once."
+          amount:
+            expression: "Weigh new corrugated boxes issued to this product lot; record board grade and fibre sourcing, separate damaged scrap and material leaving with product. Packaging is outside accepted flooring net mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: film
+          role: "film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass / kg"
+          description: "This is a separate film exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Only if PE film is actually used: weigh film roll issue minus returns, record polymer grade and losses. Verify actual polyethylene-film material state and supplier/provider compatibility before background linkage; the polymer identity does not establish a matched packaging dataset. No assumption that every carton is film wrapped."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: freight
+          role: "freight"
+          name: "Inbound diesel road-freight service"
+          flow_type: "product"
+          property_unit: "Mass*distance / t*km"
+          description: "This is a separate freight exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "For transport absent from supplied product datasets, use measured shipment mass and actual loaded distance, vehicle class, fuel, load factor and backhaul; keep one mode per row and avoid double counting delivered datasets. Select a supplier dataset with matching tonne-kilometre definition."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_transport
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_output
+          role: "reference output"
+          name: "Assembled flooring panels made out of wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "a68f3cc0-8df3-4e20-8793-599f95e254a2"
+          property_unit: "Mass / kg"
+          description: "1 kg accepted factory-prefinished flooring net mass at declared delivery moisture, including retained UF and coatings, excluding all transport packaging; reconcile effective installed-joint coverage, thickness and species-layer records for the same lot."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_output
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+      waste:
+        - row_id: wood_trim
+          role: "wood trim"
+          name: "Offcut"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "acc22294-8e77-4784-988f-2499be3c60eb"
+          property_unit: "Mass / kg"
+          description: "This is a separate wood trim exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh separately collected actual non-agglomerated solid UF-bonded panel offcuts and rejected panels; document wood/adhesive state, moisture, coating contamination, destination and waste status. Confirm that physical state and recipient/provider acceptance before treatment linkage; a broad offcut identity does not establish matching treatment. Unglued veneer rejects are a different stream and must be split when present. Retain physical output mass before environmental allocation."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: bonded_dust
+          role: "bonded dust"
+          name: "UF-bonded wood sanding dust"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This is a separate bonded dust exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh captured UF-bonded sanding dust separately from escaped airborne particles and solid offcuts; identify coating fraction and waste treatment. Dust from untreated veneer before gluing requires its own row."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: glue_waste
+          role: "glue waste"
+          name: "Spent UF adhesive residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This is a separate glue waste exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh waste UF glue separately, including water and solids; distinguish internal reusable returns from external disposal; no mixture with varnish residue."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: coating_waste
+          role: "coating waste"
+          name: "Waste paint"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "877e5a04-76c8-4c5b-ac4c-062f5beeb2bd"
+          property_unit: "Mass / kg"
+          description: "This is a separate coating waste exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh UV coating residue for one formulation and waste state separately from glue and solvent wastes; identify uncured monomers, contamination and external treatment. Split physically different residues."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: wastewater
+          role: "wastewater"
+          name: "Untreated UF-glue cleaning wastewater"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This is a separate wastewater exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Measure untreated aqueous UF-glue cleaning wastewater crossing to treatment; record water mass, suspended solids, dissolved formaldehyde and actual destination. Coating cleaning wastewater is separate when present. Do not call treated effluent this untreated input; internal recirculation is not external discharge."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: spent_acetone
+          role: "spent acetone"
+          name: "Spent acetone cleaning solvent"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "This is a separate spent acetone exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Only for actual acetone cleaning: weigh spent liquid sent outside, measure water/coating contamination and recovered acetone. Reconcile with new solvent input and acetone to air; never assume all input evaporates."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: carton_scrap
+          role: "carton scrap"
+          name: "Packaging waste, cardboard"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "72270223-04b1-4986-a546-94e5a0821317"
+          property_unit: "Mass / kg"
+          description: "This is a separate carton scrap exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Weigh actual corrugated packaging trim and damaged boxes sent out separately; the identity record estimate is not a default scrap fraction."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+      elementary:
+        - row_id: formaldehyde
+          role: "formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "This is a separate formaldehyde exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Measure formaldehyde (CAS 50-00-0) mass discharged after controls from pressing, curing and handling during manufacture; retain source-specific concentration, gas volume and operating hours. Product-use chamber tests do not quantify manufacturing discharge. Compartment: outdoor air, unspecified; do not assume urban, rural, stack height or long-term release. Record presence/absence from site evidence, not from the identity lookup."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: acetone_air
+          role: "acetone air"
+          name: "acetone"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9520-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "This is a separate acetone air exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Only actual acetone cleaning: measure or close a solvent balance for acetone (CAS 67-64-1) released to outdoor air; subtract retained, recovered and disposed acetone; no generic VOC total used as acetone. Compartment: outdoor air, unspecified; do not assume urban, rural, stack height or long-term release. Record presence/absence from site evidence, not from the identity lookup."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: pm25
+          role: "pm25"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "This is a separate pm25 exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Measure discharged particles <=2.5 micrometres after dust controls. This is an exclusive bin; captured dust is a waste output, not an air emission. Compartment: outdoor air, unspecified; do not assume urban, rural, stack height or long-term release. Record presence/absence from site evidence, not from the identity lookup."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: pmcoarse
+          role: "pmcoarse"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "This is a separate pmcoarse exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Measure particles >2.5 to <=10 micrometres. Difference PM10 minus PM2.5 is permitted only for matched samplings, controls and reference conditions; never add nested PM10 and PM2.5 totals. Compartment: outdoor air, unspecified; do not assume urban, rural, stack height or long-term release. Record presence/absence from site evidence, not from the identity lookup."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: pmover10
+          role: "pmover10"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "This is a separate pmover10 exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Measure particles >10 micrometres. Derive total minus PM10 only from matched data; unresolved size distribution remains pending, not an arbitrary split. Sum only the three disjoint bins. Compartment: outdoor air, unspecified; do not assume urban, rural, stack height or long-term release. Record presence/absence from site evidence, not from the identity lookup."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+        - row_id: water_air
+          role: "water air"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "This is a separate water air exchange at the flooring-unit boundary; collect it under the stated route and measurement conditions."
+          amount:
+            expression: "Record water vapour released to outdoor air from wood moisture change and water in UF/coating operations, using matched input/output/storage water balances. Do not use a freshwater water-vapour flow or count internally returned condensate as an air release. Compartment: outdoor air, unspecified; do not assume urban, rural, stack height or long-term release. Record presence/absence from site evidence, not from the identity lookup."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-flooring-2011
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_physical
+    applies_to: "foreground_burden_allocation"
+    rule: "Keep the physical wood/water/carbon ledger and the allocated environmental burden ledger separately. Accepted floor panels, WIP changes, offcuts, captured dust and external wastes keep their full measured quantities. Never multiply co-product physical output by an allocation share."
+    source_ids:
+      - corrim-flooring-2011
+  - rule_id: allocation_subdivide
+    applies_to: "foreground_burden_allocation"
+    rule: "First use stage metering/subdivision for avoidable joint burdens. External waste disposal with no saleable product is not a co-product allocation denominator. Internal recovered solvent, heat and rework stay internal and receive no external substitution credit."
+    source_ids:
+      - corrim-flooring-2011
+  - rule_id: allocation_joint
+    applies_to: "foreground_burden_allocation"
+    rule: "For demonstrated saleable wood co-products with similar wood material, disclose a dry-wood-mass allocation of remaining inseparable wood-conversion burdens using measured moisture-corrected masses; report sensitivity where prices or contamination invalidate that physical relation. UF/coating/finishing-specific burdens follow their measured consumption and destinations, not all wood outputs automatically. Document shares summing to one and a separate allocated dataset view."
+    source_ids:
+      - corrim-flooring-2011
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_output
+      process_id: "flooring"
+      flow_role: "Accepted output geometry and mass"
+      record_type: "primary measurement and records"
+      raw_fields: "lot; accepted/rejected counts; package tare; net finished mass G; moisture; effective joint width/length; joined-layout area A; total/layer thickness; grade/date; WIP stock"
+      collection_method: "Calibrated scale, calipers and joined-layout survey on the same representative lot; do not derive G from nominal density."
+      unit: "kg; m2; mm"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+    - protocol_id: cp_layers
+      process_id: "flooring"
+      flow_role: "Separate wood layers"
+      record_type: "primary measurement and records"
+      raw_fields: "species and botanical group; supplier; layer position; grain; dry veneer thickness; issue/return/reject weights; wet/dry sample masses; moisture calibration; start/end stocks"
+      collection_method: "Weigh each species/layer supply independently; matched wood-only oven-dry samples establish dry-basis moisture; final composite method must account for resin/coating volatiles."
+      unit: "kg; mm"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+    - protocol_id: cp_recipe
+      process_id: "flooring"
+      flow_role: "Glue and each coating/cleaner chemical"
+      record_type: "primary measurement and records"
+      raw_fields: "SKU; SDS; supplier formulation; wet mass; solids; water; dose; issue; return; retained dry glue/coating; catalyst/additive; cleaning recovery; stage; cure schedule; QC"
+      collection_method: "Calibrated weighing and material issue/return/stock balances for each actual SKU; retain press temperature/time/pressure, UV lamp dose/speed and cure acceptance without numerical defaults. Verify each actual independent UF-resin supply versus a bought whole prepared adhesive: complete formulations require specific compatible complete-product identities/providers and supplier manufacture/preparation/delivery once; included ingredients/carrier water remain analytical. Record true separately purchased additions and actual onsite dilution/mixing water/utilities/losses separately, with matched provider wet/active reference basis; unresolved whole identities remain pending, never recaption a constituent UUID."
+      unit: "kg"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+    - protocol_id: cp_energy
+      process_id: "flooring"
+      flow_role: "Stage electricity and steam heat"
+      record_type: "primary measurement and records"
+      raw_fields: "stage; kWh; meter; voltage; grid/period; transformer boundary; steam/return mass; pressure; temperature; dryness; enthalpy reference; supplier energy definition"
+      collection_method: "Submeter or auditable run-time metering allocation for press, machining, UV, extraction and packing; meter supply/return and reconcile enthalpy with supplier reference. Unknown definition blocks thermal background linkage."
+      unit: "MJ"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+    - protocol_id: cp_packaging
+      process_id: "flooring"
+      flow_role: "Each packaging component"
+      record_type: "primary measurement and records"
+      raw_fields: "box/film SKU; issue/return weights; package counts; tare; scrap; outgoing material; fibre/polymer grade"
+      collection_method: "Weigh components separately and reconcile purchase, stores, packed product and damaged material; no standard scrap fraction."
+      unit: "kg"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+    - protocol_id: cp_waste
+      process_id: "flooring"
+      flow_role: "Each waste stream"
+      record_type: "primary measurement and records"
+      raw_fields: "origin stage; material chemistry; wet/dry mass; moisture; resin/coating fraction; retained/recovered quantity; destination; sale status; treatment manifest; storage change"
+      collection_method: "Separate weighed containers/weighbridge and analytical liquid sampling; distinguish raw-wood dust, bonded dust, glue, coating, solvent, aqueous effluent and cardboard. Preserve full pre-allocation masses."
+      unit: "kg"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+    - protocol_id: cp_air
+      process_id: "flooring"
+      flow_role: "Each released species/particle bin"
+      record_type: "primary measurement and records"
+      raw_fields: "source; controls; species/CAS; sample time; concentration; gas flow; pressure/temperature; wet/dry gas basis; operating hours; detection limits; PM cutpoints; background; solvent/wood-water balance"
+      collection_method: "Matched stack/fugitive monitoring after controls, with site-specific validated mass balance where monitoring is unavailable; distinguish absence from below detection and unresolved. Identify every actual chemical, not one VOC total."
+      unit: "kg"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+    - protocol_id: cp_transport
+      process_id: "flooring"
+      flow_role: "Actual incoming road freight"
+      record_type: "primary measurement and records"
+      raw_fields: "shipment material; loaded tonnes; distance; vehicle class; fuel; payload; return; supplier delivered boundary"
+      collection_method: "Shipping records and actual route distances; supplier boundary check prevents duplicated transport."
+      unit: "t*km"
+      frequency: "Each lot/shift; continuous meters; representative emission campaign"
+      temporal_coverage: "One matched full production period covering route/product variability"
+      site_scope: "One facility and one declared recipe/configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration; raw records; matched stocks; uncertainty and absence evidence"
+  calculation_rules:
+    - id: period_normalization
+      applies_to: "all inventory rows"
+      rule: "q = Q / G; Q is attributed matched-period exchange; G is accepted flooring net kg, strictly positive. Keep physical Q and allocation shares separate."
+      inputs:
+        - Q
+        - G
+        - cp_output
+      output: "Exchange per 1 kg reference flow"
+      source_ids:
+        - corrim-flooring-2011
+    - id: area_reconciliation
+      applies_to: "reference_output"
+      rule: "a = A/G; measured coverable area per kg. t = measured finished thickness in metres. Envelope volume V = A*t; actual profiled solid volume subtracts measured recess/overlap geometry; rho = G/V on the same moisture basis. A package nominal rectangle is not effective cover."
+      inputs:
+        - A
+        - G
+        - t
+        - cp_output
+      output: "m2/kg and geometry/mass check"
+      source_ids:
+        - nwfa-wood-definition
+    - id: layer_balance
+      applies_to: "face_veneer; core_veneer; back_veneer"
+      rule: "For each pure wood layer, u = (m_wet - m_dry)/m_dry; m_dry = m_wet/(1+u). Sum dry wood retained, dry resin, dry coating/additives and measured retained water to reconcile G. Separate incoming - outgoing - stock change for wood, resin solids, water and carbon; never infer carbon content from total coated-board mass."
+      inputs:
+        - "Layer masses"
+        - u
+        - "retained resin/coating/water"
+        - cp_layers
+        - cp_recipe
+        - cp_waste
+      output: "Separate material/water/carbon residuals"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: metered_electricity
+      applies_to: "electricity"
+      rule: "E_MJ = 3.6 * E_kWh; sum mutually exclusive stage readings, reconcile whole-unit meter and remove documented unrelated loads."
+      inputs:
+        - kWh
+        - "stage meters"
+        - cp_energy
+      output: "MJ per period then per kg"
+      source_ids:
+        - corrim-flooring-2011
+    - id: thermal_reconciliation
+      applies_to: "press_heat"
+      rule: "H = sum(m_supply*h_supply) - sum(m_return*h_return), with matched enthalpy reference and units plus documented other outlet/heat losses. Use H only if supplier reference is the same delivered-energy basis; do not equate this net balance automatically to a GCV exchange."
+      inputs:
+        - "Steam/condensate masses"
+        - pressure
+        - temperature
+        - dryness
+        - "supplier definition"
+        - cp_energy
+      output: "Measured thermal balance and linkage compatibility"
+      source_ids:
+        - corrim-flooring-2011
+    - id: emission_quantity
+      applies_to: "formaldehyde; acetone_air; pm25; pmcoarse; pmover10; water_air"
+      rule: "Integrate matched mass concentration * gas volume over measured operation, with unit/temperature/pressure/wet-dry conversions and controls. Particle differences require matched nested samplings; sums include exclusive bins only. Water/solvent balances exclude recovered and retained quantities. No positive factors are supplied."
+      inputs:
+        - "Monitoring/balance records"
+        - cp_air
+      output: "Species-specific released mass"
+      source_ids:
+        - corrim-flooring-2011
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "all inventory rows"
+      requirement: "Verify full original flow route, material, compartment, property and quantity basis. An identity UUID is not a complete supplier dataset; blank identities and pending basis prevent dependent dataset completion."
+      evidence: "Direct flow definition; primary supplier specification"
+    - id: quality_balances
+      applies_to: "flooring"
+      requirement: "Close separate physical wood, nonwood solids, water, solvent and carbon balances with stocks and full outputs; declare instrument uncertainty and investigate residuals, no invented universal tolerance."
+      evidence: "cp_output; cp_layers; cp_recipe; cp_waste; cp_air"
+    - id: quality_scope
+      applies_to: "flooring"
+      requirement: "Use the actual facility period, declared product recipe and supplier region/year. Do not transfer coniferous, paper, optical, wafer or wet-rendering surveys. Unknown, absent and below detection remain distinct."
+      evidence: "Production and supplier records; source applicability"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "foreground_dataset_conformance"
+    rule: "Confirm real wood in every structural ply, individual species/source and thickness, UF bond and clear factory UV finish; reject excluded solid, HDF, strip and alternate-route products."
+    source_ids:
+      - unsd-cpc-31626
+      - nwfa-wood-definition
+      - corrim-flooring-2011
+  - rule_id: validate_denominator
+    applies_to: "foreground_dataset_conformance"
+    rule: "Exactly one reference_output of 1 kg accepted net finished flooring. All inventories and collection aggregation use per 1 kg reference flow. Reconcile same-lot effective joined area, measured thickness, net mass and wood moisture; no assumed life or installation waste."
+    source_ids:
+      - usda-wood-handbook-2021
+  - rule_id: validate_atomic
+    applies_to: "foreground_dataset_conformance"
+    rule: "Every row is one material/species/formulation/waste/emission. Split physical variants; confirm exact Chinese names and original UUID route/property. Chemical/product tests cannot replace manufacturing emission records. Unknown thermal basis or UUID remains incomplete, not zero."
+    source_ids:
+      - corrim-flooring-2011
+  - rule_id: validate_ledgers
+    applies_to: "foreground_dataset_conformance"
+    rule: "Retain complete physical balances before environmental allocation, matched WIP handoffs, non-overlapping PM bins and all combustion LCI including biogenic CO2 in linked heat datasets. Background and foreground emissions must not duplicate."
+    source_ids:
+      - corrim-flooring-2011
+published_dataset_profile:
+  dataset_role: "Measured flooring manufacture with explicit upstream links; candidate method does not itself publish a dataset"
+  downstream_use: "secondary_dataset; background_dataset after independent validation of actual foreground records and pending identities/bases"
+  allowed_use: "Declared UF/all-hardwood-veneer/clear UV route, manufacturing comparison at matched gate/recipe/quality and moisture"
+  excluded_use: "Unsupported solid/HDF/strip variants, installed-service equivalence, generic lifespan, assumed cutting losses or emission-free claims"
+  required_metadata: "All reference qualifiers; facility/period; G and effective A; upstream/treatment links; stage records; stocks; physical and allocated views"
+  required_quality_disclosure: "Unresolved UUIDs, thermal/recipe background compatibility, sample coverage, uncertainty, missing pollutants and differences from evidence scope"
+  update_trigger: "Change of layers/species/core/glue/coating, reference geometry/moisture, utility supplier, treatment, measurement coverage or material source evidence"
+data_sources:
+  - id: "unsd-cpc-31626"
+    type: "official_guidance"
+    reference: "[UNSD CPC 3.0, code 31626 explanatory note](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/31626)"
+    used_for: "Solid assembled and multilayer wood panel inclusion; broader classification than chosen route"
+  - id: "nwfa-wood-definition"
+    type: "extension_guidance"
+    reference: "[NWFA, Use Real Wood: Real Wood Definition](https://nwfa.org/use-real-wood/)"
+    used_for: "Solid/all-wood engineered/composite distinction; identity only, no service life or area loss"
+  - id: "corrim-flooring-2011"
+    type: "literature"
+    reference: "[Bergman and Bowe, CORRIM Module N, Life-Cycle Inventory of Manufacturing Prefinished Engineered Wood Flooring in the Eastern United States (2011)](https://corrim.org/wp-content/uploads/2018/03/lci-prefinished-engineered-wood-flooring-eastern-us.pdf), printed pp. 7–11, sections 2.5–2.6, 3.6–3.9; survey January–December 2007"
+    used_for: "Layered hardwood veneers; UF/PVA alternatives; hot pressing, machining, UV coats/curing and cardboard; joint wood burdens. No survey parameter, proxy, transport distance or emission factor adopted."
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "[USDA Forest Products Laboratory, Wood Handbook—Wood as an Engineering Material, FPL-GTR-282 (2021)](https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf), chapters 4 and 13, printed pp. 4–1 and 13–2"
+    used_for: "Wood dry-basis moisture and representative oven-dry method; avoid resin/coating volatile interference; no industry density/moisture target"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:7c7fbacdd85a95c7a3f8951c2228f86b198ad8444928c55227751e56c7087094"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6874"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6874
+          line: 64
+          column: 1
+        end:
+          offset: 9387
+          line: 85
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Dry separate non-tropical hardwood veneer at flooring factory receiving gate; resin and coating preparations received as declared formulations |\n| starting_condition_role | Foreground gate-to-gate assembly/finishing plus explicit upstream product, utility, transport and waste-treatment links for cradle-to-gate use |\n| product_classification_scope | Only the specified multilayer assembled wood subset of CPC 3.0 31626 |\n| recursive_input_rule | Purchased assembled floor panels or recovered same-category material terminate tracing at a documented upstream dataset; disclose identity, previous processing and amount. Rework within this unit is internal WIP, not a new external reference product. |\n| upstream_dataset_requirement | Matched species/veneer drying/peeling, actual independently supplied UF resin or verified complete UF adhesive with compatible supplied-state/reference basis and supplier manufacture/preparation/delivery, coating formulation, grid region/year/voltage, thermal supplier reference and actual treatment; missing compatibility remains pending |\n| disclosure | Gate, period, configurations, starting moisture, purchased/on-site split, WIP/stock changes, heat generation boundary, losses and excluded downstream scenarios |\n\n### Boundary Rules\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| boundary_stages | Include conditioning, glue preparation, lay-up/press cure, machining, dust collection, all clear-coating operations/UV cure, QC, electrical material handling and packing. Collect each stage independently, then aggregate one foreground unit; WIP handoffs retain equal physical quantities on both stage ledgers. | corrim-flooring-2011 |\n| boundary_upstream | Link upstream veneer, adhesive/coating, utilities and actual waste treatment once. Separate utility generation prevents duplicated boiler emissions; site integration does not justify dropping fuel emissions or ash. Retain biogenic CO2 in any linked combustion LCI irrespective of climate accounting treatment. | corrim-flooring-2011 |\n| boundary_downstream | Installation, underlay/installation adhesive, actual cutting loss, use, repair, replacement and end of life require a separately evidenced scenario. No lifetime or installation loss multiplier is supplied by this manufacturing PCR. Do not omit low-mass resins/coatings because of mass alone. | corrim-flooring-2011; nwfa-wood-definition |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 284
+              line: 9
+              column: 1
+            end:
+              offset: 361
+              line: 9
+              column: 78
+          text: "# Factory-prefinished UF-bonded all-hardwood-veneer assembled flooring panels"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6874
+              line: 64
+              column: 1
+            end:
+              offset: 6895
+              line: 64
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_40472"
+      family: "allocation"
+      span:
+        start:
+          offset: 40472
+          line: 574
+          column: 1
+        end:
+          offset: 41735
+          line: 582
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| allocation_physical | Keep the physical wood/water/carbon ledger and the allocated environmental burden ledger separately. Accepted floor panels, WIP changes, offcuts, captured dust and external wastes keep their full measured quantities. Never multiply co-product physical output by an allocation share. | corrim-flooring-2011 |\n| allocation_subdivide | First use stage metering/subdivision for avoidable joint burdens. External waste disposal with no saleable product is not a co-product allocation denominator. Internal recovered solvent, heat and rework stay internal and receive no external substitution credit. | corrim-flooring-2011 |\n| allocation_joint | For demonstrated saleable wood co-products with similar wood material, disclose a dry-wood-mass allocation of remaining inseparable wood-conversion burdens using measured moisture-corrected masses; report sensitivity where prices or contamination invalidate that physical relation. UF/coating/finishing-specific burdens follow their measured consumption and destinations, not all wood outputs automatically. Document shares summing to one and a separate allocated dataset view. | corrim-flooring-2011 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 284
+              line: 9
+              column: 1
+            end:
+              offset: 361
+              line: 9
+              column: 78
+          text: "# Factory-prefinished UF-bonded all-hardwood-veneer assembled flooring panels"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 40472
+              line: 574
+              column: 1
+            end:
+              offset: 40512
+              line: 574
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_52331"
+      family: "validation"
+      span:
+        start:
+          offset: 52331
+          line: 618
+          column: 1
+        end:
+          offset: 53608
+          line: 627
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| validate_scope | Confirm real wood in every structural ply, individual species/source and thickness, UF bond and clear factory UV finish; reject excluded solid, HDF, strip and alternate-route products. | unsd-cpc-31626; nwfa-wood-definition; corrim-flooring-2011 |\n| validate_denominator | Exactly one reference_output of 1 kg accepted net finished flooring. All inventories and collection aggregation use per 1 kg reference flow. Reconcile same-lot effective joined area, measured thickness, net mass and wood moisture; no assumed life or installation waste. | usda-wood-handbook-2021 |\n| validate_atomic | Every row is one material/species/formulation/waste/emission. Split physical variants; confirm exact Chinese names and original UUID route/property. Chemical/product tests cannot replace manufacturing emission records. Unknown thermal basis or UUID remains incomplete, not zero. | corrim-flooring-2011 |\n| validate_ledgers | Retain complete physical balances before environmental allocation, matched WIP handoffs, non-overlapping PM bins and all combustion LCI including biogenic CO2 in linked heat datasets. Background and foreground emissions must not duplicate. | corrim-flooring-2011 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 284
+              line: 9
+              column: 1
+            end:
+              offset: 361
+              line: 9
+              column: 78
+          text: "# Factory-prefinished UF-bonded all-hardwood-veneer assembled flooring panels"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 52331
+              line: 618
+              column: 1
+            end:
+              offset: 52353
+              line: 618
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_stages"
+      identity_kind: "explicit"
+      unit_id: "normative_6874"
+      source_span:
+        start:
+          offset: 8311
+          line: 81
+          column: 1
+        end:
+          offset: 8665
+          line: 81
+          column: 355
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_upstream"
+      identity_kind: "explicit"
+      unit_id: "normative_6874"
+      source_span:
+        start:
+          offset: 8666
+          line: 82
+          column: 1
+        end:
+          offset: 9022
+          line: 82
+          column: 357
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_downstream"
+      identity_kind: "explicit"
+      unit_id: "normative_6874"
+      source_span:
+        start:
+          offset: 9023
+          line: 83
+          column: 1
+        end:
+          offset: 9385
+          line: 83
+          column: 363
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_40472"
+      source_span:
+        start:
+          offset: 40566
+          line: 578
+          column: 1
+        end:
+          offset: 40897
+          line: 578
+          column: 332
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_subdivide"
+      identity_kind: "explicit"
+      unit_id: "normative_40472"
+      source_span:
+        start:
+          offset: 40898
+          line: 579
+          column: 1
+        end:
+          offset: 41209
+          line: 579
+          column: 312
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_joint"
+      identity_kind: "explicit"
+      unit_id: "normative_40472"
+      source_span:
+        start:
+          offset: 41210
+          line: 580
+          column: 1
+        end:
+          offset: 41733
+          line: 580
+          column: 524
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_52331"
+      source_span:
+        start:
+          offset: 52407
+          line: 622
+          column: 1
+        end:
+          offset: 52673
+          line: 622
+          column: 267
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_denominator"
+      identity_kind: "explicit"
+      unit_id: "normative_52331"
+      source_span:
+        start:
+          offset: 52674
+          line: 623
+          column: 1
+        end:
+          offset: 52996
+          line: 623
+          column: 323
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_atomic"
+      identity_kind: "explicit"
+      unit_id: "normative_52331"
+      source_span:
+        start:
+          offset: 52997
+          line: 624
+          column: 1
+        end:
+          offset: 53320
+          line: 624
+          column: 324
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_ledgers"
+      identity_kind: "explicit"
+      unit_id: "normative_52331"
+      source_span:
+        start:
+          offset: 53321
+          line: 625
+          column: 1
+        end:
+          offset: 53606
+          line: 625
+          column: 286
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6874"
+      source_span:
+        start:
+          offset: 6874
+          line: 64
+          column: 1
+        end:
+          offset: 6895
+          line: 64
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6874"
+      source_span:
+        start:
+          offset: 6923
+          line: 68
+          column: 1
+        end:
+          offset: 8237
+          line: 75
+          column: 177
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_40472"
+      source_span:
+        start:
+          offset: 40472
+          line: 574
+          column: 1
+        end:
+          offset: 40512
+          line: 574
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_52331"
+      source_span:
+        start:
+          offset: 52331
+          line: 618
+          column: 1
+        end:
+          offset: 52353
+          line: 618
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:7c7fbacdd85a95c7a3f8951c2228f86b198ad8444928c55227751e56c7087094"
+  generated_content_sha256: "sha256:66bf7a70d283d9ea3b7f78a6acc7d6b1d8bea761ad92e35eec073ec1871f7278"

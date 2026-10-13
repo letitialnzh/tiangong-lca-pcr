@@ -1,10 +1,1361 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31230"
-  title: "Wood in chips or particles"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.wood-in-chips-or-particles"
+  classification_refs: "CPC 3.0 31230; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Clean uncompressed wood chips/particles with declared specification and moisture"
+  excluded_products: "Bonded boards; pellets; flour/wool; treated or contaminated wood; foreground thermally dried product"
+  representative_product: "Screened bulk untreated wood chips at preparation gate"
+  production_route: "Dedicated mechanical chipping or inherited wood-processing co-product; screening, recirculation, natural storage and bulk loading"
+  market_state: "Unconsolidated, unpackaged bulk dispatch; moisture and particle size declared"
+functional_unit:
+  what: "Provide specified bulk wood-chip feedstock at the preparation gate"
+  how_much: "1 m3 solid wood volume at dispatch moisture, excluding interparticle air gaps"
+  how_well: "Meet declared size, species, bark/impurity and moisture acceptance; no universal grade or moisture prescribed"
+  how_long_or_cycle: "One accepted bulk dispatch after the declared storage residence"
+  reference_flow_link: "chips"
+system_boundary:
+  rules:
+    - rule_id: system_boundary_rule_1
+      applies_to: "foreground_system_boundary"
+      rule: "Include receiving/inspection, actual debarking, chipping, screening, both return loops, conveying, dust extraction, natural storage loss and bulk loading. Include attributable maintenance and disposal. Purchased services include their emissions once; foreground diesel emissions only cover machinery outside those services. Machinery manufacture/site works require documented materiality review and an explicit boundary decision, never a universal numeric cut-off. Downstream pulping, panels, pelletizing and combustion lie beyond this gate; no avoided-fuel or storage credit."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Roundwood at forest roadside; clean offcut or imported chip at originating producer gate, with inherited burdens"
+  starting_condition_role: "foreground_gate_input_with_upstream_background"
+  product_classification_scope: "Supported clean mechanically prepared subset of CPC 31230"
+  recursive_input_rule: "Imported chips keep their verified upstream preparation and origin burden; prevent recursive self-reference and count transport/storage once"
+  upstream_dataset_requirement: "Representative forestry and harvesting for dedicated route; origin-process allocated co-product dataset for residue route; provider-specific energy, material, transport and waste treatment; Wood Chip links additionally require documented provider reference volume and cp_volume_link compatibility evidence"
+  disclosure: "Upstream inclusion; producer allocation/subdivision; species; feedstock treatment history; any missing provider; transport; storage; dust/control; rejected products and allocation ledger"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Wood Chip"
+    uuid: "3fa2a6a7-224c-4d99-bd55-a214f0a83161"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-22da-a746-0800200c9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a3c8-12da-a746-0800200c9a66"
+  reference_unit: "m3"
+  required_qualifiers:
+    - Route
+    - "wood origin and producer allocation boundary"
+    - "species/mix"
+    - "chip size and acceptance"
+    - "bark/impurities"
+    - "moisture value and wet/dry basis"
+    - "solid-volume measurement state"
+    - "batch solid and bulk volume and packing"
+    - "wet/dry mass"
+    - "storage residence/conditions and stock"
+    - "provider and transport boundary"
+    - "allocation method"
+    - "geographical and temporal scope"
+    - "provider reference amount and solid/bulk definition with evidence locator"
+    - "linked moisture/species/packing and loss-boundary reconciliation"
+    - "quantity/background compatibility status"
+reference_flows:
+  []
+measurement_rules:
+  - id: solid_basis
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Solid volume excludes air gaps and is measured at dispatch moisture. Collect cp_reference; retain species and moisture-matched density, not generic conversion factors."
+  - id: moisture_basis
+    applies_to: "wood exchanges"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Keep wet mass m_w, oven-dry mass m_d and water separately. w=(m_w-m_d)/m_w; u=(m_w-m_d)/m_d; m_d=m_w*(1-w)=m_w/(1+u). w and u are fractions, not percentages; report percent only with explicit /100 conversion. [usda-wood-handbook-2021; fao-units.]"
+  - id: volume_state
+    applies_to: "cp_reference; cp_material"
+    required_property_ref:
+      name: "Volume and mass"
+      uuid: ""
+    required_unit: "m3; kg"
+    rule: "V_s=m_w/rho_ws for the same measured moisture state; V_b is measured loose bulk volume including air gaps. k=V_s/V_b is batch-specific. Do not use dry-solid density with wet mass."
+  - id: energy_state
+    applies_to: "electricity; diesel"
+    required_property_ref:
+      name: "energy; mass"
+      uuid: ""
+    required_unit: "MJ; kg"
+    rule: "Electricity kWh*3.6=MJ. Diesel remains kg; volumetric delivery needs actual supplier density. Fuel calorific energy is not useful heat."
+  - id: nox_quantity_basis
+    applies_to: "nox"
+    required_property_ref:
+      name: "Mass; verified quantity convention"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Before calculation, document the actual measured or factor-derived NOx quantity convention, chemical/species scope, concentration and gas-state basis and its independently verified relation to the selected LCI flow and assessment method. Native Mass/kg does not establish an NO2-equivalent convention. Keep actual NO/NO2 species quantities and documented conversion/speciation evidence when an equivalent basis is used; no universal conversion or assumed split. Reconcile any aggregate with separately modelled NO/NO2 and keep N2O separately, without counting the same release twice. Missing convention/speciation or LCI/assessment compatibility leaves the raw result and its normalized exchange pending review; never silently label a mass as NO2-equivalent or invent zero."
+process_map:
+  - id: preparation
+    name: "Receiving, mechanical preparation, screening, natural storage and bulk dispatch"
+    inclusion: "required"
+    inclusion_condition: "Supported route"
+    role: "foreground"
+    quantitative_reference: "chips"
+process_inventory:
+  - id: preparation
+    label: "Receiving, mechanical preparation, screening, natural storage and bulk dispatch"
+    inputs:
+      product:
+        - row_id: conifer_roundwood
+          role: "Roundwood of coniferous wood, other"
+          name: "Roundwood of coniferous wood, other"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3dbbedd2-fb9d-478e-a4b4-4a76a4d97804"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Dedicated chipping only, when coniferous non-sawlog roundwood is received. Record wet mass, bark fraction, moisture and forest-roadside upstream burden; inbound haulage is separate."
+          amount:
+            expression: "Actual attributable exchange from cp_material divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: hardwood_roundwood
+          role: "Roundwood of non-coniferous wood, other"
+          name: "Roundwood of non-coniferous wood, other"
+          flow_type: "product"
+          flow_ref:
+            uuid: "b8b84d78-13c2-4dab-9b6d-8e7d9dc32f3b"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Dedicated chipping only, when non-coniferous non-sawlog roundwood is received; use its own species, mass and moisture records. Do not substitute coniferous yields or densities."
+          amount:
+            expression: "Actual attributable exchange from cp_material divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: offcuts
+          role: "Unimpregnated wood offcut"
+          name: "Unimpregnated wood offcut"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Co-product route: one clean solid offcut exchange at the producer gate. Attach producer joint-stage allocation and any prior drying burden, then measure chipping separately. Existing residue is not burden-free because its price is low or zero."
+          amount:
+            expression: "Actual attributable exchange from cp_material divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-northern-lumber-2025
+                - fao-residue-preparation
+            ranges: []
+        - row_id: incoming_chips
+          role: "Wood Chip"
+          name: "Wood Chip"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3fa2a6a7-224c-4d99-bd55-a214f0a83161"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Only when already-chipped clean co-product is imported for screening/storage; record inherited chip-production burden and receipt quantity. Confirm the supplier/background reference amount and solid/bulk convention, moisture/species state, packing and loss boundary using cp_volume_link. Calculate receipt solid volume with matched measurement evidence before normalization; background demand is expressed in the provider’s own verified reference volume. Unknown definition or conversion leaves the link pending and affected dataset incomplete. This is not the finished reference output; do not also count this wood as roundwood or offcut."
+          amount:
+            expression: "Actual attributable exchange from cp_material divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - fao-units
+                - corrim-northern-lumber-2025
+            ranges: []
+        - row_id: electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value (electrical energy) 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Grid electricity delivered below 1 kV for debarking, chipping, screens, conveyors, dust collection and loading. Meter stages separately and include reprocessing power. Other voltage or on-site generation needs a separately verified identity/provider."
+          amount:
+            expression: "Actual attributable exchange from cp_energy divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges: []
+        - row_id: diesel
+          role: "Diesel fuel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Petroleum diesel for the foreground chipper/loader when used; weigh or reconcile purchase, use and stock. Fuel supply ends before combustion. Keep foreground engine emissions separate and do not double count transport-service fuel."
+          amount:
+            expression: "Actual attributable exchange from cp_energy divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges: []
+        - row_id: lubricant
+          role: "Lubricating oil"
+          name: "Lubricating oil"
+          flow_type: "product"
+          flow_ref:
+            uuid: "66628f20-9d33-4997-bd6c-6357453fa268"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Petroleum lubricating oil actually consumed in machinery maintenance; use mass, not its displayed calorific value as useful heat. Synthetic oils need their own identity."
+          amount:
+            expression: "Actual attributable exchange from cp_energy divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges: []
+        - row_id: water
+          role: "Tap water"
+          name: "Tap water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d1e0e36c-07f0-4a75-bdcb-efb5d9e2ac36"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Supplied tap water for actual cleaning or dust suppression; record source/provider and kg. Convert volumetric meters with documented water density; raw river water is not this exchange."
+          amount:
+            expression: "Actual attributable exchange from cp_material divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids: []
+            ranges: []
+        - row_id: freight
+          role: "Road Transport"
+          name: "Road Transport"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9425f2bf-e734-4884-be1b-645473a3e82d"
+          property_unit: "mass*distance 118f2a40-50ec-457c-aa60-9bc6b6af9931 / kg*km"
+          description: "Inbound road freight only when the actual vehicle/provider matches the 30-ton diesel-truck identity. Use carried wet payload times loaded distance; document load and empty return in the provider. Other vehicles need separate flow verification."
+          amount:
+            expression: "Actual attributable exchange from cp_transport divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_transport
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: rain
+          role: "Rainwater absorbed by outdoor wood-chip pile"
+          name: "Rainwater absorbed by outdoor wood-chip pile"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Outdoor storage only: water entering from rainfall, excluding runoff that never enters the pile. Estimate through measured rainfall, exposed area and monitored uptake; do not treat wet-mass gain as wood production."
+          amount:
+            expression: "Actual attributable exchange from cp_storage divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges: []
+    outputs:
+      product:
+        - row_id: chips
+          role: "Wood Chip"
+          name: "Wood Chip"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3fa2a6a7-224c-4d99-bd55-a214f0a83161"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "One finished bulk dispatch after screening, stock reconciliation and loading. The 1 m3 solid-volume definition is authored here; substantiate its actual amount through cp_reference and retain measured wet/dry mass and bulk volume. Confirm any receiving/background link’s own solid/bulk reference amount, moisture/species, packing and loss boundary through cp_volume_link. Product identity alone does not complete this quantity or link; missing measurement or provider compatibility evidence leaves it pending and blocks use as a complete dataset."
+          amount:
+            expression: "1 m3"
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - usda-wood-handbook-2021
+                - fao-units
+            ranges: []
+        - row_id: bark
+          role: "Clean unimpregnated bark co-product"
+          name: "Clean unimpregnated bark co-product"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only the separately saleable bark fraction. Record wet/dry mass and destination without reducing physical output by a burden share. Do not adopt mixed hog fuel as pure bark identity."
+          amount:
+            expression: "Actual attributable exchange from cp_material divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - corrim-northern-lumber-2025
+                - fao-residue-preparation
+            ranges: []
+        - row_id: fines
+          role: "Clean wood sawdust fines"
+          name: "Clean wood sawdust fines"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Only separated saleable sawdust fines outside the accepted chip specification, not internal returned fines or atmospheric dust; weigh separately."
+          amount:
+            expression: "Actual attributable exchange from cp_material divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - fao-residue-preparation
+            ranges: []
+      waste:
+        - row_id: bark_waste
+          role: "Bark"
+          name: "Bark"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "a2536c07-fbe1-4a12-90fb-21bd2e99b74e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Non-saleable debarking residue sent to treatment; disjoint from the bark co-product row. Record destination, moisture and treatment burden; do not assume energy substitution."
+          amount:
+            expression: "Actual attributable exchange from cp_waste divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: reject_wood
+          role: "Clean wood screening reject for disposal"
+          name: "Clean wood screening reject for disposal"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Only wood rejected across the foreground boundary after internal reprocessing is exhausted. Exclude saleable fines and matched return-loop mass."
+          amount:
+            expression: "Actual attributable exchange from cp_waste divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: soil_reject
+          role: "Non-contaminated mineral soil screening reject"
+          name: "Non-contaminated mineral soil screening reject"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Mineral soil separated from clean incoming wood; record kg and actual treatment. Do not use mining waste or contaminated soil identity."
+          amount:
+            expression: "Actual attributable exchange from cp_waste divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: metal_reject
+          role: "Steel scrap, for recycling"
+          name: "Steel scrap, for recycling"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "6b1343f5-929b-4a1b-8459-f741ed19ebd2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only recovered steel impurity routed for recycling; weigh separately from mineral soil. Other metal species and disposal routes require their own row/identity."
+          amount:
+            expression: "Actual attributable exchange from cp_waste divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: captured_dust
+          role: "Captured clean wood dust for disposal"
+          name: "Captured clean wood dust for disposal"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Dust collector material crossing the treatment boundary, weighed by bin change and stock; not emitted airborne PM. Internally reused captured dust belongs only in the internal ledger."
+          amount:
+            expression: "Actual attributable exchange from cp_waste divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: spoiled_wood
+          role: "Spoiled wood chips removed from storage"
+          name: "Spoiled wood chips removed from storage"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separately weigh removed decayed wood. This solid output is distinct from biological dry-matter loss and from screening rejects."
+          amount:
+            expression: "Actual attributable exchange from cp_waste divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: runoff
+          role: "Collected wood-chip storage runoff for wastewater treatment"
+          name: "Collected wood-chip storage runoff for wastewater treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Collected contaminated storage water delivered to treatment; measure mass and suspended/dissolved load. Actual environmental discharge requires separate receiving-medium/species rows; it cannot be modelled as this treatment export."
+          amount:
+            expression: "Actual attributable exchange from cp_storage divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges: []
+        - row_id: spent_oil
+          role: "Used lubricating oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual oil removed during maintenance; measure separately and attach actual treatment, without combining with water or wood waste."
+          amount:
+            expression: "Actual attributable exchange from cp_waste divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Airborne particles in the PM2.5 interval from mechanical handling and actual engines; include only emissions escaping controls."
+          amount:
+            expression: "Actual attributable exchange from cp_dust divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dust
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: pmcoarse
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Airborne particles above PM2.5 up to PM10; derive only from compatible nested measurements, never add PM10 total again."
+          amount:
+            expression: "Actual attributable exchange from cp_dust divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dust
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: pmover10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Airborne particles above PM10 from chips handling/storage; exclude captured material and do not replace with PM10."
+          amount:
+            expression: "Actual attributable exchange from cp_dust divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_dust
+              source_ids:
+                - epa-sawmill-pte-2014
+            ranges: []
+        - row_id: co2f
+          role: "carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Actual petroleum-engine carbon dioxide; retain fossil carbon origin and separate from storage biogenic carbon."
+          amount:
+            expression: "Actual attributable exchange from cp_engine divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_engine
+              source_ids: []
+            ranges: []
+        - row_id: co2b
+          role: "carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Biogenic carbon dioxide actually released during storage decay. Measure or use a site-calibrated species-resolved carbon model; LCI retains it regardless of LCIA reporting conventions."
+          amount:
+            expression: "Actual attributable exchange from cp_storage divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges: []
+        - row_id: ch4f
+          role: "methane (fossil)"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Fossil methane from actual petroleum-engine operation; supplier/load-specific emission evidence is required."
+          amount:
+            expression: "Actual attributable exchange from cp_engine divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_engine
+              source_ids: []
+            ranges: []
+        - row_id: ch4b
+          role: "methane (biogenic)"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Biogenic methane where actual storage conditions and measurements establish release; do not infer it solely from wood dry-mass loss."
+          amount:
+            expression: "Actual attributable exchange from cp_storage divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges: []
+        - row_id: nox
+          role: "Nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Engine nitrogen oxides when measurements report NOx with the declared mass convention; do not substitute nitric oxide for the aggregate."
+          amount:
+            expression: "Actual attributable exchange from cp_engine divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_engine
+              source_ids: []
+            ranges: []
+        - row_id: co
+          role: "carbon monoxide (fossil)"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Fossil carbon monoxide from actual petroleum engines; retain species and origin."
+          amount:
+            expression: "Actual attributable exchange from cp_engine divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_engine
+              source_ids: []
+            ranges: []
+        - row_id: n2o
+          role: "nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Nitrous oxide from actual engines if present; report as N2O mass, not nitrogen equivalent."
+          amount:
+            expression: "Actual attributable exchange from cp_engine divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_engine
+              source_ids: []
+            ranges: []
+        - row_id: so2
+          role: "sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Sulfur dioxide from actual engine fuel; do not substitute sulfur oxides aggregate or elemental sulfur."
+          amount:
+            expression: "Actual attributable exchange from cp_engine divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_engine
+              source_ids: []
+            ranges: []
+        - row_id: vapour
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Water vapour leaving chips during natural storage conditioning; distinguish evaporated water from lost dry wood."
+          amount:
+            expression: "Actual attributable exchange from cp_storage divided by accepted dispatch solid volume V_s; retain the unallocated physical ledger."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_storage
+              source_ids: []
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_rule_1
+    applies_to: "foreground_burden_allocation"
+    rule: "Keep two linked accounts: an unallocated wood/water/carbon physical process ledger, and an environmental-burden allocation ledger. Directly attribute exclusive receiving, rechipping, screening and storage burdens wherever measurable; subdivide before joint allocation. Co-products already separated at an upstream sawmill must arrive with that stage’s inherited burden. Do not reassign upstream lumber drying to chips separated before drying; do retain any actual drying of the received offcut. [corrim-northern-lumber-2025, §3.2.6, Northern US sawmill case only.]"
+    source_ids: []
+  - rule_id: allocation_rule_2
+    applies_to: "foreground_burden_allocation"
+    rule: "For a causally suitable joint wood-material step, allocate only shared burdens by measured oven-dry useful output mass: a_i=d_i/sum(d_j). Use outputs of that same step, excluding waste and internal loops. The cohort’s shares sum to one; all physical output masses stay unchanged and finished reference remains 1 m3. This is this PCR’s dry-mass implementation, not a universal surveyed yield. If outputs have materially different functions or causal basis, require explicit review and contemporaneous economic sensitivity before dataset use; no universal price or allocation share."
+    source_ids: []
+  - rule_id: allocation_rule_3
+    applies_to: "foreground_burden_allocation"
+    rule: "Dedicated chipping assigns its dedicated burdens to the produced chips, with explicit jointly saleable bark/fine treatment. Imported residue never becomes a free input by assumption. Waste receives actual handling/treatment burden without a saleable-output share by default. Partition bark/fines by actual sale, return and waste destinations without overlap. Internal energy use requires a distinct verified energy unit and transfer ledger; excluded foreground boiler operation cannot be hidden as a credit. No avoided-fuel, avoided-disposal or substitution credit is allowed in this attributional gate dataset. [usda-wood-handbook-2021; corrim-northern-lumber-2025.]"
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "preparation"
+      flow_role: "accepted dispatch"
+      record_type: "measurement and traceable record"
+      raw_fields: "lot; species; specification; moisture; wet mass; tare; accepted solid volume V_s; bulk volume V_b; particle density; packing; storage age; provider reference amount/solid-bulk definition; documented moisture/species/packing and included loss gate; compatibility evidence locator"
+      collection_method: "Weigh net accepted bulk product on calibrated scales. Sample representative particles by species/size and moisture at dispatch; measure solid displacement volume with absorption correction or traceable same-state density and derive V_s. Measure calibrated vessel/truck bulk volume with recorded settling, without imposing generic solid/bulk factors. Check cp_volume_link independently; measured foreground solid volume is not proof of the provider reference convention."
+      unit: "kg; m3"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_material
+      process_id: "preparation"
+      flow_role: "each wood or water exchange"
+      record_type: "measurement and traceable record"
+      raw_fields: "source; gate; species; producer route/allocation; upstream prior drying; wet/dry mass; moisture basis; bark; impurity; receipt; stock; destination; V_s; V_b; provider reference amount/solid-bulk definition; documented moisture/species/packing and included loss gate; compatibility evidence locator"
+      collection_method: "Weigh streams separately and pair batch moisture samples. Oven-dry representative wood samples using the handbook Ch.13 method to stable mass, retaining temperature, interval, extractive bias and uncertainty. Supplier moisture meters require species/temperature calibration. Treat sampled moisture as material evidence, not a universal range. Check cp_volume_link independently; measured foreground solid volume is not proof of the provider reference convention."
+      unit: "kg; m3"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_energy
+      process_id: "preparation"
+      flow_role: "each energy/material input"
+      record_type: "measurement and traceable record"
+      raw_fields: "stage meter start/end; voltage; kWh; diesel receipts/use/stock/density; lubricant mass; hours; reprocessing"
+      collection_method: "Use stage submeters and documented reconciliation; separate carrier and maintenance oil; include reprocessing and dust collection consumption."
+      unit: "MJ; kg"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_transport
+      process_id: "preparation"
+      flow_role: "inbound haulage"
+      record_type: "measurement and traceable record"
+      raw_fields: "truck class; provider; origin/gate; wet payload; loaded km; load factor; empty return; duplicate provider boundary"
+      collection_method: "Use dispatch weights and route records; check actual 30-ton diesel service. Match each upstream delivery gate to haulage start to avoid missing or duplicate legs."
+      unit: "kg*km"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_recirculation
+      process_id: "preparation"
+      flow_role: "oversize and fines returns"
+      record_type: "measurement and traceable record"
+      raw_fields: "transfer id; stage; pass; cohort; wet/dry mass; moisture; return origin/destination; meter energy"
+      collection_method: "Weigh oversize returns and fine returns separately each pass. Pair physical endpoints at identical quantities before burden attribution; track accumulated processing energy without treating circulation as new yield."
+      unit: "kg"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_waste
+      process_id: "preparation"
+      flow_role: "each separate residue"
+      record_type: "measurement and traceable record"
+      raw_fields: "stream; material; sale/waste status; destination; wet/dry mass; moisture; receiver/treatment; bin and stock; recovery route"
+      collection_method: "Weigh bark waste, wood screening reject, mineral soil, steel, captured dust, spoiled wood and used oil separately; retain receiver and treatment evidence. Add a specific row for any additional actual material."
+      unit: "kg"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_storage
+      process_id: "preparation"
+      flow_role: "water and biological storage losses"
+      record_type: "measurement and traceable record"
+      raw_fields: "cohort; opening/closing wet/dry stock; receipts/dispatch; residence; temperature; cover; rain uptake; evaporated water; runoff; dry removal; C content; gas species; measurement uncertainty"
+      collection_method: "Measure cohort stock, moisture and losses repeatedly over actual residence. Meter collected runoff and rain uptake. Measure gases or calibrate a species-specific carbon model with real monitoring. Separate biological loss, wood dust export and water change; unexplained deficit is a data gap, never assigned wholly to CO2."
+      unit: "kg"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_dust
+      process_id: "preparation"
+      flow_role: "each nonoverlapping particle fraction"
+      record_type: "measurement and traceable record"
+      raw_fields: "source stage; operating hours; handling mass; PMtotal; PM10; PM2.5; sampling method; control; capture; escape; blank; size definition"
+      collection_method: "Use compatible actual emissions measurements or site-specific validated factors matched to stage/control. Reconcile captured solids. EPA PTE table is a scope and size-definition check, not actual emission data and not boiler evidence."
+      unit: "kg"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_engine
+      process_id: "preparation"
+      flow_role: "each engine gas"
+      record_type: "measurement and traceable record"
+      raw_fields: "fuel identity; grade; fossil/biogenic fraction; engine type; load/hours; measured burn; C/N/S; species-resolved measured emissions or supplier factor; control; unit"
+      collection_method: "Use actual engine test/monitoring evidence or applicable supplier factors with their units and load conditions; multiply by measured activity. Retain uncertainty; missing species is a gap, not zero. Diesel row here is petroleum-only; any blend needs separated identity and carbon origin."
+      unit: "kg"
+      frequency: "Each lot or metering interval; storage repeated over residence"
+      temporal_coverage: "Declared representative operating period, including seasonal moisture variation; no invented minimum duration"
+      site_scope: "One declared site and matched cohorts/routes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Calibration; raw records; matched stock; sampling representativeness; uncertainty; supplier/test boundaries"
+    - protocol_id: cp_volume_link
+      process_id: "preparation"
+      flow_role: "Wood Chip quantity and provider-link compatibility"
+      record_type: "provider reference documentation and matched measurement"
+      raw_fields: "supplier/background Process id and version; reference amount A_provider and unit; solid/bulk definition; definition locator; species/mix; moisture value and basis; chip size; packing/settling; rho_ws; V_s; V_b; k; measurement cohort and calibration; uncertainty; supplier/receipt/dispatch gates; included losses and storage; evidence locator; compatibility decision and missing evidence"
+      collection_method: "Read the provider reference-exchange documentation and obtain a traceable supplier declaration if ambiguous. Compare it independently with receipt and output solid-volume definitions. Measure packing/density on the same batch or use representative traceable data with documented species, moisture, size, packing and state applicability. Match delivery and loss gates without double counting; moisture/species changes require an evidenced material-state reconciliation. Database secondary-property coefficients and FAO average tables do not establish a matched conversion. If provider definition, conversion or boundary evidence is missing, record pending, withhold the completed link and mark the affected dataset incomplete."
+      unit: "m3; kg"
+      frequency: "Each proposed provider link and batch; recheck on state/provider change"
+      temporal_coverage: "Declared measured cohort or documented representative coverage"
+      site_scope: "Supplier gate, receipt, accepted output and each proposed background interface"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "Provider reference locator; calibrated matched measurements; representativeness; uncertainty; nonduplicated loss reconciliation; explicit pending gaps"
+  calculation_rules:
+    - id: normalize_solid
+      applies_to: "all inventory rows"
+      rule: "x_i=X_i/V_s; X_i is the attributable exchange quantity for the matched production cohort and V_s its accepted solid-volume dispatch. Reference chips output equals 1 m3. Divide sums by the sum of matched V_s; do not average batch ratios."
+      inputs:
+        - X_i
+        - V_s
+        - cp_reference
+      output: "Exchange per reference flow"
+      source_ids: []
+    - id: wood_moisture
+      applies_to: "cp_material; cp_reference"
+      rule: "w=(m_w-m_d)/m_w; u=(m_w-m_d)/m_d; m_d=m_w*(1-w)=m_w/(1+u). Convert measured percentages to fractions first."
+      inputs:
+        - m_w
+        - m_d
+        - cp_material
+      output: "Wet/dry wood and water masses"
+      source_ids:
+        - usda-wood-handbook-2021
+        - fao-units
+    - id: solid_bulk
+      applies_to: "cp_reference"
+      rule: "V_s=m_w/rho_ws; k=V_s/V_b. Use same-state measured particle density and retain uncertainty; density must exclude interparticle voids."
+      inputs:
+        - m_w
+        - rho_ws
+        - V_b
+        - cp_reference
+      output: "Solid and bulk volumes kept distinct"
+      source_ids:
+        - usda-wood-handbook-2021
+        - fao-units
+    - id: particle_intervals
+      applies_to: "pm25; pmcoarse; pmover10"
+      rule: "PMfine=PM2.5; PMcoarse=PM10-PM2.5; PMlarge=PMtotal-PM10. All measurements must cover the same source, time, aerosol method and control. Negative differences are inconsistent evidence; neither nested totals nor captured wood mass are added to emitted intervals."
+      inputs:
+        - cp_dust
+      output: "Three disjoint airborne particle quantities"
+      source_ids:
+        - epa-sawmill-pte-2014
+    - id: storage_balance
+      applies_to: "cp_storage"
+      rule: "Opening dry stock + dry receipts = closing dry stock + dry dispatch + dry solid rejects + dry wood dust leaving + biological dry loss + unresolved residual. Reconcile water separately, including rain/suppression inputs, runoff, retained moisture and vapour. Compare like moisture/volume states; volume settling alone is not wood loss."
+      inputs:
+        - cp_material
+        - cp_storage
+        - cp_waste
+        - cp_dust
+      output: "Unallocated wood and water reconciliation"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: carbon_balance
+      applies_to: "cp_storage; cp_engine"
+      rule: "Keep biogenic and fossil carbon accounts separate. Measured dry mass times measured carbon fraction defines material carbon; reconcile carbon in product, stock, residues, dissolved/suspended carbon and gases. C in CO2=12/44 times CO2 mass; C in CH4=12/16 times CH4 mass. Missing gas partition or carbon fate remains explicit, not a forced CO2 closure or carbon-storage credit."
+      inputs:
+        - cp_storage
+        - cp_engine
+      output: "Physical carbon closure and explicit gaps"
+      source_ids: []
+    - id: joint_burdens
+      applies_to: "joint wood step"
+      rule: "a_i=d_i/sum(d_j); B_i=a_i*B_joint+B_exclusive,i. d_j is measured oven-dry useful output of that same step; apply shares only in the burden account, not to physical exchanges."
+      inputs:
+        - cp_material
+        - "joint-step data"
+      output: "Separate allocated burden account"
+      source_ids:
+        - corrim-northern-lumber-2025
+        - usda-wood-handbook-2021
+    - id: provider_volume_link
+      applies_to: "incoming_chips; chips"
+      rule: "For a matched provider gate/state, V_b,provider=V_s,link/k_provider, where k_provider=V_s,provider/V_b,provider is the evidenced solid/bulk packing conversion applicable to that provider state. For a bulk-m3 background, n_provider=V_b,provider/A_provider; for a solid-m3 background, n_provider=V_s,link/A_provider. A_provider is the provider’s documented reference amount in its stated volume convention. V_s,link is the physical quantity at the matched provider gate, not automatically receipt or final dispatch volume; reconcile actual losses and stocks between gates independently. Apply these relations only after moisture/species/packing and loss-boundary compatibility is established; any state adjustment needs its own measured evidence. Unknown definition, k_provider or required adjustment gives pending compatibility, not a numerical demand, generic fallback or completed link."
+      inputs:
+        - cp_volume_link
+        - cp_reference
+        - cp_material
+        - cp_storage
+      output: "Provider-reference demand with verified compatibility, or explicit pending"
+      source_ids: []
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: identity_quality
+      applies_to: "all inventory rows"
+      requirement: "One actual flow, compatible public identity, property, unit and medium; unresolved UUID stays blank. Identity does not establish a representative upstream provider."
+      evidence: "Direct identity and provider checks"
+    - id: measurement_quality
+      applies_to: "cp_reference; cp_material"
+      requirement: "Same-state solid/bulk volume and wet/dry mass; separate bark/impurity; calibrated scales and representative sampling"
+      evidence: "cp_reference; cp_material"
+    - id: balance_quality
+      applies_to: "preparation"
+      requirement: "Stage physical wood/water/carbon ledger closes within stated measurement uncertainty; unresolved losses remain disclosed. Internal transfer endpoints match before allocation."
+      evidence: "cp_recirculation; cp_storage"
+    - id: representativeness
+      applies_to: "preparation"
+      requirement: "Route, species, season, actual control, engine and provider coverage; no regional survey or PTE factor extrapolated as global default"
+      evidence: "cp_energy; cp_dust; cp_engine"
+    - id: completeness
+      applies_to: "preparation"
+      requirement: "Absent equipment may be documented not applicable; unknown emissions/UUID/provider are gaps, not zero. An extra actual chemical/material/emission requires its own atomic row and lookup."
+      evidence: "Route inspection and signed balance records"
+    - id: quantity_background_compatibility
+      applies_to: "incoming_chips; chips; Wood Chip links"
+      requirement: "Separately verify identity, PCR solid-volume quantity and provider-reference compatibility. Require cp_volume_link evidence for solid/bulk, species/moisture/packing, conversion and loss gates. A known identity plus generic Volume/m3 never resolves these quantities. Missing evidence remains pending and blocks completed linkage/use as a complete dataset."
+      evidence: "cp_reference; cp_material; cp_volume_link; provider definition and measurement locators"
+validation_rules:
+  - rule_id: validation_rule_1
+    applies_to: "foreground_dataset_conformance"
+    rule: "Validate one accepted final chips output of 1 m3 and a matching cohort denominator in every protocol and inventory row. Verify all required qualifiers, upstream origin burden, delivery gates and provider coverage. Compare solid/bulk volume and wet/dry mass independently; do not accept an unsupported packing factor or density. Check each return pair, bark sale/waste split, fines sale/return split, stock and storage balances before burden allocation. Check allocation shares sum to one for each actual joint step and that physical outputs were not scaled."
+    source_ids: []
+  - rule_id: validation_rule_2
+    applies_to: "foreground_dataset_conformance"
+    rule: "For incoming_chips, chips and each Wood Chip supplier/background link, validate three distinct statuses: known product/property-unit identity, measured PCR solid-volume quantity, and provider-reference compatibility. Inspect provider reference amount/definition and its evidence locator, then independently verify solid/bulk, moisture/species/packing, same-state conversion and included transport/handling/storage losses. If the background is per bulk m3, express demand through the evidenced provider-state k_provider and A_provider in provider_volume_link, not a copied solid-m3 quantity. Do not substitute database secondary-property coefficients or FAO average values for matching measurement evidence. A missing provider volume definition or applicable conversion/state/loss evidence keeps quantity/background compatibility pending and the affected dataset incomplete; block a completed link and complete-dataset use while retaining the verified Wood Chip identity. Builder checks passing does not resolve this pending state."
+    source_ids: []
+  - rule_id: validation_rule_3
+    applies_to: "foreground_dataset_conformance"
+    rule: "Check elemental mass/species/medium and fossil/biogenic origin, three disjoint particle intervals, captured dust versus emitted dust, and water evaporation versus dry-matter loss. Retain biogenic CO2 in LCI. A missing or incompatible identity, unexplained balance, unsupported amount, direct wastewater discharge without species/medium rows, or foreground thermal drying/boiler makes the affected dataset incomplete and requires resolution before use as a complete dataset. Builder measurement checks verify declared denominator relationships; they do not establish scientific approval, measured yields, provider validity or all balance equations."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "foreground_production_dataset"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Declared bulk clean chips gate supply for later material/fuel modelling with its own downstream unit"
+  excluded_use: "Pellet or board manufacture, delivered useful heat, zero-burden residue claim, avoided fuel, unqualified comparative performance"
+  required_metadata: "Reference qualifiers; source gate; provider; route; physical balances; allocation account; collection coverage and units"
+  required_quality_disclosure: "Unresolved flow/provider/species; pending quantity/background compatibility with missing provider definition or conversion evidence; missing losses; uncertainty; seasonal coverage; source limitations; gate exclusions"
+  update_trigger: "Changed species, origin process allocation, feedstock treatment, preparation/drying, moisture/packing, storage/control, transport or flow identity"
+data_sources:
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory (2021), Wood handbook—wood as an engineering material, FPL-GTR-282; Ch.4 pp.4-1, 4-11; Ch.13 pp.13-1–13-2. [GovInfo](https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf)"
+    used_for: "Moisture/density-state definitions and gravimetric collection; no density default"
+  - id: "corrim-northern-lumber-2025"
+    type: "literature"
+    reference: "CORRIM, Life Cycle Assessment of Softwood Lumber Production—Northern Region, July 22 2025 revision; §§3.2.4, 3.2.6, pp.14,16. [CORRIM](https://corrim.org/wp-content/uploads/2025/07/LCA-Report-Northern-Lumber-Report-07222025.pdf)"
+    used_for: "Northern US 2023 sawmill case of physical accounting and partitioned environmental load. No global yield, species density or allocation share"
+  - id: "epa-sawmill-pte-2014"
+    type: "official_guidance"
+    reference: "EPA Region 10, Particulate Matter Potential to Emit Emission Factors for Activities at Sawmills, Excluding Boilers, Located in Pacific Northwest Indian Country (May 8 2014), cover and activity table/notes. [EPA](https://www.epa.gov/sites/default/files/2016-09/documents/spmpteef_memo.pdf)"
+    used_for: "Mechanical handling/control scope and nested filterable particle definitions only; regulatory maximum PTE is not actual LCA. Boilers excluded"
+  - id: "fao-units"
+    type: "official_guidance"
+    reference: "FAO, Unified Bioenergy Terminology (UBET), §5.1.1 and §5.1.3. [FAO](https://www.fao.org/4/j4504e/j4504e08.htm)"
+    used_for: "Wet/dry moisture basis and distinct solid/bulk measurement concepts, not the tabulated generic conversion values or fuel performance"
+  - id: "fao-residue-preparation"
+    type: "official_guidance"
+    reference: "FAO, Energy conservation in the mechanical forest industries, §6.2 and §6.4. [FAO](https://www.fao.org/4/T0269E/t0269e08.htm)"
+    used_for: "Origin/residue distinctions and preparation/screening/storage route; no industry numeric yield, fuel-credit or combustion factor"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:9caa420f0ffcb1f547693f4d809a40ac7b0b05563200d51d9d7be878672a335c"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_7153"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 7153
+          line: 63
+          column: 1
+        end:
+          offset: 8843
+          line: 78
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Roundwood at forest roadside; clean offcut or imported chip at originating producer gate, with inherited burdens |\n| starting_condition_role | foreground_gate_input_with_upstream_background |\n| product_classification_scope | Supported clean mechanically prepared subset of CPC 31230 |\n| recursive_input_rule | Imported chips keep their verified upstream preparation and origin burden; prevent recursive self-reference and count transport/storage once |\n| upstream_dataset_requirement | Representative forestry and harvesting for dedicated route; origin-process allocated co-product dataset for residue route; provider-specific energy, material, transport and waste treatment; Wood Chip links additionally require documented provider reference volume and cp_volume_link compatibility evidence |\n| disclosure | Upstream inclusion; producer allocation/subdivision; species; feedstock treatment history; any missing provider; transport; storage; dust/control; rejected products and allocation ledger |\n\nInclude receiving/inspection, actual debarking, chipping, screening, both return loops, conveying, dust extraction, natural storage loss and bulk loading. Include attributable maintenance and disposal. Purchased services include their emissions once; foreground diesel emissions only cover machinery outside those services. Machinery manufacture/site works require documented materiality review and an explicit boundary decision, never a universal numeric cut-off. Downstream pulping, panels, pelletizing and combustion lie beyond this gate; no avoided-fuel or storage credit.\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 298
+              line: 10
+              column: 1
+            end:
+              offset: 326
+              line: 10
+              column: 29
+          text: "# Wood in chips or particles"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 7153
+              line: 63
+              column: 1
+            end:
+              offset: 7174
+              line: 63
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_37863"
+      family: "allocation"
+      span:
+        start:
+          offset: 37863
+          line: 605
+          column: 1
+        end:
+          offset: 39722
+          line: 613
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\nKeep two linked accounts: an unallocated wood/water/carbon physical process ledger, and an environmental-burden allocation ledger. Directly attribute exclusive receiving, rechipping, screening and storage burdens wherever measurable; subdivide before joint allocation. Co-products already separated at an upstream sawmill must arrive with that stage’s inherited burden. Do not reassign upstream lumber drying to chips separated before drying; do retain any actual drying of the received offcut. [corrim-northern-lumber-2025, §3.2.6, Northern US sawmill case only.]\n\nFor a causally suitable joint wood-material step, allocate only shared burdens by measured oven-dry useful output mass: a_i=d_i/sum(d_j). Use outputs of that same step, excluding waste and internal loops. The cohort’s shares sum to one; all physical output masses stay unchanged and finished reference remains 1 m3. This is this PCR’s dry-mass implementation, not a universal surveyed yield. If outputs have materially different functions or causal basis, require explicit review and contemporaneous economic sensitivity before dataset use; no universal price or allocation share.\n\nDedicated chipping assigns its dedicated burdens to the produced chips, with explicit jointly saleable bark/fine treatment. Imported residue never becomes a free input by assumption. Waste receives actual handling/treatment burden without a saleable-output share by default. Partition bark/fines by actual sale, return and waste destinations without overlap. Internal energy use requires a distinct verified energy unit and transfer ledger; excluded foreground boiler operation cannot be hidden as a credit. No avoided-fuel, avoided-disposal or substitution credit is allowed in this attributional gate dataset. [usda-wood-handbook-2021; corrim-northern-lumber-2025.]\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 298
+              line: 10
+              column: 1
+            end:
+              offset: 326
+              line: 10
+              column: 29
+          text: "# Wood in chips or particles"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 37863
+              line: 605
+              column: 1
+            end:
+              offset: 37903
+              line: 605
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_56861"
+      family: "validation"
+      span:
+        start:
+          offset: 56861
+          line: 655
+          column: 1
+        end:
+          offset: 59125
+          line: 663
+          column: 1
+      markdown: "## 9. Validation Rules\n\nValidate one accepted final chips output of 1 m3 and a matching cohort denominator in every protocol and inventory row. Verify all required qualifiers, upstream origin burden, delivery gates and provider coverage. Compare solid/bulk volume and wet/dry mass independently; do not accept an unsupported packing factor or density. Check each return pair, bark sale/waste split, fines sale/return split, stock and storage balances before burden allocation. Check allocation shares sum to one for each actual joint step and that physical outputs were not scaled.\n\nFor incoming_chips, chips and each Wood Chip supplier/background link, validate three distinct statuses: known product/property-unit identity, measured PCR solid-volume quantity, and provider-reference compatibility. Inspect provider reference amount/definition and its evidence locator, then independently verify solid/bulk, moisture/species/packing, same-state conversion and included transport/handling/storage losses. If the background is per bulk m3, express demand through the evidenced provider-state k_provider and A_provider in provider_volume_link, not a copied solid-m3 quantity. Do not substitute database secondary-property coefficients or FAO average values for matching measurement evidence. A missing provider volume definition or applicable conversion/state/loss evidence keeps quantity/background compatibility pending and the affected dataset incomplete; block a completed link and complete-dataset use while retaining the verified Wood Chip identity. Builder checks passing does not resolve this pending state.\n\nCheck elemental mass/species/medium and fossil/biogenic origin, three disjoint particle intervals, captured dust versus emitted dust, and water evaporation versus dry-matter loss. Retain biogenic CO2 in LCI. A missing or incompatible identity, unexplained balance, unsupported amount, direct wastewater discharge without species/medium rows, or foreground thermal drying/boiler makes the affected dataset incomplete and requires resolution before use as a complete dataset. Builder measurement checks verify declared denominator relationships; they do not establish scientific approval, measured yields, provider validity or all balance equations.\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 298
+              line: 10
+              column: 1
+            end:
+              offset: 326
+              line: 10
+              column: 29
+          text: "# Wood in chips or particles"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 56861
+              line: 655
+              column: 1
+            end:
+              offset: 56883
+              line: 655
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "system_boundary_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_7153"
+      source_span:
+        start:
+          offset: 8265
+          line: 76
+          column: 1
+        end:
+          offset: 8841
+          line: 76
+          column: 577
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_37863"
+      source_span:
+        start:
+          offset: 37905
+          line: 607
+          column: 1
+        end:
+          offset: 38469
+          line: 607
+          column: 565
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_37863"
+      source_span:
+        start:
+          offset: 38471
+          line: 609
+          column: 1
+        end:
+          offset: 39051
+          line: 609
+          column: 581
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_rule_3"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_37863"
+      source_span:
+        start:
+          offset: 39053
+          line: 611
+          column: 1
+        end:
+          offset: 39720
+          line: 611
+          column: 668
+    - pointer: "/validation_rules/0"
+      rule_id: "validation_rule_1"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_56861"
+      source_span:
+        start:
+          offset: 56885
+          line: 657
+          column: 1
+        end:
+          offset: 57442
+          line: 657
+          column: 558
+    - pointer: "/validation_rules/1"
+      rule_id: "validation_rule_2"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_56861"
+      source_span:
+        start:
+          offset: 57444
+          line: 659
+          column: 1
+        end:
+          offset: 58474
+          line: 659
+          column: 1031
+    - pointer: "/validation_rules/2"
+      rule_id: "validation_rule_3"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_56861"
+      source_span:
+        start:
+          offset: 58476
+          line: 661
+          column: 1
+        end:
+          offset: 59123
+          line: 661
+          column: 648
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_7153"
+      source_span:
+        start:
+          offset: 7153
+          line: 63
+          column: 1
+        end:
+          offset: 7174
+          line: 63
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_7153"
+      source_span:
+        start:
+          offset: 7202
+          line: 67
+          column: 1
+        end:
+          offset: 8263
+          line: 74
+          column: 204
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_37863"
+      source_span:
+        start:
+          offset: 37863
+          line: 605
+          column: 1
+        end:
+          offset: 37903
+          line: 605
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_56861"
+      source_span:
+        start:
+          offset: 56861
+          line: 655
+          column: 1
+        end:
+          offset: 56883
+          line: 655
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:9caa420f0ffcb1f547693f4d809a40ac7b0b05563200d51d9d7be878672a335c"
+  generated_content_sha256: "sha256:d1c2019f82744e7b4424835010922130edae2e71a54425f90c9c7f9fb2a3ef71"

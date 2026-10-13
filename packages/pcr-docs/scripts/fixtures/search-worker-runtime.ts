@@ -5,8 +5,8 @@ import { createRequire, registerHooks } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { Index } from 'flexsearch';
 import { searchTerms } from '../../lib/search-terms.ts';
-import { encodeSearchEntries } from '../../lib/search-codec.ts';
 import type { SearchResult } from '../../lib/types.ts';
+import { encodeSearchEntries } from '../../lib/search-wire.ts';
 
 const workerUrl = process.argv[4] ? pathToFileURL(realpathSync(process.argv[4])) : new URL('../../lib/search-worker.ts', import.meta.url);
 const engineUrl = import.meta.resolve('flexsearch');
@@ -73,7 +73,11 @@ async function main(scenario: string, schemaVersion: 1 | 2 | 3): Promise<void> {
   };
   const query = (text: string) => send({ id: ++sequence, query: text, language });
   const valid = (reply: Reply): SearchResult[] => { assert.equal(reply.error, undefined); assert.ok(Array.isArray(reply.results)); return reply.results; };
-  const encode = (shard: Shard) => schemaVersion === 1 ? shard : schemaVersion === 2 ? nativeShard(shard) : {entries: encodeSearchEntries(shard.entries), records: shard.records};
+  const encode = (shard: Shard) => {
+    if (schemaVersion === 1) return shard;
+    const native = nativeShard(shard);
+    return schemaVersion === 2 ? native : { ...native, ...encodeSearchEntries(native.entries) };
+  };
   const install = async (documents: Document[][]) => {
     const shards: { url: string }[] = [];
     for (const [index, entries] of documents.entries()) { const url = root + 'shard-' + index + '.json'; shards.push({ url }); responses.set(url, { status: 200, body: encode(await serialize(entries, language)) }); }
@@ -104,6 +108,18 @@ async function main(scenario: string, schemaVersion: 1 | 2 | 3): Promise<void> {
     responses.set(target, original);
     assert.equal(valid(await query('wheat')).length, 4);
     assert.equal(requests.filter(url => url.endsWith('manifest.json')).length, 5);
+  } else if (scenario === 'sparse-metadata') {
+    const target = root + 'shard-0.json';
+    const original = responses.get(target)!;
+    const shard = original.body; assert.ok(object(shard) && object(shard.entries));
+    const key = Object.keys(shard.entries).find(key => key.endsWith('.map'))!;
+    const values = schemaVersion === 3 ? [undefined, null, {}, [key, key], ['missing.map'], ['1.reg'], ['__proto__']] : [[], [key]];
+    for (const sparseMaps of values) {
+      responses.set(target, { status: 200, body: { ...shard, sparseMaps } });
+      const failure = await query('wheat');
+      assert.equal(failure.results, undefined); assert.equal(failure.error, 'Invalid serialized search data.');
+    }
+    responses.set(target, original); assert.equal(valid(await query('wheat')).length, 4);
   } else if (scenario === 'english-rank') {
     assert.deepEqual(valid(await query('wheat')).map(item => item.content), ['Wheat', 'Wheat seed', 'Organic wheat', 'Field protocol']);
     assert.equal(valid(await query('unrelated-keyword')).length, 0);

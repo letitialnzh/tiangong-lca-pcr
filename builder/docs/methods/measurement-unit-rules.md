@@ -65,8 +65,10 @@ within the supported forms. Additional conditions or alternative meanings requir
 Set `functionalUnit.reference_flow_link` to the finished-product row id. That row must explicitly declare `M kg`
 for the per-machine reference or `1 kg` for the normalized reference. In Chinese inventory amount text, use `M 千克`
 or `1 千克`: the kg/千克 alias preserves the same unit and also satisfies the existing Chinese localization gate.
-An explicit row link selects the final output even when an intermediate output has the same product UUID.
-The UUID fallback is used only when the link is absent; an invalid link or ambiguous UUID fallback requires review.
+An explicit link must identify one unique row across all input/output flow types, and that row must be a product
+output, even when other physical co-products share its generic material UUID. UUID matching is a fallback only when
+the link is absent or empty; a missing, duplicate or non-output explicit target remains unresolved and cannot fall
+back to another row. Preserve all physical co-product and transfer rows.
 When a reference product UUID is declared, the linked output must retain that same UUID.
 Input rows must name their collection protocol
 and applicable calculation rule. A conversion rule's `Applies to` is the exact row id, a comma/semicolon-separated

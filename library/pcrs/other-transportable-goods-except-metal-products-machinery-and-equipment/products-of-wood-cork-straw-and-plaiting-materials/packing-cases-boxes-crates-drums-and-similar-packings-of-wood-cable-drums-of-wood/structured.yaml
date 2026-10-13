@@ -1,10 +1,1012 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31701"
-  title: "Packing cases, boxes, crates, drums and similar packings, of wood; cable-drums of wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.packing-cases-boxes-crates-drums-and-similar-packings-of-wood-cable-drums-of-wood"
+  classification_refs: "CPC 3.0 31701; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Uncoated nailed coniferous solid-sawn empty shipping box with matched lid and integral cleats"
+  excluded_products: "Cable drums, stave barrels, pallets, open crates, structural framed crates, panel-board boxes, glued boxes, shook, reused boxes"
+  representative_product: "New shipping box cut and nailed from purchased kiln-dried coniferous boards; no default dimensions, payload or mass"
+  production_route: "Board receipt → cutting → nailing box and matched lid → rework/acceptance → empty-box delivery"
+  market_state: "New finished empty box at factory gate; lid may be supplied matched and loose"
+functional_unit:
+  what: "Contain and support the declared cargo during transport"
+  how_much: "1 kg accepted finished empty box; physical count and measured net mass are reported separately"
+  how_well: "Declare internal/external dimensions, designed payload and distribution, handling/stacking conditions and actual acceptance tests; volume/payload do not substitute for box mass"
+  how_long_or_cycle: "One declared shipment use; no presumed reuse lifetime or cycle count"
+  reference_flow_link: "finished_box"
+system_boundary:
+  rules:
+    - rule_id: boundary_upstream
+      applies_to: "all inputs"
+      rule: "Link upstream data compatible with delivered state, species, moisture, route, property and unit; another PCR or a regional CORRIM lumber survey is not a box-factory coefficient."
+      source_ids:
+        - usda-wood-handbook-2021
+    - rule_id: boundary_aggregation
+      applies_to: "box_manufacture"
+      rule: "Cutting, part nailing, assembly, rework, extraction, acceptance and handling before delivery form one aggregated foreground unit with separately measured stages. Internal box-part handovers stay in the physical ledger, not a second finished output with the reference UUID. Both ends of an internal transfer record the same quantity, without duplicate external exchanges."
+      source_ids:
+        - usda-nailing-1959
+    - rule_id: boundary_treatment
+      applies_to: "box_manufacture"
+      rule: "A wooden-box, kiln-dried or classification name cannot establish heat treatment/fumigation or an IPPC mark. Actual supplier treatment is covered by sourced upstream data. Actual foreground treatment requires a separate treatment stage, individual atomic inputs/emissions and energy bases followed by review; the present route inventory is incomplete."
+      source_ids:
+        - ippc-ispm15-2018
+    - rule_id: boundary_emissions
+      applies_to: "pm_fine, pm_coarse, pm_large"
+      rule: "Record only particles released to the outdoor environment; captured quantities are technosphere waste. EPA sawmill PTE does not cover boilers, condensable particles or measured box-factory coefficients; do not copy its indoor-activity zero assumption."
+      source_ids:
+        - epa-sawmill-dust-2014
+boundary_abstraction:
+  declared_starting_condition: "Supplier-delivered kiln-dried unimpregnated coniferous sawn timber and purchased nails received at plant; moisture and upstream drying/treatment declared"
+  starting_condition_role: "Foreground receipt boundary; upstream material and transport burdens remain required"
+  product_classification_scope: "Nailed solid-board box subset of CPC 31701, narrower"
+  recursive_input_rule: "New manufacture does not take an existing finished box as same-category input; actual reuse/repair is out of scope, and upstream purchased-board burdens are not recursively truncated"
+  upstream_dataset_requirement: "Boards require forestry/sawmilling and actual kiln drying; nail production, electricity supply, actual oil and inbound transport require compatible upstream datasets; waste receipt/treatment is documented. Identity UUIDs are not complete background datasets"
+  disclosure: "One aggregated foreground unit with separate stage ledgers; purchasing state, region/period, transport distances, waste routes, actual/missing treatment evidence and all exclusions"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Packing cases, boxes, crates, drums and similar packings, of wood, cable-drums of wood"
+    uuid: "39feb4f9-43da-4106-aa3c-f52afb654078"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Box style/drawing and BOM"
+    - "species and board grade/dimensions"
+    - "moisture and dry/wet basis"
+    - "nail material"
+    - finish
+    - "size and count"
+    - "lid delivery state"
+    - "accepted net mass kg/box"
+    - "dimensions and useful volume"
+    - "payload distribution/handling/stacking and acceptance evidence"
+    - "production region and period"
+    - "supplier drying/treatment evidence"
+    - "foreground no-treatment declaration"
+    - "waste recipient route"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Reference amount is 1 kg accepted finished empty box at factory gate; use cp_output. Weigh the complete box, matched lid, integral cleats and installed nails for the same configuration, excluding cargo, cushioning and separate transport packaging."
+  - id: campaign_basis
+    applies_to: "reference-product mass denominator shared by all inventory rows"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Every row is reported per 1 kg reference flow; accepted net mass total Q from the same campaign is the shared denominator. Count records require measured kg/box and actual count for the same configuration to obtain Q; capacity or payload cannot substitute. The required Mass/kg property describes accepted product Q only; each numerator keeps its own native row reference property/unit."
+  - id: wood_mass
+    applies_to: "sawn_timber, wood_offcut, sawdust_waste"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Record delivery/transfer wet mass separately from oven-dry wood mass; dry-basis moisture fraction u=(wet mass-dry mass)/dry mass, and dry wood mass=wet mass/(1+u). Purchased-background kg basis must match that moisture state."
+  - id: electric_units
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Electricity uses the record energy reference property; 1 kWh=3.6 MJ. This is not multiplication by fuel calorific value; sum actual user-side electricity and verify the low-voltage interface."
+process_map:
+  - id: box_manufacture
+    name: "Cutting, nailing, extraction and acceptance"
+    inclusion: "required"
+    inclusion_condition: "Declared route"
+    role: "foreground"
+    quantitative_reference: "1 kg accepted finished empty box"
+process_inventory:
+  - id: box_manufacture
+    label: "Cutting, nailing, extraction and acceptance"
+    inputs:
+      product:
+        - row_id: sawn_timber
+          role: "Kiln-dried coniferous boards"
+          name: "Kiln-dried sawn coniferous timber, at mill"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50904047-e5b0-4110-990a-53751d250267"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One homogeneous untreated coniferous sawn-timber grade for side, end, lid and bottom boards, and any integral cleats. The selected UUID applies only to actual incoming solid-sawn boards with thickness exceeding 6 mm; measure and record each component thickness. Inputs at or below 6 mm require a separately verified identity and applicability review before dataset completion; do not infer a plant thickness or substitute this locator. Record each BOM component separately in the raw ledger; different timber grades require separate atomic rows. Supplier kiln drying is upstream, not a box-factory heat-treatment assumption."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_material."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-nailing-1959
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: steel_nails
+          role: "Uncoated wire box nails"
+          name: "Steel fasteners"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ebfe08f5-42c8-484e-b39a-684a35981c24"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only the specified uncoated carbon-steel wire box nail crosses this row. Record nail dimensions, shank form, batch and weighed issued/returned mass; count-based records require weighing that exact nail SKU. The broad steel-fastener identity is restricted to that single actual nail SKU; its fabrication/assembly route has no contrary material or coating restriction. No screw, bolt, coating or generic fastener amount estimate substitutes for this row; the matching supplier nail-production background must be verified."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_material."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-nailing-1959
+            ranges: []
+        - row_id: electricity
+          role: "User-side electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Meter electricity for cutting, compressor operation, dust extraction, rework, inspection and attributable handling separately by stage, then sum once within this aggregated foreground unit. The selected record is grid-average AC below 1 kV at the user and has source supply geography CN. Verify actual supplier, supply region, reference year, native quantity/unit basis, user-side delivery boundary and included supply losses against the linked background. Physical AC identification alone does not establish a global or site-matched background. Actual supplier/geography/year/quantity compatibility remains pending; nonmatching supply requires a separately reviewed identity/background before dataset completion."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_energy."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - usda-nailing-1959
+            ranges: []
+        - row_id: mineral_oil
+          role: "Petroleum lubricating oil"
+          name: "Lubricating oil"
+          flow_type: "product"
+          flow_ref:
+            uuid: "66628f20-9d33-4997-bd6c-6357453fa268"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on actual oil-lubricated tools or compressor maintenance attributable to this route. Record the purchased petroleum oil grade, makeup and inventory change. The selected record is petroleum-fraction oil, not PAO, grease or wax/solvent lubricant. Its calorific-value metadata is not a default amount or a combustion exchange."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_maintenance."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_maintenance
+              source_ids:
+                - usda-nailing-1959
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_box
+          role: "Accepted finished empty box"
+          name: "Packing cases, boxes, crates, drums and similar packings, of wood, cable-drums of wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "39feb4f9-43da-4106-aa3c-f52afb654078"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One fully fabricated empty box with its fitted/removable matched lid and integral wood members and installed nails included in delivered net mass. The lid may be supplied loose for later cargo loading but must be weighed with its matched box. The broad selected flow is physically restricted to this box; other subtypes in its definition are outside applicability."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_output
+              source_ids:
+                - usda-nailing-1959
+                - usda-crate-1964
+            ranges: []
+      waste:
+        - row_id: wood_offcut
+          role: "Clean sawn-timber offcut waste"
+          name: "Offcut"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "acc22294-8e77-4784-988f-2499be3c60eb"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh externally transferred unagglomerated clean untreated coniferous solid-board offcuts free of adhesive/coating contamination, including rejected wood parts routed to the same documented waste stream. Keep in-process returns and opening/closing stocks separate; a returned offcut is not also an external output. Declare actual wood condition and recipient. The selected record has a classification-field conflict; its broad woodworking-offcut physical identity is adopted conditionally, and source/supplier clarification remains required."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_residue."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - usda-nailing-1959
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: sawdust_waste
+          role: "Collected clean sawdust waste"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh captured sawdust crossing the technosphere boundary, including wood dust captured by extraction. Selected untreated combustion/recovery identity requires documented transfer to that route; it is not an on-site boiler or an air emission. Exclude the same captured particles from emitted PM."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_residue."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - epa-sawmill-dust-2014
+            ranges: []
+        - row_id: steel_nail_scrap
+          role: "Rejected steel box-nail waste"
+          name: "Scrap steel"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "0e66603a-40d3-4c52-9223-4c18d32c11fd"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on actual separately collected bent, misdriven or removed uncoated carbon-steel nails from box assembly or reject rework. This broad final-assembly steel-reject identity has at-plant CN context and no specified recycling/disposal route; it does not represent machine-shop swarf. Record actual nail SKU, steel grade/dimensions, absence of coating, reject source, wood attachment/contamination, receiving contractor and actual fate. Contrary coating or inseparable material states require applicability review. Weigh steel waste separately from attached wood and distinguish unused nails returned to stock; never treat mixed wood/steel gross mass as steel or infer waste equals input. Verify actual plant/receiver, year, composition and native mass/transport/treatment reference compatibility with the CN source context before dataset completion. No recycling quantity or credit is inferred."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_residue."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue
+              source_ids:
+                - usda-nailing-1959
+            ranges: []
+        - row_id: used_oil
+          role: "Used lubricating oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on actual oil removal from the in-scope equipment. Weigh contaminated oil separately, record waste receipts and stocks, and link the documented downstream treatment without imposing equality with new-oil input."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_maintenance."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_maintenance
+              source_ids:
+                - usda-nailing-1959
+            ranges: []
+      elementary:
+        - row_id: pm_fine
+          role: "Outdoor emitted fine wood particles"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record PM2.5 released beyond the factory building and control equipment, from stack exhaust and actual fugitives. Medium is outdoor air unspecified; workplace exposure and captured dust are not elementary outputs. No fossil/biogenic CO2 identity or correction flow substitutes for particles."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_air."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-dust-2014
+            ranges: []
+        - row_id: pm_coarse
+          role: "Outdoor emitted intermediate-size wood particles"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only particles between PM2.5 and PM10 on the same sampling, time and control basis as the other PM rows. This is the non-overlapping size interval, not an additional full PM10 total."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_air."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-dust-2014
+            ranges: []
+        - row_id: pm_large
+          role: "Outdoor emitted wood particles above PM10"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only emitted particles above PM10; the identity is outdoor air unspecified, not high-altitude or indoor air. Total PM, PM10 and PM2.5 totals may be retained as monitoring fields but never summed as three additional exchanges."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_air."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - epa-sawmill-dust-2014
+            ranges: []
+        - row_id: water_vapour
+          role: "Water lost from wood during manufacture/storage"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional on measured non-negative moisture loss to outdoor air during the bounded campaign. Determine retained wood water and residue water separately using measured moisture; do not assume that dry wood contains no water. Net atmospheric uptake requires its own verified atomic input before dataset completion and must not be forced into a negative emission."
+          amount:
+            expression: "Actual attributable campaign exchange total divided by accepted net mass Q; cp_moisture."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_moisture
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_subdivide
+    applies_to: "box_manufacture"
+    rule: "Prefer actual batch measurement/submeter attribution for the same box design. Attribute shared compressed air, extraction and handling using measured electricity and verifiable runtime or service quantities with disclosed causality; payload rating is not an energy driver."
+    source_ids:
+      - usda-nailing-1959
+  - rule_id: allocation_waste
+    applies_to: "wood_offcut, sawdust_waste, steel_nail_scrap, used_oil"
+    rule: "This route has finished_box as its sole accepted product output; documented waste transfer creates no default co-product share or substitution credit. If a residue is sold as a distinct useful co-product, revise the inventory with its correct product identity, collection and an independent allocation decision first; a waste row cannot be retained while claiming completeness."
+    source_ids:
+      - usda-wood-handbook-2021
+  - rule_id: allocation_physical
+    applies_to: "all inventory rows"
+    rule: "Keep complete physical outputs and mass/water/carbon ledgers after environmental burdens are attributed. Never multiply physical waste/co-product outputs by burden-allocation shares or close mass gaps using waste credits. Internal loops have equal quantities at both ends and only external net flows are exchanged."
+    source_ids:
+      - usda-wood-handbook-2021
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_output
+      process_id: "box_manufacture"
+      flow_role: "finished_box"
+      record_type: "weighing/acceptance"
+      raw_fields: "box design; configuration; lot; count; individual net mass including lid; installed nail mass and exact-SKU fastening ledger; acceptance record; moisture"
+      collection_method: "Weigh accepted complete empty boxes and matched lids on a calibrated scale; tare scale pallet/separate transport wrapping, exclude cargo; sum accepted net mass Q by configuration without mixing dimensions/payloads."
+      unit: "kg"
+      frequency: "each box acceptance; batch reconciliation"
+      temporal_coverage: "same complete representative campaign; stock and maintenance events covered"
+      site_scope: "same site, route and box configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; original weigh records; acceptance and matched-lid records"
+    - protocol_id: cp_material
+      process_id: "box_manufacture"
+      flow_role: "sawn_timber; steel_nails"
+      record_type: "issue/return/stock"
+      raw_fields: "material SKU; species; grade; component thickness and >6 mm selected-UUID applicability; board dimensions/solid volume; moisture; purchased net mass; opening/closing stock; issue/return; nail specification/weighing"
+      collection_method: "Weigh boards and nails separately for issue, return and stocks; match BOM and campaign. Solid material volume can convert only with measured same-batch/same-moisture density, never cavity volume. Nail counts require measured unit nail mass for that SKU."
+      unit: "kg"
+      frequency: "each lot; purchasing/stock handover"
+      temporal_coverage: "same complete representative campaign; stock and maintenance events covered"
+      site_scope: "same site, route and box configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "invoices; issue/return ledger; BOM; batch weights/moisture"
+    - protocol_id: cp_energy
+      process_id: "box_manufacture"
+      flow_role: "electricity"
+      record_type: "meter/service attribution"
+      raw_fields: "cutting; nailing compressed-air; extraction; rework; inspection; handling meter readings; voltage; supplier; supply geography; year; provider reference quantity/unit and delivery/loss boundary; shared runtime/service quantities"
+      collection_method: "Read calibrated user-side meters/submeters; retain stage consumption and shared attribution evidence without counting compressor and nail-tool energy twice. Without submeters record measured attributable energy and uncertainty; unproven attribution prevents dataset completion."
+      unit: "kWh"
+      frequency: "each campaign; billing reconciliation"
+      temporal_coverage: "same complete representative campaign; stock and maintenance events covered"
+      site_scope: "same site, route and box configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration; bills; submeter/attribution logs"
+    - protocol_id: cp_residue
+      process_id: "box_manufacture"
+      flow_role: "wood_offcut; sawdust_waste; steel_nail_scrap"
+      record_type: "weighing/waste transfer"
+      raw_fields: "net mass by atomic waste; moisture; container tare; opening/closing stock; internal reuse; nail SKU/grade/coating and assembly reject source; wood attachment and separate steel mass; recipient/use; actual receiver and CN reference compatibility"
+      collection_method: "Weigh clean offcuts, captured sawdust and rejected nails individually; verify destination, exclude captured mass from emissions and internal reuse from external transfer; distinguish waste from actual co-products."
+      unit: "kg"
+      frequency: "each transfer; campaign/stock reconciliation"
+      temporal_coverage: "same complete representative campaign; stock and maintenance events covered"
+      site_scope: "same site, route and box configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "original weigh records; waste receipts; reuse ledger"
+    - protocol_id: cp_maintenance
+      process_id: "box_manufacture"
+      flow_role: "mineral_oil; used_oil"
+      record_type: "maintenance/oil weighing"
+      raw_fields: "oil grade/SDS; issue/return; makeup; reservoir stocks; removed waste oil; equipment/service attribution"
+      collection_method: "Weigh actual petroleum new oil and removed waste oil separately, attribute by in-scope equipment service; reconcile stocks/consumption/destinations, do not infer unmeasured oil mist or leaks as zero; actual leaks require separate medium/species rows."
+      unit: "kg"
+      frequency: "each makeup/oil change; full maintenance cycle"
+      temporal_coverage: "same complete representative campaign; stock and maintenance events covered"
+      site_scope: "same site, route and box configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "oil documentation; maintenance/waste-oil originals"
+    - protocol_id: cp_air
+      process_id: "box_manufacture"
+      flow_role: "pm_fine; pm_coarse; pm_large"
+      record_type: "exhaust/fugitive monitoring"
+      raw_fields: "total filterable PM; PM10; PM2.5; medium; dry/wet/T/P basis; exhaust volume; operating time; control conditions; fugitive sources"
+      collection_method: "Determine emissions using applicable actual outlet/fugitive monitoring or a verified site model; retain methods, detection limits and uncertainty; concentration and exhaust volume share dry/wet/T/P basis. Incompatible size data remain pending, without EPA sawmill factor substitution."
+      unit: "kg"
+      frequency: "representative operating/control states; campaign durations"
+      temporal_coverage: "same complete representative campaign; stock and maintenance events covered"
+      site_scope: "same site, route and box configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "monitoring originals; outlet/fugitive inventory; control logs"
+    - protocol_id: cp_moisture
+      process_id: "box_manufacture"
+      flow_role: "water_vapour; all wood rows"
+      record_type: "moisture/material balance"
+      raw_fields: "wood input/output/stock wet mass and dry-basis moisture; oven-dry samples; species; sampling position; retained and released wood water"
+      collection_method: "Use representative oven-drying to stable mass per Wood Handbook chapter 13, with matching initial wet mass for dry-basis moisture; electrical readings require species/temperature correction and oven-dry comparison. Balance wood, nails, oil and water separately; do not call every unexplained mass gap evaporation."
+      unit: "kg; dry-basis fraction"
+      frequency: "each material/product/residue lot and stock point"
+      temporal_coverage: "same complete representative campaign; stock and maintenance events covered"
+      site_scope: "same site, route and box configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "sampling; weighing; oven-drying; uncertainty records"
+  calculation_rules:
+    - id: campaign_normalization
+      applies_to: "all inventory rows"
+      rule: "Q=sum of accepted empty-box net masses including matched lids in the campaign; each atomic exchange=attributable campaign external exchange total/Q; finished_box=Q/Q=1 kg. Reconcile issues, returns and movements within the same stock boundary first."
+      inputs:
+        - "campaign totals"
+        - Q
+        - cp_output
+      output: "per 1 kg reference flow"
+      source_ids:
+        - usda-nailing-1959
+    - id: count_disclosure
+      applies_to: "finished_box; steel_nails"
+      rule: "Report measured kg/box by configuration=accepted net mass total/accepted box count; nail count mass=exact-SKU count × measured mean mass per nail of that SKU, with sampling and uncertainty; no default item mass."
+      inputs:
+        - cp_output
+        - cp_material
+      output: "measured kg/box and kg nail"
+      source_ids:
+        - usda-nailing-1959
+    - id: wood_water_balance
+      applies_to: "all wood rows; water_vapour"
+      rule: "For each wood-only flow: dry wood mass=wet wood mass/(1+u), wood water=wet wood mass-dry wood mass. Finished-box wet wood mass=accepted empty-box net mass minus installed steel nail mass from the exact-SKU fastening ledger; never divide whole box mass (including nails) by 1+u. Dry wood inputs+opening stocks=finished dry wood+waste dry wood+dry wood in emitted particles+closing stocks+verified other losses; reconcile nails and oil separately. Water input+opening water stocks=water retained in finished wood and residues+water in emitted particles+closing water stocks+verified water vapour loss; there is no process-water addition in this route. Released water comes only from this same-campaign ledger; particle wood/water/carbon fractions need characterization, not an assumption that all PM is oven-dry wood."
+      inputs:
+        - cp_material
+        - cp_output
+        - cp_residue
+        - cp_air
+        - cp_moisture
+      output: "unallocated dry wood and water balance"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: electric_conversion
+      applies_to: "electricity"
+      rule: "Actual campaign kWh × 3.6 yields MJ, then divide by Q; retain stage records without adding compressed-air energy a second time."
+      inputs:
+        - cp_energy
+        - Q
+      output: "MJ per 1 kg reference flow"
+      source_ids:
+        - usda-nailing-1959
+    - id: particle_intervals
+      applies_to: "pm_fine; pm_coarse; pm_large"
+      rule: "Only for the same sampling/time/medium/control basis: fine=PM2.5; intermediate=PM10-PM2.5; large=total filterable PM-PM10. Intervals are non-negative and are normalized by Q before their respective rows. Incompatible/incomplete data or negative differences require review, not forced truncation to zero."
+      inputs:
+        - cp_air
+        - Q
+      output: "three disjoint kg exchanges per 1 kg reference flow"
+      source_ids:
+        - epa-sawmill-dust-2014
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: identity_quantity
+      applies_to: "all inventory rows"
+      requirement: "Distinguish identity verification from quantity/background compatibility row by row; blank UUID is pending identity, missing measurement is not zero, and incomplete data cannot be called complete."
+      evidence: "supplier documents; monitoring; row identity/background review"
+    - id: representativeness
+      applies_to: "box_manufacture"
+      requirement: "Record site, lot, period, sample counts, calibration, stocks, losses and maintenance events; a regional softwood survey does not represent all timber or box factories."
+      evidence: "original records and uncertainty"
+    - id: carbon_balance
+      applies_to: "all wood rows"
+      requirement: "Reconcile biogenic carbon in input, product, residues, emitted wood particles and stocks using measured dry wood and a sourced carbon fraction; no default carbon fraction or negative-emission credit. Count upstream uptake once; actual biogenic CO2 cannot be removed from LCI by a GHG reporting convention. Actual foreground combustion requires route completion and review."
+      evidence: "physical carbon ledger; upstream data; carbon-fraction source"
+validation_rules:
+  - rule_id: validate_scope
+    applies_to: "finished_box"
+    rule: "Accept only the declared new nailed coniferous solid-board box; a family selector cannot include cable drums, plywood boxes or other products. Actual foreground treatment or combustion without complete rows makes validation incomplete."
+    source_ids:
+      - usda-nailing-1959
+      - usda-crate-1964
+      - ippc-ispm15-2018
+  - rule_id: validate_reference
+    applies_to: "finished_box"
+    rule: "Require exactly one reference finished-product output and the shared 1 kg denominator with measured same-configuration net box mass including matched lid; dimensions, useful volume and payload are not mass or functional equivalence evidence."
+    source_ids:
+      - usda-nailing-1959
+      - usda-wood-handbook-2021
+  - rule_id: validate_atomic
+    applies_to: "all inventory rows"
+    rule: "Each row is one atomic exchange; blank UUID, unresolved background quantity basis and omitted positive emissions remain pending. Conditional rows require occurrence/absence records; lookup failure is not no-match and identity success is not dataset completeness."
+    source_ids:
+      - usda-wood-handbook-2021
+  - rule_id: validate_balance
+    applies_to: "all inventory rows"
+    rule: "Verify campaign wood, nails, oil, water and sourced biogenic carbon in the physical ledger before allocation; internal handovers have equal quantities and residue transfer/stocks/reuse are not duplicated. Explain mass gaps and monitoring uncertainty without balancing through allocation shares or credits."
+    source_ids:
+      - usda-wood-handbook-2021
+  - rule_id: validate_air
+    applies_to: "pm_fine; pm_coarse; pm_large; water_vapour"
+    rule: "Air medium and size must match direct-read identities; use disjoint size rows, and captured sawdust is not emission. Actual additional VOCs, oil mist, condensables or leaks require separate specific species/medium rows before claiming completeness, without broad-pollutant or correction substitutes."
+    source_ids:
+      - epa-sawmill-dust-2014
+  - rule_id: validate_treatment
+    applies_to: "finished_box"
+    rule: "Kiln drying and purchasing records alone do not prove a heat-treatment process or valid IPPC mark; declare source, treatment location and actual evidence, without conformity claims where absent."
+    source_ids:
+      - ippc-ispm15-2018
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Factory-gate box manufacture module for explicitly compatible transport-packaging models only after independent review and complete data"
+  allowed_use: "Use only where actual route, box configuration/performance, moisture and completeness match; convert purchased counts with measured kg/box"
+  excluded_use: "Cable drums, panel boxes, barrels, pallets, structural crates, shook, reused boxes, extended treatment/combustion routes, a universal wood-packaging factor or export-conformity proof"
+  required_metadata: "Section 3 qualifiers; boundary, year/region, reference quantity, quantity/background compatibility, upstream links, waste receipt and emission media"
+  required_quality_disclosure: "Collection coverage, calibration/sample count, physical mass/water/carbon ledgers, submeters/shared attribution, unmeasured/pending rows and detection limits; this method has no independent scientific review"
+  update_trigger: "Changed box design, species/board grade, moisture, nail finish, power supply, waste destination, treatment/manufacturing route or source/measurement evidence"
+data_sources:
+  - id: "usda-nailing-1959"
+    type: "handbook"
+    reference: "L. O. Anderson, USDA Forest Products Laboratory, Nailing Better Wood Boxes and Crates, Agriculture Handbook 160, September 1959; https://www.govinfo.gov/content/pkg/GOVPUB-A-PURL-gpo19907/pdf/GOVPUB-A-PURL-gpo19907.pdf"
+    used_for: "Printed pp1, 8: nailed-box components and assembly; historical route evidence, without design sizes, nail amounts or modern equipment-energy factors"
+  - id: "usda-crate-1964"
+    type: "handbook"
+    reference: "L. O. Anderson and T. B. Heebink, USDA Forest Products Laboratory, Wood Crate Design Manual, Agriculture Handbook 252, February 1964; https://www.govinfo.gov/content/pkg/GOVPUB-A-PURL-gpo21815/pdf/GOVPUB-A-PURL-gpo21815.pdf"
+    used_for: "Printed p1: board box differs from structural framed crate; boundary counterevidence only, without transfer of crate design coefficients"
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory, Wood handbook—wood as an engineering material, FPL-GTR-282, 2021; https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf"
+    used_for: "Printed pp4–1, 4–11, 13–2: dry-basis moisture, mass/volume density bases and oven-drying; no default species density, moisture or kiln coefficient"
+  - id: "epa-sawmill-dust-2014"
+    type: "official_guidance"
+    reference: "EPA Region 10, Particulate Matter Potential to Emit Emission Factors for Activities at Sawmills, Excluding Boilers, Located in Pacific Northwest Indian Country, May 8 2014; https://www.epa.gov/sites/default/files/2016-09/documents/spmpteef_memo.pdf"
+    used_for: "PDF p2 headers/footnotes: nested filterable sizes, captured/emitted distinction and source limits; no measured box-factory factor, indoor-zero assumption, boiler or condensable-PM coverage"
+  - id: "ippc-ispm15-2018"
+    type: "official_guidance"
+    reference: "IPPC, ISPM 15 Regulation of wood packaging material in international trade, 2018 version with revised Annexes 1 and 2, corrected February 2019 (standard first adopted 2002); https://www.ippc.int/static/media/files/publication/en/2019/02/ISPM_15_2018_En_WoodPackaging_Post-CPM13_Rev_Annex1and2_Fixed_2019-02-01.pdf"
+    used_for: "Sections 2, 2.1, 3.1 (printed p7): packaging scope and treatment/marking; prevents presumed treatment, without claiming actual treatment or current jurisdictional conformity"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:10138f08f2061c135f22db0c572a8923eab90f1ec4a39b61abece9ef735312d7"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6208"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6208
+          line: 60
+          column: 1
+        end:
+          offset: 8876
+          line: 80
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Supplier-delivered kiln-dried unimpregnated coniferous sawn timber and purchased nails received at plant; moisture and upstream drying/treatment declared |\n| starting_condition_role | Foreground receipt boundary; upstream material and transport burdens remain required |\n| product_classification_scope | Nailed solid-board box subset of CPC 31701, narrower |\n| recursive_input_rule | New manufacture does not take an existing finished box as same-category input; actual reuse/repair is out of scope, and upstream purchased-board burdens are not recursively truncated |\n| upstream_dataset_requirement | Boards require forestry/sawmilling and actual kiln drying; nail production, electricity supply, actual oil and inbound transport require compatible upstream datasets; waste receipt/treatment is documented. Identity UUIDs are not complete background datasets |\n| disclosure | One aggregated foreground unit with separate stage ledgers; purchasing state, region/period, transport distances, waste routes, actual/missing treatment evidence and all exclusions |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_upstream | all inputs | Link upstream data compatible with delivered state, species, moisture, route, property and unit; another PCR or a regional CORRIM lumber survey is not a box-factory coefficient. | usda-wood-handbook-2021 |\n| boundary_aggregation | box_manufacture | Cutting, part nailing, assembly, rework, extraction, acceptance and handling before delivery form one aggregated foreground unit with separately measured stages. Internal box-part handovers stay in the physical ledger, not a second finished output with the reference UUID. Both ends of an internal transfer record the same quantity, without duplicate external exchanges. | usda-nailing-1959 |\n| boundary_treatment | box_manufacture | A wooden-box, kiln-dried or classification name cannot establish heat treatment/fumigation or an IPPC mark. Actual supplier treatment is covered by sourced upstream data. Actual foreground treatment requires a separate treatment stage, individual atomic inputs/emissions and energy bases followed by review; the present route inventory is incomplete. | ippc-ispm15-2018 |\n| boundary_emissions | pm_fine, pm_coarse, pm_large | Record only particles released to the outdoor environment; captured quantities are technosphere waste. EPA sawmill PTE does not cover boilers, condensable particles or measured box-factory coefficients; do not copy its indoor-activity zero assumption. | epa-sawmill-dust-2014 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 353
+              line: 10
+              column: 1
+            end:
+              offset: 408
+              line: 10
+              column: 56
+          text: "# Uncoated nailed coniferous sawn-timber shipping boxes"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6208
+              line: 60
+              column: 1
+            end:
+              offset: 6229
+              line: 60
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_22930"
+      family: "allocation"
+      span:
+        start:
+          offset: 22930
+          line: 299
+          column: 1
+        end:
+          offset: 24254
+          line: 307
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_subdivide | box_manufacture | Prefer actual batch measurement/submeter attribution for the same box design. Attribute shared compressed air, extraction and handling using measured electricity and verifiable runtime or service quantities with disclosed causality; payload rating is not an energy driver. | usda-nailing-1959 |\n| allocation_waste | wood_offcut, sawdust_waste, steel_nail_scrap, used_oil | This route has finished_box as its sole accepted product output; documented waste transfer creates no default co-product share or substitution credit. If a residue is sold as a distinct useful co-product, revise the inventory with its correct product identity, collection and an independent allocation decision first; a waste row cannot be retained while claiming completeness. | usda-wood-handbook-2021 |\n| allocation_physical | all inventory rows | Keep complete physical outputs and mass/water/carbon ledgers after environmental burdens are attributed. Never multiply physical waste/co-product outputs by burden-allocation shares or close mass gaps using waste credits. Internal loops have equal quantities at both ends and only external net flows are exchanged. | usda-wood-handbook-2021 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 353
+              line: 10
+              column: 1
+            end:
+              offset: 408
+              line: 10
+              column: 56
+          text: "# Uncoated nailed coniferous sawn-timber shipping boxes"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 22930
+              line: 299
+              column: 1
+            end:
+              offset: 22970
+              line: 299
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_35130"
+      family: "validation"
+      span:
+        start:
+          offset: 35130
+          line: 340
+          column: 1
+        end:
+          offset: 37230
+          line: 351
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validate_scope | finished_box | Accept only the declared new nailed coniferous solid-board box; a family selector cannot include cable drums, plywood boxes or other products. Actual foreground treatment or combustion without complete rows makes validation incomplete. | usda-nailing-1959; usda-crate-1964; ippc-ispm15-2018 |\n| validate_reference | finished_box | Require exactly one reference finished-product output and the shared 1 kg denominator with measured same-configuration net box mass including matched lid; dimensions, useful volume and payload are not mass or functional equivalence evidence. | usda-nailing-1959; usda-wood-handbook-2021 |\n| validate_atomic | all inventory rows | Each row is one atomic exchange; blank UUID, unresolved background quantity basis and omitted positive emissions remain pending. Conditional rows require occurrence/absence records; lookup failure is not no-match and identity success is not dataset completeness. | usda-wood-handbook-2021 |\n| validate_balance | all inventory rows | Verify campaign wood, nails, oil, water and sourced biogenic carbon in the physical ledger before allocation; internal handovers have equal quantities and residue transfer/stocks/reuse are not duplicated. Explain mass gaps and monitoring uncertainty without balancing through allocation shares or credits. | usda-wood-handbook-2021 |\n| validate_air | pm_fine; pm_coarse; pm_large; water_vapour | Air medium and size must match direct-read identities; use disjoint size rows, and captured sawdust is not emission. Actual additional VOCs, oil mist, condensables or leaks require separate specific species/medium rows before claiming completeness, without broad-pollutant or correction substitutes. | epa-sawmill-dust-2014 |\n| validate_treatment | finished_box | Kiln drying and purchasing records alone do not prove a heat-treatment process or valid IPPC mark; declare source, treatment location and actual evidence, without conformity claims where absent. | ippc-ispm15-2018 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 353
+              line: 10
+              column: 1
+            end:
+              offset: 408
+              line: 10
+              column: 56
+          text: "# Uncoated nailed coniferous sawn-timber shipping boxes"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 35130
+              line: 340
+              column: 1
+            end:
+              offset: 35152
+              line: 340
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_upstream"
+      identity_kind: "explicit"
+      unit_id: "normative_6208"
+      source_span:
+        start:
+          offset: 7453
+          line: 75
+          column: 1
+        end:
+          offset: 7693
+          line: 75
+          column: 241
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_aggregation"
+      identity_kind: "explicit"
+      unit_id: "normative_6208"
+      source_span:
+        start:
+          offset: 7694
+          line: 76
+          column: 1
+        end:
+          offset: 8129
+          line: 76
+          column: 436
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_treatment"
+      identity_kind: "explicit"
+      unit_id: "normative_6208"
+      source_span:
+        start:
+          offset: 8130
+          line: 77
+          column: 1
+        end:
+          offset: 8542
+          line: 77
+          column: 413
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_6208"
+      source_span:
+        start:
+          offset: 8543
+          line: 78
+          column: 1
+        end:
+          offset: 8874
+          line: 78
+          column: 332
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_subdivide"
+      identity_kind: "explicit"
+      unit_id: "normative_22930"
+      source_span:
+        start:
+          offset: 23043
+          line: 303
+          column: 1
+        end:
+          offset: 23380
+          line: 303
+          column: 338
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_waste"
+      identity_kind: "explicit"
+      unit_id: "normative_22930"
+      source_span:
+        start:
+          offset: 23381
+          line: 304
+          column: 1
+        end:
+          offset: 23864
+          line: 304
+          column: 484
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_22930"
+      source_span:
+        start:
+          offset: 23865
+          line: 305
+          column: 1
+        end:
+          offset: 24252
+          line: 305
+          column: 388
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_35130"
+      source_span:
+        start:
+          offset: 35225
+          line: 344
+          column: 1
+        end:
+          offset: 35551
+          line: 344
+          column: 327
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_35130"
+      source_span:
+        start:
+          offset: 35552
+          line: 345
+          column: 1
+        end:
+          offset: 35878
+          line: 345
+          column: 327
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_atomic"
+      identity_kind: "explicit"
+      unit_id: "normative_35130"
+      source_span:
+        start:
+          offset: 35879
+          line: 346
+          column: 1
+        end:
+          offset: 36210
+          line: 346
+          column: 332
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_35130"
+      source_span:
+        start:
+          offset: 36211
+          line: 347
+          column: 1
+        end:
+          offset: 36586
+          line: 347
+          column: 376
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_air"
+      identity_kind: "explicit"
+      unit_id: "normative_35130"
+      source_span:
+        start:
+          offset: 36587
+          line: 348
+          column: 1
+        end:
+          offset: 36974
+          line: 348
+          column: 388
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_treatment"
+      identity_kind: "explicit"
+      unit_id: "normative_35130"
+      source_span:
+        start:
+          offset: 36975
+          line: 349
+          column: 1
+        end:
+          offset: 37228
+          line: 349
+          column: 254
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6208"
+      source_span:
+        start:
+          offset: 6208
+          line: 60
+          column: 1
+        end:
+          offset: 6229
+          line: 60
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6208"
+      source_span:
+        start:
+          offset: 6257
+          line: 64
+          column: 1
+        end:
+          offset: 7380
+          line: 71
+          column: 198
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_22930"
+      source_span:
+        start:
+          offset: 22930
+          line: 299
+          column: 1
+        end:
+          offset: 22970
+          line: 299
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_35130"
+      source_span:
+        start:
+          offset: 35130
+          line: 340
+          column: 1
+        end:
+          offset: 35152
+          line: 340
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:10138f08f2061c135f22db0c572a8923eab90f1ec4a39b61abece9ef735312d7"
+  generated_content_sha256: "sha256:26d7e53835214e4b1f8bc0d66eafb3c7bd41430f91f6f2e6f5e494cc7298f30f"

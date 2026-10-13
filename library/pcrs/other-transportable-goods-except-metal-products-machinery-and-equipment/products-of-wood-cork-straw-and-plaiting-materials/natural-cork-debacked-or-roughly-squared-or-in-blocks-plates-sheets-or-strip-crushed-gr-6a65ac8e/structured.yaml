@@ -1,10 +1,951 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31921"
-  title: "Natural cork, debacked or roughly squared, or in blocks, plates, sheets or strip; crushed, granulated or ground cork; waste cork"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.natural-cork-debacked-or-roughly-squared-or-in-blocks-plates-sheets-or-strip-crushed-gr-6a65ac8e"
+  classification_refs: "CPC 3.0 31921; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Boiled, ambient-stabilized, graded and edge-trimmed unagglomerated Quercus suber natural cork planks under the declared single-product electric profile"
+  excluded_products: "Raw/simply prepared bark as final product; granules/powder; waste cork as reference product; industrial debacking; stoppers/discs; adhesive-bonded/expanded/laminated cork"
+  representative_product: "Accepted prepared natural cork planks, net mass at measured dispatch moisture, at preparation-plant gate"
+  production_route: "Unboiled bark receipt/storage → water-only electric boiling → ambient stabilization → grading/edge trimming → loose or PE-protected dispatch; waste streams to external treatment"
+  market_state: "Uncoated, unglued manufactured plank semi-product ready for further manufacture; not a finished closure"
+functional_unit:
+  what: "Supply natural cork plank semi-product for further manufacture"
+  how_much: "1 kg net accepted prepared planks at plant gate, excluding packaging"
+  how_well: "Declared Quercus suber origin, water-boiling history, grade, thickness/geometry, measured moisture and absence of glue/coating"
+  how_long_or_cycle: "One matched production-and-dispatch accounting period; no end-use lifetime"
+  reference_flow_link: "finished_planks"
+system_boundary:
+  rules:
+    - rule_id: boundary_preparation
+      applies_to: "preparation"
+      rule: "Include receiving/storage, water-only electric boiling, stabilization, selection, edge trimming, dust control and dispatch in one foreground unit with stage records. Leaching, purge, evaporation and rejects remain explicit. Exclude cutting/punching/turning stoppers and granulation."
+      source_ids:
+        - jrc-cork-preparation-2016
+        - spanish-cork-manufacturing-2022
+    - rule_id: boundary_treatment
+      applies_to: "waste outputs"
+      rule: "Foreground ends at waste transfer; link actual downstream treatment burdens exactly once in the combined model. No untreated direct discharge is authorized. On-site treatment requires its own chemical/energy/sludge and species/compartment-resolved discharge inventory before application. Do not double-count transfer chemistry as direct emissions."
+      source_ids:
+        - cork-boiling-wastewater-2022
+    - rule_id: boundary_energy_carbon
+      applies_to: "electric route"
+      rule: "No on-site fuel, combustion or purchased steam in this profile. Do not import wood boiler/sawmill factors. Upstream forest carbon uptake stays upstream; product/waste carbon stocks are not a second negative CO2 input. Retain measured biogenic releases regardless of impact-method convention."
+      source_ids:
+        - spanish-cork-manufacturing-2022
+boundary_abstraction:
+  declared_starting_condition: "Unboiled harvested Quercus suber bark planks delivered at preparation plant; prior storage and transport disclosed"
+  starting_condition_role: "Upstream delivered input; not a burden-free raw material"
+  product_classification_scope: "Prepared plank subset of CPC 31921; raw harvesting input context CPC03220; finished articles context CPC31922 excluded"
+  recursive_input_rule: "Already-boiled/finished planks are outside the intake profile. Do not recurse into the same preparation dataset or count previous boiling twice. Internal bath reuse and handling are ledger movements, not purchased exchanges."
+  upstream_dataset_requirement: "Use origin-matched forestry/harvest, pre-storage and transport to gate plus compatible electricity, water, packaging and waste-treatment backgrounds; document any missing upstream stage"
+  disclosure: "Factory gate starting and ending states; original unallocated material/water/carbon ledger; stage metering; zero/absent evidence; unresolved identities/providers; waste destinations and complete treatment boundary"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Natural cork, debacked or roughly squared, or in blocks, plates, sheets or strip, crushed, granulated or ground cork, waste cork"
+    uuid: "e03a0a0b-6dd8-4190-8204-3210fa9b51f4"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Species and origin"
+    - "unboiled intake"
+    - "no glue/coating/cleaning additive"
+    - "electric water-boiling route"
+    - "ambient stabilization"
+    - "actual geometry/grade"
+    - "dispatch wet/dry moisture convention and measured value"
+    - "net mass excluding packaging"
+    - "waste/coproduct status"
+    - "site/period"
+    - "provider boundaries"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Weigh net accepted dispatch mass P with calibrated scales and packaging tare; all inventory rows use per 1 kg reference flow."
+  - id: moisture_basis
+    applies_to: "cork physical ledger"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "For each lot measure m_wet and dry mass m_dry using a documented cork-appropriate constant-mass laboratory protocol. u_d=(m_wet−m_dry)/m_dry; w_w=(m_wet−m_dry)/m_wet. m_dry=m_wet/(1+u_d)=m_wet*(1−w_w). Do not equate leached organics with evaporation."
+  - id: electric_basis
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Record metered electrical energy; 1 kWh = 3.6 MJ. This energy-property token does not measure thermal efficiency. Require compatible supplying background, voltage and loss boundary."
+  - id: water_volume
+    applies_to: "boiling_water; boiling_wastewater"
+    required_property_ref:
+      name: "Volume"
+      uuid: "93a60a56-a3c8-22da-a746-0800200c9a66"
+    required_unit: "m3"
+    rule: "Meter liquid volumes at recorded temperature. For water balance convert with measured liquid density; do not treat a secondary database property coefficient as measured density."
+process_map:
+  - id: preparation
+    name: "Cork receipt, water boiling, stabilization, grading/trimming and dispatch"
+    inclusion: "required"
+    inclusion_condition: "Within declared electric single-product profile"
+    role: "foreground aggregate; stage records retained"
+    quantitative_reference: "1 kg reference flow"
+process_inventory:
+  - id: preparation
+    label: "Cork receipt, water boiling, stabilization, grading/trimming and dispatch"
+    inputs:
+      product:
+        - row_id: raw_cork
+          role: "Unboiled Quercus suber cork bark planks"
+          name: "Unboiled Quercus suber cork bark planks"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Weigh delivered unboiled bark, excluding supplier packaging. Record pre-boiling storage, origin, previous treatments and lot moisture; do not select wood, preserved demolition wood, granulation oversize or manufactured cork article identities."
+          amount:
+            expression: "Use cp_material to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+        - row_id: electricity
+          role: "Electricity"
+          name: "Electricity"
+          flow_type: "product"
+          flow_ref:
+            uuid: "67b723a9-6f63-4802-adca-b52ce7967d47"
+          property_unit: "Net calorific value / MJ"
+          description: "Meter purchased electricity separately for receiving, water heating, trimming, dust extraction and dispatch. Record voltage, grid region/year, supplier and loss boundary. The electricity record specifies supply at point of use in the Republic of Korea and originates in a soil-washing case; neither that location nor the original operation is a default cork-factory background. Its supply technology, voltage and loss boundary are unspecified. Confirm the actual site region/year, voltage, provider and delivery boundary before linking a background; use the measured electrical-energy basis, not useful delivered heat or an assumed efficiency."
+          amount:
+            expression: "Use cp_energy to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - spanish-cork-manufacturing-2022
+            ranges: []
+        - row_id: boiling_water
+          role: "Tap water"
+          name: "Tap water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3a8411b6-e476-4f98-9d77-0d492661a07f"
+          property_unit: "Volume / m3"
+          description: "Meter fresh treated tap-water fill, top-up and rinsing that cross the gate. Record circulating bath volume separately; repeated baths reuse the same water and must not repeatedly count the full tank as fresh intake. This route uses water only, without cleaning additives. The adopted water record is a production mix at a Hong Kong water-treatment plant, so physical tap-water identity alone does not establish the actual plant-gate supply, regional treatment or distribution background. Confirm provider, quality, location/year and delivery boundary; use measured density at recorded temperature rather than the record's secondary screening coefficient."
+          amount:
+            expression: "Use cp_water to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - jrc-cork-preparation-2016
+                - cork-boiling-wastewater-2022
+            ranges: []
+        - row_id: pe_film
+          role: "Polyethylene film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass / kg"
+          description: "Conditional on PE-film protection at dispatch; weigh net film used, reconcile discarded film and supplier polymer specification. Loose dispatch uses a documented absent status. This identity is PE film, not resin or PET; the source classification anomaly requires supplier confirmation. Require actual unsupported non-self-adhesive PE film with no laminated substrate; the adopted identity does not cover adhesive tape, laminated protection or a different polymer. Supplier composition, recycled content and native background quantity require separate compatibility checks. Other packaging components require separate atomic rows."
+          amount:
+            expression: "Use cp_packaging to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_planks
+          role: "Natural cork, debacked or roughly squared, or in blocks, plates, sheets or strip, crushed, granulated or ground cork, waste cork"
+          name: "Natural cork, debacked or roughly squared, or in blocks, plates, sheets or strip, crushed, granulated or ground cork, waste cork"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e03a0a0b-6dd8-4190-8204-3210fa9b51f4"
+          property_unit: "Mass / kg"
+          description: "1 kg net accepted boiled, stabilized and edge-trimmed natural cork planks at declared dispatch moisture, excluding packaging. The broad database name is restricted here to this manufactured plank subset; never include waste cork or granules in the reference denominator."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+      waste:
+        - row_id: cork_trimming_waste
+          role: "Unagglomerated natural cork edge-trimming waste for external waste treatment"
+          name: "Unagglomerated natural cork edge-trimming waste for external waste treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Weigh discarded edge pieces, record moisture, absence of glue, segregation and receiving waste operator. Only the documented waste fraction belongs here. A sold granulation-feed coproduct is outside this single-product dataset profile and must not be relabelled as waste."
+          amount:
+            expression: "Use cp_waste to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+        - row_id: rejected_cork_waste
+          role: "Rejected Quercus suber cork planks for external waste treatment"
+          name: "Rejected Quercus suber cork planks for external waste treatment"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Record rejected planks at their actual pre/post-boiling rejection stage, net mass, moisture, defect and disposal destination. Separate these intact rejects from edge waste and dust. Supplier returns retain traceable whole mass, stage, state, moisture and receiver movements. Only returns compatible with the unboiled raw_cork input and not boiled/processed at this plant may net against unboiled receipts on the same stock basis. Boiled/processed returns require their own actual-state output/handover identity and receiver, retaining an explicit identity gap if needed; they are not negative raw_cork inputs. Already-incurred storage, boiling, handling, cleaning and other preparation burdens remain attributable and do not disappear on return."
+          amount:
+            expression: "Use cp_waste to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+        - row_id: captured_cork_dust
+          role: "Captured natural cork plank trimming dust for external waste treatment"
+          name: "Dust"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2a6c9b60-a075-45ec-b611-c3b4dd255935"
+          property_unit: "Mass / kg"
+          description: "Weigh captured dry trimming dust and filter stock changes; document receiver and absence of sanding coatings or glue. This is collected solid waste, not an emission to air. Stopper-finishing and granulate-sieving dust identities are not applicable to this route. A recoverable fuel coproduct requires a separate applicability review. The generic industrial-collector Dust Waste identity below has no contrary material or treatment restriction; condition its use on measured Quercus suber trimming-particle composition, moisture, contamination, collection stage and actual receiving treatment. It does not supply a cork-specific waste-treatment dataset or an emission factor."
+          amount:
+            expression: "Use cp_dust to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dust
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+        - row_id: boiling_wastewater
+          role: "Untreated natural cork boiling wastewater transferred to external treatment"
+          name: "Untreated natural cork boiling wastewater transferred to external treatment"
+          flow_type: "waste"
+          property_unit: "Volume / m3"
+          description: "Meter bath purge and rinse wastewater leaving for external treatment; sample flow-weighted pH, COD, soluble COD, TOC, total nitrogen, suspended solids, total solids and total phenols with analytical definitions. Attach receiving-provider acceptance of the actual organic load. Tank recirculation is internal. Do not use direct-to-water, silicon, manganese-slag or already-treated identities. Wastewater is one bulk waste exchange; its chemistry describes treatment suitability."
+          amount:
+            expression: "Use cp_water to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - jrc-cork-preparation-2016
+                - cork-boiling-wastewater-2022
+            ranges: []
+      elementary:
+        - row_id: pm25_air
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Record net PM2.5 emitted to outdoor air from dry handling and trimming after controls, when present; use representative size-resolved outlet/fugitive measurements. Unspecified air is the selected subcompartment, not indoor occupational exposure. Do not assume an emission factor from sawmills."
+          amount:
+            expression: "Use cp_dust to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dust
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+        - row_id: pm_mid_air
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Record the disjoint PM2.5–PM10 ambient-air fraction on the same activity/control/time basis as PM2.5. Obtain it directly or subtract comparable cumulative PM2.5 from PM10. Do not report a second cumulative PM10 exchange."
+          amount:
+            expression: "Use cp_dust to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dust
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+        - row_id: pm_coarse_air
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Record outdoor-air filterable particles above PM10, directly or as comparable total filterable PM minus PM10. Keep collected dust separate. Condensable aerosol is not automatically in this size class; identify additional measured species separately. Unknown fractions remain unresolved, not zero."
+          amount:
+            expression: "Use cp_dust to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_dust
+              source_ids:
+                - jrc-cork-preparation-2016
+            ranges: []
+        - row_id: water_vapour
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Record net evaporation to ambient air from boiling and stabilization, excluding captured condensate. Reconcile water in incoming cork, make-up, dispatched product, wet wastes, wastewater and bath stocks. Changing moisture during boiling does not demonstrate conserved dry matter."
+          amount:
+            expression: "Use cp_water to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - jrc-cork-preparation-2016
+                - cork-boiling-wastewater-2022
+            ranges: []
+        - row_id: biogenic_co2
+          role: "carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Conditional on measured biogenic CO2 released during storage/conditioning. Establish biogenic origin and species-specific measurement before assigning a positive amount; a carbon-balance residual is not proof of CO2. Do not delete this LCI exchange because an LCIA convention excludes it. This electric route has no on-site combustion; background emissions remain in the supplying datasets."
+          amount:
+            expression: "Use cp_carbon to divide the matched physical exchange total by accepted net dispatch kg of the same cohort; unknown quantities remain unresolved."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_carbon
+              source_ids:
+                - cork-boiling-wastewater-2022
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_single_product
+    applies_to: "preparation"
+    rule: "This profile has one accepted product and no saleable coproducts. Assign measured preparation and required waste-treatment burdens to the accepted planks; product reference remains 1 kg. Document residue waste status with receiver and payment/acceptance records. Do not allocate to water content or discarded waste."
+    source_ids:
+      - jrc-cork-preparation-2016
+  - rule_id: allocation_scope_change
+    applies_to: "saleable side output or shared operation"
+    rule: "Subdivision and causal stage metering come first. If trimmings, rejects, dust or heat are saleable coproducts, this single-product profile is insufficient: establish complete output identities, dry-matter/carbon balances and a reviewed allocation basis rather than imposing wood-board recipes or a universal mass/economic share. Preserve physical output and internal-transfer quantities; allocate environmental burdens only in a separate account. No automatic avoided-product credit."
+    source_ids:
+      - spanish-cork-manufacturing-2022
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "preparation"
+      flow_role: "net accepted product"
+      record_type: "weighing and lot acceptance"
+      raw_fields: "lot; grade; species; geometry; m_wet; m_dry; tare; accepted kg P; dispatch date"
+      collection_method: "Calibrated net weighing, lot-stratified cork moisture sampling, laboratory constant-mass endpoint with recorded temperature/time and absence of degradation"
+      unit: "kg"
+      frequency: "each lot/dispatch"
+      temporal_coverage: "Matched complete production/dispatch period; stock cohorts reconciled"
+      site_scope: "Preparation plant; only eligible accepted planks"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Scale calibration; tare; lot/moisture tests; acceptance slips"
+    - protocol_id: cp_material
+      process_id: "preparation"
+      flow_role: "raw cork and stage ledger"
+      record_type: "receipts, sampling and stock ledger"
+      raw_fields: "origin; species; previous treatment; gross receipts; whole supplier returns/stage/boiled-or-processed state/moisture/receiver; opening/closing stock; stage wet/dry masses"
+      collection_method: "Weigh receipts, returns and stocks; sample moisture at receipt, post-boiling and dispatch; retain stage transfers. Net only compatible unboiled unprocessed returns against raw_cork receipts; processed returns retain their own actual output state/receiver and incurred work, not negative raw input wet mass"
+      unit: "kg"
+      frequency: "each lot and period stock close"
+      temporal_coverage: "Same cohorts as cp_reference; storage time stated"
+      site_scope: "Preparation plant and originating supplier"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Supplier traceability; calibrated weighing; sampling uncertainty"
+    - protocol_id: cp_energy
+      process_id: "preparation"
+      flow_role: "electricity"
+      record_type: "submeters and billing"
+      raw_fields: "stage; start/end kWh; transformer boundary; idle consumption; grid region/year; voltage; provider"
+      collection_method: "Read calibrated electricity meters; reconcile bills and shared equipment with recorded metering-based attribution; record water-heating energy separately"
+      unit: "kWh; MJ"
+      frequency: "each production campaign and billing period"
+      temporal_coverage: "All preparation/storage/dispatch periods linked to product cohort"
+      site_scope: "Site electric equipment; electricity at declared delivery boundary"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; bills; stage-meter reconciliation; supplier background"
+    - protocol_id: cp_water
+      process_id: "preparation"
+      flow_role: "fresh water, wastewater, vapour"
+      record_type: "flow meters, bath logs and laboratory tests"
+      raw_fields: "fresh m3; bath stock; recycle; purge m3; wastewater density/temperature; condensate; moisture; evaporation; pH; COD; sCOD; TOC; TN; TSS; total solids; dissolved/volatile non-water constituents; total phenols; receiver"
+      collection_method: "Meter liquid intake/purge; weigh or measure moisture and condensate; flow-weighted samples at transfer; document methods and detection limits. Independently close dry-solids and water balances before assigning net vapour"
+      unit: "m3; kg; mg/L"
+      frequency: "each bath purge/cohort; composite samples per campaign"
+      temporal_coverage: "Same baths and lots as cp_reference; opening/closing tank stocks included"
+      site_scope: "Preparation plant to external-treatment handoff"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Meter calibration; bath cycles; analytical QA; laboratory results; receiver acceptance/provider suitability"
+    - protocol_id: cp_packaging
+      process_id: "preparation"
+      flow_role: "PE film"
+      record_type: "weighing and supplier records"
+      raw_fields: "polymer; recycled content; batch kg; dispatch kg; discarded film; opening/closing stocks; loose/film dispatch"
+      collection_method: "Weigh film and reconcile material issue/returns/waste; retain supplier film specification and actual packaging bill"
+      unit: "kg"
+      frequency: "each dispatch and period stock close"
+      temporal_coverage: "Matched dispatch cohort"
+      site_scope: "Plant gate dispatch only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Tare; supplier resin/film specification; discrepancy/waste records"
+    - protocol_id: cp_waste
+      process_id: "preparation"
+      flow_role: "edge waste and rejected planks"
+      record_type: "segregated weighing and waste receipts"
+      raw_fields: "row; stage; wet mass; moisture; dry mass; defect; contamination; receiver; treatment; paid/sold status"
+      collection_method: "Weigh each physically separate stream; document disposal contract and receipt. An actual sale triggers scope review; never infer waste from a database label"
+      unit: "kg"
+      frequency: "each removal/lot"
+      temporal_coverage: "Matched cohort and bin stock changes"
+      site_scope: "Plant to contracted external waste operator"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Scale calibration; moisture tests; waste transfer receipts; treatment background suitability"
+    - protocol_id: cp_dust
+      process_id: "preparation"
+      flow_role: "captured dust and air size fractions"
+      record_type: "filter weighing and emission measurements"
+      raw_fields: "source; activity; control; outlet flow; concentration; runtime; PM2.5; PM10; total filterable PM; captured kg; filter stock; fugitive mass; limits"
+      collection_method: "Weigh captured dust; sample representative outlets/fugitive sources with compatible particulate size cuts and flow/runtime. Occupational concentration alone cannot determine mass emitted to outdoor air"
+      unit: "kg; mg/m3; m3; h"
+      frequency: "each representative operating condition; period runtime"
+      temporal_coverage: "Full matched cohort; operating/control changes included"
+      site_scope: "Handling/trimming/extraction at plant; outdoor release only"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Filter blanks; laboratory/flow QA; operating logs; size-cut definitions; control efficiency evidence"
+    - protocol_id: cp_carbon
+      process_id: "preparation"
+      flow_role: "carbon stocks and conditional biogenic CO2"
+      record_type: "material carbon assays and species-resolved gas measurement"
+      raw_fields: "dry mass; dry-basis carbon fraction; wastewater organic carbon; CO2 flow/concentration; origin; time; stocks"
+      collection_method: "Measure lot-specific carbon in cork, waste and aqueous organics; where release is demonstrated, use calibrated species-specific CO2 measurements and origin evidence. A missing carbon residual is investigated, not assigned to CO2"
+      unit: "kg C; kg CO2"
+      frequency: "representative lots/conditions and period stocks"
+      temporal_coverage: "Same cohort as reference; forest uptake background disclosed"
+      site_scope: "Factory materials, wastes and ambient gas release; no on-site combustion"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Carbon assays; gas calibration; origin proof; water/solid/gas carbon closure"
+  calculation_rules:
+    - id: period_normalization
+      applies_to: "all inventory rows"
+      rule: "Let P be measured accepted dispatch kg for the matched lot cohort. Original physical exchange per kg = cohort exchange total / P. Reconcile opening/closing material and bath stocks before dividing. Preserve stage handoffs and the terminal 1 kg, with no allocation multiplier."
+      inputs:
+        - cp_reference
+        - cp_material
+        - cp_energy
+        - cp_water
+        - cp_packaging
+        - cp_waste
+        - cp_dust
+        - cp_carbon
+      output: "Unallocated physical ledger per 1 kg reference flow"
+      source_ids:
+        - jrc-cork-preparation-2016
+    - id: water_balance
+      applies_to: "water_vapour"
+      rule: "Net evaporated water = fresh water mass + incoming cork water + opening water stocks − dispatched product water − waste-bound water − transferred wastewater water − captured condensate − closing water stocks. Include precipitation/runoff only if the actual site has these exchanges, separately identified. For wastewater water mass, subtract measured non-water constituents from measured liquor mass; include dissolved and volatile organics. COD is oxygen demand, not solute mass. Dry-solids leaching enters a separate balance; do not assign total wet-mass loss to vapour."
+      inputs:
+        - cp_reference
+        - cp_material
+        - cp_water
+        - cp_waste
+      output: "Net vapour kg and reconciled dry-solids/water ledger"
+      source_ids:
+        - cork-boiling-wastewater-2022
+    - id: dust_fractions
+      applies_to: "pm25_air; pm_mid_air; pm_coarse_air"
+      rule: "For identical filterable measurement/source/control/time bases, report PM2.5; PM2.5–PM10 = PM10 − PM2.5; PM>10 = total filterable PM − PM10. Require nonnegative values and matching aerosol basis. When only cumulative PM10 or total is known, collect the missing split; never fabricate fractions or sum nested totals. Concentration × compatible gas volume × unit conversion yields emitted mass; runtime must match sampling conditions."
+      inputs:
+        - cp_dust
+      output: "Disjoint emitted fractions and separate captured dust"
+      source_ids: []
+    - id: carbon_balance
+      applies_to: "biogenic_co2"
+      rule: "Track measured dry-basis cork and solid-waste carbon, wastewater organic carbon and retained stocks separately. Convert demonstrably emitted carbon as CO2 to CO2 mass with 44/12; carbon loss alone does not establish species or origin. No default carbon fraction, complete oxidation or negative foreground forest uptake."
+      inputs:
+        - cp_material
+        - cp_reference
+        - cp_water
+        - cp_waste
+        - cp_carbon
+      output: "Physical carbon ledger and independently measured conditional biogenic CO2"
+      source_ids:
+        - cork-boiling-wastewater-2022
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: quality_identity
+      applies_to: "each exchange"
+      requirement: "Verify physical/chemical identity, route, reference property and units, exact localized names and ambient subcompartment. An applicable unresolved UUID or incompatible provider blocks complete data delivery."
+      evidence: "Direct flow and property/unit records; actual supplier/treatment documents"
+    - id: quality_amount
+      applies_to: "all non-reference rows"
+      requirement: "Collect matched site data and measured variability. Unknown is not zero; absent status requires operation/contract evidence. No borrowed nominal energy, density, moisture, reuse or concentration defaults."
+      evidence: "Calibration, lot records, analytical uncertainty, presence screen"
+    - id: quality_balances
+      applies_to: "preparation"
+      requirement: "Retain unallocated dry solids, water and carbon balances with measured uncertainty. Leached organics and dust remain explicit. Investigate unexplained residuals; do not force closure by invented emissions."
+      evidence: "Reconciled physical ledger, lab QA and stock records"
+    - id: quality_extension
+      applies_to: "actual additional exchange"
+      requirement: "Screen lubrication, broken packaging, consumables, condensate, yard runoff and unusual emissions; add each actual atomic exchange with physical identity and provider/measurement audit before final dataset delivery."
+      evidence: "Site inspection, purchases, incident/maintenance and waste logs"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "reference and outputs"
+    rule: "Require exactly one accepted prepared-plank reference output of 1 kg net dispatch mass, matching the functional-unit link and all qualifiers. Reject granule/waste inclusion in P or another internal output using the reference UUID."
+    source_ids:
+      - jrc-cork-preparation-2016
+  - rule_id: validate_route
+    applies_to: "all processes"
+    rule: "Prove single-product electric water-only profile, actual waste destinations and absence of saleable coproducts; a conflicting chemical/thermal/manufacturing route requires method adaptation and fresh inventory check. Upstream datasets are mandatory for a combined model."
+    source_ids:
+      - spanish-cork-manufacturing-2022
+  - rule_id: validate_environment
+    applies_to: "wastewater, dust and carbon"
+    rule: "Require untreated bath liquor transfer to compatible treatment, not direct receiving-water emissions. Check disjoint air-particle fractions and separate captured dust; matched water/dry-solids/carbon ledgers; retain conditional measured biogenic CO2. Identity success alone does not establish complete LCI or suitable background."
+    source_ids:
+      - cork-boiling-wastewater-2022
+  - rule_id: validate_measurement
+    applies_to: "all inventory rows"
+    rule: "Require per 1 kg reference flow in both languages and matched protocol aggregation. P must be actual accepted net dispatch kg; no mixture with raw input, stock, rejects or packing. Missing identity, amount, measurement split or provider is an explicit unresolved data-package finding."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Foreground preparation process; completed linked model may be a secondary_dataset/background_dataset"
+  downstream_use: "Further natural-cork manufacture using declared prepared-plank input state"
+  allowed_use: "Actual matching water-only electric single-product route after identity, quantity and provider gaps are closed"
+  excluded_use: "Whole CPC31921 default; granules, waste as reference, stoppers, agglomerates, forestry-only data; saleable coproduct routes without reviewed adaptation; product carbon-negativity or end-use-performance claims"
+  required_metadata: "Site/year/origin, species, actual boiling/resting/geometry/grade/moisture, all reference qualifiers, P and cohort, supply and treatment boundaries, waste status"
+  required_quality_disclosure: "Candidate methodology, independent scientific review pending; four unresolved identities; source case limitations; measurements/uncertainties, missing backgrounds and balance residuals"
+  update_trigger: "Heating or chemical route, coproduct market, grade/moisture/geometry, packaging, wastewater/dust controls, supplier identities or boundary change"
+data_sources:
+  - id: "jrc-cork-preparation-2016"
+    type: "official_guidance"
+    reference: "European Commission JRC, Simoneau et al., Non-harmonised food contact materials in the EU: regulatory and market situation, EUR 28357 EN, 2016; final file January 2017, printed pp.172–173. https://publications.jrc.ec.europa.eu/repository/bitstream/JRC104198/en_jrc104198_fcm%20baseline%20final%20report%202017-01-16_all.pdf"
+    used_for: "Industry-code summary separating preparation, granulation and stopper activities; qualitative boundary only, not emission factors or certification"
+  - id: "spanish-cork-manufacturing-2022"
+    type: "literature"
+    reference: "Environmental Impact Analysis of Natural Cork Stopper Manufacturing, Agriculture 12(5), 636 (2022), DOI 10.3390/agriculture12050636, §§2.3–2.5.2. https://www.mdpi.com/2077-0472/12/5/636"
+    used_for: "Spanish factory-case electric boiling, resting/drying and later stopper processes; plant-gate concept. No numerical transfer from stopper denominator to plank denominator"
+  - id: "cork-boiling-wastewater-2022"
+    type: "literature"
+    reference: "Combined Electrocoagulation and Physicochemical Treatment of Cork Boiling Wastewater, Sustainability 14(7), 3727 (2022), DOI 10.3390/su14073727, §§1–2.2. https://www.mdpi.com/2071-1050/14/7/3727"
+    used_for: "Cork effluent complexity and analytical characterization; one Alentejo effluent and laboratory treatment, not a universal influent composition or removal model"
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:d5c4d0cc20f5f2d2958c63902cd8e59c63e2a72c9781f99bc2443cca01f05e46"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6828"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6828
+          line: 63
+          column: 1
+        end:
+          offset: 9267
+          line: 82
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Unboiled harvested Quercus suber bark planks delivered at preparation plant; prior storage and transport disclosed |\n| starting_condition_role | Upstream delivered input; not a burden-free raw material |\n| product_classification_scope | Prepared plank subset of CPC 31921; raw harvesting input context CPC03220; finished articles context CPC31922 excluded |\n| recursive_input_rule | Already-boiled/finished planks are outside the intake profile. Do not recurse into the same preparation dataset or count previous boiling twice. Internal bath reuse and handling are ledger movements, not purchased exchanges. |\n| upstream_dataset_requirement | Use origin-matched forestry/harvest, pre-storage and transport to gate plus compatible electricity, water, packaging and waste-treatment backgrounds; document any missing upstream stage |\n| disclosure | Factory gate starting and ending states; original unallocated material/water/carbon ledger; stage metering; zero/absent evidence; unresolved identities/providers; waste destinations and complete treatment boundary |\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_preparation` | preparation | Include receiving/storage, water-only electric boiling, stabilization, selection, edge trimming, dust control and dispatch in one foreground unit with stage records. Leaching, purge, evaporation and rejects remain explicit. Exclude cutting/punching/turning stoppers and granulation. | `jrc-cork-preparation-2016`; `spanish-cork-manufacturing-2022` |\n| `boundary_treatment` | waste outputs | Foreground ends at waste transfer; link actual downstream treatment burdens exactly once in the combined model. No untreated direct discharge is authorized. On-site treatment requires its own chemical/energy/sludge and species/compartment-resolved discharge inventory before application. Do not double-count transfer chemistry as direct emissions. | `cork-boiling-wastewater-2022` |\n| `boundary_energy_carbon` | electric route | No on-site fuel, combustion or purchased steam in this profile. Do not import wood boiler/sawmill factors. Upstream forest carbon uptake stays upstream; product/waste carbon stocks are not a second negative CO2 input. Retain measured biogenic releases regardless of impact-method convention. | `spanish-cork-manufacturing-2022` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 338
+              line: 9
+              column: 1
+            end:
+              offset: 410
+              line: 9
+              column: 73
+          text: "# Prepared natural cork planks: electric water-boiling and stabilization"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6828
+              line: 63
+              column: 1
+            end:
+              offset: 6849
+              line: 63
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_24773"
+      family: "allocation"
+      span:
+        start:
+          offset: 24773
+          line: 316
+          column: 1
+        end:
+          offset: 25876
+          line: 323
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_product` | preparation | This profile has one accepted product and no saleable coproducts. Assign measured preparation and required waste-treatment burdens to the accepted planks; product reference remains 1 kg. Document residue waste status with receiver and payment/acceptance records. Do not allocate to water content or discarded waste. | `jrc-cork-preparation-2016` |\n| `allocation_scope_change` | saleable side output or shared operation | Subdivision and causal stage metering come first. If trimmings, rejects, dust or heat are saleable coproducts, this single-product profile is insufficient: establish complete output identities, dry-matter/carbon balances and a reviewed allocation basis rather than imposing wood-board recipes or a universal mass/economic share. Preserve physical output and internal-transfer quantities; allocate environmental burdens only in a separate account. No automatic avoided-product credit. | `spanish-cork-manufacturing-2022` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 338
+              line: 9
+              column: 1
+            end:
+              offset: 410
+              line: 9
+              column: 73
+          text: "# Prepared natural cork planks: electric water-boiling and stabilization"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 24773
+              line: 316
+              column: 1
+            end:
+              offset: 24813
+              line: 316
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_38064"
+      family: "validation"
+      span:
+        start:
+          offset: 38064
+          line: 359
+          column: 1
+        end:
+          offset: 39578
+          line: 368
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | reference and outputs | Require exactly one accepted prepared-plank reference output of 1 kg net dispatch mass, matching the functional-unit link and all qualifiers. Reject granule/waste inclusion in P or another internal output using the reference UUID. | `jrc-cork-preparation-2016` |\n| `validate_route` | all processes | Prove single-product electric water-only profile, actual waste destinations and absence of saleable coproducts; a conflicting chemical/thermal/manufacturing route requires method adaptation and fresh inventory check. Upstream datasets are mandatory for a combined model. | `spanish-cork-manufacturing-2022` |\n| `validate_environment` | wastewater, dust and carbon | Require untreated bath liquor transfer to compatible treatment, not direct receiving-water emissions. Check disjoint air-particle fractions and separate captured dust; matched water/dry-solids/carbon ledgers; retain conditional measured biogenic CO2. Identity success alone does not establish complete LCI or suitable background. | `cork-boiling-wastewater-2022` |\n| `validate_measurement` | all inventory rows | Require per 1 kg reference flow in both languages and matched protocol aggregation. P must be actual accepted net dispatch kg; no mixture with raw input, stock, rejects or packing. Missing identity, amount, measurement split or provider is an explicit unresolved data-package finding. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 338
+              line: 9
+              column: 1
+            end:
+              offset: 410
+              line: 9
+              column: 73
+          text: "# Prepared natural cork planks: electric water-boiling and stabilization"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 38064
+              line: 359
+              column: 1
+            end:
+              offset: 38086
+              line: 359
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_preparation"
+      identity_kind: "explicit"
+      unit_id: "normative_6828"
+      source_span:
+        start:
+          offset: 8075
+          line: 78
+          column: 1
+        end:
+          offset: 8465
+          line: 78
+          column: 391
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_treatment"
+      identity_kind: "explicit"
+      unit_id: "normative_6828"
+      source_span:
+        start:
+          offset: 8466
+          line: 79
+          column: 1
+        end:
+          offset: 8889
+          line: 79
+          column: 424
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_energy_carbon"
+      identity_kind: "explicit"
+      unit_id: "normative_6828"
+      source_span:
+        start:
+          offset: 8890
+          line: 80
+          column: 1
+        end:
+          offset: 9265
+          line: 80
+          column: 376
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_single_product"
+      identity_kind: "explicit"
+      unit_id: "normative_24773"
+      source_span:
+        start:
+          offset: 24886
+          line: 320
+          column: 1
+        end:
+          offset: 25279
+          line: 320
+          column: 394
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_scope_change"
+      identity_kind: "explicit"
+      unit_id: "normative_24773"
+      source_span:
+        start:
+          offset: 25280
+          line: 321
+          column: 1
+        end:
+          offset: 25874
+          line: 321
+          column: 595
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_38064"
+      source_span:
+        start:
+          offset: 38159
+          line: 363
+          column: 1
+        end:
+          offset: 38470
+          line: 363
+          column: 312
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_route"
+      identity_kind: "explicit"
+      unit_id: "normative_38064"
+      source_span:
+        start:
+          offset: 38471
+          line: 364
+          column: 1
+        end:
+          offset: 38816
+          line: 364
+          column: 346
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_environment"
+      identity_kind: "explicit"
+      unit_id: "normative_38064"
+      source_span:
+        start:
+          offset: 38817
+          line: 365
+          column: 1
+        end:
+          offset: 39238
+          line: 365
+          column: 422
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_measurement"
+      identity_kind: "explicit"
+      unit_id: "normative_38064"
+      source_span:
+        start:
+          offset: 39239
+          line: 366
+          column: 1
+        end:
+          offset: 39576
+          line: 366
+          column: 338
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6828"
+      source_span:
+        start:
+          offset: 6828
+          line: 63
+          column: 1
+        end:
+          offset: 6849
+          line: 63
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6828"
+      source_span:
+        start:
+          offset: 6877
+          line: 67
+          column: 1
+        end:
+          offset: 8002
+          line: 74
+          column: 231
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_24773"
+      source_span:
+        start:
+          offset: 24773
+          line: 316
+          column: 1
+        end:
+          offset: 24813
+          line: 316
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_38064"
+      source_span:
+        start:
+          offset: 38064
+          line: 359
+          column: 1
+        end:
+          offset: 38086
+          line: 359
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:d5c4d0cc20f5f2d2958c63902cd8e59c63e2a72c9781f99bc2443cca01f05e46"
+  generated_content_sha256: "sha256:a37c8d159269706aa747c01543540825df07b2c918b80f66d7c91fb76b022fe9"

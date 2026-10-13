@@ -1,10 +1,1076 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31622"
-  title: "Doors and their frames and thresholds made out of wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.doors-and-their-frames-and-thresholds-made-out-of-wood"
+  classification_refs: "CPC 3.0 31622; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Uncoated, unglazed solid hardwood mortise-and-tenon door leaves"
+  excluded_products: "Filled-core leaves; frames; thresholds; complete door sets; cellular panel semifinished products; veneered/engineered or coated leaves"
+  representative_product: "One sanded, accepted solid hardwood panel door leaf with no fitted hardware"
+  production_route: "Purchased kiln-dried planed hardwood → cutting/profiling/tenoning → ambient PVAc assembly → door finishing machining/sanding → inspection → packing"
+  market_state: "Factory gate uncoated door slab; further finishing and installation required"
+functional_unit:
+  what: "A door leaf that will close an interior opening after finishing and fitting"
+  how_much: "1 kg of accepted door-leaf net mass of one declared configuration; physical leaves are weighed individually"
+  how_well: "Conform to the actual signed drawing and documented dimensional, joint and appearance acceptance; no assumed acoustic/fire rating"
+  how_long_or_cycle: "One manufacturing campaign through factory dispatch; service life is outside this declared unit"
+  reference_flow_link: "accepted_leaf"
+system_boundary:
+  rules:
+    - rule_id: b_door_gate
+      applies_to: "door_manufacture"
+      rule: "Include cut/shape/tenon, panel preparation, glue application, clamping/cure, final leaf machining, sanding, dimensional/joint acceptance, reject handling and packing. Preserve stage meters and mass records inside one aggregated foreground unit, avoiding a fictitious intermediate door output."
+      source_ids:
+        - adk-solid-door-route
+        - woodtech-door-quality
+    - rule_id: b_route
+      applies_to: "door_manufacture"
+      rule: "Confirm solid panels, no added catalyst or coatings, dry cleanup and no on-site combustion. If actual operations differ, re-assess scope and add each chemical, utility, waste and species emission separately; never suppress known exchanges to fit the route."
+      source_ids:
+        - usda-wood-handbook-2021
+    - rule_id: b_background
+      applies_to: "all inventory rows"
+      rule: "Require supplier process boundaries and quantities independently of flow identity; account for outsourcing and actual material transport with separately identified transport services in the completed dataset."
+      source_ids: []
+boundary_abstraction:
+  declared_starting_condition: "Kiln-dried planed untreated hardwood and supplied ready-to-use PVAc glue received at the door plant"
+  starting_condition_role: "Foreground starting gate; not a full life-cycle cut-off"
+  product_classification_scope: "Narrower interior solid-hardwood door-leaf subset of CPC 31622, not all leaf/frame/threshold identities"
+  recursive_input_rule: "Purchased accepted door leaves are outside this manufacturing route. In-process rework stays internal and must not be counted as a new purchased leaf or a second reference output."
+  upstream_dataset_requirement: "Link species/state-compatible sawnwood production including drying, glue formulation manufacture, actual electricity supply, abrasive and packaging production; retain upstream emissions including biogenic CO2 even if excluded from a particular impact subtotal. UUID identity does not establish background completeness."
+  disclosure: "Declare start/end gates, supplier operations, outsourcing, rework, losses, packaging, waste destinations, background gaps and excluded downstream finishing/installation/use/end of life"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Doors and their frames and thresholds made out of wood"
+    uuid: "6ae3ac1d-ab21-4c46-8d5a-cf630e05496a"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "single door leaf identity"
+    - "interior use"
+    - "species and origin"
+    - "net mass and moisture"
+    - "height/width/thickness and area"
+    - "solid panel/stile/rail dimensions and joints"
+    - "no filled core or skin"
+    - "glue formulation/solids/water and supplier bonding conditions"
+    - "uncoated state"
+    - "hardware/seals/glass absent"
+    - "acceptance drawing and results"
+    - "actual functional claim and acoustic/fire evidence or explicit no claim"
+    - "factory/meter voltage/campaign"
+    - packaging
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use 1 kg accepted uncoated door-leaf net mass, excluding all packaging. Under cp_mass weigh each complete accepted leaf on a calibrated scale, identify its configuration and acceptance record, then sum the same-configuration campaign net masses. No default per-door weight; no area-times-assumed-density substitute."
+  - id: wood_moisture
+    applies_to: "hardwood, clean_offcut, clean_sawdust, glued_dust"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Record as-received mass and dry-basis moisture separately. For wood only, dry mass = wet mass / (1 + dry-basis moisture / 100). Determine moisture under cp_material using species-calibrated meters checked against representative oven-dry samples; glue/abrasive fractions are not wood."
+  - id: electricity_basis
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Convert actual metered kWh to MJ by multiplying by 3.6, matching the verified unit group; reconcile purchased medium-voltage supply and internal losses."
+  - id: geometry
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Retain actual measured door area and thickness as configuration descriptors, not mass substitutes. Supplied acoustic/fire declarations must match the tested leaf/assembly, hardware, seals and installation; absent assembly evidence cannot create a rating."
+process_map:
+  - id: door_manufacture
+    name: "Door-leaf manufacture, acceptance and packing"
+    inclusion: "required"
+    inclusion_condition: "Declared solid hardwood ambient-bonding route"
+    role: "Aggregated foreground production; stage records retained"
+    quantitative_reference: "1 kg accepted net door-leaf mass"
+process_inventory:
+  - id: door_manufacture
+    label: "Door-leaf manufacture, acceptance and packing"
+    inputs:
+      product:
+        - row_id: hardwood
+          role: "Sawnwood, hardwood"
+          name: "Sawnwood, hardwood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e58cb409-74f7-4f0b-bfc0-9261c27c14be"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Only kiln-dried, planed, untreated hardwood sawnwood for solid stiles, rails and panels. Record each species and supplier lot separately; no veneer, laminated core, chipboard or softwood surrogate. The identity has unspecified species shares: require a species-compatible upstream dataset and actual mass/moisture, rather than inheriting its prior application."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_material; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: pvac_glue
+          role: "Polyvinyl acetate"
+          name: "Polyvinyl acetate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "46c91184-28ea-4b2e-a4e7-c07f3f84369b"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Ready-to-use one-part aqueous PVAc woodworking glue, recorded as one as-supplied mixture exchange. Collect brand, batch, supplier SDS/formulation, actual polymer and total solids, water and other disclosed formulation constituents, bonding conditions and joint acceptance. The broad identity includes aqueous PVAc emulsions but supplies no concentration or formula. Verify whether the supplier/background reference quantity is the delivered wet mixture or dry solids before quantity linkage; unknown compatibility remains explicit. Do not count embedded resin, carrier water or additives again as separate purchased inputs. Separately added catalyst, filler or dilution water is outside this declared route."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_material; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3d76981f-964a-4865-b588-0e067a2a1163"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; Units of energy 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Meter purchased grid electricity for machining, clamping, sanding, extraction, compressed-air generation and packing. This UUID is customer-side 1–35 kV supply only: verify the service-meter voltage and upstream supplier/year/region/loss boundary; include internal transformation losses once. A low-voltage meter needs a separately verified compatible identity."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_energy; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids: []
+            ranges: []
+        - row_id: abrasive_paper
+          role: "Abrasive paper, at plant"
+          name: "Abrasive paper, at plant"
+          flow_type: "product"
+          flow_ref:
+            uuid: "ba6c99d4-60d9-46a5-9ef5-ca3d0b877d57"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Paper-backed abrasive used for door sanding; record abrasive mineral, binder, grit, backing and worn-paper mass. No raw alumina is substituted for manufactured abrasive paper, and no material composition is supplied by this broad identity."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_material; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_material
+              source_ids:
+                - woodtech-door-quality
+            ranges: []
+        - row_id: cardboard
+          role: "Corrugated cardboard"
+          name: "Corrugated cardboard"
+          flow_type: "product"
+          flow_ref:
+            uuid: "8bde297e-98df-463f-bcb4-0db52bf6e0b5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Corrugated board protection, conditional on actual use. The selected record is recycled-content C/E/F flute board with fiber at least 80%; verify the actual board meets those identity qualifiers. Do not impose that composition as a default recipe."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_pack; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - woodtech-door-quality
+            ranges: []
+        - row_id: ldpe_film
+          role: "Low-density polyethylene foil (PE-LD)"
+          name: "Low-density polyethylene foil (PE-LD)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "2cecd3a7-d90e-44b4-aec5-1d9dfb907477"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Non-cellular, non-adhesive LDPE wrapping film, conditional on actual use; measure dispensed film and outgoing wrapping separately from scraps."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_pack; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids: []
+            ranges: []
+        - row_id: wood_pallet
+          role: "Pallets, box pallets and other load boards, of wood, pallet collars of wood"
+          name: "Pallets, box pallets and other load boards, of wood, pallet collars of wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4b49871e-95be-4e0c-9223-9902f9eaa763"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One physical wooden load pallet, conditional on dispatch use. This PCR selects a flat wooden pallet subset of the broad identity, not a pallet/collar selector. Record new/reused state, tare, supplier construction, return rate and verified trips; allocate consumption to the shipment without shrinking the physical pallet transfer."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_pack; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - woodtech-door-quality
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: accepted_leaf
+          role: "Doors and their frames and thresholds made out of wood"
+          name: "Doors and their frames and thresholds made out of wood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "6ae3ac1d-ab21-4c46-8d5a-cf630e05496a"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Accepted uncoated solid hardwood mortise-and-tenon door leaf after door-level machining, assembly, sanding and dimensional/joint inspection, before transport packaging. Although the database display covers doors and frames, this exchange represents only the declared leaf. No intermediate output uses this reference UUID."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass
+              source_ids:
+                - adk-solid-door-route
+            ranges: []
+      waste:
+        - row_id: clean_offcut
+          role: "Untreated hardwood machining offcut, non-agglomerated"
+          name: "Untreated hardwood machining offcut, non-agglomerated"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Clean pre-bonding offcuts sent off site. Weigh by lot and destination; not briquettes, not glue-contaminated trim."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: clean_sawdust
+          role: "sawdust waste"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Captured untreated pre-bonding hardwood sawdust sent for off-site combustion or recovery, matching the selected route. Captured material is waste, not an air emission. Exclude glued sanding dust and keep moisture and actual destination."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: glued_dust
+          role: "Captured PVAc-bonded hardwood sanding dust"
+          name: "Captured PVAc-bonded hardwood sanding dust"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "One physically collected mixed sanding-dust stream after bonding. Record wood, cured glue and abrasive content where present. Do not reuse an untreated-sawdust UUID; do not recount captured dust as outdoor PM."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: rejected_leaf
+          role: "Rejected uncoated PVAc-bonded solid hardwood door leaf for disposal"
+          name: "Rejected uncoated PVAc-bonded solid hardwood door leaf for disposal"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Unrecoverable assembled leaf rejects crossing the waste boundary. Exclude reworked leaves ultimately accepted, which remain internal; no accepted-product UUID is used for this waste identity."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: glue_residue
+          role: "Scraped PVAc woodworking glue residue"
+          name: "Scraped PVAc woodworking glue residue"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Separately scraped aqueous/cured PVAc residue; measure state, water content, container tare and disposal. No wafer-production adhesive residue is substituted. Dry scraping is the declared cleanup route; water-washing requires additional separately identified water and wastewater exchanges."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: spent_abrasive
+          role: "Spent abrasive waste"
+          name: "Spent abrasive waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "f0a52dd6-0027-4033-9068-f293526f958f"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Spent abrasive paper removed from sanding. Reconcile remaining backing/mineral/binder and attached dust; avoid double counting detached wear or dust already in glued_dust."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: cardboard_scrap
+          role: "Packaging waste, cardboard"
+          name: "Packaging waste, cardboard"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "72270223-04b1-4986-a546-94e5a0821317"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional cardboard packing trim and damaged protection. Weigh actual mass; do not adopt the database comment’s expert-judgement scrap percentage."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+        - row_id: ldpe_scrap
+          role: "Unwashed LDPE wrapping-film scrap at door plant"
+          name: "Unwashed LDPE wrapping-film scrap at door plant"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Conditional on-site LDPE scrap before treatment. Do not substitute PET waste, PP waste or cleaned recycling-plant PE."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_waste; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_waste
+              source_ids: []
+            ranges: []
+      elementary:
+        - row_id: pmfine
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Outdoor residual machining/sanding dust in the PM2.5 fraction after controls; specify air/unspecified. Record sampling duration, airflow, capture efficiency evidence and uncertainty."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_air; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: pmmid
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Outdoor residual dust in the disjoint >PM2.5 to PM10 fraction, air/unspecified; a cumulative PM10 result must first be reconciled with PM2.5 under the same sampling basis."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_air; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: pmcoarse
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Outdoor residual dust >PM10, air/unspecified; require an actual size-resolved result or valid total-minus-PM10 reconciliation, never a generic particle default."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_air; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids: []
+            ranges: []
+        - row_id: water_vapor
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Net evaporation of wood moisture and supplied glue water to outdoor air/unspecified during conditioning/cure. Establish the campaign water balance; distinguish retained glue water, residual waste water content and ambient uptake. No drying-factor transfer from a softwood survey."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_water; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: acetic_acid
+          role: "acetic acid"
+          name: "acetic acid"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-92c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional acetic acid (CAS 64-19-7) to outdoor air/unspecified, only when identified in the actual glue/wood emission evidence and quantified. The presence of a PVAc product or a searched UUID does not establish positive emissions. Check every other identified volatile species separately before completing a dataset."
+          amount:
+            expression: "Recorded exchange per reference flow under cp_air; campaign normalization as specified in section 8."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+            ranges: []
+allocation_rules:
+  - rule_id: a_physical
+    applies_to: "door_manufacture"
+    rule: "Maintain a physical stage ledger before burden allocation: wood dry mass, water and carbon entering equal accepted leaves, actual wastes, emissions and stock change within documented measurement uncertainty. Packaging has a separate dispatch ledger and is excluded from leaf net mass. Internal transfers and rework have equal quantities at both stage endpoints."
+    source_ids: []
+  - rule_id: a_attribution
+    applies_to: "door_manufacture"
+    rule: "Prefer dedicated campaign meters and withdrawals. For shared electricity/extraction/air systems, use measured runtime/load or submeter evidence and disclose the attribution driver. Keep environmental burden accounting separate from physical outputs; never multiply physical waste or co-product quantity by a burden share."
+    source_ids: []
+  - rule_id: a_residues
+    applies_to: "clean_offcut, clean_sawdust, glued_dust"
+    rule: "Rows here are waste transfers with actual treatment links and no avoided-product credit. If residues are deliberately produced marketable co-products, document that status and re-assess allocation with independent review before issuing that dataset; no default substitution or economic split is supplied."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_mass
+      process_id: "door_manufacture"
+      flow_role: "accepted leaf net mass"
+      record_type: "foreground_record"
+      raw_fields: "configuration; batch; leaf identifier; calibration; individual net masses; accepted count; S; drawing; height/width/thickness; area; acceptance defects; claim/test references"
+      collection_method: "Weigh each accepted complete uncoated leaf on a calibrated scale without transport packaging; reconcile drawing, configuration and acceptance record; retain each reading and sum as S. Dimensions measured with verified instruments."
+      unit: "kg"
+      frequency: "each leaf; campaign close"
+      temporal_coverage: "Complete declared campaign, with representative operating coverage"
+      site_scope: "Named factory and configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records and reconciled campaign ledger"
+    - protocol_id: cp_material
+      process_id: "door_manufacture"
+      flow_role: "wood, glue and abrasive inputs"
+      record_type: "foreground_record"
+      raw_fields: "supplier lot; species/origin; delivery state; withdrawals; opening/closing stock; wet/dry basis; moisture method; supplier formulation/SDS; glue solids/water; abrasive composition"
+      collection_method: "Weigh and reconcile lot receipts, withdrawals and stocks by separate atomic material. Measure wood moisture on representative same-lot specimens with species-calibrated meters and oven-dry checks; glue properties from supplier and verified batch sampling, not assumed polymer concentration. Record ambient bonding conditions and cure acceptance."
+      unit: "kg"
+      frequency: "each lot and campaign"
+      temporal_coverage: "Complete declared campaign, with representative operating coverage"
+      site_scope: "Named factory and configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records and reconciled campaign ledger"
+    - protocol_id: cp_energy
+      process_id: "door_manufacture"
+      flow_role: "electricity"
+      record_type: "foreground_record"
+      raw_fields: "meter readings; service voltage; stage runtime/load; site supply; transformer losses; kWh; attribution driver; supplier background boundary"
+      collection_method: "Use calibrated purchased-electricity meters and stage submeters for the campaign; reconcile totals and shared loads, including dust extraction and compressor use. Convert kWh to MJ without adding upstream supply losses twice."
+      unit: "MJ"
+      frequency: "continuous, campaign totals"
+      temporal_coverage: "Complete declared campaign, with representative operating coverage"
+      site_scope: "Named factory and configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records and reconciled campaign ledger"
+    - protocol_id: cp_pack
+      process_id: "door_manufacture"
+      flow_role: "each packaging input"
+      record_type: "foreground_record"
+      raw_fields: "packing bill; separate board/film/pallet masses; tare; return and trip records; dispatch quantity; scrap; stocks"
+      collection_method: "Weigh each packaging material separately; reconcile withdrawals with dispatched protection, scrap and stock change. For reusable pallets retain physical transfer and return records and verified service-life attribution separately."
+      unit: "kg"
+      frequency: "each shipment"
+      temporal_coverage: "Complete declared campaign, with representative operating coverage"
+      site_scope: "Named factory and configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records and reconciled campaign ledger"
+    - protocol_id: cp_waste
+      process_id: "door_manufacture"
+      flow_role: "each waste output"
+      record_type: "foreground_record"
+      raw_fields: "row identity; pre/post glue stage; container tare; wet mass; moisture; attached glue/abrasive; destination; transfer note; rework stock"
+      collection_method: "Weigh segregated waste containers, subtract tare and retain treatment transfer evidence. Separate clean offcut, untreated sawdust, glued dust, rejected leaf, PVAc residue, abrasive paper and each packaging scrap. Reconcile detached material once."
+      unit: "kg"
+      frequency: "each removal and campaign"
+      temporal_coverage: "Complete declared campaign, with representative operating coverage"
+      site_scope: "Named factory and configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records and reconciled campaign ledger"
+    - protocol_id: cp_air
+      process_id: "door_manufacture"
+      flow_role: "each elementary air emission"
+      record_type: "foreground_record"
+      raw_fields: "species/CAS; medium/submedium; stage; control device; sampling/airflow/time; size basis; detection limit; fugitive estimate and uncertainty; glue SDS"
+      collection_method: "Collect outdoor discharge measurements after control with compatible sampling periods; include documented fugitive releases. Obtain separate species and disjoint dust-size totals. Acetic acid requires actual source identification and measurement. Unknown or below detection is disclosed, not an invented zero."
+      unit: "kg"
+      frequency: "representative operating conditions and campaign"
+      temporal_coverage: "Complete declared campaign, with representative operating coverage"
+      site_scope: "Named factory and configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records and reconciled campaign ledger"
+    - protocol_id: cp_water
+      process_id: "door_manufacture"
+      flow_role: "evaporated water"
+      record_type: "foreground_record"
+      raw_fields: "wood moisture before/after; glue input water; water in accepted leaf and wastes; stock change; ambient uptake; airflow/humidity cross-check"
+      collection_method: "Determine net evaporated water from consistent campaign water balances, cross-checked by outlet airflow/humidity where feasible; record retained water and ambient uptake rather than treating all supplied glue water as vapor."
+      unit: "kg"
+      frequency: "each campaign"
+      temporal_coverage: "Complete declared campaign, with representative operating coverage"
+      site_scope: "Named factory and configuration"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, source records and reconciled campaign ledger"
+  calculation_rules:
+    - id: campaign_normalization
+      applies_to: "all inventory rows"
+      rule: "For each non-reference row, normalized exchange = attributable physical campaign total / S; S is the sum of measured accepted net leaf masses in kg. Accepted_leaf = 1 kg. Apply the same campaign and configuration throughout."
+      inputs:
+        - cp_mass
+        - cp_material
+        - cp_energy
+        - cp_pack
+        - cp_waste
+        - cp_air
+        - cp_water
+      output: "Exchange per 1 kg reference flow"
+      source_ids: []
+    - id: wood_balance
+      applies_to: "hardwood, clean_offcut, clean_sawdust, glued_dust"
+      rule: "Wood dry mass = wet wood mass / (1 + dry-basis moisture / 100); use only the wood fraction of composite streams. Maintain unallocated dry-wood/water/carbon balances including stock changes; carbon fraction requires actual species/composition evidence, not a universal default."
+      inputs:
+        - cp_material
+        - cp_waste
+        - cp_water
+      output: "Dry wood mass and physical balance"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: particle_partition
+      applies_to: "pmfine, pmmid, pmcoarse"
+      rule: "If the same valid sample reports cumulative totals, middle fraction = PM10 − PM2.5 and coarse fraction = total suspended particles − PM10; require non-negative values, equal sampling/control bases and documented uncertainty. Add only disjoint fractions; never sum PM10 with its PM2.5 subset."
+      inputs:
+        - cp_air
+      output: "Disjoint particle totals before campaign normalization"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_route
+      applies_to: "door_manufacture"
+      requirement: "Verify actual solid leaf construction and complete door gate; retain excluded-operation checks and stage records."
+      evidence: "Drawing, bill of materials, shop route and acceptance"
+    - id: dq_mass
+      applies_to: "all inventory rows"
+      requirement: "S must be positive and measured; report scale resolution/calibration, sampling coverage, period and denominator. Quantities, null values, detection limits and absence are distinct."
+      evidence: "Traceable original campaign records"
+    - id: dq_background
+      applies_to: "all inventory rows"
+      requirement: "Confirm actual supplied composition, geographic/temporal representativeness and unit basis before linking backgrounds. Unresolved waste identities or supply compatibility remain explicit and block a complete dataset, not the future collection protocol."
+      evidence: "Supplier declarations, state-confirmed identities, linked process boundaries"
+    - id: dq_functions
+      applies_to: "reference product"
+      requirement: "Area, thickness, adhesive, absence of cores/skins/coatings/hardware and functional claims require original evidence. Do not infer sound/fire certification from wood species or material mass."
+      evidence: "Product schedule and test report matching configuration, or explicit no claim"
+validation_rules:
+  - rule_id: v_identity
+    applies_to: "reference product"
+    rule: "Require exactly one completed accepted door-leaf product output linked by accepted_leaf, equal to 1 kg net mass. A frame, threshold, filled-core panel or packaged gross mass fails scope."
+    source_ids:
+      - adk-solid-door-route
+  - rule_id: v_basis
+    applies_to: "all inventory rows"
+    rule: "EN and ZH must preserve rows, quantities, S denominator, sources and formulas. Every row has one atomic flow, reference basis and named collection protocol; actual optional absence needs route evidence."
+    source_ids: []
+  - rule_id: v_balance
+    applies_to: "door_manufacture"
+    rule: "Reconcile physical mass/water/carbon and packaging ledgers before allocation. Check no duplicated internal handoffs, rework or captured-versus-emitted dust. Document discrepancy and measurement uncertainty; no invented closure amount."
+    source_ids: []
+  - rule_id: v_emissions
+    applies_to: "pmfine, pmmid, pmcoarse, water_vapor, acetic_acid"
+    rule: "Check species, CAS where relevant, outdoor air/submedium, size partition and actual control boundary. Preserve biogenic CO2 in linked upstream LCI and disclose impact-accounting conventions separately. No generic PM or correction flow substitutes a specific emission."
+    source_ids: []
+  - rule_id: v_completeness
+    applies_to: "all inventory rows"
+    rule: "Missing identity, incompatible supplier composition/units, unmeasured quantities or unknown flows make the concrete dataset incomplete. Add every evidenced additional exchange atomically; flow identity success alone does not approve quantities or background data."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Input for the specified uncoated interior solid hardwood door leaf, with linked upstream manufacture and disclosed finishing/installation outside this gate"
+  allowed_use: "Manufacturing comparison only after matching leaf geometry, configuration, moisture, performance, gates and complete supply data"
+  excluded_use: "Whole installed door sets; frames/thresholds; filled-core panels; certified fire/acoustic assemblies; universal per-door weight"
+  required_metadata: "Factory, campaign, S and accepted count, mass calibration, dimensions/species/route, glue formulation, claims and acceptance, boundary and backgrounds, packaging, allocation, UUID gaps"
+  required_quality_disclosure: "Measured/estimated/missing quantities, sampling and uncertainty, data age, supplier compatibility and outstanding identity or background gaps"
+  update_trigger: "Changed species, construction, adhesive, finishing, functional claim, meter boundary, energy route, waste destination or supplier background"
+data_sources:
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory, Wood Handbook, FPL-GTR-282 (2021), Table 10-1 / pp.10-9, 10-12; ch.13 p.13-2. https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf"
+    used_for: "Wood moisture measurement; ready-to-use PVAc and ambient cure/volatile caveats. No door weight, recipe, emission factor or sector average."
+  - id: "adk-solid-door-route"
+    type: "literature"
+    reference: "Adirondack Naturals, Custom, Solid Wood Doors Handmade Since 1999, Welcome and FAQ, undated publisher page. https://www.adknaturals.com/"
+    used_for: "Primary manufacturer evidence of solid-wood mortise-and-tenon construction and unfinished slab delivery; qualitative subset only."
+  - id: "woodtech-door-quality"
+    type: "literature"
+    reference: "WoodTech Door, Specifications, §§4–6, undated publisher page. https://woodtechdoor.net/specifications"
+    used_for: "Independent manufacturer evidence of door-level machining/sanding, squareness/warp inspection and dispatch protection. Engineered component recipe and numeric tolerances are not adopted."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:f7a658e462402d58cd4cb3181fd46a5dab0293fbd45ba30291e3e55af90195b1"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5732"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5732
+          line: 60
+          column: 1
+        end:
+          offset: 7952
+          line: 79
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Kiln-dried planed untreated hardwood and supplied ready-to-use PVAc glue received at the door plant |\n| starting_condition_role | Foreground starting gate; not a full life-cycle cut-off |\n| product_classification_scope | Narrower interior solid-hardwood door-leaf subset of CPC 31622, not all leaf/frame/threshold identities |\n| recursive_input_rule | Purchased accepted door leaves are outside this manufacturing route. In-process rework stays internal and must not be counted as a new purchased leaf or a second reference output. |\n| upstream_dataset_requirement | Link species/state-compatible sawnwood production including drying, glue formulation manufacture, actual electricity supply, abrasive and packaging production; retain upstream emissions including biogenic CO2 even if excluded from a particular impact subtotal. UUID identity does not establish background completeness. |\n| disclosure | Declare start/end gates, supplier operations, outsourcing, rework, losses, packaging, waste destinations, background gaps and excluded downstream finishing/installation/use/end of life |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| b-door-gate | door_manufacture | Include cut/shape/tenon, panel preparation, glue application, clamping/cure, final leaf machining, sanding, dimensional/joint acceptance, reject handling and packing. Preserve stage meters and mass records inside one aggregated foreground unit, avoiding a fictitious intermediate door output. | adk-solid-door-route; woodtech-door-quality |\n| b-route | door_manufacture | Confirm solid panels, no added catalyst or coatings, dry cleanup and no on-site combustion. If actual operations differ, re-assess scope and add each chemical, utility, waste and species emission separately; never suppress known exchanges to fit the route. | usda-wood-handbook-2021 |\n| b-background | all inventory rows | Require supplier process boundaries and quantities independently of flow identity; account for outsourcing and actual material transport with separately identified transport services in the completed dataset. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 326
+              line: 10
+              column: 1
+            end:
+              offset: 395
+              line: 10
+              column: 70
+          text: "# Uncoated solid hardwood mortise-and-tenon door leaf at factory gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5732
+              line: 60
+              column: 1
+            end:
+              offset: 5753
+              line: 60
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_27601"
+      family: "allocation"
+      span:
+        start:
+          offset: 27601
+          line: 403
+          column: 1
+        end:
+          offset: 28847
+          line: 411
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| a-physical | door_manufacture | Maintain a physical stage ledger before burden allocation: wood dry mass, water and carbon entering equal accepted leaves, actual wastes, emissions and stock change within documented measurement uncertainty. Packaging has a separate dispatch ledger and is excluded from leaf net mass. Internal transfers and rework have equal quantities at both stage endpoints. |  |\n| a-attribution | door_manufacture | Prefer dedicated campaign meters and withdrawals. For shared electricity/extraction/air systems, use measured runtime/load or submeter evidence and disclose the attribution driver. Keep environmental burden accounting separate from physical outputs; never multiply physical waste or co-product quantity by a burden share. |  |\n| a-residues | clean_offcut, clean_sawdust, glued_dust | Rows here are waste transfers with actual treatment links and no avoided-product credit. If residues are deliberately produced marketable co-products, document that status and re-assess allocation with independent review before issuing that dataset; no default substitution or economic split is supplied. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 326
+              line: 10
+              column: 1
+            end:
+              offset: 395
+              line: 10
+              column: 70
+          text: "# Uncoated solid hardwood mortise-and-tenon door leaf at factory gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 27601
+              line: 403
+              column: 1
+            end:
+              offset: 27641
+              line: 403
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_37214"
+      family: "validation"
+      span:
+        start:
+          offset: 37214
+          line: 444
+          column: 1
+        end:
+          offset: 38721
+          line: 454
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| v-identity | reference product | Require exactly one completed accepted door-leaf product output linked by accepted_leaf, equal to 1 kg net mass. A frame, threshold, filled-core panel or packaged gross mass fails scope. | adk-solid-door-route |\n| v-basis | all inventory rows | EN and ZH must preserve rows, quantities, S denominator, sources and formulas. Every row has one atomic flow, reference basis and named collection protocol; actual optional absence needs route evidence. |  |\n| v-balance | door_manufacture | Reconcile physical mass/water/carbon and packaging ledgers before allocation. Check no duplicated internal handoffs, rework or captured-versus-emitted dust. Document discrepancy and measurement uncertainty; no invented closure amount. |  |\n| v-emissions | pmfine, pmmid, pmcoarse, water_vapor, acetic_acid | Check species, CAS where relevant, outdoor air/submedium, size partition and actual control boundary. Preserve biogenic CO2 in linked upstream LCI and disclose impact-accounting conventions separately. No generic PM or correction flow substitutes a specific emission. |  |\n| v-completeness | all inventory rows | Missing identity, incompatible supplier composition/units, unmeasured quantities or unknown flows make the concrete dataset incomplete. Add every evidenced additional exchange atomically; flow identity success alone does not approve quantities or background data. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 326
+              line: 10
+              column: 1
+            end:
+              offset: 395
+              line: 10
+              column: 70
+          text: "# Uncoated solid hardwood mortise-and-tenon door leaf at factory gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 37214
+              line: 444
+              column: 1
+            end:
+              offset: 37236
+              line: 444
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "b_door_gate"
+      identity_kind: "explicit"
+      unit_id: "normative_5732"
+      source_span:
+        start:
+          offset: 7007
+          line: 75
+          column: 1
+        end:
+          offset: 7382
+          line: 75
+          column: 376
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "b_route"
+      identity_kind: "explicit"
+      unit_id: "normative_5732"
+      source_span:
+        start:
+          offset: 7383
+          line: 76
+          column: 1
+        end:
+          offset: 7698
+          line: 76
+          column: 316
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "b_background"
+      identity_kind: "explicit"
+      unit_id: "normative_5732"
+      source_span:
+        start:
+          offset: 7699
+          line: 77
+          column: 1
+        end:
+          offset: 7950
+          line: 77
+          column: 252
+    - pointer: "/allocation_rules/0"
+      rule_id: "a_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_27601"
+      source_span:
+        start:
+          offset: 27714
+          line: 407
+          column: 1
+        end:
+          offset: 28114
+          line: 407
+          column: 401
+    - pointer: "/allocation_rules/1"
+      rule_id: "a_attribution"
+      identity_kind: "explicit"
+      unit_id: "normative_27601"
+      source_span:
+        start:
+          offset: 28115
+          line: 408
+          column: 1
+        end:
+          offset: 28478
+          line: 408
+          column: 364
+    - pointer: "/allocation_rules/2"
+      rule_id: "a_residues"
+      identity_kind: "explicit"
+      unit_id: "normative_27601"
+      source_span:
+        start:
+          offset: 28479
+          line: 409
+          column: 1
+        end:
+          offset: 28845
+          line: 409
+          column: 367
+    - pointer: "/validation_rules/0"
+      rule_id: "v_identity"
+      identity_kind: "explicit"
+      unit_id: "normative_37214"
+      source_span:
+        start:
+          offset: 37309
+          line: 448
+          column: 1
+        end:
+          offset: 37555
+          line: 448
+          column: 247
+    - pointer: "/validation_rules/1"
+      rule_id: "v_basis"
+      identity_kind: "explicit"
+      unit_id: "normative_37214"
+      source_span:
+        start:
+          offset: 37556
+          line: 449
+          column: 1
+        end:
+          offset: 37796
+          line: 449
+          column: 241
+    - pointer: "/validation_rules/2"
+      rule_id: "v_balance"
+      identity_kind: "explicit"
+      unit_id: "normative_37214"
+      source_span:
+        start:
+          offset: 37797
+          line: 450
+          column: 1
+        end:
+          offset: 38069
+          line: 450
+          column: 273
+    - pointer: "/validation_rules/3"
+      rule_id: "v_emissions"
+      identity_kind: "explicit"
+      unit_id: "normative_37214"
+      source_span:
+        start:
+          offset: 38070
+          line: 451
+          column: 1
+        end:
+          offset: 38410
+          line: 451
+          column: 341
+    - pointer: "/validation_rules/4"
+      rule_id: "v_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_37214"
+      source_span:
+        start:
+          offset: 38411
+          line: 452
+          column: 1
+        end:
+          offset: 38719
+          line: 452
+          column: 309
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5732"
+      source_span:
+        start:
+          offset: 5732
+          line: 60
+          column: 1
+        end:
+          offset: 5753
+          line: 60
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5732"
+      source_span:
+        start:
+          offset: 5781
+          line: 64
+          column: 1
+        end:
+          offset: 6934
+          line: 71
+          column: 202
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_27601"
+      source_span:
+        start:
+          offset: 27601
+          line: 403
+          column: 1
+        end:
+          offset: 27641
+          line: 403
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_37214"
+      source_span:
+        start:
+          offset: 37214
+          line: 444
+          column: 1
+        end:
+          offset: 37236
+          line: 444
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:f7a658e462402d58cd4cb3181fd46a5dab0293fbd45ba30291e3e55af90195b1"
+  generated_content_sha256: "sha256:bedc602c7541185d71e02abcf2c3dc81e6b7d6cbf9e0c412de0df54f886f6eea"

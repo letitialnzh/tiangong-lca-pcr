@@ -130,17 +130,17 @@ sync_with: pcr.en-US.md
 
 ###### 交流电 (`observation_electricity`)
 
-归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
+归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy_observation 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
 
 - 选定流： 交流电 `50657322-939c-4829-a87b-47c093bfa6a7`
 - 流属性/单位： 净热值, 低位热值 `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- 数量规则： 每声明的参考流的实测可归属数量; cp_energy.
+- 数量规则： 每声明的参考流的实测可归属数量; cp_energy_observation.
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准： 每声明的参考流
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
-- 采集协议： `cp_energy`
+- 采集协议： `cp_energy_observation`
 - 来源： `gsf-sci110`
 
 ###### 既有观测数据包 (`source_data`)
@@ -178,17 +178,17 @@ sync_with: pcr.en-US.md
 
 ###### 交流电 (`organization_electricity`)
 
-归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
+归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy_organization 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
 
 - 选定流： 交流电 `50657322-939c-4829-a87b-47c093bfa6a7`
 - 流属性/单位： 净热值, 低位热值 `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- 数量规则： 每声明的参考流的实测可归属数量; cp_energy.
+- 数量规则： 每声明的参考流的实测可归属数量; cp_energy_organization.
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准： 每声明的参考流
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
-- 采集协议： `cp_energy`
+- 采集协议： `cp_energy_organization`
 - 来源： `gsf-sci110`
 
 ###### 数据编制作业 (`compute_job`)
@@ -226,17 +226,17 @@ sync_with: pcr.en-US.md
 
 ###### 交流电 (`validation_electricity`)
 
-归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
+归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy_validation 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
 
 - 选定流： 交流电 `50657322-939c-4829-a87b-47c093bfa6a7`
 - 流属性/单位： 净热值, 低位热值 `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- 数量规则： 每声明的参考流的实测可归属数量; cp_energy.
+- 数量规则： 每声明的参考流的实测可归属数量; cp_energy_validation.
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准： 每声明的参考流
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
-- 采集协议： `cp_energy`
+- 采集协议： `cp_energy_validation`
 - 来源： `gsf-sci110`
 
 ##### 废物流
@@ -259,17 +259,17 @@ sync_with: pcr.en-US.md
 
 ###### 交流电 (`sealing_electricity`)
 
-归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
+归属于本阶段的电量，包括实测边界内按记录分配的预留闲置、冷却、存储和网络负担。本 UUID 仅适用于实际中国电网平均用户端低于1 kV 供电。供电条件不同时，应另列匹配身份，核验前保留未解决。cp_energy_sealing 计量作业及重试，使用 calculate_energy，不重复计入供应商已包含的电量。
 
 - 选定流： 交流电 `50657322-939c-4829-a87b-47c093bfa6a7`
 - 流属性/单位： 净热值, 低位热值 `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- 数量规则： 每声明的参考流的实测可归属数量; cp_energy.
+- 数量规则： 每声明的参考流的实测可归属数量; cp_energy_sealing.
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准： 每声明的参考流
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
-- 采集协议： `cp_energy`
+- 采集协议： `cp_energy_sealing`
 - 来源： `gsf-sci110`
 
 ##### 废物流
@@ -363,7 +363,11 @@ sync_with: pcr.en-US.md
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_original | sealing | 参考输出 | acceptance_record | 原件标识；版本；文件或校验和；内容范围；模式；来源权利及控制；验收标准及结果；覆盖；质量标志；完成截止；完整数量 | 检查原始内容及生产者验收记录，对等效序列化去重并绑定一份完整声明原件 | item | 版本完成时 | 整个声明形成周期 | 全部原件生产场址及供应商 | 每声明的参考流 | 签认版本清单及可复现验收或完整性结果 |
-| cp_energy | planning; observation; organization; validation; sealing | 阶段电力 | meter_record | 电表标识；起止；阶段或作业；地域；电压；kWh；预留及闲置负荷；冷却、存储及网络接口；分配份额；供应商重叠 | 采用校准电表或与设施总量核对的已核验遥测；绑定互斥阶段区间、重跑及共享负荷归属 | kWh | 每次作业及形成区间 | 全部形成周期，包括失败工作 | 实际自有供电；供应商范围另列 | 每声明的参考流 | 校准、工作量日志、电表核对和缺失覆盖 |
+| cp_energy | planning | planning_electricity | meter_record | 电表标识；起止；阶段或作业；地域；电压；kWh；预留及闲置负荷；冷却、存储及网络接口；分配份额；供应商重叠 | 采用校准电表或与设施总量核对的已核验遥测；绑定互斥阶段区间、重跑及共享负荷归属；本协议仅覆盖planning。五个分阶段协议与相同电表总量核对；每个区间和共享负荷只归属一次，保留失败作业。 | kWh | 每次作业及形成区间 | 全部形成周期，包括失败工作 | 实际自有供电；供应商范围另列 | 每声明的参考流 | 校准、工作量日志、电表核对和缺失覆盖 |
+| cp_energy_observation | observation | observation_electricity | meter_record | 电表标识；起止；阶段或作业；地域；电压；kWh；预留及闲置负荷；冷却、存储及网络接口；分配份额；供应商重叠 | 采用校准电表或与设施总量核对的已核验遥测；绑定互斥阶段区间、重跑及共享负荷归属；本协议仅覆盖observation。五个分阶段协议与相同电表总量核对；每个区间和共享负荷只归属一次，保留失败作业。 | kWh | 每次作业及形成区间 | 全部形成周期，包括失败工作 | 实际自有供电；供应商范围另列 | 每声明的参考流 | 校准、工作量日志、电表核对和缺失覆盖 |
+| cp_energy_organization | organization | organization_electricity | meter_record | 电表标识；起止；阶段或作业；地域；电压；kWh；预留及闲置负荷；冷却、存储及网络接口；分配份额；供应商重叠 | 采用校准电表或与设施总量核对的已核验遥测；绑定互斥阶段区间、重跑及共享负荷归属；本协议仅覆盖organization。五个分阶段协议与相同电表总量核对；每个区间和共享负荷只归属一次，保留失败作业。 | kWh | 每次作业及形成区间 | 全部形成周期，包括失败工作 | 实际自有供电；供应商范围另列 | 每声明的参考流 | 校准、工作量日志、电表核对和缺失覆盖 |
+| cp_energy_validation | validation | validation_electricity | meter_record | 电表标识；起止；阶段或作业；地域；电压；kWh；预留及闲置负荷；冷却、存储及网络接口；分配份额；供应商重叠 | 采用校准电表或与设施总量核对的已核验遥测；绑定互斥阶段区间、重跑及共享负荷归属；本协议仅覆盖validation。五个分阶段协议与相同电表总量核对；每个区间和共享负荷只归属一次，保留失败作业。 | kWh | 每次作业及形成区间 | 全部形成周期，包括失败工作 | 实际自有供电；供应商范围另列 | 每声明的参考流 | 校准、工作量日志、电表核对和缺失覆盖 |
+| cp_energy_sealing | sealing | sealing_electricity | meter_record | 电表标识；起止；阶段或作业；地域；电压；kWh；预留及闲置负荷；冷却、存储及网络接口；分配份额；供应商重叠 | 采用校准电表或与设施总量核对的已核验遥测；绑定互斥阶段区间、重跑及共享负荷归属；本协议仅覆盖sealing。五个分阶段协议与相同电表总量核对；每个区间和共享负荷只归属一次，保留失败作业。 | kWh | 每次作业及形成区间 | 全部形成周期，包括失败工作 | 实际自有供电；供应商范围另列 | 每声明的参考流 | 校准、工作量日志、电表核对和缺失覆盖 |
 | cp_source | observation | 既有观测数据集 | source_record | 来源标识及版本；数据包数量；变量及覆盖；标志；权利；上游形成清单；受益份额；接收字节；谱系 | 检查接收原件及溯源，按已定义数据包计数；核验兼容性、权利和上游负担台账，不由大小估算能耗 | item | 每次接收来源版本 | 声明输出版本的全部来源 | 实际供应商及接收场址 | 每声明的参考流 | 来源清单、获取记录、上游清单和复用台账 |
 | cp_provider | organization | 编制作业 | provider_record | 作业标识；源及输出版本；完整作业数量；转换；资源及时长；供应商电力、设备、网络、存储及冷却边界 | 检查供应商作业验收日志和匹配的作业清单；保留重试及范围排除，核对计费指标但不把货币当数量 | item | 每次供应商完成作业 | 声明形成周期 | 实际供应商设施 | 每声明的参考流 | 作业清单、范围明确供应商清单和内含交换排重台账 |
 | cp_device | infrastructure | 单台设备 | asset_record | 设备型号及配置；上游清单；安装寿命；预留时长；预留与总资源；实际传感工作占用；校准；更换件；供应商纳入 | 检查设备台账、配置、寿命证据及利用日志；分别采集服务器和仪器的因果份额 | item | 每台设备及项目时期 | 形成周期和有证据设备寿命 | 实际自有设备 | 每声明的参考流 | 资产记录、利用证据及寿命或分配敏感性 |
@@ -374,8 +378,8 @@ sync_with: pcr.en-US.md
 
 | rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| calculate_energy | planning_electricity; observation_electricity; organization_electricity; validation_electricity; sealing_electricity | 可归属实测 kWh 乘以 3.6 换算为 MJ；保留阶段及供电接口。 | cp_energy; kWh | MJ | gsf-sci110; nist-si-conversion |
-| calculate_original | all inventory rows | 阶段、供应商及来源拆分后，将可归属声明原件的非重复交换量汇总；输出恰好为 1 件。显式保留分子单位及上游份额。 | cp_original; cp_energy; cp_source; cp_provider; cp_device | 每声明的参考流 | un-cpc3-data; gsf-sci110 |
+| calculate_energy | planning_electricity; observation_electricity; organization_electricity; validation_electricity; sealing_electricity | 可归属实测 kWh 乘以 3.6 换算为 MJ；保留阶段及供电接口。 | cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; kWh | MJ | gsf-sci110; nist-si-conversion |
+| calculate_original | all inventory rows | 阶段、供应商及来源拆分后，将可归属声明原件的非重复交换量汇总；输出恰好为 1 件。显式保留分子单位及上游份额。 | cp_original; cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_source; cp_provider; cp_device | 每声明的参考流 | un-cpc3-data; gsf-sci110 |
 | calculate_metrics | 内容元数据 | 按声明规范记录实际完整性、有效及拒绝记录条数、字节大小和覆盖。这些表征内容，不将字节或记录转换为 MJ 或新增原件。 | cp_original; source and validation logs | 声明质量及内容指标 | w3c-dcat3; unece-gsbpm52; noaa-ghcnd |
 
 ### 数据质量要求
@@ -383,9 +387,9 @@ sync_with: pcr.en-US.md
 | requirement_id | 适用对象 | 要求 | 证据 |
 | --- | --- | --- | --- |
 | quality_content | reference_data | 绑定来源谱系、覆盖、版本、模式、缺失、标志、转换和权利或控制。区分观测与插补记录，保留实际执行检查；验收标准由实际生产者定义。 | cp_original; cp_source; w3c-dcat3; noaa-ghcnd |
-| quality_cycle | 全部过程 | 覆盖实际场址、采集及生产时期、失败作业、纠正、临时副本及封存存储。披露电表缺失时期、外部来源负担及供应商排除。 | cp_energy; cp_provider; unece-gsbpm52 |
+| quality_cycle | 全部过程 | 覆盖实际场址、采集及生产时期、失败作业、纠正、临时副本及封存存储。披露电表缺失时期、外部来源负担及供应商排除。 | cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_provider; unece-gsbpm52 |
 | quality_identity | 全部输入 | 复核公开身份、参考属性及单位组、供电条件、实际设备和上游版本。空 UUID 保留为候选缺口，不能证明供应商清单可用。 | cp_device; cp_source; cp_provider |
-| quality_uncertainty | 分配及数据代表性 | 报告工作量及电表不确定性、未知份额、设备寿命敏感性、观测覆盖限制及复用情景敏感性。不以虚构基准替代前景证据。 | cp_energy; cp_device; source/reuse ledger |
+| quality_uncertainty | 分配及数据代表性 | 报告工作量及电表不确定性、未知份额、设备寿命敏感性、观测覆盖限制及复用情景敏感性。不以虚构基准替代前景证据。 | cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_device; source/reuse ledger |
 
 ## 9. 校验规则
 

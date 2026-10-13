@@ -1,10 +1,1158 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31520"
-  title: "Densified wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.densified-wood"
+  classification_refs: "CPC 3.0 31520; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Resin-free unglued heat-stabilized compressed solid-wood tool-handle blanks; yellow birch representative"
+  excluded_products: "Compreg; ordinary plywood/blockboard; glued compressed veneer; MDF; particleboard; naturally dense uncompressed wood; heat-modified-only wood; coated or chemically treated products"
+  representative_product: "Uncoated yellow-birch tool-handle blank, net accepted conditioned mass at factory gate"
+  production_route: "Receive kiln-dried solid stock → moisture conditioning → electrically heated compression → cooling/fixation under load → conditioning/recovery acceptance → trimming and packing"
+  market_state: "Uncoated solid blank for further tool-handle manufacture; not a complete tool"
+functional_unit:
+  what: "Supply physically compressed and heat-stabilized uncoated solid blanks for tool-handle manufacture without cross-material functional equivalence"
+  how_much: "1 kg net accepted conditioned wood at factory gate, excluding packaging"
+  how_well: "Declared species, dimensions, moisture basis of density, compression direction and fixation/recovery acceptance; verified against intended-use specification"
+  how_long_or_cycle: "One declared production/dispatch accounting period; no end-use service life assigned"
+  reference_flow_link: "finished_blank"
+system_boundary:
+  rules:
+    - rule_id: boundary_route
+      applies_to: "manufacture"
+      rule: "Apply only to the declared electric-drive hot-pressed solid route; combine compression, conditioned acceptance, trimming/packing into one foreground unit while retaining stage metering."
+      source_ids:
+        - usda-wood-handbook-2021
+        - cabral-densification-2022
+    - rule_id: boundary_complete
+      applies_to: "manufacture"
+      rule: "Include attributable idle, rejected production, rework, cooling and controls; link delivery transport as a separate service background and keep added exchanges atomic."
+      source_ids:
+        - usda-wood-handbook-2021
+        - cabral-densification-2022
+    - rule_id: boundary_external
+      applies_to: "manufacture"
+      rule: "Linked background carries upstream emissions; foreground exhaust contains site releases only. External waste treatment is not also a site emission."
+      source_ids:
+        - usda-wood-handbook-2021
+        - cabral-densification-2022
+boundary_abstraction:
+  declared_starting_condition: "Kiln-dried unglued unimpregnated yellow-birch solid stock received at factory, with measured moisture and traceable origin"
+  starting_condition_role: "Foreground receiving gate; not exemption of upstream stock burdens"
+  product_classification_scope: "Resin-free heat-stabilized solid-wood subset of CPC 31520; resin/veneer/reconstituted-board routes excluded"
+  recursive_input_rule: "Internal rework has no external input/output pair; purchased already-densified solid stock needs separate state and upstream dataset without duplicated compression burdens"
+  upstream_dataset_requirement: "Retain forestry, sawing, kiln drying and delivery transport burdens with actual species/region/moisture/drying background, not coniferous survey averages"
+  disclosure: "Declare supply boundary, stage meters, losses/rejects, recovery tests, auxiliaries, waste destinations and exhaust controls; missing evidence remains unresolved"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Wood material"
+    uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Botanical species"
+    - "solid feedstock and sawing orientation"
+    - "feedstock/final moisture and dry-basis definition"
+    - "pre/post mass and volume at comparable state"
+    - "pressure/temperature/time and cooling records"
+    - "compression direction"
+    - "release and conditioned recovery tests"
+    - "no added adhesive/resin/coating declaration and formulation evidence"
+    - "finished dimensions and tool-handle acceptance"
+    - "site/period"
+    - "delivery state"
+    - "electricity voltage and boundary"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use net accepted conditioned wood mass as denominator; exclude packaging and rejects. Oven-dry or gross mass is not a substitute."
+  - id: moisture_basis
+    applies_to: "birch_stock, finished_blank"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "u = (m_wet - m_dry) / m_dry; m_dry = m_wet / (1 + u). u is a dry-basis mass ratio; divide percentages by 100 first. Compare paired feedstock/final density at comparable moisture and temperature, separating water loss from physical compression."
+  - id: energy_unit
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Record low-voltage AC consumption; 1 kWh = 3.6 MJ. This conversion assigns neither press efficiency nor net delivered steam heat."
+  - id: hydraulic_volume
+    applies_to: "hydraulic_oil"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Use actual fluid volume at recorded temperature; V = m / rho(T) only with measured positive finite density in kg/m3 for the same grade and temperature. Report V/D in m3/kg and retain m = rho(T)*V for mass balance; no default density."
+process_map:
+  - id: manufacture
+    name: "Solid-wood hot compression, conditioned acceptance and dispatch"
+    inclusion: "required"
+    inclusion_condition: "Declared resin-free electrically heated route"
+    role: "foreground"
+    quantitative_reference: "1 kg accepted net wood"
+process_inventory:
+  - id: manufacture
+    label: "Solid-wood hot compression, conditioned acceptance and dispatch"
+    inputs:
+      product:
+        - row_id: birch_stock
+          role: "Kiln-dried yellow-birch solid sawn stock"
+          name: "Sawnwood, hardwood"
+          flow_type: "product"
+          flow_ref:
+            uuid: "43103a96-43df-4f35-ad02-728237b3f815"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Supply actual unglued, untreated kiln-dried yellow-birch sawn stock. The broad hardwood identity is at the sawmill gate; verify actual botanical species, moisture, dimensions, sawing orientation, supplier gate and absence of bonding or chemical treatment. Its illustrative downstream seat-frame use does not define this product use. Species-unspecified identity is not a species-verified background: actual hardwood/species and gate compatibility must be established separately; unknown compatibility remains incomplete. The adopted sawnwood classification requires actual stock thicker than 6 mm; thinner stock needs another verified identity. Do not substitute coniferous stock."
+          amount:
+            expression: "Collect with cp_wood and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_wood
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Applies to low-voltage (<1 kV) customer-side AC supply only. Meter electric conditioning, platens, press drive, cooling, trimming, extraction, auxiliaries and attributable idle/reject loads; reconcile transformer losses with supplier boundary. The adopted record specifies CN consumption supply: verify actual site region/year, supplier mix, voltage, user-side delivery/loss boundary and native electrical-energy basis; the identity does not make the Chinese background a global default."
+          amount:
+            expression: "Collect with cp_energy and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: conditioning_water
+          role: "Process Water"
+          name: "Process Water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "94a04f7e-2d5c-41f0-b182-d54a3b373a02"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional treated make-up water for moisture conditioning or cooling. Record actual water grade and supplier treatment; count net external supply, not recirculated internal water."
+          amount:
+            expression: "Collect with cp_water and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: hydraulic_oil
+          role: "Mineral-base hydraulic oil for press"
+          name: "Hydraulic Fluid"
+          flow_type: "product"
+          flow_ref:
+            uuid: "30691a38-a947-4b41-991e-194f6c9aa88f"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66 / m3"
+          description: "Conditional hydraulic press: use this broad hydraulic-fluid identity only for the actual mineral-base formulation and documented additive grade. Supplier delivery and background composition must match; a generic identity alone is not a formulation-specific dataset. Record native liquid volume at measured temperature; where only mass is recorded, divide by positive finite measured grade-specific density at matching temperature. No generic density is assumed. Count fresh fluid introduced from external supply/unused stock once, never pump throughput or repeated standing charge; drained used oil is a separate output, not a subtraction from virgin input."
+          amount:
+            expression: "Collect period fresh-fluid volume V with cp_hydraulic; V / D in m3 per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_hydraulic
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: packing_film
+          role: "Polyethylene film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional polyethylene dispatch wrapping only; exclude its mass from the net wood denominator. Retain actual polymer grade, film mass and packaging specification; PET is not PE. Require unsupported non-self-adhesive nonlaminated PE film, actual composition and provider compatibility. The source names/CAS/comment identify PE film while CPC29220 incorrectly classifies luggage; retain this source clarification debt, not a claim of repaired classification."
+          amount:
+            expression: "Collect with cp_aux and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_aux
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_blank
+          role: "Resin-free heat-stabilized densified yellow-birch solid-wood blank"
+          name: "Wood material"
+          flow_type: "product"
+          flow_ref:
+            uuid: "d07bf4c9-7cd0-46ad-a6b3-2fd11fe08f98"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "One accepted, conditioned, uncoated solid-wood tool-handle blank at factory gate. Final trimming and wrapping belong to this same unit; no second reference-UUID output is created."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_reference
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+      waste:
+        - row_id: captured_sawdust
+          role: "sawdust waste"
+          name: "sawdust waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "e1a44d20-d968-4d64-bd7c-253a1441ab35"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Captured sawing/sanding dust sent to external waste treatment, measured separately from escaped airborne particles. Confirm the actual pre/post-press thermal state, absence of chemical impregnation/glue/resin and the selected untreated-combustion-or-recovery identity against the actual receiver. A different contamination or treatment route requires another identity review. If marketed as a co-product, establish a product-flow identity before using that route."
+          amount:
+            expression: "Collect with cp_residues and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: planing_shavings
+          role: "Untreated yellow-birch planing shavings for waste treatment"
+          name: "Wood waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2ef9d37a-2fbf-42f6-8ccf-5d6677d5cfd8"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional planing; separately weigh actual loose yellow-birch shavings with their pre/post-compression origin, moisture and absence of added glue, resin or coating. They are not automatically sawing dust, engineered board feedstock, wood chips or pellet fuel. The broad Wood waste identity requires actual manufacturing-origin compatibility and receiving treatment. Its primary-production wording and CPC39282 agglomeration classification conflict with this non-agglomerated residue state and remain source clarification debt; the coherent wood-waste names/comment do not establish pelletizing or briquetting."
+          amount:
+            expression: "Collect with cp_residues and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: rejected_solid
+          role: "Rejected densified yellow-birch solid blanks for waste treatment"
+          name: "Wood waste"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "2ef9d37a-2fbf-42f6-8ccf-5d6677d5cfd8"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Weigh unrecoverable rejected blanks and solid trim separately from dust and shavings. Record actual heat-compression history, recovery failure/defect, moisture, no added resin/glue/coating and receiving treatment. Continuous solid-wood compression is not agglomeration of wood particles; the broad Wood waste record's CPC39282 agglomeration field and primary-production wording require clarification against this actual non-agglomerated manufacturing residue, without borrowing a disposal background. Internal rework is retained inside the unit and counted once; it is not simultaneously a waste export."
+          amount:
+            expression: "Collect with cp_residues and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: used_oil
+          role: "Used lubricating oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional used press lubricating/hydraulic oil exported to licensed treatment. Record its mineral-base identity, contaminants and receiver; no disposal or recycling credit is assigned by the flow UUID."
+          amount:
+            expression: "Collect with cp_aux and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_aux
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: conditioning_effluent
+          role: "Untreated wood-conditioning condensate to external wastewater treatment"
+          name: "Untreated wood-conditioning condensate to external wastewater treatment"
+          flow_type: "waste"
+          property_unit: "Volume / m3; supplier unit/property identity unresolved"
+          description: "Conditional collected condensate or cooling purge leaving for external treatment. Collect volume, composition and receiver; do not replace it with paper-mill wastewater or model it simultaneously as an elementary discharge."
+          amount:
+            expression: "Collect with cp_water and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+      elementary:
+        - row_id: water_vapour
+          role: "water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Net water vapour released to outdoor air, unspecified subcompartment. Reconcile wood moisture, make-up water, liquid effluent and retained water; exclude internal vapour condensation/recycle."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: pm_fine
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only emitted PM2.5 after collection/control, to outdoor air with unspecified subcompartment. Do not report captured dust here."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: pm_coarse
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only emitted particles >2.5 and <=10 micrometres, outdoor air unspecified. Exclude the lower-stratosphere and long-term flow variants."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: pm_large
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Only emitted particles >10 micrometres, outdoor air unspecified. Subtract nested fractions on a common sampling basis before using three disjoint bins."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: methanol_air
+          role: "methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional speciated methanol release confirmed by site exhaust screening. Outdoor air unspecified; no generic VOC quantity or resin-route factor is substituted."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: formaldehyde_air
+          role: "formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional speciated formaldehyde release confirmed by screening; resin-free does not prove zero wood-derived emissions. Outdoor air unspecified."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: acetic_acid_air
+          role: "acetic acid"
+          name: "acetic acid"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-92c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional speciated acetic-acid release confirmed by screening, outdoor air unspecified. Keep acid mass distinct from carbon-equivalent VOC measurements."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+        - row_id: biogenic_co2
+          role: "carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional wood-derived CO2 released during heat treatment, established by measurements and carbon reconciliation; no on-site combustion is assumed. Retain in LCI regardless of climate reporting convention."
+          amount:
+            expression: "Collect with cp_air and normalize per 1 kg reference flow"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_air
+              source_ids:
+                - usda-wood-handbook-2021
+                - usda-staypak-1956
+                - cabral-densification-2022
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_physical
+    applies_to: "all inventory rows"
+    rule: "Keep the unallocated physical wood/water/carbon balance separate from allocated environmental burdens; internal links have equal quantities, and physical co-product outputs are not multiplied by allocation shares."
+    source_ids: []
+  - rule_id: allocation_subdivision
+    applies_to: "manufacture"
+    rule: "Prefer subdivision and direct metering; shared electricity uses measured load/runtime drivers with residual reconciliation, not nameplate-power guesses."
+    source_ids: []
+  - rule_id: allocation_residues
+    applies_to: "manufacture"
+    rule: "Waste rows describe waste transfers. Sold sawdust/shavings/trim require verified separate atomic product rows and co-product determination rather than waste UUID reuse. Establish causal allocation before assigning burdens; otherwise disclose economic prices/period/shares and sensitivity. No automatic recycling credit."
+    source_ids: []
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_reference
+      process_id: "manufacture"
+      flow_role: "finished_blank"
+      record_type: "collected_record"
+      raw_fields: "accepted batch; net wet mass; oven-dry sample mass; dimensions/volume; moisture; conditioning RH/temperature/time; intended use and rejects"
+      collection_method: "Calibrated scales and dimensional instruments; paired moisture specimens; acceptance against order specification, excluding packaging; Accepted net wood mass supplies period denominator D; all exchanges aggregated per 1 kg reference flow"
+      unit: "kg; m3; %"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_wood
+      process_id: "manufacture"
+      flow_role: "birch_stock"
+      record_type: "collected_record"
+      raw_fields: "botanical species; origin/drying state; batch; mass/moisture/dimensions; growth-ring orientation; formulation records for no added adhesive/resin/coating/chemical"
+      collection_method: "Receipt weights/invoices and supplier formulation reconciliation; paired oven-dry sampling; trace to finished batch; External stock consumption with inventory change divided by D; per 1 kg reference flow"
+      unit: "kg; m3; %"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_press
+      process_id: "manufacture"
+      flow_role: "manufacture"
+      record_type: "collected_record"
+      raw_fields: "pressure/force and loaded area; platen/core temperature; holding/cooling time; compression direction; initial t0, loaded tc, released tr, conditioned tf, post-cycle tcycle; failure/cracking"
+      collection_method: "Continuous batch press sensor records; actual humidity cycles and reconditioning states; compare density at matching states; hydraulic-line pressure is not wood pressure; Batch distributions linked to D; inventory consistently per 1 kg reference flow"
+      unit: "MPa; degC; s; mm"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_energy
+      process_id: "manufacture"
+      flow_role: "electricity"
+      record_type: "collected_record"
+      raw_fields: "stage meter start/end; kWh; voltage; load; idle/rejects; supplier and transformer boundary"
+      collection_method: "Calibrated meters reconciled to purchases/main meter; record drivers and residuals for shared stage meters; Attributable period electricity converted to MJ then divided by D; per 1 kg reference flow"
+      unit: "kWh; MJ"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_water
+      process_id: "manufacture"
+      flow_role: "conditioning_water; conditioning_effluent"
+      record_type: "collected_record"
+      raw_fields: "water supply/grade; recycle and net make-up; condensate/purge; destination; composition; stock changes"
+      collection_method: "Calibrated meter, tank-level and flow reconciliation; measure liquid density/temperature before mass-volume conversion; Each external water exchange separately divided by D; per 1 kg reference flow"
+      unit: "kg; m3"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_aux
+      process_id: "manufacture"
+      flow_role: "used_oil; packing_film"
+      record_type: "collected_record"
+      raw_fields: "individual waste-oil or film grade; mass; receipts/stocks; waste-oil transfer records; contaminants"
+      collection_method: "Weigh each waste-oil transfer and packaging-film consumption separately; do not subtract waste-oil drains from fresh hydraulic-fluid input; each mass divided by D; per 1 kg reference flow"
+      unit: "kg"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_hydraulic
+      process_id: "manufacture"
+      flow_role: "hydraulic_oil"
+      record_type: "collected_record"
+      raw_fields: "mineral-base grade and additive specification; fresh-fluid deliveries/returns; unused and operating-fluid opening/closing stocks; fill/makeup volume; temperature; mass; measured grade-specific density; drains and losses"
+      collection_method: "Calibrated flow/tank/invoice reconciliation; V = m / rho(T) only with measured positive finite matching density; fresh volume from deliveries plus opening unused stock minus closing unused stock and unused returns; reconcile operating-fluid opening stock plus introduction against closing stock, drains and actual losses. Never count circulation or subtract drained used oil from fresh input. Each fresh period volume divided by D; per 1 kg reference flow"
+      unit: "m3; kg; kg/m3; degC"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_residues
+      process_id: "manufacture"
+      flow_role: "captured_sawdust; planing_shavings; rejected_solid"
+      record_type: "collected_record"
+      raw_fields: "separate dust/shavings/solid-reject weights; moisture; rework; transfer notes; sale/disposal contracts"
+      collection_method: "Separate containers/weighing; reconcile matching wet/dry batch bases with receivers; avoid captured/escaped double counting; Each external residue exchange divided by D; per 1 kg reference flow"
+      unit: "kg"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+    - protocol_id: cp_air
+      process_id: "manufacture"
+      flow_role: "water_vapour; pm_fine; pm_coarse; pm_large; methanol_air; formaldehyde_air; acetic_acid_air; biogenic_co2"
+      record_type: "collected_record"
+      raw_fields: "stack/fugitive sources; controls; gas flow/temperature/pressure/wet-dry basis; species concentration/detection limit; time; nested particle basis; biogenic carbon evidence"
+      collection_method: "Site screening and qualified species/size testing; align gas and concentration state and integrate actual time; distinguish nondetect from unmeasured, without assumed zeros; water/carbon cross-check; Each distinct emission mass divided by D; per 1 kg reference flow; retain biogenic CO2"
+      unit: "kg"
+      frequency: "each batch/continuous monitoring and period reconciliation"
+      temporal_coverage: "declared representative production period including startup/idle/rejects"
+      site_scope: "same site/route with specified equipment"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, batch records, test reports and uncertainty"
+  calculation_rules:
+    - id: period_normalization
+      applies_to: "all inventory rows"
+      rule: "D = period accepted net conditioned wood in kg; divide each physical period exchange total by D to obtain its amount per 1 kg reference flow. D must be positive; missing site values are not fabricated."
+      inputs:
+        - cp_reference
+        - "all collection protocols"
+      output: "exchange per 1 kg reference flow"
+      source_ids: []
+    - id: hydraulic_conversion
+      applies_to: "hydraulic_oil"
+      rule: "q = V / D; V = m / rho(T) when measured mass is converted using the same grade at measured T. Keep physical oil mass m = rho(T)*V and operating-stock/drain/loss balance separately; never infer a default density or subtract drains from virgin input."
+      inputs:
+        - cp_hydraulic
+        - cp_reference
+      output: "m3 hydraulic fluid per kg reference flow, plus separate physical mass balance"
+      source_ids: []
+    - id: density_compression
+      applies_to: "birch_stock, finished_blank"
+      rule: "rho = m / V; verify physical density increase using paired initial rho0 and final rhof at matching moisture/temperature, with volume change and dry-wood mass loss. Compression ratio CR = (t0 - tf) / t0; release springback SB = (tr - tc) / tc; this record's cyclic compression-loss ratio R = (tcycle - tf) / (t0 - tf). Ratios are dimensionless; nonpositive denominators are undefined. Measure tcycle after return to the conditioning state of tf. R is this record's explicit measurement convention and must not be compared directly with differently defined literature SR indices."
+      inputs:
+        - cp_wood
+        - cp_reference
+        - cp_press
+      output: "density and separate recovery test indicators"
+      source_ids:
+        - usda-wood-handbook-2021
+        - cabral-densification-2022
+    - id: physical_balance
+      applies_to: "manufacture"
+      rule: "Maintain separate dry wood, water and carbon ledgers: inputs + opening stocks = product + individual residues + actual releases + closing stocks + unexplained residual. Report residual/uncertainty without invented balancing emissions. Wood carbon uses measured/traceable species data with no default fraction; reconcile CO2 carbon using molecular mass ratio 12/44."
+      inputs:
+        - cp_wood
+        - cp_reference
+        - cp_residues
+        - cp_water
+        - cp_air
+      output: "physical balances and residuals"
+      source_ids:
+        - usda-wood-handbook-2021
+  data_quality_requirements:
+    - id: identity_route
+      applies_to: "all inventory rows"
+      requirement: "Verify continuous solid grain, actual compression/fixation and absence of glue/impregnation; UUID identity alone does not establish background compatibility"
+      evidence: "cp_wood; cp_press; cp_reference"
+    - id: coverage
+      applies_to: "all inventory rows"
+      requirement: "Declare applicable/not applicable/unmeasured and detection limits per row; unknown is not zero, and additional species/auxiliaries need atomic rows"
+      evidence: "cp_air; cp_aux; batch records"
+    - id: physical_basis
+      applies_to: "all inventory rows"
+      requirement: "Both languages use accepted net conditioned wood; retain biogenic CO2 in LCI and never add nested PM totals"
+      evidence: "cp_reference; cp_air"
+    - id: source_scope
+      applies_to: "manufacture"
+      requirement: "Historical glued yellow-poplar veneer tests, coniferous surveys and sawmill PTE factors are not defaults for this solid-wood factory; require site full-route records"
+      evidence: "usda-staypak-1956; site records"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "finished_blank"
+    rule: "Require verified Wood material identity with all actual resin-free yellow-birch compression/fixation, moisture, geometry, net mass and provider/quantity qualifiers. MDF, lumber-core plywood, ordinary bonded panels and generic man-made board are not substitutes. Exactly one reference-output row is required; physical identity success does not complete measurements or background linkage."
+    source_ids:
+      - usda-wood-handbook-2021
+      - usda-staypak-1956
+      - cabral-densification-2022
+  - rule_id: validate_fixation
+    applies_to: "manufacture"
+    rule: "Verify physical compression and fixation using paired mass/volume/moisture and pressing, release and conditioning-cycle records; water loss, natural density or untested stability claims are insufficient."
+    source_ids:
+      - usda-wood-handbook-2021
+      - usda-staypak-1956
+      - cabral-densification-2022
+  - rule_id: validate_quantities
+    applies_to: "all inventory rows"
+    rule: "Use one positive D with actual pressure/temperature/time/moisture and stage measurements; unknown quantities/identities remain unresolved, with no invented enhancement multiplier from historical data."
+    source_ids:
+      - usda-wood-handbook-2021
+      - usda-staypak-1956
+      - cabral-densification-2022
+  - rule_id: validate_hydraulic
+    applies_to: "hydraulic_oil"
+    rule: "Confirm actual mineral formulation, supplier/background gate, native Volume/m3 basis, matching measured T and positive finite density for conversions. Fresh volume uses the same D; kg-only evidence without matched density is incomplete. Waste oil stays a separate mass output and physical operating stock balance; no repeated circulation or netting of drains."
+    source_ids: []
+  - rule_id: validate_air
+    applies_to: "manufacture"
+    rule: "Match outdoor-air compartment; indoor, stratospheric, long-term and biogenic-CO2 uptake/correction flows are not substitutes. Use non-overlapping particulate bins, separate methanol/formaldehyde/acetic acid, and do not hide additional species inside total VOC."
+    source_ids:
+      - usda-wood-handbook-2021
+      - usda-staypak-1956
+      - cabral-densification-2022
+  - rule_id: validate_balances
+    applies_to: "manufacture"
+    rule: "Check physical wood/water/carbon balances, equal internal handoffs and residuals; allocation shares apply only to the relevant burden ledger. Missing background compatibility or measurement coverage is incomplete."
+    source_ids:
+      - usda-wood-handbook-2021
+      - usda-staypak-1956
+      - cabral-densification-2022
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Following complete identity/measurement/background verification and independent review, use for the actual tool-handle-blank production route"
+  allowed_use: "Matching species/route/delivery state and declared application after actual collection and provider qualification; candidate methodology does not itself supply a complete measured dataset"
+  excluded_use: "Whole-CPC-31520 average; ordinary panels/compreg/MDF; end-use functional equivalence; unverified stability or enhancement multipliers"
+  required_metadata: "Site/year/species; process and pressure/temperature/recovery records; net-mass moisture basis; identities/backgrounds/waste routes"
+  required_quality_disclosure: "Row-level measured/unresolved/not-applicable status; uncertainty, balance residuals, allocation drivers and all uncovered scope"
+  update_trigger: "Change of species, heat supply, pressure/temperature route, adhesive/resin, stability, specification, background or waste destination"
+data_sources:
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory (2021), Wood handbook—wood as an engineering material, FPL-GTR-282. https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf; Chapters 4, 13 and 19, especially printed 19-5 and 19-10"
+    used_for: "Moisture/density basis; resin-free compressed wood versus compreg and wet-wood recovery; application limits. No process numbers transferred."
+  - id: "usda-staypak-1956"
+    type: "official_guidance"
+    reference: "Seborg, Millett and Stamm, Heat-stabilized compressed wood (Staypak), FPL Report No. 1580 (Revised), information reviewed and reaffirmed March 1956. https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo43146/pdf/GOVPUB-A13-PURL-gpo43146.pdf; printed pages 1, 7-8"
+    used_for: "Historical evidence for solid yellow birch and no-synthetic-resin route. Glued yellow-poplar veneer experiments are not factory parameters for solid wood."
+  - id: "cabral-densification-2022"
+    type: "literature"
+    reference: "Cabral et al. (2022), Densification of timber: a review on the process, material properties, and application. Journal of Wood Science 68:20. https://doi.org/10.1186/s10086-022-02028-3; Fundamentals of timber densification, Fig. 4 and Eqs. 1-3"
+    used_for: "Compression stages and distinction between release springback and cyclic set recovery. This record explicitly defines dimensional states in its test formulas and adopts no universal enhancement or factory average."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:46fa58aa568bf1159f22d0111cacb155a8e4be1f7085bb33399334c50f662aea"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6594"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6594
+          line: 61
+          column: 1
+        end:
+          offset: 8483
+          line: 80
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Kiln-dried unglued unimpregnated yellow-birch solid stock received at factory, with measured moisture and traceable origin |\n| starting_condition_role | Foreground receiving gate; not exemption of upstream stock burdens |\n| product_classification_scope | Resin-free heat-stabilized solid-wood subset of CPC 31520; resin/veneer/reconstituted-board routes excluded |\n| recursive_input_rule | Internal rework has no external input/output pair; purchased already-densified solid stock needs separate state and upstream dataset without duplicated compression burdens |\n| upstream_dataset_requirement | Retain forestry, sawing, kiln drying and delivery transport burdens with actual species/region/moisture/drying background, not coniferous survey averages |\n| disclosure | Declare supply boundary, stage meters, losses/rejects, recovery tests, auxiliaries, waste destinations and exhaust controls; missing evidence remains unresolved |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_route | manufacture | Apply only to the declared electric-drive hot-pressed solid route; combine compression, conditioned acceptance, trimming/packing into one foreground unit while retaining stage metering. | usda-wood-handbook-2021; cabral-densification-2022 |\n| boundary_complete | manufacture | Include attributable idle, rejected production, rework, cooling and controls; link delivery transport as a separate service background and keep added exchanges atomic. | usda-wood-handbook-2021; cabral-densification-2022 |\n| boundary_external | manufacture | Linked background carries upstream emissions; foreground exhaust contains site releases only. External waste treatment is not also a site emission. | usda-wood-handbook-2021; cabral-densification-2022 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 256
+              line: 9
+              column: 1
+            end:
+              offset: 305
+              line: 9
+              column: 50
+          text: "# Resin-free heat-stabilized densified solid wood"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6594
+              line: 61
+              column: 1
+            end:
+              offset: 6615
+              line: 61
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_27336"
+      family: "allocation"
+      span:
+        start:
+          offset: 27336
+          line: 407
+          column: 1
+        end:
+          offset: 28276
+          line: 415
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_physical | all inventory rows | Keep the unallocated physical wood/water/carbon balance separate from allocated environmental burdens; internal links have equal quantities, and physical co-product outputs are not multiplied by allocation shares. |  |\n| allocation_subdivision | manufacture | Prefer subdivision and direct metering; shared electricity uses measured load/runtime drivers with residual reconciliation, not nameplate-power guesses. |  |\n| allocation_residues | manufacture | Waste rows describe waste transfers. Sold sawdust/shavings/trim require verified separate atomic product rows and co-product determination rather than waste UUID reuse. Establish causal allocation before assigning burdens; otherwise disclose economic prices/period/shares and sensitivity. No automatic recycling credit. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 256
+              line: 9
+              column: 1
+            end:
+              offset: 305
+              line: 9
+              column: 50
+          text: "# Resin-free heat-stabilized densified solid wood"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 27336
+              line: 407
+              column: 1
+            end:
+              offset: 27376
+              line: 407
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_38485"
+      family: "validation"
+      span:
+        start:
+          offset: 38485
+          line: 449
+          column: 1
+        end:
+          offset: 40811
+          line: 460
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validate_reference | finished_blank | Require verified Wood material identity with all actual resin-free yellow-birch compression/fixation, moisture, geometry, net mass and provider/quantity qualifiers. MDF, lumber-core plywood, ordinary bonded panels and generic man-made board are not substitutes. Exactly one reference-output row is required; physical identity success does not complete measurements or background linkage. | usda-wood-handbook-2021; usda-staypak-1956; cabral-densification-2022 |\n| validate_fixation | manufacture | Verify physical compression and fixation using paired mass/volume/moisture and pressing, release and conditioning-cycle records; water loss, natural density or untested stability claims are insufficient. | usda-wood-handbook-2021; usda-staypak-1956; cabral-densification-2022 |\n| validate_quantities | all inventory rows | Use one positive D with actual pressure/temperature/time/moisture and stage measurements; unknown quantities/identities remain unresolved, with no invented enhancement multiplier from historical data. | usda-wood-handbook-2021; usda-staypak-1956; cabral-densification-2022 |\n| validate_hydraulic | hydraulic_oil | Confirm actual mineral formulation, supplier/background gate, native Volume/m3 basis, matching measured T and positive finite density for conversions. Fresh volume uses the same D; kg-only evidence without matched density is incomplete. Waste oil stays a separate mass output and physical operating stock balance; no repeated circulation or netting of drains. |  |\n| validate_air | manufacture | Match outdoor-air compartment; indoor, stratospheric, long-term and biogenic-CO2 uptake/correction flows are not substitutes. Use non-overlapping particulate bins, separate methanol/formaldehyde/acetic acid, and do not hide additional species inside total VOC. | usda-wood-handbook-2021; usda-staypak-1956; cabral-densification-2022 |\n| validate_balances | manufacture | Check physical wood/water/carbon balances, equal internal handoffs and residuals; allocation shares apply only to the relevant burden ledger. Missing background compatibility or measurement coverage is incomplete. | usda-wood-handbook-2021; usda-staypak-1956; cabral-densification-2022 |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 256
+              line: 9
+              column: 1
+            end:
+              offset: 305
+              line: 9
+              column: 50
+          text: "# Resin-free heat-stabilized densified solid wood"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 38485
+              line: 449
+              column: 1
+            end:
+              offset: 38507
+              line: 449
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_route"
+      identity_kind: "explicit"
+      unit_id: "normative_6594"
+      source_span:
+        start:
+          offset: 7710
+          line: 76
+          column: 1
+        end:
+          offset: 7983
+          line: 76
+          column: 274
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_complete"
+      identity_kind: "explicit"
+      unit_id: "normative_6594"
+      source_span:
+        start:
+          offset: 7984
+          line: 77
+          column: 1
+        end:
+          offset: 8242
+          line: 77
+          column: 259
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_external"
+      identity_kind: "explicit"
+      unit_id: "normative_6594"
+      source_span:
+        start:
+          offset: 8243
+          line: 78
+          column: 1
+        end:
+          offset: 8481
+          line: 78
+          column: 239
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_27336"
+      source_span:
+        start:
+          offset: 27449
+          line: 411
+          column: 1
+        end:
+          offset: 27712
+          line: 411
+          column: 264
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_subdivision"
+      identity_kind: "explicit"
+      unit_id: "normative_27336"
+      source_span:
+        start:
+          offset: 27713
+          line: 412
+          column: 1
+        end:
+          offset: 27911
+          line: 412
+          column: 199
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_residues"
+      identity_kind: "explicit"
+      unit_id: "normative_27336"
+      source_span:
+        start:
+          offset: 27912
+          line: 413
+          column: 1
+        end:
+          offset: 28274
+          line: 413
+          column: 363
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_38485"
+      source_span:
+        start:
+          offset: 38580
+          line: 453
+          column: 1
+        end:
+          offset: 39081
+          line: 453
+          column: 502
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_fixation"
+      identity_kind: "explicit"
+      unit_id: "normative_38485"
+      source_span:
+        start:
+          offset: 39082
+          line: 454
+          column: 1
+        end:
+          offset: 39395
+          line: 454
+          column: 314
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_quantities"
+      identity_kind: "explicit"
+      unit_id: "normative_38485"
+      source_span:
+        start:
+          offset: 39396
+          line: 455
+          column: 1
+        end:
+          offset: 39715
+          line: 455
+          column: 320
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_hydraulic"
+      identity_kind: "explicit"
+      unit_id: "normative_38485"
+      source_span:
+        start:
+          offset: 39716
+          line: 456
+          column: 1
+        end:
+          offset: 40119
+          line: 456
+          column: 404
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_air"
+      identity_kind: "explicit"
+      unit_id: "normative_38485"
+      source_span:
+        start:
+          offset: 40120
+          line: 457
+          column: 1
+        end:
+          offset: 40485
+          line: 457
+          column: 366
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_balances"
+      identity_kind: "explicit"
+      unit_id: "normative_38485"
+      source_span:
+        start:
+          offset: 40486
+          line: 458
+          column: 1
+        end:
+          offset: 40809
+          line: 458
+          column: 324
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6594"
+      source_span:
+        start:
+          offset: 6594
+          line: 61
+          column: 1
+        end:
+          offset: 6615
+          line: 61
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6594"
+      source_span:
+        start:
+          offset: 6643
+          line: 65
+          column: 1
+        end:
+          offset: 7637
+          line: 72
+          column: 178
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_27336"
+      source_span:
+        start:
+          offset: 27336
+          line: 407
+          column: 1
+        end:
+          offset: 27376
+          line: 407
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_38485"
+      source_span:
+        start:
+          offset: 38485
+          line: 449
+          column: 1
+        end:
+          offset: 38507
+          line: 449
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:46fa58aa568bf1159f22d0111cacb155a8e4be1f7085bb33399334c50f662aea"
+  generated_content_sha256: "sha256:d40cb1773b63085bb27ef75782b8a3f99680e252cf9c658aa412ee2646fc9de9"

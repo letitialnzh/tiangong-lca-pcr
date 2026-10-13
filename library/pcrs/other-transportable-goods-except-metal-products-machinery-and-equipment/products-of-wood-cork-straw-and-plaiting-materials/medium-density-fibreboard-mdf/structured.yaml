@@ -1,10 +1,3012 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31441"
-  title: "Medium density fibreboard (MDF)"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.medium-density-fibreboard-mdf"
+  classification_refs: "CPC 3.0 31441; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Conventional dry-process uncoated wood MDF"
+  excluded_products: "Wet hardboard; other fibreboards; nonwood fibreboard; particleboard; OSB; coated board; special fire-retardant/preservative recipes"
+  representative_product: "Medium density fiberboard 57c184ac-a2d3-4500-af7b-80609ed89d2f"
+  production_route: "Steam digestion/refining; binder dosing at actual location; fibre drying; dry forming/prepress; hot press; cooling; sanding/trimming/packaging"
+  market_state: "Uncoated cooled accepted MDF at mill gate; packaging excluded from reference mass"
+functional_unit:
+  what: "Accepted dry-process wood MDF at mill gate"
+  how_much: "1 kg net finished board, including moisture at the declared delivery condition"
+  how_well: "Declare actual density, thickness, mechanical grade and formaldehyde test method/class with applicable evidence"
+  how_long_or_cycle: "One manufacturing delivery; no assumed use life"
+  reference_flow_link: "mdf_output"
+system_boundary:
+  rules:
+    - rule_id: boundary_stages
+      applies_to: "mdf-line"
+      rule: "Include receipt, size preparation, digestion/refining, actual resin dosing, drying, forming/prepress, hot pressing, cooling, sanding/trimming and packaging; measure each stage even within one aggregated process."
+      source_ids:
+        - corrim-mdf-2024
+        - epa-mdf-2002
+        - usda-wood-handbook-2021
+    - rule_id: boundary_energy
+      applies_to: "mdf-line; utilities"
+      rule: "Choose on-site utility generation or purchased carrier for each supply share. Link equal carrier quantities at both internal ends and cancel internal transfers when aggregating; do not add purchased heat burdens to the same on-site fuels. Direct dryer/oxidizer/mobile combustion and boiler stacks remain distinct."
+      source_ids:
+        - corrim-mdf-2024
+        - epa-mdf-2002
+        - epa-wood-boiler-2022
+    - rule_id: boundary_upstream
+      applies_to: "all inventory rows"
+      rule: "Include actual upstream manufacture and inbound transport and disclose residue allocation/recovery boundary. End at the uncoated mill gate; downstream use, service life and disposal are separate scenarios, never copied from CORRIM cradle-to-grave averages."
+      source_ids:
+        - corrim-mdf-2024
+    - rule_id: boundary_coverage
+      applies_to: "all inventory rows"
+      rule: "Conditional rows are included only with actual activity/composition evidence. Missing UUID or amount is not zero and blocks complete use of the affected route. Expand every additional actual chemical, fuel, packaging or treatment exchange as its own atomic row; never conceal it in a collection label."
+      source_ids:
+        - corrim-mdf-2024
+        - epa-mdf-2002
+        - usda-wood-handbook-2021
+boundary_abstraction:
+  declared_starting_condition: "Furnish/chemicals/energy delivered to mill; on-site line to accepted uncoated MDF at mill gate; link upstream production/inbound transport and actual waste treatment separately"
+  starting_condition_role: "foreground production"
+  product_classification_scope: "Conventional dry-process uncoated wood subset of CPC 3.0 31441"
+  recursive_input_rule: "Record recycled MDF state, resin composition, provenance and actual mass without adding another finished output. Internal recirculation retains equal physical links; purchased recovered board carries supplier upstream boundary"
+  upstream_dataset_requirement: "Bind each actual furnish, resin, energy, transport and treatment to location/year/route-compatible background data; residues are not assumed burden-free"
+  disclosure: "Declare survey period, plant and output, stage coverage, on-site/purchased energy, controls, stock changes, exclusions, assumptions and actual use/disposal"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Medium density fiberboard"
+    uuid: "57c184ac-a2d3-4500-af7b-80609ed89d2f"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Wood provenance and species mix"
+    - "dry route"
+    - "adhesive type/solids/addition point"
+    - "delivery moisture and dry/wet basis"
+    - "measured density and volume condition"
+    - "thickness/tolerance"
+    - "uncoated state"
+    - "formaldehyde claim and test method/date/class basis"
+    - "delivery location/year"
+    - "steam/indirect-heat measurement boundary"
+    - "packaging exclusion"
+    - "accepted-output and recirculation/waste fates"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use cp_output to weigh accepted net MDF at the same declared state, excluding packaging. All rows are per 1 kg reference flow; wet furnish, dry wood mass and unsanded rough panels are not the denominator."
+  - id: moisture_basis
+    applies_to: "furnish_chips, furnish_sawdust, furnish_shavings, mdf_output"
+    required_property_ref:
+      name: "Auxiliary wet/oven-dry Mass; each exchange retains its verified native reference property"
+      uuid: ""
+    required_unit: "kg for auxiliary solids/water ledgers and mass-reference exchanges; m3 for native furnish_chips exchange"
+    rule: "Use cp_furnish and cp_output to retain auxiliary wet mass, oven-dry solids and water separately; dry-basis moisture u is water/dry mass and wet-basis moisture w is water/wet mass, both as fractions. These auxiliary kg measurements do not replace furnish_chips verified Volume/m3 exchange or normalized numerator. Convert its auxiliary kg ledger only with measured same-lot/moisture/material-state density; volume_basis and volume_conversion separately require the actual supplier solid/bulk volume definition, Vs/Vb/k and loss/gate correspondence, with unknown links unresolved."
+  - id: volume_basis
+    applies_to: "furnish_chips, dryer_gas, control_gas, boiler_gas"
+    required_property_ref:
+      name: "Volume"
+      uuid: ""
+    required_unit: "m3"
+    rule: "Volume/m3 identity defines neither solid/bulk wood volume nor gas state. cp_furnish obtains supplier actual reference A, volume definition, same-lot/moisture Vs/Vb and measured k with loss/gate conversion. The applicable cp_energy or cp_energy_utilities record obtains gas T/P, dry-wet composition, Z and background-m3 reference conditions. Any unproven correspondence remains quantity compatibility pending."
+  - id: electricity_conversion
+    applies_to: "line_electricity, boiler_electricity"
+    required_property_ref:
+      name: "Energy"
+      uuid: ""
+    required_unit: "MJ"
+    rule: "Convert metered kWh to MJ by multiplying by 3.6. The electricity dataset net-calorific-value property represents electric energy bookkeeping and proves no steam/process-heat net-heat basis."
+  - id: thermal_basis
+    applies_to: "line_steam, line_heat, boiler_steam, boiler_heat, condensate_return, boiler_condensate"
+    required_property_ref:
+      name: "Steam mass; delivered heat"
+      uuid: ""
+    required_unit: "kg; MJ"
+    rule: "The applicable cp_thermal or cp_thermal_utilities record retains steam mass, condensation/return mass, temperature/pressure/quality and enthalpy boundary. Populate heat MJ only when supplier/background definition agrees with site supply-return enthalpy balance; property or product name alone is insufficient and unknown basis remains unresolved."
+  - id: nox_mass_basis
+    applies_to: "dryer_nox, handling_nox, boiler_nox"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "NOx kg requires a demonstrated common monitoring/LCI/LCIA-mapping mass basis and NO/NO2 boundary, excluding N2O and speciated duplicates; otherwise quantity compatibility pending."
+process_map:
+  - id: mdf_line
+    name: "Aggregated MDF manufacturing line"
+    inclusion: "required"
+    inclusion_condition: "In-scope production"
+    role: "foreground production"
+    quantitative_reference: "1 kg accepted net MDF"
+  - id: utilities
+    name: "On-site utilities"
+    inclusion: "conditional"
+    inclusion_condition: "On-site boiler supplies MDF steam/heat; purchased shares exclude the same generation burdens"
+    role: "utility generation"
+    quantitative_reference: "per 1 kg reference flow"
+process_inventory:
+  - id: mdf_line
+    label: "Aggregated MDF manufacturing line"
+    inputs:
+      product:
+        - row_id: furnish_chips
+          role: "Purchased wood chips"
+          name: "Wood Chip"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3fa2a6a7-224c-4d99-bd55-a214f0a83161"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66 / m3"
+          description: "Record untreated chips delivered for fibre preparation; measure volume, wet mass, species and moisture for the same lot. Identity is retained but quantity compatibility is pending. Obtain the supplier/background process actual reference quantity A (m3), its solid-wood or loose/compacted bulk-volume definition and measurement gate. Measure solid volume Vs and bulk volume Vb on the same representative lot and moisture/material state, with packing fraction k = Vs/Vb and a documented sampling/displacement/geometric method. Reconcile delivery gates, stock changes and measured losses; neither the flow name nor Volume/m3 defines the required volume basis. If A, volume definition, k or state/gate conversion is unknown, the upstream link remains incomplete."
+          amount:
+            expression: "Collect this actual exchange using cp_furnish and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_furnish
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: furnish_sawdust
+          role: "Purchased green sawdust"
+          name: "Untreated green wood sawdust for MDF refining"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Use only untreated sawdust entering refining; record its moisture and supplier coproduct boundary."
+          amount:
+            expression: "Collect this actual exchange using cp_furnish and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_furnish
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: furnish_shavings
+          role: "Purchased dry shavings"
+          name: "Untreated dry wood shavings for MDF refining"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Record untreated dry shavings as a separate feedstock; do not substitute OSB strands or particleboard furnish."
+          amount:
+            expression: "Collect this actual exchange using cp_furnish and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_furnish
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: furnish_conifer
+          role: "Coniferous pulpwood roundwood"
+          name: "Coniferous pulpwood roundwood"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on actual whole-log furnish; include debarking/chipping and bark fate inside the line; declare roadside-to-mill transport."
+          amount:
+            expression: "Collect this actual exchange using cp_furnish and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_furnish
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: furnish_hardwood
+          role: "Non-coniferous pulpwood roundwood"
+          name: "Non-coniferous pulpwood roundwood"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on actual whole-log furnish; include debarking/chipping and bark fate inside the line; declare roadside-to-mill transport."
+          amount:
+            expression: "Collect this actual exchange using cp_furnish and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_furnish
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: binder_uf
+          role: "UF binder"
+          name: "Urea-formaldehyde resin"
+          flow_type: "product"
+          flow_ref:
+            uuid: "23e41b7b-0991-4cf7-8625-7a30d23bbb27"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include only the resin actually used, in an independently supplied state matching the selected resin identity and actual provider reference. Record supplied mass, measured resin solids, water, supplier recipe and addition point. A bought prepared aqueous or otherwise compounded UF formulation requires one specific complete-formulation supply row and compatible provider preserving supplier manufacture/preparation/delivery before use; the generic resin UUID alone does not establish that complete supply. Its included resin, urea, water and additives are analytical composition only. Real independently purchased additions and actual onsite mixing water/utilities remain separate exchanges. Report resin solids separately; never equate wet formulation kg to dry resin kg or count included formulation water again as purchased process water."
+          amount:
+            expression: "Collect this actual exchange using cp_recipe and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: binder_muf
+          role: "MUF binder"
+          name: "Melamine-urea-formaldehyde adhesive resin for MDF"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include only the resin actually used. Record delivered formulation mass, solids, water, supplier recipe and addition point; report resin solids separately and never count formulation water again as purchased process water."
+          amount:
+            expression: "Collect this actual exchange using cp_recipe and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: binder_pmdi
+          role: "pMDI binder"
+          name: "Polymeric diphenylmethane diisocyanate adhesive resin for MDF"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Include only the resin actually used. Record delivered formulation mass, solids, water, supplier recipe and addition point; report resin solids separately and never count formulation water again as purchased process water."
+          amount:
+            expression: "Collect this actual exchange using cp_recipe and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: additive_urea
+          role: "Separate urea addition"
+          name: "Urea"
+          flow_type: "product"
+          flow_ref:
+            uuid: "3f8850c0-f718-4c4b-8fcb-8fd42e03aa8e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on separate urea dosing supported by the actual recipe; report product mass, not nitrogen mass. Embedded urea already in purchased resin is not another exchange."
+          amount:
+            expression: "Collect this actual exchange using cp_recipe and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: additive_wax
+          role: "Paraffin wax addition"
+          name: "Paraffin wax"
+          flow_type: "product"
+          flow_ref:
+            uuid: "17bff97f-179d-49d4-9e97-5128bd6020a6"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on petroleum-fraction paraffin wax actually supplied independently in a state and mass reference matching the selected identity and provider. Measure actual supplied wax mass/state; no wax dosage is prescribed. A bought wax emulsion requires one specific complete-emulsion supply row and compatible provider including supplier manufacture/emulsification/preparation/delivery before use; its included wax, carrier water and additives remain analytical subledgers, not extra purchases. Actual separately purchased wax/other constituents and real onsite emulsification or mixing water/utilities are separate exchanges. Never assign whole wet emulsion kg to the paraffin-wax UUID; an unresolved complete-emulsion identity remains pending."
+          amount:
+            expression: "Collect this actual exchange using cp_recipe and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: additive_hardener
+          role: "Ammonium sulphate hardener"
+          name: "Ammonium sulphate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7f128b59-9df7-4b5d-ad0f-00103b916cf7"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on ammonium sulphate actually purchased separately in a supplied state matching the selected chemical identity and provider, and actually added in the evidenced recipe. Never infer catalyst species from a generic catalyst survey entry. Record actual supplied chemical mass/state and any independently added onsite carrier water/mixing utilities. A bought prepared hardener solution or formulation requires its own specific complete-product supply row and compatible provider preserving supplier manufacture/preparation/delivery before use; included ammonium sulphate, water and additives are analytical composition only. Record its measured concentration/carrier water without assigning whole formulation kg to the constituent UUID. Other real separately supplied hardeners require their own atomic rows."
+          amount:
+            expression: "Collect this actual exchange using cp_recipe and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: line_electricity
+          role: "Low-voltage purchased electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Use this identity only for grid-average supply below 1 kV at the user. Meter refining, drying fans, forming, press hydraulics, finishing and emission control separately. Other voltages require matching identities."
+          amount:
+            expression: "Collect this actual exchange using cp_energy and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: line_water
+          role: "Make-up process water"
+          name: "Process Water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "94a04f7e-2d5c-41f0-b182-d54a3b373a02"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Meter newly supplied treated process water for washing and manufacture; keep reused water, condensate and formulation water in separate physical ledgers."
+          amount:
+            expression: "Collect this actual exchange using cp_water and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: line_steam
+          role: "Digester steam"
+          name: "Process steam delivered to MDF digester"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measure steam mass at the MDF digester boundary and record absolute pressure, temperature and quality; specify condensation into furnish. No pressure or saturation default is set."
+          amount:
+            expression: "Collect this actual exchange using cp_thermal and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_thermal
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: line_heat
+          role: "Indirect process heat"
+          name: "Indirect process heat delivered to MDF manufacture"
+          flow_type: "product"
+          property_unit: "Delivered heat measurement basis unresolved; MJ; flow property/unit group UUID unresolved / MJ"
+          description: "Conditional on indirect heat delivered to drying or pressing. MJ requires a supplier/background energy definition reconciled with measured supply/return enthalpy or a calibrated heat meter. Until then retain an unresolved measurement basis."
+          amount:
+            expression: "Collect this actual exchange using cp_thermal and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_thermal
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_gas
+          role: "Direct dryer natural gas"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66 / m3"
+          description: "Conditional on direct-fired drying; measure delivered gas volume at disclosed conditions and fuel composition. This row excludes the boiler and oxidizer fuel. Identity is retained but quantity compatibility with background m3 remains pending. Record supplier/background reference quantity A, reference temperature T, absolute pressure P, dry/wet composition and compressibility Z, plus meter conditions and composition on the same basis. Reconcile the actual delivery/loss gate and convert only with these measured/declared conditions; a Volume/m3 property establishes neither Nm3 nor standard conditions. An unknown supplier or background volume definition leaves the link incomplete."
+          amount:
+            expression: "Collect this actual exchange using cp_energy and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: control_gas
+          role: "Oxidizer natural gas"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66 / m3"
+          description: "Conditional on a fuel-fired emissions-control oxidizer; meter separately and bind downstream stack tests, including any destruction of incoming organics. Identity is retained but quantity compatibility with background m3 remains pending. Record supplier/background reference quantity A, reference temperature T, absolute pressure P, dry/wet composition and compressibility Z, plus meter conditions and composition on the same basis. Reconcile the actual delivery/loss gate and convert only with these measured/declared conditions; a Volume/m3 property establishes neither Nm3 nor standard conditions. An unknown supplier or background volume definition leaves the link incomplete."
+          amount:
+            expression: "Collect this actual exchange using cp_energy and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_diesel
+          role: "Internal handling diesel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on diesel-powered loaders/forklifts; collect purchased fuel and model actual combustion exhaust separately. This excludes inbound road transport datasets."
+          amount:
+            expression: "Collect this actual exchange using cp_energy and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: line_oil
+          role: "Petroleum lubricating oil"
+          name: "Lubricating oil"
+          flow_type: "product"
+          flow_ref:
+            uuid: "66628f20-9d33-4997-bd6c-6357453fa268"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on matching petroleum-fraction lubricant; retain equipment application and replacement records, distinct from recirculating hot-oil heat transfer."
+          amount:
+            expression: "Collect this actual exchange using cp_recipe and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_recipe
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: pack_film
+          role: "Polyethylene transport film"
+          name: "Polyethylene film"
+          flow_type: "product"
+          flow_ref:
+            uuid: "e64eb06c-6dc9-45f1-b003-3dc6c44b27e2"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on polyethylene packaging; measure attributable film consumed and exclude it from net MDF reference mass."
+          amount:
+            expression: "Collect this actual exchange using cp_pack and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: pack_strap
+          role: "Steel packaging strap"
+          name: "Steel strapping for MDF transport packaging"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on actual steel strap; require supplier grade and production route instead of substituting a recycled 99% Fe/1% C band with an unconfirmed route."
+          amount:
+            expression: "Collect this actual exchange using cp_pack and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_pack
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: mdf_output
+          role: "Finished uncoated MDF"
+          name: "Medium density fiberboard"
+          flow_type: "product"
+          flow_ref:
+            uuid: "57c184ac-a2d3-4500-af7b-80609ed89d2f"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "One accepted cooled, sanded and trimmed board output at the mill gate, excluding transport packaging. There is no second finished-MDF handoff output in this aggregated line."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "method_formula"
+              collection_protocol_id: cp_output
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: condensate_return
+          role: "Returned heating condensate"
+          name: "Returned steam condensate from MDF indirect heating"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on recovered condensate leaving the line for utility generation; reconcile its mass and enthalpy at both link ends. Direct digester condensate retained in fibres is not this return."
+          amount:
+            expression: "Collect this actual exchange using cp_thermal and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_thermal
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+      waste:
+        - row_id: bark_disposal
+          role: "Debarking bark sent to treatment"
+          name: "Bark"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "a2536c07-fbe1-4a12-90fb-21bd2e99b74e"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this specific outgoing waste. Weigh or meter the stream and document its composition, actual recipient and treatment boundary; internal recirculation is not an external disposal."
+          amount:
+            expression: "Collect this actual exchange using cp_residues and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: mdf_offcuts
+          role: "Resin-bearing rejected board"
+          name: "Resin-bearing MDF offcuts sent to external treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this specific outgoing waste. Weigh or meter the stream and document its composition, actual recipient and treatment boundary; internal recirculation is not an external disposal."
+          amount:
+            expression: "Collect this actual exchange using cp_residues and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: mdf_dust
+          role: "Resin-bearing captured sanding dust"
+          name: "Captured MDF sanding dust sent to external treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this specific outgoing waste. Weigh or meter the stream and document its composition, actual recipient and treatment boundary; internal recirculation is not an external disposal."
+          amount:
+            expression: "Collect this actual exchange using cp_residues and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: line_effluent
+          role: "Wastewater sent to treatment"
+          name: "Untreated MDF process wastewater sent to treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this specific outgoing waste. Weigh or meter the stream and document its composition, actual recipient and treatment boundary; internal recirculation is not an external disposal."
+          amount:
+            expression: "Collect this actual exchange using cp_residues and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: spent_oil
+          role: "Spent lubricating oil"
+          name: "Used lubricating oil"
+          flow_type: "waste"
+          flow_ref:
+            uuid: "55d93375-7f04-4166-b2a2-88ce929051a5"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this specific outgoing waste. Weigh or meter the stream and document its composition, actual recipient and treatment boundary; internal recirculation is not an external disposal."
+          amount:
+            expression: "Collect this actual exchange using cp_residues and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+      elementary:
+        - row_id: dryer_formaldehyde
+          role: "fibre drying air release: formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_methanol
+          role: "fibre drying air release: methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_phenol
+          role: "fibre drying air release: phenol"
+          name: "phenol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa41-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_acetaldehyde
+          role: "fibre drying air release: acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_acrolein
+          role: "fibre drying air release: acrolein"
+          name: "acrolein"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91a4-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_propionaldehyde
+          role: "fibre drying air release: propanal"
+          name: "propanal"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-9f05-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_water_vapour
+          role: "fibre drying air release: water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_pm25
+          role: "fibre drying air release: particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_pmcoarse
+          role: "fibre drying air release: particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_pmover10
+          role: "fibre drying air release: particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_co2bio
+          role: "fibre drying air release: carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_co2fossil
+          role: "fibre drying air release: carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_cobio
+          role: "fibre drying air release: carbon monoxide (biogenic)"
+          name: "carbon monoxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "8a313a02-e251-11e6-bf01-fe55135034f3"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_cofossil
+          role: "fibre drying air release: carbon monoxide (fossil)"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_ch4bio
+          role: "fibre drying air release: methane (biogenic)"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_ch4fossil
+          role: "fibre drying air release: methane (fossil)"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_n2o
+          role: "fibre drying air release: nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_nox
+          role: "fibre drying air release: Nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero. This is one real ILCD NOx aggregate parameter; Mass/kg does not define its reporting mass. Quantity compatibility is pending until the monitoring report, LCI flow definition and selected LCIA mapping demonstrate the same basis: NO2-equivalent mass or actual summed NO and NO2 mass, with explicit species coverage. Exclude N2O from NOx. Do not populate by assuming NOx equals NO2 mass, invent a NO/NO2 ratio, or also add separately modelled NO/NO2 for the same release. If the common basis cannot be demonstrated, retain the pending quantity; a future speciation route requires independently verified NO and NO2 identities and actual speciation evidence."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: dryer_so2
+          role: "fibre drying air release: sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_formaldehyde
+          role: "pressing and cooling air release: formaldehyde"
+          name: "formaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-941b-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_methanol
+          role: "pressing and cooling air release: methanol"
+          name: "methanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a935-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_phenol
+          role: "pressing and cooling air release: phenol"
+          name: "phenol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-aa41-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_acetaldehyde
+          role: "pressing and cooling air release: acetaldehyde"
+          name: "acetaldehyde"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a7a5-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_acrolein
+          role: "pressing and cooling air release: acrolein"
+          name: "acrolein"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-91a4-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_propionaldehyde
+          role: "pressing and cooling air release: propanal"
+          name: "propanal"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-9f05-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_water_vapour
+          role: "pressing and cooling air release: water vapour"
+          name: "water vapour"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_pm25
+          role: "pressing and cooling air release: particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_pmcoarse
+          role: "pressing and cooling air release: particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: press_pmover10
+          role: "pressing and cooling air release: particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: finish_pm25
+          role: "sanding and trimming air release: particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: finish_pmcoarse
+          role: "sanding and trimming air release: particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: finish_pmover10
+          role: "sanding and trimming air release: particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_pm25
+          role: "furnish handling and mobile equipment air release: particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_pmcoarse
+          role: "furnish handling and mobile equipment air release: particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_pmover10
+          role: "furnish handling and mobile equipment air release: particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_co2fossil
+          role: "furnish handling and mobile equipment air release: carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_cofossil
+          role: "furnish handling and mobile equipment air release: carbon monoxide (fossil)"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_ch4fossil
+          role: "furnish handling and mobile equipment air release: methane (fossil)"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_n2o
+          role: "furnish handling and mobile equipment air release: nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_nox
+          role: "furnish handling and mobile equipment air release: Nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero. This is one real ILCD NOx aggregate parameter; Mass/kg does not define its reporting mass. Quantity compatibility is pending until the monitoring report, LCI flow definition and selected LCIA mapping demonstrate the same basis: NO2-equivalent mass or actual summed NO and NO2 mass, with explicit species coverage. Exclude N2O from NOx. Do not populate by assuming NOx equals NO2 mass, invent a NO/NO2 ratio, or also add separately modelled NO/NO2 for the same release. If the common basis cannot be demonstrated, retain the pending quantity; a future speciation route requires independently verified NO and NO2 identities and actual speciation evidence."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: handling_so2
+          role: "furnish handling and mobile equipment air release: sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect this species after control at the stated source; record stack or fugitive capture coverage and carbon origin where specified. Applicable combustion species require actual firing/mobile activity; an untested or below-detection result is not zero."
+          amount:
+            expression: "Collect this actual exchange using cp_air and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air
+              source_ids:
+                - corrim-mdf-2024
+                - epa-mdf-2002
+                - usda-wood-handbook-2021
+            ranges: []
+  - id: utilities
+    label: "On-site utilities"
+    inputs:
+      product:
+        - row_id: boiler_gas
+          role: "Boiler natural gas"
+          name: "natural gas in the gaseous state"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f19ca0e-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Volume 93a60a56-a3c8-22da-a746-0800200c9a66; unit group 93a60a57-a3c8-12da-a746-0800200c9a66 / m3"
+          description: "Measure auxiliary gas separately from direct dryer and oxidizer fuel. Identity is retained but quantity compatibility with background m3 remains pending. Record supplier/background reference quantity A, reference temperature T, absolute pressure P, dry/wet composition and compressibility Z, plus meter conditions and composition on the same basis. Reconcile the actual delivery/loss gate and convert only with these measured/declared conditions; a Volume/m3 property establishes neither Nm3 nor standard conditions. An unknown supplier or background volume definition leaves the link incomplete."
+          amount:
+            expression: "Collect this actual exchange using cp_energy_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_bark
+          role: "Boiler bark fuel"
+          name: "Bark fuel delivered to MDF wood-residue boiler"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on bark actually burned; retain moisture, ash and provenance; do not substitute mixed hog fuel."
+          amount:
+            expression: "Collect this actual exchange using cp_fuel and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_dust
+          role: "Boiler MDF sanding dust fuel"
+          name: "Resin-bearing MDF sanding dust as boiler fuel"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on resin-bearing MDF dust burned; separate wood biogenic carbon and adhesive fossil carbon with actual composition evidence. A clean-wood factor does not establish its applicability."
+          amount:
+            expression: "Collect this actual exchange using cp_fuel and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_fuel
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_electricity
+          role: "Boiler low-voltage electricity"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66; unit group 93a60a57-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Measure boiler auxiliaries and control; apply below-1-kV identity only when actual supply matches."
+          amount:
+            expression: "Collect this actual exchange using cp_energy_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_energy_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_water
+          role: "Boiler make-up water"
+          name: "Process Water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "94a04f7e-2d5c-41f0-b182-d54a3b373a02"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Measure new treated make-up water and exclude recovered condensate from this input."
+          amount:
+            expression: "Collect this actual exchange using cp_water_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_water_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_condensate
+          role: "Returned condensate received"
+          name: "Returned steam condensate from MDF indirect heating"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Same physical stream and quantity as condensate_return; do not apply allocation factors to either link end."
+          amount:
+            expression: "Collect this actual exchange using cp_thermal_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_thermal_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: boiler_steam
+          role: "Digester steam delivered"
+          name: "Process steam delivered to MDF digester"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on on-site generation of this carrier. The output equals the linked line input for the same scope; document exports, losses and the supplier-compatible measurement basis before assigning MJ."
+          amount:
+            expression: "Collect this actual exchange using cp_thermal_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_thermal_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_heat
+          role: "Indirect process heat delivered"
+          name: "Indirect process heat delivered to MDF manufacture"
+          flow_type: "product"
+          property_unit: "Delivered heat measurement basis unresolved; MJ; flow property/unit group UUID unresolved / MJ"
+          description: "Conditional on on-site generation of this carrier. The output equals the linked line input for the same scope; document exports, losses and the supplier-compatible measurement basis before assigning MJ."
+          amount:
+            expression: "Collect this actual exchange using cp_thermal_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_thermal_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+      waste:
+        - row_id: boiler_bottom_ash
+          role: "Wood-residue boiler bottom ash"
+          name: "Wood-residue boiler bottom ash"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this collected boiler waste; measure separately, identify fuel mix and actual treatment, and distinguish retained ash from emitted particulate."
+          amount:
+            expression: "Collect this actual exchange using cp_residues_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_fly_ash
+          role: "Wood-residue boiler captured fly ash"
+          name: "Wood-residue boiler captured fly ash"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this collected boiler waste; measure separately, identify fuel mix and actual treatment, and distinguish retained ash from emitted particulate."
+          amount:
+            expression: "Collect this actual exchange using cp_residues_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_blowdown
+          role: "Wood-residue boiler blowdown water sent to treatment"
+          name: "Wood-residue boiler blowdown water sent to treatment"
+          flow_type: "waste"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Conditional on this collected boiler waste; measure separately, identify fuel mix and actual treatment, and distinguish retained ash from emitted particulate."
+          amount:
+            expression: "Collect this actual exchange using cp_residues_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residues_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+      elementary:
+        - row_id: boiler_co2bio
+          role: "Boiler air release: carbon dioxide (biogenic)"
+          name: "carbon dioxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9c15-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_co2fossil
+          role: "Boiler air release: carbon dioxide (fossil)"
+          name: "carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_cobio
+          role: "Boiler air release: carbon monoxide (biogenic)"
+          name: "carbon monoxide (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "8a313a02-e251-11e6-bf01-fe55135034f3"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_cofossil
+          role: "Boiler air release: carbon monoxide (fossil)"
+          name: "carbon monoxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-924e-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_ch4bio
+          role: "Boiler air release: methane (biogenic)"
+          name: "methane (biogenic)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a8e8-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_ch4fossil
+          role: "Boiler air release: methane (fossil)"
+          name: "methane (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9610-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_n2o
+          role: "Boiler air release: nitrous oxide"
+          name: "nitrous oxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_nox
+          role: "Boiler air release: Nitrogen oxides"
+          name: "Nitrogen oxides"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "f79d0f8f-2b0e-49cb-bed0-b1ea0fbd8625"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas. This is one real ILCD NOx aggregate parameter; Mass/kg does not define its reporting mass. Quantity compatibility is pending until the monitoring report, LCI flow definition and selected LCIA mapping demonstrate the same basis: NO2-equivalent mass or actual summed NO and NO2 mass, with explicit species coverage. Exclude N2O from NOx. Do not populate by assuming NOx equals NO2 mass, invent a NO/NO2 ratio, or also add separately modelled NO/NO2 for the same release. If the common basis cannot be demonstrated, retain the pending quantity; a future speciation route requires independently verified NO and NO2 identities and actual speciation evidence."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_so2
+          role: "Boiler air release: sulfur dioxide"
+          name: "sulfur dioxide"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac48-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_pm25
+          role: "Boiler air release: particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_pmcoarse
+          role: "Boiler air release: particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+        - row_id: boiler_pmover10
+          role: "Boiler air release: particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
+          description: "Collect the boiler stack species after control; bind fuel mix, operating mode and test method. Preserve biogenic CO2 in LCI and separate fossil carbon from resin or support gas."
+          amount:
+            expression: "Collect this actual exchange using cp_air_utilities and divide by accepted net MDF mass for the same period; apply the corresponding calculation rules; missing values remain unresolved with no literature default."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_air_utilities
+              source_ids:
+                - epa-wood-boiler-2022
+                - corrim-mdf-2024
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_physical
+    applies_to: "all inventory rows"
+    rule: "Retain unallocated physical stream quantities and mass/water/carbon balances; do not multiply actual MDF, residue or internal-link quantities by a burden-allocation fraction. Internal recovered dust is not a second saleable output."
+    source_ids:
+      - corrim-mdf-2024
+  - rule_id: allocation_single_product
+    applies_to: "mdf-line"
+    rule: "Where accepted MDF is the only valuable product, assign attributable line burdens to MDF and retain actual waste/energy recovery separately. Determine waste versus saleable coproduct from contracts and actual use, not from the word residue."
+    source_ids:
+      - corrim-mdf-2024
+  - rule_id: allocation_shared
+    applies_to: "mdf-line; utilities"
+    rule: "First separate causal stage/customer loads using submetering and source-specific activity. If irreducible shared coproduct burdens remain, document the chosen physical relationship and consistent moisture/energy basis; any economic alternative needs current transaction evidence, sensitivity and review. Do not assume that CORRIM upstream residue mass allocation or one-product A3 condition applies to every plant."
+    source_ids:
+      - corrim-mdf-2024
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_output
+      process_id: "mdf_line"
+      flow_role: "accepted MDF"
+      record_type: "weighing"
+      raw_fields: "time, lot, board type, accepted net mass, area, thickness, volume, moisture/test basis, density, packaging tare, opening/closing stocks"
+      collection_method: "Use calibrated scales and same-lot dimension/moisture tests to measure net board mass; exclude packaging/rejects and reconcile counts/stocks. Aggregation calculation: accepted net board mass in same period is denominator for per 1 kg reference flow"
+      unit: "kg"
+      frequency: "batch"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "declared plant and board grade"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, acceptance and moisture tests"
+    - protocol_id: cp_furnish
+      process_id: "mdf_line"
+      flow_role: "furnish"
+      record_type: "receipt and sampling"
+      raw_fields: "each furnish lot, supplier/species, wet/oven-dry mass, moisture basis, bulk volume/density, transport, allocation, stocks and stage transfers; supplier/background actual reference A and solid/bulk volume definition, Vs, Vb, k, matched moisture/state, loss/delivery gate"
+      collection_method: "Weigh each furnish and use representative same-lot oven-dry/moisture testing; measure volume directly or convert with same-lot density; record bark/fibre stage ledger. Aggregation calculation: sum attributable amount of each furnish / accepted net MDF mass, per 1 kg reference flow Verify supplier A and background quantity definition. Measure representative same-lot/same-moisture Vs and Vb with loose/compacted state; k = Vs/Vb. Retain receipt-gate, loss and stock conversions; unknown correspondence leaves the link incomplete."
+      unit: "kg; m3"
+      frequency: "lot and shift"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "suppliers and plant"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "weighbridge, sampling, moisture and upstream-boundary records"
+    - protocol_id: cp_recipe
+      process_id: "mdf_line"
+      flow_role: "each chemical"
+      record_type: "supplier and dosing"
+      raw_fields: "separate resin/wax/hardener/urea/lubricant identity, delivered mass, solids, carrier water, carbon origin, dosing point, batch, stocks, recirculation"
+      collection_method: "Reconcile supplier specifications and actual recipes with calibrated dosing scales/pumps and purchases/stocks; infer no universal concentration or urea nitrogen content. Distinguish each actual independently supplied chemical from a bought complete resin/emulsion/hardener formulation. Whole bought formulations require specific compatible complete-product identities/providers retaining supplier manufacture/preparation/delivery once; included constituents/carrier water stay analytical. Actual separately purchased additions and onsite mixing/emulsification water/utilities/losses remain separate foreground records. Aggregation calculation: attributable consumption of each separate product / accepted net MDF mass, per 1 kg reference flow; solids/carrier water retained in separate physical ledgers"
+      unit: "kg"
+      frequency: "batch"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant recipe and suppliers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "supplier evidence, recipe and dosing calibration"
+    - protocol_id: cp_energy
+      process_id: "mdf_line"
+      flow_role: "electricity and each fuel; scoped to mdf-line"
+      record_type: "meter and invoice"
+      raw_fields: "stage, meter, voltage, kWh, each fuel mass/volume, temperature/pressure/composition/calorific basis, hours, control use, output and stocks; each gas supplier/background actual reference A, T, absolute P, dry-wet composition, Z, background-m3 and site-meter reference conditions/gate"
+      collection_method: "Submeter refining, drying, pressing, finishing, controls and boiler; reconcile fuel purchases/stocks and purchased/on-site shares. Aggregation calculation: sum attributable stage amount of each carrier / accepted net MDF mass, per 1 kg reference flow; electricity converted to MJ Match supplier/background m3 quantity definition to site meters; unknown T/P, dry-wet composition, Z or loss gate prevents assumed conversion. This protocol attributes only actual mdf-line rows/sources; the other process uses cp_energy_utilities. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kWh; MJ; kg; m3"
+      frequency: "shift and billing period"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant and energy-supply boundary; actual owning process: mdf-line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter calibration, bills, fuel certificates, boundary reconciliation"
+    - protocol_id: cp_energy_utilities
+      process_id: "utilities"
+      flow_role: "electricity and each fuel; scoped to utilities"
+      record_type: "meter and invoice"
+      raw_fields: "stage, meter, voltage, kWh, each fuel mass/volume, temperature/pressure/composition/calorific basis, hours, control use, output and stocks; each gas supplier/background actual reference A, T, absolute P, dry-wet composition, Z, background-m3 and site-meter reference conditions/gate"
+      collection_method: "Submeter refining, drying, pressing, finishing, controls and boiler; reconcile fuel purchases/stocks and purchased/on-site shares. Aggregation calculation: sum attributable stage amount of each carrier / accepted net MDF mass, per 1 kg reference flow; electricity converted to MJ Match supplier/background m3 quantity definition to site meters; unknown T/P, dry-wet composition, Z or loss gate prevents assumed conversion. This protocol attributes only actual utilities rows/sources; the other process uses cp_energy. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kWh; MJ; kg; m3"
+      frequency: "shift and billing period"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant and energy-supply boundary; actual owning process: utilities"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter calibration, bills, fuel certificates, boundary reconciliation"
+    - protocol_id: cp_thermal
+      process_id: "mdf_line"
+      flow_role: "steam, indirect heat, condensate; scoped to mdf-line"
+      record_type: "mass and enthalpy metering"
+      raw_fields: "supply/return point, mass, temperature, absolute pressure, quality, enthalpy definition, condensation into fibres, recovery, losses, exports, meter, supplier/background energy definition"
+      collection_method: "Reconcile calibrated mass/heat meters and temperature/pressure records at a common enthalpy basis; obtain supplier definition and demonstrate agreement with background exchange; unknown heat basis stays unresolved. Aggregation calculation: actual delivered quantity of each carrier / accepted net MDF mass, per 1 kg reference flow; equal internal link ends, steam mass and net heat separate This protocol attributes only actual mdf-line rows/sources; the other process uses cp_thermal_utilities. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg; MJ"
+      frequency: "shift"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant steam/heat carrier links; actual owning process: mdf-line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "heat-meter calibration, supply-return enthalpy balance, supplier/background definition"
+    - protocol_id: cp_thermal_utilities
+      process_id: "utilities"
+      flow_role: "steam, indirect heat, condensate; scoped to utilities"
+      record_type: "mass and enthalpy metering"
+      raw_fields: "supply/return point, mass, temperature, absolute pressure, quality, enthalpy definition, condensation into fibres, recovery, losses, exports, meter, supplier/background energy definition"
+      collection_method: "Reconcile calibrated mass/heat meters and temperature/pressure records at a common enthalpy basis; obtain supplier definition and demonstrate agreement with background exchange; unknown heat basis stays unresolved. Aggregation calculation: actual delivered quantity of each carrier / accepted net MDF mass, per 1 kg reference flow; equal internal link ends, steam mass and net heat separate This protocol attributes only actual utilities rows/sources; the other process uses cp_thermal. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg; MJ"
+      frequency: "shift"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant steam/heat carrier links; actual owning process: utilities"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "heat-meter calibration, supply-return enthalpy balance, supplier/background definition"
+    - protocol_id: cp_water
+      process_id: "mdf_line"
+      flow_role: "water; scoped to mdf-line"
+      record_type: "water meter"
+      raw_fields: "fresh make-up, recirculation, formulation water, steam condensation, fibre/board moisture, effluent, opening/closing storage, meter"
+      collection_method: "Calibrate boundary meters and weigh/sample fibre/board moisture; avoid duplicate fresh/recycled/steam water accounting. Aggregation calculation: attributable fresh water amount / accepted net MDF mass, per 1 kg reference flow; retain internal water balances separately This protocol attributes only actual mdf-line rows/sources; the other process uses cp_water_utilities. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg"
+      frequency: "shift"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant line/boiler boundary; actual owning process: mdf-line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter and water balance"
+    - protocol_id: cp_water_utilities
+      process_id: "utilities"
+      flow_role: "water; scoped to utilities"
+      record_type: "water meter"
+      raw_fields: "fresh make-up, recirculation, formulation water, steam condensation, fibre/board moisture, effluent, opening/closing storage, meter"
+      collection_method: "Calibrate boundary meters and weigh/sample fibre/board moisture; avoid duplicate fresh/recycled/steam water accounting. Aggregation calculation: attributable fresh water amount / accepted net MDF mass, per 1 kg reference flow; retain internal water balances separately This protocol attributes only actual utilities rows/sources; the other process uses cp_water. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg"
+      frequency: "shift"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant line/boiler boundary; actual owning process: utilities"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter and water balance"
+    - protocol_id: cp_pack
+      process_id: "mdf_line"
+      flow_role: "each packaging component"
+      record_type: "mass and count"
+      raw_fields: "material, supply route, count, unit net mass, loss, stocks, corresponding accepted board mass"
+      collection_method: "Weigh each actual packaging material or multiply counts by measured unit mass; exclude packaging from MDF net mass. Aggregation calculation: consumption of each packaging component / accepted net MDF mass, per 1 kg reference flow"
+      unit: "kg"
+      frequency: "batch"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant packaging"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "weighing, supplier route and packing records"
+    - protocol_id: cp_residues
+      process_id: "mdf_line"
+      flow_role: "each waste; scoped to mdf-line"
+      record_type: "transfer and composition"
+      raw_fields: "separate dust/offcut/bark/ash/effluent/oil, moisture and resin/ash composition, source, recirculation destination, mass, recipient/treatment"
+      collection_method: "Weigh/meter each stream and reconcile transfer records; collected ash differs from air PM and cured residues differ from uncured fibres. Aggregation calculation: each actual external waste amount / accepted net MDF mass, per 1 kg reference flow; internal recovery retains equal links only This protocol attributes only actual mdf-line rows/sources; the other process uses cp_residues_utilities. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg"
+      frequency: "shift and transfer"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant and recipients; actual owning process: mdf-line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "transfer receipts, composition, destination, stocks"
+    - protocol_id: cp_residues_utilities
+      process_id: "utilities"
+      flow_role: "each waste; scoped to utilities"
+      record_type: "transfer and composition"
+      raw_fields: "separate dust/offcut/bark/ash/effluent/oil, moisture and resin/ash composition, source, recirculation destination, mass, recipient/treatment"
+      collection_method: "Weigh/meter each stream and reconcile transfer records; collected ash differs from air PM and cured residues differ from uncured fibres. Aggregation calculation: each actual external waste amount / accepted net MDF mass, per 1 kg reference flow; internal recovery retains equal links only This protocol attributes only actual utilities rows/sources; the other process uses cp_residues. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg"
+      frequency: "shift and transfer"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant and recipients; actual owning process: utilities"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "transfer receipts, composition, destination, stocks"
+    - protocol_id: cp_fuel
+      process_id: "utilities"
+      flow_role: "each wood fuel"
+      record_type: "weighing and analysis"
+      raw_fields: "each fuel mass, moisture, heating value and gross/net basis, resin/carbon origin, ash, provenance/internal link, firing conditions"
+      collection_method: "Weigh each actual fuel and sample moisture/carbon composition representatively; external factors require demonstrated matching fuel/equipment conditions. Aggregation calculation: actual consumption of each fuel / accepted net MDF mass, per 1 kg reference flow"
+      unit: "kg"
+      frequency: "fuel lot and shift"
+      temporal_coverage: "complete same declared survey period"
+      site_scope: "plant boiler"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "weighing, composition, heating value and equipment evidence"
+    - protocol_id: cp_air
+      process_id: "mdf_line"
+      flow_role: "each emission species and source; scoped to mdf-line"
+      record_type: "stack and fugitive tests"
+      raw_fields: "source/stack/stage, species, compartment, carbon origin, concentration, gas flow, hours, oxygen/dry-wet/temperature-pressure basis, control state, detection limits, size/condensable fraction, factor applicability; NOx NO2-equivalent or actual NO+NO2 mass definition, NO/NO2 coverage, N2O exclusion and selected LCIA-mapping mass definition"
+      collection_method: "Test drying, pressing/cooling, finishing/handling and boiler separately or use applicability-verified factors times measured activity; count a shared final stack once while retaining source decomposition. Aggregation calculation: attributable post-control release mass of each species / accepted net MDF mass, per 1 kg reference flow; no overlapping size bins Prove the same monitoring/LCI/LCIA-mapping mass definition for aggregate NOx; assume no NO2 equivalence, do not duplicate speciated releases and retain pending quantity compatibility if unproven. This protocol attributes only actual mdf-line rows/sources; the other process uses cp_air_utilities. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg"
+      frequency: "representative operating modes plus activity logs"
+      temporal_coverage: "same declared period including abnormal/start-stop modes"
+      site_scope: "each plant emission source; actual owning process: mdf-line"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "test methods, detection limits, stack diagram, control records, factor boundaries"
+    - protocol_id: cp_air_utilities
+      process_id: "utilities"
+      flow_role: "each emission species and source; scoped to utilities"
+      record_type: "stack and fugitive tests"
+      raw_fields: "source/stack/stage, species, compartment, carbon origin, concentration, gas flow, hours, oxygen/dry-wet/temperature-pressure basis, control state, detection limits, size/condensable fraction, factor applicability; NOx NO2-equivalent or actual NO+NO2 mass definition, NO/NO2 coverage, N2O exclusion and selected LCIA-mapping mass definition"
+      collection_method: "Test drying, pressing/cooling, finishing/handling and boiler separately or use applicability-verified factors times measured activity; count a shared final stack once while retaining source decomposition. Aggregation calculation: attributable post-control release mass of each species / accepted net MDF mass, per 1 kg reference flow; no overlapping size bins Prove the same monitoring/LCI/LCIA-mapping mass definition for aggregate NOx; assume no NO2 equivalence, do not duplicate speciated releases and retain pending quantity compatibility if unproven. This protocol attributes only actual utilities rows/sources; the other process uses cp_air. Retain complete raw stage/component/stock/gate records. Count a shared master-meter/final-outlet external exchange once in one explicitly corresponding row; source decomposition creates no second exchange, and paired internal-transfer ends retain equal quantities."
+      unit: "kg"
+      frequency: "representative operating modes plus activity logs"
+      temporal_coverage: "same declared period including abnormal/start-stop modes"
+      site_scope: "each plant emission source; actual owning process: utilities"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "test methods, detection limits, stack diagram, control records, factor boundaries"
+  calculation_rules:
+    - id: normalize_output
+      applies_to: "all inventory rows"
+      rule: "Normalized exchange = attributable actual total exchange for that row in the period / accepted net MDF mass. Preserve numerator kg, m3 or MJ; denominator is cp_output kg; mdf_output is fixed at 1 kg per reference flow."
+      inputs:
+        - "actual row amount"
+        - "accepted net mass"
+        - cp_output
+      output: "per 1 kg reference flow"
+      source_ids:
+        - corrim-mdf-2024
+    - id: moisture_conversion
+      applies_to: "furnish_chips, furnish_sawdust, furnish_shavings, mdf_output"
+      rule: "Dry mass = wet mass/(1+u); water = wet mass - dry mass; w=u/(1+u). u is dry-basis and w wet-basis fraction; resin and inorganic additives are not dry wood."
+      inputs:
+        - "wet mass"
+        - "dry-basis moisture"
+        - cp_furnish
+        - cp_output
+      output: "dry solids and water"
+      source_ids:
+        - usda-wood-handbook-2021
+    - id: recipe_split
+      applies_to: "binder_uf, binder_muf, binder_pmdi, additive_wax, additive_hardener"
+      rule: "Formulation solids = delivered formulation mass × measured solids fraction; carrier water uses its actual formulation fraction, not assumed all nonsolids. Apply this analytical split to each actual supply in its verified complete-product or independently supplied chemical reference basis; a whole prepared formulation cannot be assigned to a constituent UUID. These component ledgers do not create duplicate purchases. Preserve supplier manufacture/preparation/delivery once and separately record true onsite purchases, mixing water/utilities and losses."
+      inputs:
+        - "delivered formulation"
+        - "solids fraction"
+        - "water fraction"
+        - cp_recipe
+      output: "component ledger"
+      source_ids:
+        - corrim-mdf-2024
+    - id: volume_conversion
+      applies_to: "furnish_chips, mdf_output, dryer_gas, control_gas, boiler_gas"
+      rule: "Board volume = measured area × thickness. Measure chip k = Vs/Vb on the same lot/moisture/state: use Vs for a supplier/background solid-volume definition or Vb at matching compaction for bulk volume; reconcile gates using measured stocks/losses. Background-process multiplier = matching volume / its actual reference amount A; normalize the actual inventory exchange by accepted net MDF mass separately. Unknown A/definition leaves the link incomplete; unknown density/packing is no substitute. Gas quantity conversion requires measured meter T/P, dry-wet composition, Z and matching background-m3 state, with no assumed standard volume."
+      inputs:
+        - Vs
+        - Vb
+        - k
+        - A
+        - "measured stocks/losses"
+        - "gas T/P/composition/Z"
+        - cp_furnish
+        - cp_energy
+        - cp_energy_utilities
+        - cp_output
+      output: "consistent volume or mass"
+      source_ids:
+        - usda-wood-handbook-2021
+        - corrim-mdf-2024
+    - id: thermal_reconciliation
+      applies_to: "line_steam, line_heat, boiler_steam, boiler_heat, condensate_return, boiler_condensate"
+      rule: "Indirect net delivered heat = sum(supply mass × supply specific enthalpy) - sum(return mass × return specific enthalpy), using common enthalpy datum and period. Supplier/background definition must match this boundary. For no-return/direct digestion disclose condensate fate and reference datum; fuel calorific value or property name is no substitute. Heat remains unresolved until demonstrated."
+      inputs:
+        - mass
+        - "supply/return states"
+        - "enthalpy definition"
+        - cp_thermal
+        - cp_thermal_utilities
+      output: "carrier mass and verified delivered heat"
+      source_ids:
+        - epa-mdf-2002
+        - corrim-mdf-2024
+    - id: emission_mass
+      applies_to: "all elementary outputs"
+      rule: "Emission mass = species concentration on consistent dry/wet, temperature/pressure and oxygen basis × matching gas flow × operating time, or applicability-verified factor × measured activity on the same basis. Do not count both upstream and final stack for a shared exhaust."
+      inputs:
+        - concentration
+        - "gas flow"
+        - "operating time"
+        - activity
+        - cp_air
+        - cp_air_utilities
+      output: "species emission mass"
+      source_ids:
+        - epa-mdf-2002
+        - epa-wood-boiler-2022
+    - id: pm_partition
+      applies_to: "all particulate outputs"
+      rule: "Only for the same stack/test coverage with compatible cumulative sizes: PM2.5 row = cumulative PM2.5; PM2.5–10 row = cumulative PM10 - cumulative PM2.5; >PM10 row = total PM - cumulative PM10. Check nonnegativity; incompatible condensable/filterable definitions or missing sizes prevent partition and remain unresolved."
+      inputs:
+        - "same-basis total PM"
+        - "cumulative PM10"
+        - "cumulative PM2.5"
+        - cp_air
+        - cp_air_utilities
+      output: "nonoverlapping particulate masses"
+      source_ids:
+        - epa-mdf-2002
+        - epa-wood-boiler-2022
+    - id: physical_reconciliation
+      applies_to: "mdf-line; utilities"
+      rule: "Retain each stage unallocated wood solids, resin solids, water and carbon: inputs = product/residue/emission outputs + stock change. Equal internal transfers; combustion carbon tracks wood biogenic origin separately from resin/fuel fossil origin without assuming complete combustion."
+      inputs:
+        - "stage flows"
+        - stocks
+        - "component composition"
+        - cp_furnish
+        - cp_recipe
+        - cp_water
+        - cp_water_utilities
+        - cp_air
+        - cp_air_utilities
+        - cp_fuel
+      output: "physical mass/water/carbon ledgers"
+      source_ids:
+        - corrim-mdf-2024
+        - epa-wood-boiler-2022
+    - id: nox_compatibility
+      applies_to: "dryer_nox, handling_nox, boiler_nox"
+      rule: "Compare monitoring, LCI and selected LCIA-mapping NOx mass definitions and NO/NO2 coverage. Generate an aggregate quantity using the applicable cp_air or cp_air_utilities record only when all three share the same basis; infer neither NO2-equivalent mass nor NO/NO2 ratio, exclude N2O and avoid speciated duplicates. Otherwise quantity remains pending."
+      inputs:
+        - "monitoring mass definition"
+        - "flow mass definition"
+        - "LCIA mapping"
+        - cp_air
+        - cp_air_utilities
+      output: "compatible NOx quantity or explicit pending result"
+      source_ids:
+        - epa-mdf-2002
+        - epa-wood-boiler-2022
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: quality_primary
+      applies_to: "all inventory rows"
+      requirement: "Retain actual production, metering, stocks and representative operating modes for the same period; never generalize CORRIM regional recipes/energy or softwood sawmill surveys into category parameters."
+      evidence: "collection originals and applicability review"
+    - id: quality_missing
+      applies_to: "all inventory rows"
+      requirement: "Distinguish unknown, unmeasured, BDL and true zero; ranges need independent compatible evidence. This candidate has no synthesized reviewed universal ranges."
+      evidence: "missingness, detection limits, range-evidence gaps"
+    - id: quality_claims
+      applies_to: "mdf_output"
+      requirement: "Density, thickness, moisture and formaldehyde class require test state/method/date and applicable version; report titles/classification labels establish no performance/regulatory conformity."
+      evidence: "product tests and supplier declarations"
+validation_rules:
+  - rule_id: validation_reference
+    applies_to: "mdf_output"
+    rule: "Require one final reference output, matched mass property/unit and every qualifier; same-period net accepted mass excludes packaging. Other stage states are physical-ledger entries within the line, not duplicate MDF outputs."
+    source_ids:
+      - corrim-mdf-2024
+      - epa-mdf-2002
+      - usda-wood-handbook-2021
+  - rule_id: validation_quantity_compatibility
+    applies_to: "furnish_chips; dryer_gas; control_gas; boiler_gas; dryer_nox; handling_nox; boiler_nox"
+    rule: "Confirmed UUID/property/unit does not establish quantity compatibility. Chips require supplier A, volume definition, matched-moisture/state Vs/Vb/k and loss/gate correspondence; gas requires T/P, dry-wet composition, Z and background-m3 correspondence; NOx requires common monitoring/LCI/LCIA mass definition, NO/NO2 coverage, N2O exclusion and no speciated duplicates. Any unknown remains quantity compatibility pending and the affected link/result incomplete."
+    source_ids:
+      - corrim-mdf-2024
+      - epa-mdf-2002
+      - epa-wood-boiler-2022
+  - rule_id: validation_inventory
+    applies_to: "all inventory rows"
+    rule: "Each actual exchange has one atomic identity, state, direction, type, property/unit, protocol and denominator. Resolve blank UUIDs and route/grade mismatches before complete use of the affected route; never select a nearby board or correction flow."
+    source_ids:
+      - corrim-mdf-2024
+      - epa-mdf-2002
+      - usda-wood-handbook-2021
+  - rule_id: validation_balances
+    applies_to: "mdf-line; utilities"
+    rule: "Reconcile separate physical solids/water/carbon ledgers and environmental-burden accounts. Demonstrate equal internal links, actual recirculation fates and allocation evidence without scaling physical coproduct outputs."
+    source_ids:
+      - corrim-mdf-2024
+  - rule_id: validation_thermal
+    applies_to: "line_steam; line_heat; boiler_steam; boiler_heat"
+    rule: "A steam/heat MJ property is insufficient evidence of net delivered heat. Require supplier/background definition, metering boundary and matched state/enthalpy balance; unknown basis is inconclusive. Do not double count utility fuels and purchased heat."
+    source_ids:
+      - epa-mdf-2002
+      - corrim-mdf-2024
+  - rule_id: validation_air
+    applies_to: "all elementary outputs"
+    rule: "Verify species, outdoor-air medium, actual source and biogenic/fossil origin; retain biogenic CO2 in LCI regardless of impact-accounting conventions. Use compatible nonoverlapping PM bins and disclose detection limits/condensables. Manufacturing factors are not boiler factors; clean-wood factors require review for resin-bearing dust."
+    source_ids:
+      - epa-mdf-2002
+      - epa-wood-boiler-2022
+  - rule_id: validation_readiness
+    applies_to: "all inventory rows"
+    rule: "Methodology is authored candidate guidance requiring independent scientific review. Passing structural/measurement checks establishes neither legal conformity nor a completed site LCI; unresolved identities, heat definitions and range evidence remain explicit."
+    source_ids:
+      - corrim-mdf-2024
+      - epa-mdf-2002
+      - usda-wood-handbook-2021
+published_dataset_profile:
+  dataset_role: "secondary_dataset; background_dataset"
+  downstream_use: "Upstream manufacture for uncoated dry-process wood MDF inputs"
+  allowed_use: "Use after matching route/recipe/delivery state/location-year and resolving applicable gaps; disclose quality and boundary"
+  excluded_use: "Wet hardboard, other fibreboard, nonwood fibre, special/coated recipes, default life/end-use scenario or formaldehyde legal proof"
+  required_metadata: "PCR identity/version; survey period/location/output; full reference qualifiers; energy/upstream boundary; atomic flows/protocols; allocation/physical ledgers"
+  required_quality_disclosure: "Unresolved UUIDs/measurement basis, exclusions/detection limits, range evidence, location/year/route proxies and review state"
+  update_trigger: "Changes to furnish species/provenance, recipe/moisture, drying/dosing sequence, press, fuel/heat definition, controls, electricity, grade or background boundary"
+data_sources:
+  - id: "corrim-mdf-2024"
+    type: "literature"
+    reference: "[Cradle-to-grave Life Cycle Assessment of North American Medium Density Fiberboard](https://corrim.org/wp-content/uploads/2024/07/MDF-Cradle-to-grave-LCA-Final.pdf); pp. 1, 13, 18–19, 24–30, 32; Tables 4, 7, 9, 11"
+    used_for: "Report December 22, 2023, final revision April 3, 2024; 2021/2022 North American CPA-member survey. Supports route, components, collection and allocation conditions, not transferable recipes/density/moisture/energy/legal findings or cradle-to-grave scenarios. Section 3.2.4 states 12 facilities supplied data and also 13 manufacturers; weighting uses 13. Preserve the discrepancy instead of inventing one sample count."
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "[Wood handbook—wood as an engineering material, FPL-GTR-282](https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf); Chapters 4 and 11, pp. 4–1 to 4–3, 11–13 to 11–15"
+    used_for: "2021 technical handbook: wood-moisture definitions, fibre formation and dry MDF versus wet hardboard. Other fibreboard/adhesive and historical certification examples are not universal recipes or limits for this PCR."
+  - id: "epa-mdf-2002"
+    type: "official_guidance"
+    reference: "[AP-42 Section 10.6.3 Medium Density Fiberboard Manufacturing](https://www.epa.gov/sites/default/files/2020-10/documents/c10s0603.pdf); August 2002; §§10.6.3.1–3; Figure 10.6.3 process diagram; Tables 10.6.3-1 onward with footnotes"
+    used_for: "Supports blowline/post-drying dosing routes, pressing, finishing, source decomposition and testing bases. Historical factors require compatible equipment/fuel/species/resin/control/unit evidence; no default amounts/current legal limits and no substitute for boiler evidence."
+  - id: "epa-wood-boiler-2022"
+    type: "official_guidance"
+    reference: "[AP-42 Section 1.6 Wood Residue Combustion in Boilers](https://www.epa.gov/system/files/documents/2022-03/c1s6_final.pdf); March 2022; §§1.6.1–3; Tables 1.6-1 onward and PM/factor footnotes"
+    used_for: "Supports separate boiler boundary, fuel/moisture/control dependence and GHG/PM bases; resin-bearing fuel requires specific applicability evidence. Treatment of biogenic CO2 in greenhouse-gas reporting is no basis for omitting it from LCI."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:51f958817398de7c71bef1fdc506110bff97a5484db266ce89d1d73446f63e29"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_6613"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 6613
+          line: 62
+          column: 1
+        end:
+          offset: 9201
+          line: 82
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Furnish/chemicals/energy delivered to mill; on-site line to accepted uncoated MDF at mill gate; link upstream production/inbound transport and actual waste treatment separately |\n| starting_condition_role | foreground production |\n| product_classification_scope | Conventional dry-process uncoated wood subset of CPC 3.0 31441 |\n| recursive_input_rule | Record recycled MDF state, resin composition, provenance and actual mass without adding another finished output. Internal recirculation retains equal physical links; purchased recovered board carries supplier upstream boundary |\n| upstream_dataset_requirement | Bind each actual furnish, resin, energy, transport and treatment to location/year/route-compatible background data; residues are not assumed burden-free |\n| disclosure | Declare survey period, plant and output, stage coverage, on-site/purchased energy, controls, stock changes, exclusions, assumptions and actual use/disposal |\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_stages | mdf-line | Include receipt, size preparation, digestion/refining, actual resin dosing, drying, forming/prepress, hot pressing, cooling, sanding/trimming and packaging; measure each stage even within one aggregated process. | `corrim-mdf-2024`; `epa-mdf-2002`; `usda-wood-handbook-2021` |\n| boundary_energy | mdf-line; utilities | Choose on-site utility generation or purchased carrier for each supply share. Link equal carrier quantities at both internal ends and cancel internal transfers when aggregating; do not add purchased heat burdens to the same on-site fuels. Direct dryer/oxidizer/mobile combustion and boiler stacks remain distinct. | `corrim-mdf-2024`; `epa-mdf-2002`; `epa-wood-boiler-2022` |\n| boundary_upstream | all inventory rows | Include actual upstream manufacture and inbound transport and disclose residue allocation/recovery boundary. End at the uncoated mill gate; downstream use, service life and disposal are separate scenarios, never copied from CORRIM cradle-to-grave averages. | `corrim-mdf-2024` |\n| boundary_coverage | all inventory rows | Conditional rows are included only with actual activity/composition evidence. Missing UUID or amount is not zero and blocks complete use of the affected route. Expand every additional actual chemical, fuel, packaging or treatment exchange as its own atomic row; never conceal it in a collection label. | `corrim-mdf-2024`; `epa-mdf-2002`; `usda-wood-handbook-2021` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 301
+              line: 10
+              column: 1
+            end:
+              offset: 357
+              line: 10
+              column: 57
+          text: "# Dry-process wood medium-density fibreboard manufacture"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 6613
+              line: 62
+              column: 1
+            end:
+              offset: 6634
+              line: 62
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_115424"
+      family: "allocation"
+      span:
+        start:
+          offset: 115424
+          line: 1519
+          column: 1
+        end:
+          offset: 116622
+          line: 1527
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_physical | all inventory rows | Retain unallocated physical stream quantities and mass/water/carbon balances; do not multiply actual MDF, residue or internal-link quantities by a burden-allocation fraction. Internal recovered dust is not a second saleable output. | `corrim-mdf-2024` |\n| allocation_single_product | mdf-line | Where accepted MDF is the only valuable product, assign attributable line burdens to MDF and retain actual waste/energy recovery separately. Determine waste versus saleable coproduct from contracts and actual use, not from the word residue. | `corrim-mdf-2024` |\n| allocation_shared | mdf-line; utilities | First separate causal stage/customer loads using submetering and source-specific activity. If irreducible shared coproduct burdens remain, document the chosen physical relationship and consistent moisture/energy basis; any economic alternative needs current transaction evidence, sensitivity and review. Do not assume that CORRIM upstream residue mass allocation or one-product A3 condition applies to every plant. | `corrim-mdf-2024` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 301
+              line: 10
+              column: 1
+            end:
+              offset: 357
+              line: 10
+              column: 57
+          text: "# Dry-process wood medium-density fibreboard manufacture"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 115424
+              line: 1519
+              column: 1
+            end:
+              offset: 115464
+              line: 1519
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_141586"
+      family: "validation"
+      span:
+        start:
+          offset: 141586
+          line: 1572
+          column: 1
+        end:
+          offset: 144468
+          line: 1584
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| validation_reference | mdf_output | Require one final reference output, matched mass property/unit and every qualifier; same-period net accepted mass excludes packaging. Other stage states are physical-ledger entries within the line, not duplicate MDF outputs. | `corrim-mdf-2024`; `epa-mdf-2002`; `usda-wood-handbook-2021` |\n| validation_quantity_compatibility | furnish_chips; dryer_gas; control_gas; boiler_gas; dryer_nox; handling_nox; boiler_nox | Confirmed UUID/property/unit does not establish quantity compatibility. Chips require supplier A, volume definition, matched-moisture/state Vs/Vb/k and loss/gate correspondence; gas requires T/P, dry-wet composition, Z and background-m3 correspondence; NOx requires common monitoring/LCI/LCIA mass definition, NO/NO2 coverage, N2O exclusion and no speciated duplicates. Any unknown remains quantity compatibility pending and the affected link/result incomplete. | `corrim-mdf-2024`; `epa-mdf-2002`; `epa-wood-boiler-2022` |\n| validation_inventory | all inventory rows | Each actual exchange has one atomic identity, state, direction, type, property/unit, protocol and denominator. Resolve blank UUIDs and route/grade mismatches before complete use of the affected route; never select a nearby board or correction flow. | `corrim-mdf-2024`; `epa-mdf-2002`; `usda-wood-handbook-2021` |\n| validation_balances | mdf-line; utilities | Reconcile separate physical solids/water/carbon ledgers and environmental-burden accounts. Demonstrate equal internal links, actual recirculation fates and allocation evidence without scaling physical coproduct outputs. | `corrim-mdf-2024` |\n| validation_thermal | line_steam; line_heat; boiler_steam; boiler_heat | A steam/heat MJ property is insufficient evidence of net delivered heat. Require supplier/background definition, metering boundary and matched state/enthalpy balance; unknown basis is inconclusive. Do not double count utility fuels and purchased heat. | `epa-mdf-2002`; `corrim-mdf-2024` |\n| validation_air | all elementary outputs | Verify species, outdoor-air medium, actual source and biogenic/fossil origin; retain biogenic CO2 in LCI regardless of impact-accounting conventions. Use compatible nonoverlapping PM bins and disclose detection limits/condensables. Manufacturing factors are not boiler factors; clean-wood factors require review for resin-bearing dust. | `epa-mdf-2002`; `epa-wood-boiler-2022` |\n| validation_readiness | all inventory rows | Methodology is authored candidate guidance requiring independent scientific review. Passing structural/measurement checks establishes neither legal conformity nor a completed site LCI; unresolved identities, heat definitions and range evidence remain explicit. | `corrim-mdf-2024`; `epa-mdf-2002`; `usda-wood-handbook-2021` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 301
+              line: 10
+              column: 1
+            end:
+              offset: 357
+              line: 10
+              column: 57
+          text: "# Dry-process wood medium-density fibreboard manufacture"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 141586
+              line: 1572
+              column: 1
+            end:
+              offset: 141608
+              line: 1572
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_stages"
+      identity_kind: "explicit"
+      unit_id: "normative_6613"
+      source_span:
+        start:
+          offset: 7742
+          line: 77
+          column: 1
+        end:
+          offset: 8049
+          line: 77
+          column: 308
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_energy"
+      identity_kind: "explicit"
+      unit_id: "normative_6613"
+      source_span:
+        start:
+          offset: 8050
+          line: 78
+          column: 1
+        end:
+          offset: 8467
+          line: 78
+          column: 418
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_upstream"
+      identity_kind: "explicit"
+      unit_id: "normative_6613"
+      source_span:
+        start:
+          offset: 8468
+          line: 79
+          column: 1
+        end:
+          offset: 8789
+          line: 79
+          column: 322
+    - pointer: "/system_boundary/rules/3"
+      rule_id: "boundary_coverage"
+      identity_kind: "explicit"
+      unit_id: "normative_6613"
+      source_span:
+        start:
+          offset: 8790
+          line: 80
+          column: 1
+        end:
+          offset: 9199
+          line: 80
+          column: 410
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_physical"
+      identity_kind: "explicit"
+      unit_id: "normative_115424"
+      source_span:
+        start:
+          offset: 115537
+          line: 1523
+          column: 1
+        end:
+          offset: 115835
+          line: 1523
+          column: 299
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_single_product"
+      identity_kind: "explicit"
+      unit_id: "normative_115424"
+      source_span:
+        start:
+          offset: 115836
+          line: 1524
+          column: 1
+        end:
+          offset: 116139
+          line: 1524
+          column: 304
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_shared"
+      identity_kind: "explicit"
+      unit_id: "normative_115424"
+      source_span:
+        start:
+          offset: 116140
+          line: 1525
+          column: 1
+        end:
+          offset: 116620
+          line: 1525
+          column: 481
+    - pointer: "/validation_rules/0"
+      rule_id: "validation_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 141681
+          line: 1576
+          column: 1
+        end:
+          offset: 142008
+          line: 1576
+          column: 328
+    - pointer: "/validation_rules/1"
+      rule_id: "validation_quantity_compatibility"
+      identity_kind: "explicit"
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 142009
+          line: 1577
+          column: 1
+        end:
+          offset: 142659
+          line: 1577
+          column: 651
+    - pointer: "/validation_rules/2"
+      rule_id: "validation_inventory"
+      identity_kind: "explicit"
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 142660
+          line: 1578
+          column: 1
+        end:
+          offset: 143019
+          line: 1578
+          column: 360
+    - pointer: "/validation_rules/3"
+      rule_id: "validation_balances"
+      identity_kind: "explicit"
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 143020
+          line: 1579
+          column: 1
+        end:
+          offset: 143307
+          line: 1579
+          column: 288
+    - pointer: "/validation_rules/4"
+      rule_id: "validation_thermal"
+      identity_kind: "explicit"
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 143308
+          line: 1580
+          column: 1
+        end:
+          offset: 143671
+          line: 1580
+          column: 364
+    - pointer: "/validation_rules/5"
+      rule_id: "validation_air"
+      identity_kind: "explicit"
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 143672
+          line: 1581
+          column: 1
+        end:
+          offset: 144094
+          line: 1581
+          column: 423
+    - pointer: "/validation_rules/6"
+      rule_id: "validation_readiness"
+      identity_kind: "explicit"
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 144095
+          line: 1582
+          column: 1
+        end:
+          offset: 144466
+          line: 1582
+          column: 372
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_6613"
+      source_span:
+        start:
+          offset: 6613
+          line: 62
+          column: 1
+        end:
+          offset: 6634
+          line: 62
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_6613"
+      source_span:
+        start:
+          offset: 6662
+          line: 66
+          column: 1
+        end:
+          offset: 7669
+          line: 73
+          column: 173
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_115424"
+      source_span:
+        start:
+          offset: 115424
+          line: 1519
+          column: 1
+        end:
+          offset: 115464
+          line: 1519
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_141586"
+      source_span:
+        start:
+          offset: 141586
+          line: 1572
+          column: 1
+        end:
+          offset: 141608
+          line: 1572
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:51f958817398de7c71bef1fdc506110bff97a5484db266ce89d1d73446f63e29"
+  generated_content_sha256: "sha256:73576553f72eaa0ac2adf50613416b5edfe95b3ab30023bcba1c8b2ddcb187da"

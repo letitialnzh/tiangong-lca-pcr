@@ -130,17 +130,17 @@ Electricity attributable to planning work, including allocated reserved idle/coo
 
 ###### Alternating current (`observation_electricity`)
 
-Electricity attributable to observation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity.
+Electricity attributable to observation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_observation; apply calculate_energy; do not duplicate provider-inclusive electricity.
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable amount per declared reference flow; cp_energy.
+- Amount rule: Measured attributable amount per declared reference flow; cp_energy_observation.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_observation`
 - Sources: `gsf-sci110`
 
 ###### Existing observation dataset package (`source_data`)
@@ -178,17 +178,17 @@ Conditional: one identified existing observation-data version is acquired, recei
 
 ###### Alternating current (`organization_electricity`)
 
-Electricity attributable to organization work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity.
+Electricity attributable to organization work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_organization; apply calculate_energy; do not duplicate provider-inclusive electricity.
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable amount per declared reference flow; cp_energy.
+- Amount rule: Measured attributable amount per declared reference flow; cp_energy_organization.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_organization`
 - Sources: `gsf-sci110`
 
 ###### Data-compilation compute job (`compute_job`)
@@ -226,17 +226,17 @@ Conditional: an external provider delivers one completed, uniquely scoped compil
 
 ###### Alternating current (`validation_electricity`)
 
-Electricity attributable to validation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity.
+Electricity attributable to validation work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_validation; apply calculate_energy; do not duplicate provider-inclusive electricity.
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable amount per declared reference flow; cp_energy.
+- Amount rule: Measured attributable amount per declared reference flow; cp_energy_validation.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_validation`
 - Sources: `gsf-sci110`
 
 ##### Waste flows
@@ -259,17 +259,17 @@ Electricity attributable to validation work, including allocated reserved idle/c
 
 ###### Alternating current (`sealing_electricity`)
 
-Electricity attributable to sealing work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy; apply calculate_energy; do not duplicate provider-inclusive electricity.
+Electricity attributable to sealing work, including allocated reserved idle/cooling/storage/network within its measured boundary. Use this UUID only for actual CN grid-average user supply below1 kV. Outside that supply condition keep a separate matching identity unresolved until verified. Meter work and retries with cp_energy_sealing; apply calculate_energy; do not duplicate provider-inclusive electricity.
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / MJ
-- Amount rule: Measured attributable amount per declared reference flow; cp_energy.
+- Amount rule: Measured attributable amount per declared reference flow; cp_energy_sealing.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_energy`
+- Collection protocol: `cp_energy_sealing`
 - Sources: `gsf-sci110`
 
 ##### Waste flows
@@ -363,7 +363,11 @@ Conditional: an identified electronic instrument records observations for this o
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_original | sealing | reference output | acceptance_record | original ID; version; files/checksums; content extent; schema; source rights/control; acceptance criteria/results; coverage; quality flags; completion cutoff; complete count | Inspect original content and producer acceptance records; deduplicate equivalent serializations and bind one complete declared original | item | At version completion | Entire declared creation cycle | All original-producing sites/providers | per declared reference flow | Signed version manifest and reproducible acceptance/integrity results |
-| cp_energy | planning; observation; organization; validation; sealing | stage electricity | meter_record | meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap | Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution | kWh | Each run and creation interval | Full creation cycle including failed work | Actual owned supply; provider scopes separately | per declared reference flow | Calibration, workload logs, meter reconciliation and gap coverage |
+| cp_energy | planning | planning_electricity | meter_record | meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap | Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers planning only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs. | kWh | Each run and creation interval | Full creation cycle including failed work | Actual owned supply; provider scopes separately | per declared reference flow | Calibration, workload logs, meter reconciliation and gap coverage |
+| cp_energy_observation | observation | observation_electricity | meter_record | meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap | Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers observation only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs. | kWh | Each run and creation interval | Full creation cycle including failed work | Actual owned supply; provider scopes separately | per declared reference flow | Calibration, workload logs, meter reconciliation and gap coverage |
+| cp_energy_organization | organization | organization_electricity | meter_record | meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap | Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers organization only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs. | kWh | Each run and creation interval | Full creation cycle including failed work | Actual owned supply; provider scopes separately | per declared reference flow | Calibration, workload logs, meter reconciliation and gap coverage |
+| cp_energy_validation | validation | validation_electricity | meter_record | meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap | Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers validation only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs. | kWh | Each run and creation interval | Full creation cycle including failed work | Actual owned supply; provider scopes separately | per declared reference flow | Calibration, workload logs, meter reconciliation and gap coverage |
+| cp_energy_sealing | sealing | sealing_electricity | meter_record | meter ID; start/end; stage/job; region; voltage; kWh; reserved/idle load; cooling, storage and network interface; allocation share; provider overlap | Use calibrated meters or verified telemetry reconciled to facility totals; bind disjoint stage intervals, reruns and shared-load attribution; this protocol covers sealing only. Reconcile the five stage-specific protocols against the same meter totals; allocate each interval and shared load once, retaining failed runs. | kWh | Each run and creation interval | Full creation cycle including failed work | Actual owned supply; provider scopes separately | per declared reference flow | Calibration, workload logs, meter reconciliation and gap coverage |
 | cp_source | observation | existing observation dataset | source_record | source ID/version; package count; variables/coverage; flags; rights; upstream creation inventory; beneficiary shares; received bytes; lineage | Inspect received original and provenance; count defined packages; verify compatibility, rights and upstream burden ledger rather than estimating energy from size | item | Each source version received | All sources of the declared output version | Actual suppliers and receiving site | per declared reference flow | Source manifest, access record, upstream inventory and reuse ledger |
 | cp_provider | organization | compilation job | provider_record | job ID; source/output version; complete-job count; transformation; resources/time; provider energy/device/network/storage/cooling boundary | Inspect provider job acceptance logs and matched job inventory; retain retries and scope exclusions, reconcile billed metrics without treating money as quantity | item | Each completed provider job | Declared creation cycle | Actual provider facilities | per declared reference flow | Job manifests, scoped provider inventory and embedded-exchange exclusion ledger |
 | cp_device | infrastructure | individual device | asset_record | device model/configuration; upstream inventory; installed life; reserved time; reserved/total resources; actual sensor duty; calibration; replacements; provider inclusion | Inspect device register, configuration, service-life evidence and utilization logs; collect causal shares separately for servers and instruments | item | Each device and project period | Creation cycle and evidenced device life | Actual owned devices | per declared reference flow | Asset records, utilization evidence and life/allocation sensitivity |
@@ -374,8 +378,8 @@ For physical observation, retain the actual method, sampling/survey coverage, eq
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| calculate_energy | planning_electricity; observation_electricity; organization_electricity; validation_electricity; sealing_electricity | Convert attributable metered kWh to MJ by multiplication by 3.6; preserve stage and supply interfaces. | cp_energy; kWh | MJ | gsf-sci110; nist-si-conversion |
-| calculate_original | all inventory rows | Sum nonduplicated attributable exchange quantities for the one declared original after stage/provider/source subdivision; the output is exactly 1 item. Keep numerator units and upstream shares explicit. | cp_original; cp_energy; cp_source; cp_provider; cp_device | per declared reference flow | un-cpc3-data; gsf-sci110 |
+| calculate_energy | planning_electricity; observation_electricity; organization_electricity; validation_electricity; sealing_electricity | Convert attributable metered kWh to MJ by multiplication by 3.6; preserve stage and supply interfaces. | cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; kWh | MJ | gsf-sci110; nist-si-conversion |
+| calculate_original | all inventory rows | Sum nonduplicated attributable exchange quantities for the one declared original after stage/provider/source subdivision; the output is exactly 1 item. Keep numerator units and upstream shares explicit. | cp_original; cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_source; cp_provider; cp_device | per declared reference flow | un-cpc3-data; gsf-sci110 |
 | calculate_metrics | content metadata | Record actual completeness, valid/rejected record counts, byte sizes and coverage against declared specifications. These characterize content and do not transform bytes or records into MJ or new originals. | cp_original; source and validation logs | declared quality and content metrics | w3c-dcat3; unece-gsbpm52; noaa-ghcnd |
 
 ### Data Quality Requirements
@@ -383,9 +387,9 @@ For physical observation, retain the actual method, sampling/survey coverage, eq
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
 | quality_content | reference_data | Bind source lineage, coverage, version, schema, missingness, flags, transformations and rights/control. Preserve observed versus imputed records and checks actually performed; acceptance criteria are producer-specific. | cp_original; cp_source; w3c-dcat3; noaa-ghcnd |
-| quality_cycle | all processes | Cover actual sites, collection and production periods, failed jobs, corrections, temporary replicas and sealing storage. Disclose missing meter periods, external source burdens and provider exclusions. | cp_energy; cp_provider; unece-gsbpm52 |
+| quality_cycle | all processes | Cover actual sites, collection and production periods, failed jobs, corrections, temporary replicas and sealing storage. Disclose missing meter periods, external source burdens and provider exclusions. | cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_provider; unece-gsbpm52 |
 | quality_identity | all inputs | Recheck public identities, reference properties/groups, supply conditions, actual hardware and upstream versions. Blank UUIDs remain candidate gaps and cannot establish available provider inventories. | cp_device; cp_source; cp_provider |
-| quality_uncertainty | allocation and data representativeness | Report workload/meter uncertainty, unknown shares, hardware-life sensitivity, observation coverage limits and reuse scenario sensitivity. No invented benchmark can replace foreground evidence. | cp_energy; cp_device; source/reuse ledger |
+| quality_uncertainty | allocation and data representativeness | Report workload/meter uncertainty, unknown shares, hardware-life sensitivity, observation coverage limits and reuse scenario sensitivity. No invented benchmark can replace foreground evidence. | cp_energy; cp_energy_observation; cp_energy_organization; cp_energy_validation; cp_energy_sealing; cp_device; source/reuse ledger |
 
 ## 9. Validation Rules
 

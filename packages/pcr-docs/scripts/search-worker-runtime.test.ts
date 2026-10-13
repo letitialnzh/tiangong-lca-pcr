@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 for (const schemaVersion of [1, 2, 3]) for (const [scenario, description] of [
   ['wire-roundtrip', 'worker imports every export string exactly and preserves complete result records'],
   ['entry-format-retry', 'worker rejects entries from the wrong wire format and permits a valid retry'],
+  ['sparse-metadata', 'worker rejects incompatible sparse metadata and permits an exact valid retry'],
   ['english-rank', 'real serialized English index ranks exact/prefix/title/body hits predictably'],
   ['chinese', 'real serialized Chinese index retains Han matches and complete result context'],
   ['normalization', 'worker searches normalized fullwidth terms and complete machine identifiers'],

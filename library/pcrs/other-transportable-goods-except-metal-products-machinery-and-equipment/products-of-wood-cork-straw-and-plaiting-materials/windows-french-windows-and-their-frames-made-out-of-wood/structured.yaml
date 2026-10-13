@@ -1,10 +1,1505 @@
-schema_version: 1
-status: scaffold
-classification_seed:
-  system: CPC
-  version: "3.0"
-  code: "31621"
-  title: "Windows, French-windows and their frames made out of wood"
-reference_flows: []
-inventory_patterns: []
-qa_rules: []
+schema_version: 2
+generated_from: markdown
+source_markdown: pcr.en-US.md
+product_category_identity:
+  canonical_pcr_id: "pcr.other-transportable-goods-except-metal-products-machinery-and-equipment.products-of-wood-cork-straw-and-plaiting-materials.windows-french-windows-and-their-frames-made-out-of-wood"
+  classification_refs: "CPC 3.0 31621; narrower; scope and accepted decisions: classifications/mappings/cpc-3.0-to-pcr.yaml and its referenced ADRs"
+  covered_products: "Manually operated single-sash spruce complete window; purchased triple-argon IGU; purchased kiln-dried laminated scantlings; electric machining/assembly route"
+  excluded_products: "Frame-only; unglazed window; French window; roof window; multiple sashes; aluminium cladding; other species; fire/smoke special performance; in-house glazing fabrication or combustion route"
+  representative_product: "Single-sash complete spruce window with actual glazing and hardware, configuration and finish declared from product originals"
+  production_route: "Delivered dried laminated scantling → machining → corner bonding/finishing → glazing/hardware/seal assembly → acceptance weighing/packaging"
+  market_state: "Accepted complete window at factory gate; packaging accounted separately"
+functional_unit:
+  what: "Manufacture and delivery of accepted complete timber window"
+  how_much: "1 kg reference flow"
+  how_well: "Delivered with measured or original-declared opening geometry, window area, operation, thermal performance, glazing assembly and coating configuration"
+  how_long_or_cycle: "One manufacturing delivery; service life and maintenance belong to separately declared downstream scenarios, with no fixed lifetime"
+  reference_flow_link: "finished_window"
+system_boundary:
+  rules:
+    - rule_id: boundary_complete_window
+      applies_to: "foreground_system_boundary"
+      rule: "Terminal complete-window boundary includes glazing, hardware, seals and retained finish; bare-frame output cannot replace it."
+      source_ids:
+        - bau-timber-window-2022
+    - rule_id: boundary_upstream
+      applies_to: "foreground_system_boundary"
+      rule: "Count upstream manufacture of purchased dried laminated stock and sealed glazing once. Moving processes upstream does not remove their burdens or biogenic CO2."
+      source_ids:
+        - bau-timber-window-2022
+        - usda-wood-handbook-2021
+    - rule_id: boundary_route
+      applies_to: "foreground_system_boundary"
+      rule: "Include machining, finishing, assembly, acceptance, packaging and auxiliaries. Actual boilers, steam, on-site stock drying or glazing fabrication make this route inapplicable and require a new evidenced boundary; do not silently set them to zero."
+      source_ids:
+        - bau-timber-window-2022
+boundary_abstraction:
+  declared_starting_condition: "Purchased kiln-dried laminated spruce window stock and sealed triple-argon glazing assembly, each at an explicit delivery gate"
+  starting_condition_role: "Foreground machining/assembly feed; resource extraction and upstream manufacture carried by matching supplier backgrounds"
+  product_classification_scope: "Narrow complete-window route within 31621; excludes frame-only and French-window products"
+  recursive_input_rule: "Purchased same-category complete window is an explicit external input with its upstream link; do not recursively unfold this method indefinitely or relabel it as scantling"
+  upstream_dataset_requirement: "Stock lamination/drying, every glazing constituent, hardware manufacture/finish, each chemical and formulation burden, electricity and water need state-compatible backgrounds; UUID identity is not a complete dataset"
+  disclosure: "Declare site/time, delivered states, upstream gates, actual factory stages and meter coverage, recipe completeness, shared-load attribution, packaging and external waste destination"
+reference_flow_definition:
+  reference_amount: "1"
+  product_flow_ref:
+    name: "Exterior Window"
+    uuid: "7a7a325e-e8b3-4497-bf32-fca70491694a"
+  flow_property_ref:
+    uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+  unit_group_ref:
+    uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  reference_unit: "kg"
+  required_qualifiers:
+    - "Spruce species/origin"
+    - "laminated stock state"
+    - "measured net mass"
+    - "window area and opening geometry"
+    - operation
+    - "original thermal performance"
+    - "each IGU pane count/thickness/coating/spacer/gas"
+    - "hardware alloys/finishes"
+    - "each gasket"
+    - "every coating layer and complete formulation"
+    - gate
+    - "production site/time"
+    - "upstream compatibility"
+reference_flows:
+  []
+measurement_rules:
+  - id: reference_mass
+    applies_to: "reference product"
+    required_property_ref:
+      name: "Mass"
+      uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    required_unit: "kg"
+    rule: "Use cp_mass to weigh each accepted complete same-configuration window net mass and sum cohort Q. Exclude packaging; impose no universal per-window weight. Frame or glazing mass cannot replace complete-window mass."
+  - id: glass_area
+    applies_to: "glazing_unit"
+    required_property_ref:
+      name: "Area"
+      uuid: "93a60a56-a3c8-19da-a746-0800200c9a66"
+    required_unit: "m2"
+    rule: "Use cp_components measured delivered-assembly area. Numerator is area while inventory denominator remains 1 kg window. Opening area or an unverified kg/m2 factor cannot replace the declared area."
+  - id: energy_unit
+    applies_to: "electricity"
+    required_property_ref:
+      name: "Net calorific value"
+      uuid: "93a60a56-a3c8-11da-a746-0800200c9a66"
+    required_unit: "MJ"
+    rule: "Retain meter kWh records; 1 kWh = 3.6 MJ. Verify <1 kV consumer supply and background region/year. This electricity unit rule establishes no net delivered steam heat."
+  - id: wood_moisture
+    applies_to: "wood_blank, offcut, waste_wood"
+    required_property_ref:
+      name: "Mass"
+      uuid: ""
+    required_unit: "kg"
+    rule: "Use dry-basis moisture u = (wet mass - oven-dry mass)/oven-dry mass; retain wet physical mass and dry wood separately. Wood mass excludes adhesive/coating. See usda-wood-handbook-2021 chapter 13."
+process_map:
+  - id: window_manufacture
+    name: "Wood-window machining, finishing, glazing/hardware assembly, acceptance and packaging"
+    inclusion: "required"
+    inclusion_condition: "Purchased dried laminated spruce stock and sealed IGU; electric route"
+    role: "One complete-window foreground unit with separate stage measurement"
+    quantitative_reference: "finished_window"
+process_inventory:
+  - id: window_manufacture
+    label: "Wood-window machining, finishing, glazing/hardware assembly, acceptance and packaging"
+    inputs:
+      product:
+        - row_id: wood_blank
+          role: "Kiln-dried laminated spruce window scantling"
+          name: "Kiln-dried laminated spruce window scantling"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Use incoming dried laminated spruce scantling, not green sawnwood or a bare window frame. Measure moisture and gross delivered quantity; upstream includes lamination and drying."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_stock
+              source_ids:
+                - bau-timber-window-2022
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: bought_glue_pvac
+          role: "Supplier-formulated PVAc corner-joint adhesive"
+          name: "Supplier-formulated PVAc corner-joint adhesive"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional on actual bought complete PVAc corner-joint adhesive. One external Product exchange represents the whole supplied product including carrier, binders, additives and actual supplied state. Record supplier/product/layer, net whole supplied use, complete composition and material/emission/waste fate. Supplier formulation, manufacture, preparation utilities/losses, packaging and delivery remain in a matched complete-product background once; onsite application and actual separately bought additions/mixing/dilution remain foreground once. Composition diagnostics under the listed nine ingredient IDs are not extra purchases. The pure ingredient UUIDs cannot identify this whole formulation; its specific complete-product UUID remains absent until verified. Distinct actual supplied products require separate atomic rows."
+          amount:
+            expression: "Actual whole supplied formulation net use for the matched complete reporting-period pool, with opening/closing stock and unused returns reconciled, divided once by cp_mass accepted complete-window Q . Retain raw whole-product and constituent/fate records separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: bought_coat_acrylic
+          role: "Supplier-formulated acrylic primer"
+          name: "Supplier-formulated acrylic primer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional on actual bought complete acrylic primer for the declared layer. One external Product exchange represents the whole supplied product including carrier, binders, additives and actual supplied state. Record supplier/product/layer, net whole supplied use, complete composition and material/emission/waste fate. Supplier formulation, manufacture, preparation utilities/losses, packaging and delivery remain in a matched complete-product background once; onsite application and actual separately bought additions/mixing/dilution remain foreground once. Composition diagnostics under the listed nine ingredient IDs are not extra purchases. The pure ingredient UUIDs cannot identify this whole formulation; its specific complete-product UUID remains absent until verified. Distinct actual supplied products require separate atomic rows."
+          amount:
+            expression: "Actual whole supplied formulation net use for the matched complete reporting-period pool, with opening/closing stock and unused returns reconciled, divided once by cp_mass accepted complete-window Q . Retain raw whole-product and constituent/fate records separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: bought_coat_pur
+          role: "Supplier-formulated polyurethane finish"
+          name: "Supplier-formulated polyurethane finish"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional on actual bought complete polyurethane finish for the declared layer. One external Product exchange represents the whole supplied product including carrier, binders, additives and actual supplied state. Record supplier/product/layer, net whole supplied use, complete composition and material/emission/waste fate. Supplier formulation, manufacture, preparation utilities/losses, packaging and delivery remain in a matched complete-product background once; onsite application and actual separately bought additions/mixing/dilution remain foreground once. Composition diagnostics under the listed nine ingredient IDs are not extra purchases. The pure ingredient UUIDs cannot identify this whole formulation; its specific complete-product UUID remains absent until verified. Distinct actual supplied products require separate atomic rows."
+          amount:
+            expression: "Actual whole supplied formulation net use for the matched complete reporting-period pool, with opening/closing stock and unused returns reconciled, divided once by cp_mass accepted complete-window Q . Retain raw whole-product and constituent/fate records separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: bought_coat_alkyd
+          role: "Supplier-formulated alkyd impregnation coating"
+          name: "Supplier-formulated alkyd impregnation coating"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional on actual bought complete alkyd impregnation formulation for the declared layer. One external Product exchange represents the whole supplied product including carrier, binders, additives and actual supplied state. Record supplier/product/layer, net whole supplied use, complete composition and material/emission/waste fate. Supplier formulation, manufacture, preparation utilities/losses, packaging and delivery remain in a matched complete-product background once; onsite application and actual separately bought additions/mixing/dilution remain foreground once. Composition diagnostics under the listed nine ingredient IDs are not extra purchases. The pure ingredient UUIDs cannot identify this whole formulation; its specific complete-product UUID remains absent until verified. Distinct actual supplied products require separate atomic rows."
+          amount:
+            expression: "Actual whole supplied formulation net use for the matched complete reporting-period pool, with opening/closing stock and unused returns reconciled, divided once by cp_mass accepted complete-window Q . Retain raw whole-product and constituent/fate records separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: glue_pvac
+          role: "Polyvinyl acetate"
+          name: "Polyvinyl acetate"
+          flow_type: "product"
+          flow_ref:
+            uuid: "46c91184-28ea-4b2e-a4e7-c07f3f84369b"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Separately purchased PVAc polymer for actual onsite corner-joint adhesive preparation only; verify its actual supplied polymer grade/state and compatible provider. Monomer and complete formulated glue are different flows. PVAc contained in bought corner adhesive is a glue_pvac composition/fate diagnostic under cp_formula, not this external input."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: glue_water
+          role: "de-ionised water"
+          name: "de-ionised water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f197bf0-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Separately supplied de-ionised water actually added onsite to corner-joint adhesive preparation/dilution only; verify the supplied water state and provider. De-ionised carrier water already inside bought glue remains the glue_water composition/water/fate diagnostic, not an additional purchase or cleaning-water input."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: coat_acrylic
+          role: "Acrylic resin waterborne binder"
+          name: "Acrylic resin waterborne binder"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separately purchased acrylic binder actually used in onsite primer preparation only; verify polymer chemistry, grade, supplied formulation/state and provider. A generic water-paint resin is insufficient identity evidence. Binder contained in bought acrylic primer remains a coat_acrylic composition/fate diagnostic, not another external purchase."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: coat_pur
+          role: "Polyurethane resin coating binder"
+          name: "Polyurethane resin coating binder"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separately purchased polyurethane binder actually used in onsite finish preparation only, with actual chemistry, grade, supplied state and provider verified. The source supports some PUR finishes, not a universal recipe. Binder already contained in bought polyurethane finish remains a coat_pur composition/fate diagnostic, not an external ingredient purchase."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: coat_alkyd
+          role: "Alkyd resin"
+          name: "Alkyd resin"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separately purchased alkyd binder actually used in onsite impregnation-layer preparation only; verify actual chemistry, grade, supplied state and provider. Alkyd already contained in bought impregnation formulation remains a coat_alkyd composition/fate diagnostic, not a separate purchase; do not infer this ingredient for every window."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: coat_butoxy
+          role: "2 Butoxyethanol"
+          name: "2 Butoxyethanol"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separately purchased 2-butoxyethanol CAS111-76-2 actually added onsite only; keep supplied mass, retained amount, air release and waste fate distinct. The same substance inside a bought coating remains a coat_butoxy composition/fate diagnostic, not an external purchase."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: coat_water
+          role: "de-ionised water"
+          name: "de-ionised water"
+          flow_type: "product"
+          flow_ref:
+            uuid: "4f197bf0-7b3b-11dd-ad8b-0800200c9a66"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Separately supplied de-ionised water actually added onsite to coating preparation/dilution only, with actual water grade/state and provider verified. De-ionised carrier water already contained in each bought layer remains a coat_water composition/water/fate diagnostic. Retain separate layer/formulation records, sum identical diagnostic constituents once, and never turn the summed contained water into an external purchase."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: coat_tio2
+          role: "Titanium Dioxide"
+          name: "Titanium Dioxide"
+          flow_type: "product"
+          flow_ref:
+            uuid: "12525dde-1d7a-4024-9ea3-5b90912a48f8"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Separately purchased titanium dioxide pigment actually added onsite only; verify actual grade, supplied state and provider. Titanium dioxide confirmed only as a constituent of bought coating remains a coat_tio2 composition/fate diagnostic, not an additional external input. No source recipe fraction is imposed."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: coat_pg
+          role: "Propylene glycol"
+          name: "Propylene glycol"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Separately purchased propylene glycol CAS57-55-6 actually added onsite only; verify actual supplied grade/state and provider, distinct from propylene carbonate or glycol ether. Propylene glycol contained in bought coating remains a coat_pg composition/fate diagnostic, not another purchase."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_formula
+              source_ids: []
+            ranges: []
+        - row_id: glazing_unit
+          role: "Hollow Glass"
+          name: "Hollow Glass"
+          flow_type: "product"
+          flow_ref:
+            uuid: "12053592-e6c4-4c56-ad15-a36a267c500a"
+          property_unit: "Area 93a60a56-a3c8-19da-a746-0800200c9a66 / m2"
+          description: "One separately identified purchased triple-pane argon insulating glazing assembly. Record its measured area, mass, pane schedule, low-emissivity surfaces, aluminium spacer, gas fill, desiccant and edge-seal declaration. Its upstream carries these components; do not count purchased assembly and its upstream constituent panes again in foreground. A second physically delivered glazing assembly requires its own atomic row. In-house IGU fabrication is outside this route."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: glazing_sealant
+          role: "Silicone sealant"
+          name: "Silicone sealant"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Silicone applied to the glass-to-wood installation joint, distinct from edge seals already embodied in the purchased IGU. Declare supplier formulation and application loss."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: hinge
+          role: "Zinc plated steel window hinge"
+          name: "Zinc plated steel window hinge"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "A separately weighed zinc-plated steel hinge; received hinge identity must include surface state."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: locking
+          role: "Zamak window locking fitting"
+          name: "Zamak window locking fitting"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "A separately weighed zamak locking part; declare alloy and geometry, not a mixed hardware mass."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: handle
+          role: "Anodised aluminium window handle"
+          name: "Anodised aluminium window handle"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "One anodised aluminium window handle, separate from hinge, lock and rain profile."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: gasket_tpe
+          role: "Thermoplastic elastomer window gasket"
+          name: "Thermoplastic elastomer window gasket"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "A TPE sash gasket with declared grade, profile, length and measured mass."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: gasket_epdm
+          role: "EPDM window gasket"
+          name: "EPDM window gasket"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional EPDM rain-profile gasket, separate from the TPE sash seal."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: glazing_tape
+          role: "Polyethylene foam glazing tape"
+          name: "Polyethylene foam glazing tape"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional polyethylene foam glazing tape, not generic foam or packing tape."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: glazing_block
+          role: "Polypropylene glazing block"
+          name: "Polypropylene glazing block"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Polypropylene glazing support block as a finished part, not PP granulate."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: pins
+          role: "Galvanized steel glazing bead pin"
+          name: "Galvanized steel glazing bead pin"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Galvanized steel pin used to fix a glazing bead; retain count and measured total mass."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: rain_profile
+          role: "Anodised aluminium window rain protection profile"
+          name: "Anodised aluminium window rain protection profile"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Anodised aluminium rain-protection profile with declared finish and section. Full aluminium cladding is excluded."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_components
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: electricity
+          role: "Alternating current"
+          name: "Alternating current"
+          flow_type: "product"
+          flow_ref:
+            uuid: "50657322-939c-4829-a87b-47c093bfa6a7"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / MJ"
+          description: "Meter actual low-voltage consumption for machining, extraction, finishing, compressed air, assembly and packaging; retain stage records. Supplier/site region and year must match the background. No purchased steam or boiler is within this electric route."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_energy
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: cleaning_water
+          role: "Process water"
+          name: "Process water"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Water supplied for actual equipment cleaning; distinguish gross supply, reuse, effluent and evaporation. Do not count formulation carrier water again."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_water
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: pack_film
+          role: "Low-density polyethylene foil (PE-LD)"
+          name: "Low-density polyethylene foil (PE-LD)"
+          flow_type: "product"
+          flow_ref:
+            uuid: "2cecd3a7-d90e-44b4-aec5-1d9dfb907477"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "LDPE protective/shrink film crossing the gate with the window; measured mass separate from net finished mass."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: pack_rack
+          role: "Spruce wooden transport rack"
+          name: "Spruce wooden transport rack"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Spruce transport rack; retain full physical rack mass and actual reuse/return ledger. Allocate only its service burden by documented trips, never reduce the physical transported mass."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: pack_strap
+          role: "Polyester packaging strap"
+          name: "Polyester packaging strap"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "PET packaging strap measured separately; steel band is a different material and route."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: finished_window
+          role: "Exterior Window"
+          name: "Exterior Window"
+          flow_type: "product"
+          flow_ref:
+            uuid: "7a7a325e-e8b3-4497-bf32-fca70491694a"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Terminal complete accepted window including frame, sash, installed glass, hardware, gaskets and retained coatings, excluding transport packaging. Machining through packing is one foreground unit, with no duplicate intermediate finished-window output."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_mass
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: offcut
+          role: "Clean spruce machining offcut"
+          name: "Clean spruce machining offcut"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Conditional sold clean spruce offcut; separate dry wood, moisture and adhesive contamination. Keep its full physical amount before any allocation of environmental burdens."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - bau-timber-window-2022
+                - usda-wood-handbook-2021
+            ranges: []
+      waste:
+        - row_id: waste_wood
+          role: "Waste wood chemically treated"
+          name: "Waste wood chemically treated"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Coated or adhesive-contaminated wood sent to a declared external treatment; do not combine it with clean sold offcut."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - bau-timber-window-2022
+                - usda-wood-handbook-2021
+            ranges: []
+        - row_id: waste_sludge
+          role: "Paint sludge"
+          name: "Paint sludge"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Captured coating sludge with measured wet mass and solids content; it is not all coating consumed."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: wastewater
+          role: "Wastewater from coating cleaning"
+          name: "Wastewater from coating cleaning"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Coating-cleaning effluent sent to a declared external wastewater treatment. Record pollutant assays; do not also report this transfer as direct water emissions."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: waste_glass
+          role: "Broken insulating glass unit"
+          name: "Broken insulating glass unit"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Broken purchased IGU transferred as an assembly waste; retain pane, spacer and seal composition. Pure cullet is not the same waste state."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+        - row_id: waste_film
+          role: "Waste polyethylene film"
+          name: "Waste polyethylene film"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "LDPE film trimming or rejected film sent to treatment; separate outgoing useful film from waste."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_residues
+              source_ids:
+                - bau-timber-window-2022
+            ranges: []
+      elementary:
+        - row_id: pm25
+          role: "particles (PM2.5)"
+          name: "particles (PM2.5)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9293-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Measured particulate release to outdoor air at aerodynamic diameter at most 2.5 micrometres, after actual capture. Collected dust is not this release."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges: []
+        - row_id: pmcoarse
+          role: "particles (PM2.5 - PM10)"
+          name: "particles (PM2.5 - PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-9501-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Measured outdoor fraction above 2.5 and at most 10 micrometres. Use the disjoint fraction, not cumulative PM10 together with PM2.5."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges: []
+        - row_id: pmover10
+          role: "particles (> PM10)"
+          name: "particles (> PM10)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-a70a-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Measured outdoor fraction above 10 micrometres; never substitute total dust or cumulative PM10 for this interval."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges: []
+        - row_id: pinene
+          role: "pin-2(3)-ene"
+          name: "pin-2(3)-ene"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "0a701083-c7e6-43d1-8ae5-e62050edc5dc"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional measured alpha-pinene CAS 80-56-8 to outdoor air from wood processing; no assumed enantiomer fraction or generic VOC replacement."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges: []
+        - row_id: butoxyethanol
+          role: "2-n-butoxy-1-ethanol"
+          name: "2-n-butoxy-1-ethanol"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ae31-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Conditional measured solvent release CAS 111-76-2 to outdoor air; reconcile actual recipe and capture. This compound is chemically specific; no bulk VOC or correction flow substitution."
+          amount:
+            expression: "Divide this row’s net physical cohort exchange by cp_mass measured accepted net window mass Q; retain gross totals, stock changes and returns."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_emissions
+              source_ids: []
+            ranges: []
+allocation_rules:
+  - rule_id: allocation_subdivide
+    applies_to: "foreground_burden_allocation"
+    rule: "First subdivide the cohort by separate stage measurements from other products. Attribute shared energy only with measured operating-time/load causal evidence; disclose coverage and unmeasured shares rather than transferring industry averages."
+    source_ids:
+      - bau-timber-window-2022
+  - rule_id: allocation_physical_ledger
+    applies_to: "foreground_burden_allocation"
+    rule: "Keep process graph, mass/water/carbon balances and coproduct outputs at full unallocated physical quantities. Allocate only in a separate environmental burden ledger. Internal links match at both ends; transferred offcuts cannot also fuel foreground."
+    source_ids:
+      - bau-timber-window-2022
+  - rule_id: allocation_coproduct_review
+    applies_to: "foreground_burden_allocation"
+    rule: "Trace sold offcut use, price and treatment gate. The original EPD’s negligible-share rationale is no automatic allocation exemption. If measured causal subdivision is unavailable, declare alternative method, shares, rationale and sensitivity for independent methodological review; do not hide default credits."
+    source_ids:
+      - bau-timber-window-2022
+dataset_production:
+  collection_protocols:
+    - protocol_id: cp_mass
+      process_id: "window_manufacture"
+      flow_role: "accepted finished product"
+      record_type: "foreground and original records"
+      raw_fields: "product/configuration; unit serial; net weighed mass; tare; rejected output; cohort; Q"
+      collection_method: "Weigh every accepted complete same-configuration window using a calibrated scale, excluding rack, film and straps; sum measured net masses to Q. No generic per-window mass. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "kg"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "weighing and calibration records"
+    - protocol_id: cp_stock
+      process_id: "window_manufacture"
+      flow_role: "wood input"
+      record_type: "foreground and original records"
+      raw_fields: "supplier/lot; species; lamination; drying state; gross incoming mass; opening/closing stock; returns; moisture sample wet/dry mass"
+      collection_method: "Weigh incoming stock and retained inventories; measure representative moisture by oven-dry comparison or calibrated species-specific meter cross-check. Supplier background includes drying/lamination. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "kg; %"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "scale, oven and supplier gate documentation"
+    - protocol_id: cp_formula
+      process_id: "window_manufacture"
+      flow_role: "each bought formulation; composition/fate diagnostics; actual separate ingredient purchases"
+      record_type: "foreground and original records"
+      raw_fields: "procurement status; supplier/product/layer; whole supplied formulation mass/state; complete component fractions/CAS; actual separate purchase receipts; opening/closing stock; unused returns; onsite additions/preparation; supplier manufacture/preparation utilities/losses/packaging/delivery; retained film; air/waste fate"
+      collection_method: "Obtain complete supplier composition and actual whole supplied usage per product/layer; weigh and stock/return-adjust each whole formulation. Preserve listed nine ingredient IDs as separate composition/fate diagnostics using documented fractions; presence in a bought formulation alone creates no external ingredient purchase. External ingredient cards use actual separately purchased compatible quantities for onsite preparation only. Retain complete supplier formulation/manufacture/preparation utilities/losses/packaging/delivery once and genuine onsite mixing/additions once; do not add diagnostic ingredient burdens to an already complete formulation background. Unknown identity, fractions or procurement/boundaries stay specific gaps. Normalize each actual external whole-product or separate-purchase raw total once by Q under complete_period_normalization; never normalize a previously divided amount again."
+      unit: "kg"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "supplier formulation originals; batch/return and loss records"
+    - protocol_id: cp_components
+      process_id: "window_manufacture"
+      flow_role: "each purchased glass assembly and each hardware/seal part"
+      record_type: "foreground and original records"
+      raw_fields: "part/lot; material; finish; incoming installed rejected masses; delivered IGU area; individual pane schedule; argon; spacer; desiccant; seals; net geometry; thermal declaration"
+      collection_method: "Weigh each material-specific part; measure each delivered IGU area and mass; verify constituent/geometry/performance original declarations and supplier manufacturing boundary. Count each assembly separately. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "kg; m2"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "supplier bill of materials, drawings, performance originals and calibration"
+    - protocol_id: cp_energy
+      process_id: "window_manufacture"
+      flow_role: "electricity"
+      record_type: "foreground and original records"
+      raw_fields: "meter start/end; voltage; region/year; stage; compressed-air/extraction loads; other products; attribution basis"
+      collection_method: "Meter each stage and shared auxiliaries; subtract separately measured unrelated consumption. Use measured operating-time/load evidence only when direct subdivision is unavailable; disclose unmeasured shares. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "MJ"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter records and attribution ledger"
+    - protocol_id: cp_water
+      process_id: "window_manufacture"
+      flow_role: "cleaning water"
+      record_type: "foreground and original records"
+      raw_fields: "supply meter; water specification; reusable volume; density if converted; discharge meter; opening/closing tanks; evaporation"
+      collection_method: "Measure supply, reuse and external discharge separately; conversion from volume to mass requires measured temperature/density and compatible supplier quantity. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "kg"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter, density and tank-balance records"
+    - protocol_id: cp_packaging
+      process_id: "window_manufacture"
+      flow_role: "each packaging item"
+      record_type: "foreground and original records"
+      raw_fields: "film grade; strap grade; rack species/net mass; shipped mass; scrap; return/reuse trips; opening/closing stock"
+      collection_method: "Weigh film, rack and strap separately. Preserve full physical delivery quantities; retain an independent returnable-rack service ledger. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "kg"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "weighing, dispatch and rack reuse records"
+    - protocol_id: cp_residues
+      process_id: "window_manufacture"
+      flow_role: "each coproduct or waste"
+      record_type: "foreground and original records"
+      raw_fields: "stream; contamination; wet/dry mass; glass assembly composition; storage changes; recipient; treatment; sold quantity; price"
+      collection_method: "Weigh each separated stream and verify treatment/recipient; retain physical wood, water, glass and coating balance before environmental allocation. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "kg"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "transfer tickets, assays, invoices and balance ledger"
+    - protocol_id: cp_emissions
+      process_id: "window_manufacture"
+      flow_role: "each outdoor species or disjoint particle interval"
+      record_type: "foreground and original records"
+      raw_fields: "species/CAS; air compartment; process; post-control concentration; exhaust volume; operating time; particle cutpoints; captured amount; detection limits"
+      collection_method: "Use species-specific measured post-control releases for the cohort, including fugitive releases. Integrate calibrated concentration and compatible exhaust volume; unknown is not zero. Keep captured waste separate. Aggregate each atomic cohort exchange total divided by measured accepted net mass Q."
+      unit: "kg"
+      frequency: "each cohort and delivery"
+      temporal_coverage: "same declared production period and acceptance cohort"
+      site_scope: "same factory, configuration and route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "sampling methods, assays and exhaust/control records"
+  calculation_rules:
+    - id: cohort_normalization
+      applies_to: "all inventory rows"
+      rule: "Normalized row amount = net physical atomic cohort exchange total / Q; Q = sum of individually measured accepted complete-window net masses in the same cohort, kg. Output remains 1 kg; glazing is m2/kg, electricity MJ/kg, other rows kg/kg."
+      inputs:
+        - "row protocol"
+        - cp_mass
+      output: "normalized atomic exchange"
+      source_ids:
+        - bau-timber-window-2022
+    - id: formulation_constituents
+      applies_to: "glue_pvac, glue_water, coat_acrylic, coat_pur, coat_alkyd, coat_butoxy, coat_water, coat_tio2, coat_pg"
+      rule: "Diagnostic constituent mass = actual net whole supplied formulation usage × complete original supplier constituent mass fraction; calculate each product/layer separately, sum identical diagnostic constituent once and trace retained/air/waste/stock fate. These contained quantities are not external purchases or extra background exchanges. Whole bought formulations retain their own whole-product amount and matched complete supplier formulation/manufacture/preparation utilities/losses/packaging/delivery once; pure ingredient UUIDs cannot represent them. Only actual separately purchased compatible ingredients for onsite preparation use the corresponding external ingredient cards and measured stock/return-adjusted quantities, with onsite mixing/dilution/additions once. Do not add diagnostic constituent production burdens to a complete supplied-product background. Unknown complete-product identity, recipe or procurement remains pending."
+      inputs:
+        - cp_formula
+      output: "diagnostic constituent/fate totals; actual whole-formulation and separate-purchase ledgers kept distinct"
+      source_ids:
+        - bau-timber-window-2022
+    - id: physical_closure
+      applies_to: "wood_blank, offcut, waste_wood, glazing_unit, finished_window"
+      rule: "Cohort inputs + opening stock = retained window composition + physical outputs/waste + releases + closing stock. Close dry wood, water, glazing and chemicals separately; carbon uses supplier/measured fractions, with no universal wood carbon fraction."
+      inputs:
+        - cp_stock
+        - cp_formula
+        - cp_components
+        - cp_mass
+        - cp_residues
+        - cp_emissions
+      output: "unallocated mass/water/carbon balances"
+      source_ids:
+        - usda-wood-handbook-2021
+        - bau-timber-window-2022
+    - id: particles_disjoint
+      applies_to: "pm25, pmcoarse, pmover10"
+      rule: "If measurements are cumulative PM2.5, PM10 and total particulate, disjoint intervals are PM2.5, PM10-PM2.5 and total-PM10; require identical sampling, basis and control state, with nonnegative intervals. Incompatible measurements cannot be subtracted."
+      inputs:
+        - cp_emissions
+      output: "three disjoint measured intervals"
+      source_ids: []
+    - id: complete_period_normalization
+      applies_to: "all inventory rows"
+      rule: "Every existing campaign, batch or lot amount rule and linked collection protocol uses one documented complete reporting-period pool for the same declared product, grade, route, configuration, site and reference state. Accepted-lot wording identifies the denominator only; retain all attributable startup, shutdown, wholly failed or zero-output batches, rejects, work in progress and rework in the raw native-unit numerator records. Count reworked reference product once only when finally accepted. Sum each attributable exchange over this matched pool, divide once by its strictly positive accepted reference-product quantity in the declared denominator unit, and scale to the declared reference quantity. Do not average batch ratios, drop a failed batch, pool unrelated products/periods or replace native numerator units. If the entire matched pool has no accepted output, retain the unnormalized absolute inventory and require review; issue no normalized result or fabricated output. Preserve stock/return and physical-transfer ledgers independently of burden allocation; allocation never removes already-incurred failed/rework activity."
+      inputs:
+        - "all linked raw collection protocols"
+        - "accepted reference-product pool"
+        - "stock and rework links"
+      output: "native exchange unit per declared reference quantity; zero-output pool remains unnormalized"
+      source_ids: []
+  data_quality_requirements:
+    - id: dq_scope
+      applies_to: "all inventory rows"
+      requirement: "Match configuration, species, moisture, glazing and delivery route; source averages serve only as boundary evidence."
+      evidence: "supplier and acceptance originals"
+    - id: dq_recipes
+      applies_to: "cp_formula"
+      requirement: "Resolve every actual adhesive, primer, preservative treatment and finish composition and fate under the listed ingredient IDs; unknown additives/fractions block composition completeness and cannot default to zero. Separately verify each actual whole supplied formulation or true separately purchased ingredient, its physical identity/reference basis and compatible supplier/onsite preparation boundary. Composition presence alone does not establish procurement."
+      evidence: "complete recipes, procurement originals and whole-product/diagnostic/separate-purchase usage ledgers"
+    - id: dq_coverage
+      applies_to: "all inventory rows"
+      requirement: "Retain metering period, calibration, stocks and detection limits; distinguish missing, below-detection and evidenced inapplicability."
+      evidence: "raw records and coverage table"
+validation_rules:
+  - rule_id: validate_reference
+    applies_to: "foreground_dataset_conformance"
+    rule: "Exactly one terminal complete-window output uses the 1 kg measured net complete-window basis. Do not substitute frame or glazing UUIDs, or hide known identity to evade multiple-output checks."
+    source_ids: []
+  - rule_id: validate_native_quantities
+    applies_to: "foreground_dataset_conformance"
+    rule: "Measured glazing assembly area matches upstream Area/m2; window/opening area and thermal performance come from measurement/originals and establish no fixed mass or lifetime."
+    source_ids:
+      - bau-timber-window-2022
+  - rule_id: validate_atomic
+    applies_to: "foreground_dataset_conformance"
+    rule: "Each external row contains one actual supplied physical product or released species; each bought whole formulation remains one product, while ingredients contained in it remain composition/fate diagnostics and are not additional purchases. Ingredient external cards apply only to actual separate purchases for onsite preparation. Add each actual distinct formulation, separately purchased additive, glazing assembly and hardware item separately; verify whole supplied identity/reference basis, supplier manufacture/preparation/delivery and actual onsite additions once. Verify elementary species, medium/submedium, unit and fossil/biogenic origin where applicable; correction flows and broad substitutes are prohibited."
+    source_ids: []
+  - rule_id: validate_balances
+    applies_to: "foreground_dataset_conformance"
+    rule: "Check unallocated physical mass/water/carbon balances separately from environmental allocation. Do not double-count particles or delete background/actual combustion biogenic CO2 from LCI because of a GHG impact convention. Foreground combustion requires a new boundary and is not covered by this route."
+    source_ids: []
+  - rule_id: validate_completeness
+    applies_to: "foreground_dataset_conformance"
+    rule: "Missing reference identity, complete recipe, upstream compatibility, actual measurement or unresolved relationships remain incomplete; tool failure and unsupported relationships cannot be reported as passing."
+    source_ids: []
+published_dataset_profile:
+  dataset_role: "Factory-gate foreground manufacturing process linked to verified upstreams"
+  downstream_use: "secondary_dataset; background_dataset"
+  allowed_use: "Manufacturing inventory for the declared single-sash spruce, triple-argon glazing, electric machining/assembly route"
+  excluded_use: "Full CPC coverage; frame-only or French-window products; equivalent thermal-service comparison; fixed service life; building EPD certification"
+  required_metadata: "Site/time, configuration, measured net mass, separate areas, performance originals, incoming states, component recipes, meter coverage and upstream gates"
+  required_quality_disclosure: "Missing identities, recipes and background compatibility; sampling uncertainty; shared-load attribution; allocation method and sensitivity"
+  update_trigger: "Changed configuration, species, glazing/recipe, gate, energy route, supplier background or methodological evidence"
+data_sources:
+  - id: "bau-timber-window-2022"
+    type: "literature"
+    reference: "Bau EPD GmbH, HOLZFENSTER, BAU-EPD-PLATTFORM-FENSTER-FVHOLZ-ÖSTERREICH-2022-1-Ecoinvent, 2022-11-09. https://www.bau-epd.at/fileadmin/user_upload/epds_Deutsch/BAU-EPD-PLATTFORM-FENSTER-HOLZ-VERBAND-OESTERREICH-2022-1-Ecoinvent-Holzfenster-2022-11-09.pdf"
+    used_for: "pp.4–6 identity/components, pp.10–11 manufacture/packaging, p.20 shared energy/allocation limitations. Four Austrian manufacturers, 2019 production; no transferred quantities, universal recipe, negligible-share exemption or lifetime."
+  - id: "usda-wood-handbook-2021"
+    type: "handbook"
+    reference: "USDA Forest Products Laboratory, Wood handbook—wood as an engineering material, FPL-GTR-282, 2021. https://www.govinfo.gov/content/pkg/GOVPUB-A13-PURL-gpo158673/pdf/GOVPUB-A13-PURL-gpo158673.pdf"
+    used_for: "Chapter 13 p.13–2, PDF p.324: oven-dry method, representative specimens and meter conditions. Wood moisture collection and wet/dry measurement only; no window weight, industry-wide emissions or complete finish recipe."
+normative_context:
+  normalization: "utf8-lf-v1"
+  source_sha256: "sha256:168226d402c1ad220ae71e0c86d91976ad67b0a2c8be1b692211d99792a29502"
+  identity_scope: "projection_snapshot"
+  units:
+    - unit_id: "normative_5406"
+      family: "system_boundary"
+      span:
+        start:
+          offset: 5406
+          line: 60
+          column: 1
+        end:
+          offset: 7351
+          line: 79
+          column: 1
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Purchased kiln-dried laminated spruce window stock and sealed triple-argon glazing assembly, each at an explicit delivery gate |\n| starting_condition_role | Foreground machining/assembly feed; resource extraction and upstream manufacture carried by matching supplier backgrounds |\n| product_classification_scope | Narrow complete-window route within 31621; excludes frame-only and French-window products |\n| recursive_input_rule | Purchased same-category complete window is an explicit external input with its upstream link; do not recursively unfold this method indefinitely or relabel it as scantling |\n| upstream_dataset_requirement | Stock lamination/drying, every glazing constituent, hardware manufacture/finish, each chemical and formulation burden, electricity and water need state-compatible backgrounds; UUID identity is not a complete dataset |\n| disclosure | Declare site/time, delivered states, upstream gates, actual factory stages and meter coverage, recipe completeness, shared-load attribution, packaging and external waste destination |\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `boundary_complete_window` | Terminal complete-window boundary includes glazing, hardware, seals and retained finish; bare-frame output cannot replace it. | `bau-timber-window-2022` |\n| `boundary_upstream` | Count upstream manufacture of purchased dried laminated stock and sealed glazing once. Moving processes upstream does not remove their burdens or biogenic CO2. | `bau-timber-window-2022`; `usda-wood-handbook-2021` |\n| `boundary_route` | Include machining, finishing, assembly, acceptance, packaging and auxiliaries. Actual boilers, steam, on-site stock drying or glazing fabrication make this route inapplicable and require a new evidenced boundary; do not silently set them to zero. | `bau-timber-window-2022` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 328
+              line: 10
+              column: 1
+            end:
+              offset: 401
+              line: 10
+              column: 74
+          text: "# Single-sash spruce windows with triple insulating glazing, factory gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 5406
+              line: 60
+              column: 1
+            end:
+              offset: 5427
+              line: 60
+              column: 22
+          text: "## 5. System Boundary"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_46789"
+      family: "allocation"
+      span:
+        start:
+          offset: 46789
+          line: 733
+          column: 1
+        end:
+          offset: 47869
+          line: 741
+          column: 1
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `allocation_subdivide` | First subdivide the cohort by separate stage measurements from other products. Attribute shared energy only with measured operating-time/load causal evidence; disclose coverage and unmeasured shares rather than transferring industry averages. | `bau-timber-window-2022` |\n| `allocation_physical_ledger` | Keep process graph, mass/water/carbon balances and coproduct outputs at full unallocated physical quantities. Allocate only in a separate environmental burden ledger. Internal links match at both ends; transferred offcuts cannot also fuel foreground. | `bau-timber-window-2022` |\n| `allocation_coproduct_review` | Trace sold offcut use, price and treatment gate. The original EPD’s negligible-share rationale is no automatic allocation exemption. If measured causal subdivision is unavailable, declare alternative method, shares, rationale and sensitivity for independent methodological review; do not hide default credits. | `bau-timber-window-2022` |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 328
+              line: 10
+              column: 1
+            end:
+              offset: 401
+              line: 10
+              column: 74
+          text: "# Single-sash spruce windows with triple insulating glazing, factory gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 46789
+              line: 733
+              column: 1
+            end:
+              offset: 46829
+              line: 733
+              column: 41
+          text: "## 7. Allocation and Co-product Handling"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+    - unit_id: "normative_60628"
+      family: "validation"
+      span:
+        start:
+          offset: 60628
+          line: 775
+          column: 1
+        end:
+          offset: 62484
+          line: 785
+          column: 1
+      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | source_ids |\n| --- | --- | --- |\n| `validate_reference` | Exactly one terminal complete-window output uses the 1 kg measured net complete-window basis. Do not substitute frame or glazing UUIDs, or hide known identity to evade multiple-output checks. |  |\n| `validate_native_quantities` | Measured glazing assembly area matches upstream Area/m2; window/opening area and thermal performance come from measurement/originals and establish no fixed mass or lifetime. | `bau-timber-window-2022` |\n| `validate_atomic` | Each external row contains one actual supplied physical product or released species; each bought whole formulation remains one product, while ingredients contained in it remain composition/fate diagnostics and are not additional purchases. Ingredient external cards apply only to actual separate purchases for onsite preparation. Add each actual distinct formulation, separately purchased additive, glazing assembly and hardware item separately; verify whole supplied identity/reference basis, supplier manufacture/preparation/delivery and actual onsite additions once. Verify elementary species, medium/submedium, unit and fossil/biogenic origin where applicable; correction flows and broad substitutes are prohibited. |  |\n| `validate_balances` | Check unallocated physical mass/water/carbon balances separately from environmental allocation. Do not double-count particles or delete background/actual combustion biogenic CO2 from LCI because of a GHG impact convention. Foreground combustion requires a new boundary and is not covered by this route. |  |\n| `validate_completeness` | Missing reference identity, complete recipe, upstream compatibility, actual measurement or unresolved relationships remain incomplete; tool failure and unsupported relationships cannot be reported as passing. |  |\n\n"
+      headings:
+        - kind: "heading"
+          span:
+            start:
+              offset: 328
+              line: 10
+              column: 1
+            end:
+              offset: 401
+              line: 10
+              column: 74
+          text: "# Single-sash spruce windows with triple insulating glazing, factory gate"
+          depth: 1
+        - kind: "heading"
+          span:
+            start:
+              offset: 60628
+              line: 775
+              column: 1
+            end:
+              offset: 60650
+              line: 775
+              column: 23
+          text: "## 9. Validation Rules"
+          depth: 2
+      ancestor_context:
+        - span:
+            start:
+              offset: 0
+              line: 1
+              column: 1
+            end:
+              offset: 4
+              line: 2
+              column: 1
+          markdown: "---\n"
+  bindings:
+    - pointer: "/system_boundary/rules/0"
+      rule_id: "boundary_complete_window"
+      identity_kind: "explicit"
+      unit_id: "normative_5406"
+      source_span:
+        start:
+          offset: 6627
+          line: 75
+          column: 1
+        end:
+          offset: 6812
+          line: 75
+          column: 186
+    - pointer: "/system_boundary/rules/1"
+      rule_id: "boundary_upstream"
+      identity_kind: "explicit"
+      unit_id: "normative_5406"
+      source_span:
+        start:
+          offset: 6813
+          line: 76
+          column: 1
+        end:
+          offset: 7052
+          line: 76
+          column: 240
+    - pointer: "/system_boundary/rules/2"
+      rule_id: "boundary_route"
+      identity_kind: "explicit"
+      unit_id: "normative_5406"
+      source_span:
+        start:
+          offset: 7053
+          line: 77
+          column: 1
+        end:
+          offset: 7349
+          line: 77
+          column: 297
+    - pointer: "/allocation_rules/0"
+      rule_id: "allocation_subdivide"
+      identity_kind: "explicit"
+      unit_id: "normative_46789"
+      source_span:
+        start:
+          offset: 46883
+          line: 737
+          column: 1
+        end:
+          offset: 47181
+          line: 737
+          column: 299
+    - pointer: "/allocation_rules/1"
+      rule_id: "allocation_physical_ledger"
+      identity_kind: "explicit"
+      unit_id: "normative_46789"
+      source_span:
+        start:
+          offset: 47182
+          line: 738
+          column: 1
+        end:
+          offset: 47494
+          line: 738
+          column: 313
+    - pointer: "/allocation_rules/2"
+      rule_id: "allocation_coproduct_review"
+      identity_kind: "explicit"
+      unit_id: "normative_46789"
+      source_span:
+        start:
+          offset: 47495
+          line: 739
+          column: 1
+        end:
+          offset: 47867
+          line: 739
+          column: 373
+    - pointer: "/validation_rules/0"
+      rule_id: "validate_reference"
+      identity_kind: "explicit"
+      unit_id: "normative_60628"
+      source_span:
+        start:
+          offset: 60704
+          line: 779
+          column: 1
+        end:
+          offset: 60925
+          line: 779
+          column: 222
+    - pointer: "/validation_rules/1"
+      rule_id: "validate_native_quantities"
+      identity_kind: "explicit"
+      unit_id: "normative_60628"
+      source_span:
+        start:
+          offset: 60926
+          line: 780
+          column: 1
+        end:
+          offset: 61161
+          line: 780
+          column: 236
+    - pointer: "/validation_rules/2"
+      rule_id: "validate_atomic"
+      identity_kind: "explicit"
+      unit_id: "normative_60628"
+      source_span:
+        start:
+          offset: 61162
+          line: 781
+          column: 1
+        end:
+          offset: 61908
+          line: 781
+          column: 747
+    - pointer: "/validation_rules/3"
+      rule_id: "validate_balances"
+      identity_kind: "explicit"
+      unit_id: "normative_60628"
+      source_span:
+        start:
+          offset: 61909
+          line: 782
+          column: 1
+        end:
+          offset: 62240
+          line: 782
+          column: 332
+    - pointer: "/validation_rules/4"
+      rule_id: "validate_completeness"
+      identity_kind: "explicit"
+      unit_id: "normative_60628"
+      source_span:
+        start:
+          offset: 62241
+          line: 783
+          column: 1
+        end:
+          offset: 62482
+          line: 783
+          column: 242
+  diagnostics:
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_5406"
+      source_span:
+        start:
+          offset: 5406
+          line: 60
+          column: 1
+        end:
+          offset: 5427
+          line: 60
+          column: 22
+    - code: "NON_RULE_TABLE"
+      message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
+      unit_id: "normative_5406"
+      source_span:
+        start:
+          offset: 5455
+          line: 64
+          column: 1
+        end:
+          offset: 6573
+          line: 71
+          column: 199
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_46789"
+      source_span:
+        start:
+          offset: 46789
+          line: 733
+          column: 1
+        end:
+          offset: 46829
+          line: 733
+          column: 41
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
+      unit_id: "normative_60628"
+      source_span:
+        start:
+          offset: 60628
+          line: 775
+          column: 1
+        end:
+          offset: 60650
+          line: 775
+          column: 23
+projection_metadata:
+  contract_version: "2"
+  generator: "tiangong-pcr-builder/markdown-projection"
+  canonical_markdown:
+    path: "pcr.en-US.md"
+    normalization: "utf8-lf-v1"
+    hash_algorithm: "sha256"
+    sha256: "sha256:168226d402c1ad220ae71e0c86d91976ad67b0a2c8be1b692211d99792a29502"
+  generated_content_sha256: "sha256:87099eaa1583667e4daaa79de57ca6062a43e56f2acc016f6bc79bb4873704b1"
