@@ -125,6 +125,88 @@ function codes(result: MeasurementReport): string[] {
   return result.findings.map((finding) => finding.code);
 }
 
+function repeatedProductUuid() {
+  const uuid = "907d7b5c-ed6f-43a2-82f8-e1f91e30a37b";
+  const options = { referenceAmount: "1", basis: "per reference flow", outputBasis: "per reference flow",
+    expression: "Metered energy per reference flow", collectionBasis: "per reference flow" };
+  const projections = ["en-US", "zh-CN"].map((language) => {
+    const parsed = parsePcrMarkdownToStructured(example(language, options));
+    assert.ok(parsed.referenceFlowDefinition?.product_flow);
+    parsed.referenceFlowDefinition.product_flow.uuid = uuid;
+    const outputs = parsed.processInventory[0]?.outputs.product;
+    assert.ok(outputs?.[0]);
+    outputs[0].uuid = uuid;
+    const intermediate = structuredClone(outputs[0]);
+    intermediate.row_id = "intermediate_baler";
+    intermediate.amount.expression = "Measured intermediate transfer with losses and stocks reconciled";
+    intermediate.amount.evidence.collection_protocol_id = "cp_energy";
+    outputs.unshift(intermediate);
+    return parsed;
+  });
+  return { english: projections[0], chinese: projections[1] };
+}
+
+test("explicit final-output link disambiguates intermediate outputs with the same product UUID", () => {
+  const result = checkMeasurementConsistency(repeatedProductUuid());
+  assert.equal(result.status, "pass", JSON.stringify(result.findings));
+  assert.deepEqual(result.coverage.performed.filter((entry) => entry.check === "reference_output").map((entry) => entry.row_id),
+    ["finished_baler", "finished_baler"]);
+});
+
+test("invalid explicit output links cannot fall back to a matching product UUID", () => {
+  const input = repeatedProductUuid();
+  for (const parsed of [input.english, input.chinese]) {
+    assert.ok(parsed?.functionalUnit);
+    parsed.functionalUnit.reference_flow_link = "missing_output";
+    parsed.processInventory[0]?.outputs.product.shift();
+  }
+  assert.ok(codes(checkMeasurementConsistency(input)).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("UUID fallback remains ambiguous without a final-output link", () => {
+  const input = repeatedProductUuid();
+  for (const parsed of [input.english, input.chinese]) {
+    assert.ok(parsed?.functionalUnit);
+    parsed.functionalUnit.reference_flow_link = "";
+  }
+  assert.ok(codes(checkMeasurementConsistency(input)).includes("MEASUREMENT_REFERENCE_OUTPUT_UNRESOLVED"));
+});
+
+test("UUID fallback still selects a unique product output when no link is supplied", () => {
+  const input = repeatedProductUuid();
+  for (const parsed of [input.english, input.chinese]) {
+    assert.ok(parsed?.functionalUnit);
+    parsed.functionalUnit.reference_flow_link = "";
+    parsed.processInventory[0]?.outputs.product.shift();
+  }
+  const result = checkMeasurementConsistency(input);
+  assert.equal(result.status, "pass", JSON.stringify(result.findings));
+});
+
+test("an explicit final output still requires the declared reference quantity", () => {
+  const input = repeatedProductUuid();
+  for (const parsed of [input.english, input.chinese]) {
+    const output = parsed?.processInventory[0]?.outputs.product.find((row) => row.row_id === "finished_baler");
+    assert.ok(output);
+    output.amount.expression = "2 kg";
+  }
+  const result = checkMeasurementConsistency(input);
+  assert.equal(result.status, "error");
+  assert.ok(result.findings.some((entry) => entry.code === "MEASUREMENT_REFERENCE_OUTPUT_MISMATCH" && entry.row_id === "finished_baler"));
+});
+
+test("an explicit link cannot select an output with a different reference product UUID", () => {
+  const input = repeatedProductUuid();
+  for (const parsed of [input.english, input.chinese]) {
+    const output = parsed?.processInventory[0]?.outputs.product.find((row) => row.row_id === "finished_baler");
+    assert.ok(output);
+    output.uuid = "6587eccc-106f-4941-be4a-afdbe46df8b5";
+  }
+  const result = checkMeasurementConsistency(input);
+  assert.equal(result.status, "error");
+  assert.ok(codes(result).includes("MEASUREMENT_REFERENCE_OUTPUT_IDENTITY_MISMATCH"));
+});
+
 test("enforcement makes 44125 measurement findings blocking and checks both languages", () => {
   const result = inspectPcrDirectory({ root, pcrDir: fixture, measurementPolicy: "enforce" });
   assert.ok(result.measurement);

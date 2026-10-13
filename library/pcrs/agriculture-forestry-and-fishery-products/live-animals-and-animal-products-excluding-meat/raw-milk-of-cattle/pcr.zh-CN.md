@@ -33,7 +33,7 @@ sync_with: pcr.en-US.md
 | How much | 1 kg |
 | How well | 申报温或农场冷藏状态、交付温度、脂肪/蛋白或固形物、验收与拒收依据 |
 | How long or cycle | 申报覆盖泌乳、干奶、后备、淘汰与冷却服务的报告期 |
-| reference_flow_link | `reference_product_handover` |
+| reference_flow_link | reference_product_handover |
 
 | 字段 | 值 |
 | --- | --- |
@@ -308,6 +308,23 @@ sync_with: pcr.en-US.md
   - 基准：每 kg 合格原奶的 CH4；宽泛暂定筛查
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
+
+###### 粪污生物源甲烷排入空气（`manure_methane`）
+
+适用于声明前景边界内实际粪污管理路径的 CH4 排放，包含适用的贮存、处理、消化及消化残余物贮存环节。与肠道甲烷分开记录；不得将无记录等同于零排放。若全部处理在独立外包边界，须记录粪污移交、前景贮存及处理服务覆盖，防止遗漏或重复计算。非适用或零排放须有路径与方法依据。
+
+原始数量及计算要求：依 c_manure_ch4，按动物类别、实际管理系统、气候及期间确定 CH4；保留挥发性固体、适用排放参数、回收及燃烧/利用记录。仅计入实际排入空气的 CH4；不得重复扣减所选方法已包含的回收或减排效果。原始总量经既有归属规则后，按 inventory_reference_normalization 与 stage_throughput_linkage 归一化一次。
+
+- 选定流：粪污管理产生的生物源甲烷，排入空气
+- 流属性/单位：Mass / kg CH4
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用同期路径记录和上述原始排放计算要求计算最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_manure_ch4`
+- 来源：`ipcc-2019-livestock-manure`
 
 ###### 粪污一氧化二氮排放至空气 (`manure_n2o`)
 
@@ -887,6 +904,7 @@ sync_with: pcr.en-US.md
 | `cp_manure` | `dairy_herd` | 粪污与氮排放 | 路径记录 | 牛类、挥发性固体、氮、路径、质量、交付 | 贮存和养分记录；原始汇总要求：按路径对账质量与养分。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; kg N | 每月及每次事件 | 完整报告期 | 生产农场 | 每参考流 | 称重单、化验、去向；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_milk_balance` | milk_collection; primary_conditioning; farm_cooling | 合格及拒收乳 | 原奶批次记录 | 总量、合格量、拒收原因、损失、温度、固形物、交付 | 校准储乳罐/地磅及采样；原始汇总要求：批次平衡；温乳/冷藏乳最终分流。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg; °C; % | 每批 | 完整报告期 | 生产农场 | 每参考流 | 储乳罐校准、验收与化验记录；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_reference_handover` | `reference_handover` | 合格产品及匹配的内部来源移交 | 生产者交付台账 | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | 在同一实际交付门测量合格净产品，将列出的状态／交付门专属来源行及关联输入与唯一实际产出核对。拒收、库存变化及其他销售单独记录；不假设新增处理或运输。 | kg；原生来源数量 | 每次实际交付 | 匹配来源及交付期间 | 仅声明生产者交付门 | 每参考流 | 可追溯验收记录、同批来源至产出台账、校准数量方法及归一化计算表 |
+| `cp_manure_ch4` | `dairy_herd` | 粪污 CH4 | 动物类别及粪污管理路径台账 | animal_category; animal_days; VS_mass_and_basis; system_share; storage_duration; climate_temperature; B0_or_selected_tier_factor; MCF_if_used; factor_version; methane_recovery; combustion_or_use; digestate_storage; handover; period | 核对动物事件、粪污分流、贮存/消化及气体计量记录；保留所选 IPCC 层级实际要求的参数、单位、来源和回收口径。先按类别、路径与期间计算原始排放总量，再依既有归属及归一化规则计算最终贡献一次；不得将已按年计算的挥发性固体再次乘 365。 | kg VS; kg CH4; animal-day; native factor units | 每次事件及月度 | 与动物活动及合格参考产出相同期间 | 声明的前景粪污管理边界 | 每参考流 | 路径份额对账、仪表校准、因子来源及版本、气体收支和归一化计算表 |
 
 ### 计算规则
 
@@ -897,6 +915,7 @@ sync_with: pcr.en-US.md
 | `c_manure` | 粪污 | 按挥发性固体、氮及管理路径分别计算 N2O、NH3 与适用 CH4；不重复计入同一排放。 | 粪污挥发性固体、氮、路径和期间 | 各物种 kg | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
 | `c_shared_service` | 共享设施 | 按经核实服务量在牛群、挤奶和冷却节点以及期间之间分配一次。 | 仪表/资产台账、服务记录 | 已分配投入量 | `fao-leap-large-ruminants-2016` |
 | `c_biophysical_allocation` | 牛乳及外售活牛 | 首先分离产品专属活动，再按牛类和期间记录的产乳与活体增重能量需求计算剩余牛群负担份额；份额之和须为一。 | 产乳量/成分、牛群增重、类别、能量需求方法和期间 | 牛乳及活牛负担份额 | `fao-leap-large-ruminants-2016` |
+| `c_manure_ch4` | `manure_methane` | 按 IPCC 第 10.4 节所选层级，以相同动物类别、实际系统份额、气候及期间计算粪污 CH4。记录适用的挥发性固体、产甲烷能力及转化参数，核对捕集、利用/燃烧、泄漏和后续贮存的口径；不得重复扣减回收量。与肠道 CH4 分开；移交边界外的处理仅在有覆盖证据时排除。按既有分配规则归属负担，最后归一化一次。 | `cp_manure_ch4`; 同期动物及产出记录；层级与因子来源 | kg CH4，再换算为每参考流贡献 | `ipcc-2019-livestock-manure` |
 
 ### 数据质量要求
 
@@ -916,6 +935,7 @@ sync_with: pcr.en-US.md
 | `v_routes` | 路线和牛群 | 检查放牧/舍饲路线差异在饲料、粪污、能源和计算中有证据，并按牛群及期间核对后备牛和淘汰牛。 | `fao-leap-large-ruminants-2016` |
 | `v_attribution` | 联产品与共享设施 | 核对每个独立产物交付、生物物理能量需求输入、设施服务量及跨期负担，只分配一次；披露粪肥处理与敏感性。 | `fao-leap-large-ruminants-2016` |
 | `v_emissions` | 排放 | 检查 IPCC 牛类、粪污管理路径、物种、介质及适用因子，拒绝未分物种的总量 UUID。 | `ipcc-2019-livestock-manure` |
+| `v_manure_ch4` | `manure_methane` | 核对实际路径、动物类别、挥发性固体时间基准、系统份额、气候及期间；核对回收及处理边界无遗漏或重复。零排放/非适用须有证据，不得由缺失数据推定；保持肠道与粪污 CH4 独立交换。 | `ipcc-2019-livestock-manure` |
 
 ## 10. 发布数据集画像
 

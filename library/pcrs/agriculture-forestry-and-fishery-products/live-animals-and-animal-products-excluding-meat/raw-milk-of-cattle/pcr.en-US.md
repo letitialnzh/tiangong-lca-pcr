@@ -33,7 +33,7 @@ Grazing and housed variants may coexist, but feed sourcing, manure pathways, ene
 | How much | 1 kg |
 | How well | declare warm or farm-chilled state, handover temperature, fat/protein or solids, and acceptance/rejection basis |
 | How long or cycle | declared reporting period covering lactation, dry, replacement, culling and cooling service phases |
-| reference_flow_link | `reference_product_handover` |
+| reference_flow_link | reference_product_handover |
 
 | Field | Value |
 | --- | --- |
@@ -308,6 +308,23 @@ Raw quantity and calculation requirements: Calculated category-specific enteric 
   - Basis: broad route-dependent first-pass screen; replace with measured records
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Manure biogenic methane to air (`manure_methane`)
+
+Apply to CH4 from actual manure-management paths inside the declared foreground boundary, including applicable storage, treatment, digestion and digestate storage. Record separately from enteric methane; missing records do not establish zero emissions. If treatment is wholly outsourced across an independent boundary, document manure handover, foreground storage and treatment-service coverage to prevent omissions or double counting. A not-applicable or zero result requires pathway and method evidence.
+
+Raw quantity and calculation requirements: Under c_manure_ch4, determine CH4 by animal category, actual management system, climate and period; retain volatile solids, applicable emission parameters, recovery and combustion/use records. Count CH4 actually released to air only; do not deduct recovery or mitigation already included in the chosen method a second time. Apply existing attribution rules to raw totals, then normalize once under inventory_reference_normalization and stage_throughput_linkage.
+
+- Selected flow: Biogenic methane from manure management, to air
+- Flow property / unit: Mass / kg CH4
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched pathway records and the raw-emission requirements above.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_manure_ch4`
+- Sources: `ipcc-2019-livestock-manure`
 
 ###### Manure nitrous oxide to air (`manure_n2o`)
 
@@ -887,6 +904,7 @@ Required product-instance qualifiers: cattle species; raw state; farm gate; warm
 | `cp_manure` | `dairy_herd` | manure and N emissions | pathway log | animal class, VS, N, pathway, mass, handover | storage and nutrient records; Raw aggregation requirements: mass and nutrient balance by pathway. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; kg N | monthly and event | full reporting period | producing farm | per reference flow | weigh ticket, assay, destination; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_milk_balance` | milk_collection; primary_conditioning; farm_cooling | accepted and rejected milk | milk batch log | gross mass, accepted mass, rejection reason, loss, temperature, solids, handover | calibrated tank/scale and sampling; Raw aggregation requirements: batch balance; final warm/chilled partition. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; °C; % | each batch | full reporting period | producing farm | per reference flow | tank calibration, acceptance and lab record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_reference_handover` | `reference_handover` | accepted product and matched internal source transfer | producer handover ledger | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed. | kg; native source quantities | each actual handover | matched source and handover periods | declared producer gate only | per reference flow | traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet |
+| `cp_manure_ch4` | `dairy_herd` | manure CH4 | animal-category and manure-pathway ledger | animal_category; animal_days; VS_mass_and_basis; system_share; storage_duration; climate_temperature; B0_or_selected_tier_factor; MCF_if_used; factor_version; methane_recovery; combustion_or_use; digestate_storage; handover; period | Reconcile animal events, manure routing, storage/digester and gas-meter records; retain parameters, units, sources and recovery conventions required by the selected IPCC tier. Calculate raw emissions by category, path and period, then apply existing attribution and final normalization once; never multiply annual VS by 365 again. | kg VS; kg CH4; animal-day; native factor units | each event and monthly | same period as animal activity and accepted reference output | declared foreground manure-management boundary | per reference flow | pathway-share reconciliation, meter calibration, parameter sources and versions, gas balance and normalization worksheet |
 
 ### Calculation Rules
 
@@ -897,6 +915,7 @@ Required product-instance qualifiers: cattle species; raw state; farm gate; warm
 | `c_manure` | manure | Calculate N2O, NH3 and applicable CH4 separately by VS, nitrogen and pathway; prevent duplicate emission accounting. | manure VS, N, pathway and period | kg species | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
 | `c_shared_service` | shared assets | Assign each shared asset once among herd, milking and cooling nodes and periods by evidenced service. | meter/asset register, service records | allocated input quantity | `fao-leap-large-ruminants-2016` |
 | `c_biophysical_allocation` | milk and transferred live cattle | Separate product-specific operations first, then calculate the residual herd-burden shares from documented energy requirements for milk production and live growth by class and period; shares must sum to one. | milk yield/composition, herd growth, classes, energy-requirement method and period | milk and live-cattle burden shares | `fao-leap-large-ruminants-2016` |
+| `c_manure_ch4` | `manure_methane` | Apply the selected IPCC Section 10.4 tier to the same animal categories, actual system shares, climate and period. Retain applicable VS, methane-production and conversion parameters and reconcile capture, use/combustion, leakage and subsequent storage conventions; do not deduct recovery twice. Keep enteric CH4 separate; exclude treatment beyond the handover boundary only with evidence of its coverage. Attribute burdens under existing allocation rules, then normalize once. | `cp_manure_ch4`; matched animal and output records; tier and parameter sources | kg CH4, then contribution per reference flow | `ipcc-2019-livestock-manure` |
 
 ### Data Quality Requirements
 
@@ -916,6 +935,7 @@ Required product-instance qualifiers: cattle species; raw state; farm gate; warm
 | `v_routes` | routes and herd | Evidence grazing/housed deltas in feed, manure, energy and calculation, with replacements and culls reconciled by herd and period. | `fao-leap-large-ruminants-2016` |
 | `v_attribution` | co-products and shared assets | Check each independent output handover, biophysical energy-demand inputs, asset service and cross-period burden for one-time attribution; disclose manure treatment and sensitivity. | `fao-leap-large-ruminants-2016` |
 | `v_emissions` | emissions | Check IPCC cattle class, manure pathway, species, medium and applicable factors; reject unspeciated aggregate emission UUIDs. | `ipcc-2019-livestock-manure` |
+| `v_manure_ch4` | `manure_methane` | Check actual pathways, animal categories, VS time basis, system shares, climate and period; reconcile recovery and treatment boundaries without omissions or duplication. Zero/not-applicable requires evidence, not missing data; retain distinct enteric and manure CH4 exchanges. | `ipcc-2019-livestock-manure` |
 
 ## 10. Published Dataset Profile
 

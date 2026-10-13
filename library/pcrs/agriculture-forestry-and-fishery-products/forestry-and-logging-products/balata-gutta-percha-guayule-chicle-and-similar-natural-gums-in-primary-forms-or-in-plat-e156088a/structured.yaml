@@ -14,7 +14,7 @@ functional_unit:
   how_much: "1 kg net product mass"
   how_well: "Product meets the declared commercial grade, product form, moisture or dry matter basis, and impurity specification"
   how_long_or_cycle: "One foreground production batch, tapping campaign, extraction campaign, or annualized campaign normalized to the reference amount"
-  reference_flow_link: "Reference product output of the final primary gum production process"
+  reference_flow_link: "packaged_product_at_gate"
 system_boundary:
   rules:
     - rule_id: boundary_declared_source_or_raw_lot
@@ -29,7 +29,7 @@ boundary_abstraction:
   upstream_dataset_requirement: "Use an upstream dataset for purchased latex, crude gum, harvested leaf, shrub biomass, solvent, packaging, electricity, fuel, water, or transport services that cross into the foreground boundary."
   disclosure: "Disclose source species or supplier source category, source system, harvesting or tapping route, purchased raw lot share, product form, moisture basis, purification state, co-product treatment, and any excluded establishment, land management, or long-distance transport activities."
 reference_flow_definition:
-  reference_amount: "1 kg"
+  reference_amount: "1"
   product_flow_ref:
     name: "Balata, gutta-percha, guayule, chicle and similar natural gums in primary forms or in plates, sheets or strip"
     uuid: "907d7b5c-ed6f-43a2-82f8-e1f91e30a37b"
@@ -86,6 +86,20 @@ measurement_rules:
       uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
     required_unit: "kg"
     rule: "Compare foreground yields against route-specific evidence or documented campaign records; large deviations require source species, moisture basis, and loss disclosure."
+  - id: inventory_reference_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "Actual flow property"
+      uuid: ""
+    required_unit: "exchange unit per reference flow"
+    rule: "Inventory and collection aggregation fields express final-package contributions per reference flow. Retain raw lots, periods, stage quantities and units; first derive the quantity under existing conversion, attribution and allocation rules, then multiply by the declared reference amount and divide by measured accepted final gate output of the same scope. Require a traceable positive denominator and normalize exactly once. Keep provisional QA ranges on their explicit bases; they are not conversion factors or production defaults. Physical transfers and mass balances use quantities before burden allocation; burden shares must not alter physical yields."
+  - id: stage_throughput_linkage
+    applies_to: "stage records and final package contributions"
+    required_property_ref:
+      name: "Actual flow property and raw basis"
+      uuid: ""
+    required_unit: "retain native numerator and stage denominator units"
+    rule: "Link measured throughput, outputs, rejects, losses and opening/closing stocks by lot, stage and period. For amount a quoted per explicit stage basis B, reconstruct the total as a * Q_stage / B; for intensity r already per stage-unit, use r * Q_stage; use raw totals directly without dividing by the stage denominator again. Then normalize once to final gate output. Keep measured intermediate yields rather than fixing transfers to 1 kg; do not assign a second product burden to an internal transfer. Stage-native datasets retain their own references separately from final-package contributions."
 process_map:
   - id: source_harvest_or_raw_lot_receipt
     name: "Source harvest, tapping, or raw lot receipt"
@@ -121,16 +135,16 @@ process_inventory:
           name: "Natural gum source material"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "The incoming material is recorded according to the declared route. It may be tapped latex, crude gum, harvested leaves, guayule shrub biomass, or a purchased raw gum lot."
+          description: "The incoming material is recorded according to the declared route. It may be tapped latex, crude gum, harvested leaves, guayule shrub biomass, or a purchased raw gum lot. Raw quantity and calculation requirements: measured incoming mass and dry matter or total solids content. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured incoming mass and dry matter or total solids content"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_source_material_records
               source_ids:
                 - fao-nwfp-6-chicle
@@ -151,16 +165,16 @@ process_inventory:
           name: "Field collection energy"
           flow_type: "product"
           property_unit: "Energy / MJ or kWh"
-          description: "Fuel, electricity, or animal/mechanical collection services are included when directly used for tapping, shrub harvest, leaf collection, in-field chopping, or raw lot receiving."
+          description: "Fuel, electricity, or animal/mechanical collection services are included when directly used for tapping, shrub harvest, leaf collection, in-field chopping, or raw lot receiving. Raw quantity and calculation requirements: fuel or electricity measured from meters, invoices, logbooks, or equipment-hour calculations. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "fuel or electricity measured from meters, invoices, logbooks, or equipment-hour calculations"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_energy_records
               source_ids: []
             ranges:
@@ -178,16 +192,16 @@ process_inventory:
           name: "Biogenic plant residue"
           flow_type: "waste"
           property_unit: "Mass / kg dry matter"
-          description: "Rejected bark, leaves, twigs, shrub material, or contaminated raw gum is recorded when it leaves the foreground system as waste or is returned to the source area."
+          description: "Rejected bark, leaves, twigs, shrub material, or contaminated raw gum is recorded when it leaves the foreground system as waste or is returned to the source area. Raw quantity and calculation requirements: measured or calculated rejected biomass after source collection. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured or calculated rejected biomass after source collection"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residue_records
               source_ids: []
             ranges:
@@ -205,13 +219,13 @@ process_inventory:
           name: "Land occupation, forestry or perennial shrub production"
           flow_type: "elementary"
           property_unit: "Area-time / m2a"
-          description: "Land occupation is reported when the foreground dataset represents plantation or managed source-area operation rather than only purchased raw lot receipt."
+          description: "Land occupation is reported when the foreground dataset represents plantation or managed source-area operation rather than only purchased raw lot receipt. Raw quantity and calculation requirements: annualized productive source area allocated to harvested source material. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "annualized productive source area allocated to harvested source material"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -233,16 +247,16 @@ process_inventory:
           name: "Raw natural gum material"
           flow_type: "product"
           property_unit: "Mass / kg as received and kg dry matter"
-          description: "The measured collected or received material is transferred to the primary concentration or extraction process."
+          description: "The measured collected or received material is transferred to the primary concentration or extraction process. Raw quantity and calculation requirements: measured transferred mass after source collection or receipt. Retain the original collection basis: per source collection or receipt process output. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured transferred mass after source collection or receipt"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per source collection or receipt process output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_source_material_records
               source_ids: []
             ranges:
@@ -267,16 +281,16 @@ process_inventory:
           name: "Raw natural gum material"
           flow_type: "product"
           property_unit: "Mass / kg dry matter"
-          description: "Raw latex, crude gum, leaves, shrub biomass, or purchased raw gum is charged to the recovery route."
+          description: "Raw latex, crude gum, leaves, shrub biomass, or purchased raw gum is charged to the recovery route. Raw quantity and calculation requirements: measured raw material charged to the concentration, boiling, coagulation, or extraction equipment. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured raw material charged to the concentration, boiling, coagulation, or extraction equipment"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_source_material_records
               source_ids: []
             ranges:
@@ -295,16 +309,16 @@ process_inventory:
           flow_ref:
             uuid: "ec205030-248c-496f-9cf2-06d9d26dc6ff"
           property_unit: "Mass / kg"
-          description: "Process water is included when used for boiling, hot-water softening, washing, aqueous extraction, slurry handling, or cooling that crosses the foreground boundary."
+          description: "Process water is included when used for boiling, hot-water softening, washing, aqueous extraction, slurry handling, or cooling that crosses the foreground boundary. Raw quantity and calculation requirements: measured make-up water consumption net of internal recirculation. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured make-up water consumption net of internal recirculation"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_water_records
               source_ids: []
             ranges:
@@ -321,16 +335,16 @@ process_inventory:
           name: "Solvent, coagulant, or process aid"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Solvents, acids, salts, alkalis, filter aids, or other separation aids are included only when used in the declared route."
+          description: "Solvents, acids, salts, alkalis, filter aids, or other separation aids are included only when used in the declared route. Raw quantity and calculation requirements: measured purchased or consumed quantity by material name and concentration. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured purchased or consumed quantity by material name and concentration"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_auxiliary_material_records
               source_ids:
                 - dehghanizadeh-2021-guayule-resin
@@ -350,16 +364,16 @@ process_inventory:
           flow_ref:
             uuid: "2eb3b2fd-6511-4a22-9018-768024a5b5a6"
           property_unit: "Energy / kWh or MJ"
-          description: "Energy for boiling, extraction, agitation, centrifugation, evaporation, solvent recovery, and pumps is included in the recovery process."
+          description: "Energy for boiling, extraction, agitation, centrifugation, evaporation, solvent recovery, and pumps is included in the recovery process. Raw quantity and calculation requirements: measured energy use or calculated equipment energy allocated to the recovery campaign. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured energy use or calculated equipment energy allocated to the recovery campaign"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_energy_records
               source_ids:
                 - dehghanizadeh-2021-guayule-resin
@@ -383,16 +397,16 @@ process_inventory:
           name: "Natural gum intermediate"
           flow_type: "product"
           property_unit: "Mass / kg dry matter"
-          description: "The intermediate gum, coagulum, rubber fraction, resin fraction, or crude gutta fraction is recorded before final drying and forming."
+          description: "The intermediate gum, coagulum, rubber fraction, resin fraction, or crude gutta fraction is recorded before final drying and forming. Raw quantity and calculation requirements: measured intermediate output, including moisture or solids basis. Retain the original collection basis: per recovery process output. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured intermediate output, including moisture or solids basis"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "per recovery process output"
-              kind: "process_output"
+              text: "per reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_product_quality_records
               source_ids: []
             ranges:
@@ -410,13 +424,13 @@ process_inventory:
           name: "Process wastewater"
           flow_type: "waste"
           property_unit: "Volume / m3 or Mass / kg"
-          description: "Wastewater is recorded when water leaves the recovery process for treatment, discharge, or off-site disposal."
+          description: "Wastewater is recorded when water leaves the recovery process for treatment, discharge, or off-site disposal. Raw quantity and calculation requirements: measured discharge or water-balance residual after recirculation. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured discharge or water-balance residual after recirculation"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -436,16 +450,16 @@ process_inventory:
           name: "Biogenic extraction residue"
           flow_type: "waste"
           property_unit: "Mass / kg dry matter"
-          description: "Solid residues from leaf extraction, shrub extraction, filtering, or crude gum cleaning are recorded by dry matter and disposal or beneficial-use route."
+          description: "Solid residues from leaf extraction, shrub extraction, filtering, or crude gum cleaning are recorded by dry matter and disposal or beneficial-use route. Raw quantity and calculation requirements: measured residue generation and fate. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured residue generation and fate"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "route_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residue_records
               source_ids:
                 - dehghanizadeh-2021-guayule-resin
@@ -464,13 +478,13 @@ process_inventory:
           name: "Water vapour to air"
           flow_type: "elementary"
           property_unit: "Mass / kg"
-          description: "Water evaporated during boiling, concentration, or drying is reported as a water-balance output when material."
+          description: "Water evaporated during boiling, concentration, or drying is reported as a water-balance output when material. Raw quantity and calculation requirements: calculated from water balance and moisture measurements. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "calculated from water balance and moisture measurements"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
@@ -494,16 +508,16 @@ process_inventory:
           name: "Natural gum intermediate"
           flow_type: "product"
           property_unit: "Mass / kg dry matter"
-          description: "The intermediate gum material is fed to final drying, purification, pressing, block forming, sheet forming, or strip cutting."
+          description: "The intermediate gum material is fed to final drying, purification, pressing, block forming, sheet forming, or strip cutting. Raw quantity and calculation requirements: measured intermediate input to final finishing. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured intermediate input to final finishing"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_product_quality_records
               source_ids: []
             ranges:
@@ -522,16 +536,16 @@ process_inventory:
           flow_ref:
             uuid: "2eb3b2fd-6511-4a22-9018-768024a5b5a6"
           property_unit: "Energy / kWh or MJ"
-          description: "Energy for drying, pressing, rolling, cutting, cooling, and ventilation is included."
+          description: "Energy for drying, pressing, rolling, cutting, cooling, and ventilation is included. Raw quantity and calculation requirements: measured energy use for final finishing or allocated equipment energy. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured energy use for final finishing or allocated equipment energy"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_energy_records
               source_ids: []
             ranges:
@@ -556,44 +570,35 @@ process_inventory:
           flow_ref:
             uuid: "907d7b5c-ed6f-43a2-82f8-e1f91e30a37b"
           property_unit: "Mass / kg"
-          description: "The reference product is the saleable primary natural gum in the declared form and quality state."
+          description: "The reference product is the saleable primary natural gum in the declared form and quality state. Raw quantity and calculation requirements: Measure net finished product transferred to packaging/dispatch and reconcile it with final gate output, rejects, losses and stock changes; never assume this intermediate transfer equals 1 kg. Retain the original collection basis: reference flow. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "1 kg reference product at declared moisture or dry matter basis"
-            value_mode: "fixed_value"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "reference flow"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "identity_reference"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_product_quality_records
               source_ids: []
-            ranges:
-              - role: allowed_range
-                lower: "1"
-                upper: "1"
-                unit: "kg"
-                basis: "reference flow"
-                basis_kind: "reference_flow"
-                evidence_kind: "method_formula"
-                source_ids:
-                  - iso-14044-2006
+            ranges: []
       waste:
         - row_id: off_grade_gum_waste
           role: "Off-grade gum and trimming waste"
           name: "Off-grade natural gum waste"
           flow_type: "waste"
           property_unit: "Mass / kg"
-          description: "Off-grade gum, trimmings, fines, contaminated gum, or rejected sheets are recorded by fate."
+          description: "Off-grade gum, trimmings, fines, contaminated gum, or rejected sheets are recorded by fate. Raw quantity and calculation requirements: measured rejected product and declared recycling, rework, energy recovery, or disposal route. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured rejected product and declared recycling, rework, energy recovery, or disposal route"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_residue_records
               source_ids: []
             ranges:
@@ -616,16 +621,16 @@ process_inventory:
           name: "Packaging material"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Packaging is included when bags, liners, cartons, drums, straps, labels, or non-returnable pallets are supplied with the saleable product."
+          description: "Packaging is included when bags, liners, cartons, drums, straps, labels, or non-returnable pallets are supplied with the saleable product. Raw quantity and calculation requirements: measured packaging issued to the product lot, excluding reusable packaging when separately tracked. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured packaging issued to the product lot, excluding reusable packaging when separately tracked"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_packaging_records
               source_ids: []
             ranges:
@@ -644,16 +649,16 @@ process_inventory:
           flow_ref:
             uuid: "2eb3b2fd-6511-4a22-9018-768024a5b5a6"
           property_unit: "Energy / kWh or MJ"
-          description: "Energy for warehouses, drying rooms, ventilation, forklifts, conveyors, and handling equipment is included when used before producer-gate dispatch."
+          description: "Energy for warehouses, drying rooms, ventilation, forklifts, conveyors, and handling equipment is included when used before producer-gate dispatch. Raw quantity and calculation requirements: measured or allocated storage and handling energy. Retain the original collection basis: per 1 kg saleable reference product. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage."
           amount:
-            expression: "measured or allocated storage and handling energy"
-            value_mode: "foreground_record"
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1 kg saleable reference product"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_energy_records
               source_ids: []
             ranges:
@@ -678,13 +683,13 @@ process_inventory:
           flow_ref:
             uuid: "907d7b5c-ed6f-43a2-82f8-e1f91e30a37b"
           property_unit: "Mass / kg"
-          description: "The packaged saleable primary gum product is ready for dispatch at the producer gate."
+          description: "The packaged saleable primary gum product is ready for dispatch at the producer gate. Raw reference-output records: Measure accepted net output for the same product, state, gate and period. Only this final reference exchange is fixed at 1 kg; the actual batch quantity is measured, not fixed at 1 kg."
           amount:
-            expression: "net product mass equals the reference product; packaging mass is not part of the reference amount"
+            expression: "1 kg"
             value_mode: "fixed_value"
             specificity: "product_specific"
             basis:
-              text: "reference flow"
+              text: "per reference flow"
               kind: "reference_flow"
             evidence:
               kind: "identity_reference"
@@ -716,105 +721,107 @@ dataset_production:
       flow_role: "source material input and raw material transfer"
       record_type: "harvest, tapping, receiving, or purchase record"
       raw_fields: "species_or_source_category; source_system; lot_id; as_received_mass; moisture_or_solids; source_location; harvest_or_receipt_date"
-      collection_method: "weighbridge, batch sheet, receiving note, tapping log, or harvest record"
+      collection_method: "weighbridge, batch sheet, receiving note, tapping log, or harvest record; Raw aggregation requirements: sum lots and convert to dry matter where required. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "kg and percent moisture or solids"
       frequency: "each lot or campaign"
       temporal_coverage: "representative production year or declared campaign"
       site_scope: "source area, supplier lot, or receiving site"
-      aggregation_rule: "sum lots and convert to dry matter where required"
+      aggregation_rule: "per reference flow"
       quality_evidence: "calibrated scale records, supplier certificates, moisture tests, and lot traceability"
     - protocol_id: cp_source_area_records
       process_id: "source_harvest_or_raw_lot_receipt"
       flow_role: "source area occupation"
       record_type: "land management or source-area record"
       raw_fields: "productive_area; source_system; harvestable_area_share; campaign_duration; yield_to_processing"
-      collection_method: "land register, plantation block record, concession record, or supplier declaration"
+      collection_method: "land register, plantation block record, concession record, or supplier declaration ; Raw aggregation requirements: allocate source area to harvested dry matter or purchased raw lot. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "ha, m2a, kg dry matter"
       frequency: "annual or campaign"
       temporal_coverage: "representative production year"
       site_scope: "source stand, plantation block, or declared supplier source"
-      aggregation_rule: "allocate source area to harvested dry matter or purchased raw lot"
+      aggregation_rule: "per reference flow"
       quality_evidence: "source map, land record, management plan, or supplier statement"
     - protocol_id: cp_energy_records
       process_id: "all_processes"
       flow_role: "fuel, electricity, steam, and process heat"
       record_type: "meter, invoice, boiler log, fuel issue, or equipment-hour record"
       raw_fields: "energy_carrier; quantity; unit; meter_scope; allocation_basis; process_id; date"
-      collection_method: "meter reading, invoice reconciliation, or equipment-hour calculation"
+      collection_method: "meter reading, invoice reconciliation, or equipment-hour calculation ; Raw aggregation requirements: allocate shared energy by metered sub-process first, then runtime, mass throughput, or dry product output. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "kWh, MJ, kg fuel, L fuel"
       frequency: "monthly or campaign"
       temporal_coverage: "representative production year or campaign"
       site_scope: "plant, field crew, extraction line, finishing line, or storage area"
-      aggregation_rule: "allocate shared energy by metered sub-process first, then runtime, mass throughput, or dry product output"
+      aggregation_rule: "per reference flow"
       quality_evidence: "meter calibration, invoice, fuel log, and allocation worksheet"
     - protocol_id: cp_water_records
       process_id: "primary_concentration_or_extraction"
       flow_role: "process water and wastewater"
       record_type: "water meter, batch water sheet, or wastewater record"
       raw_fields: "make_up_water; recycled_water; discharge_volume; treatment_route; process_id; date"
-      collection_method: "meter reading or water balance"
+      collection_method: "meter reading or water balance ; Raw aggregation requirements: net make-up water plus discharge water balance per reference product. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "kg or m3"
       frequency: "batch, monthly, or campaign"
       temporal_coverage: "representative production year or campaign"
       site_scope: "extraction, boiling, washing, cooling, and effluent treatment systems"
-      aggregation_rule: "net make-up water plus discharge water balance per reference product"
+      aggregation_rule: "per reference flow"
       quality_evidence: "meter records, wastewater manifest, treatment logs, and water-balance reconciliation"
     - protocol_id: cp_auxiliary_material_records
       process_id: "primary_concentration_or_extraction"
       flow_role: "solvent, coagulant, and process aid"
       record_type: "purchase, issue, or batch recipe record"
       raw_fields: "material_name; concentration_or_grade; quantity_issued; recovered_quantity; loss_quantity; supplier; process_id"
-      collection_method: "inventory issue, recipe sheet, or solvent recovery log"
+      collection_method: "inventory issue, recipe sheet, or solvent recovery log; Raw aggregation requirements: net consumed material equals issued minus recovered/reused stock. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "kg"
       frequency: "each batch or campaign"
       temporal_coverage: "representative production year or campaign"
       site_scope: "extraction or purification line"
-      aggregation_rule: "net consumed material equals issued minus recovered/reused stock"
+      aggregation_rule: "per reference flow"
       quality_evidence: "purchase record, SDS, batch sheet, and recovery log"
     - protocol_id: cp_product_quality_records
       process_id: "primary_concentration_or_extraction_purification_forming_and_drying_packaging_storage_and_dispatch"
       flow_role: "intermediate and final product quality"
       record_type: "production, laboratory, and finished-goods record"
       raw_fields: "product_form; gum_type; moisture_or_solids; impurity_content; net_product_mass; off_grade_mass; lot_id"
-      collection_method: "batch sheet, lab test, finished-goods record"
+      collection_method: "batch sheet, lab test, finished-goods record; Raw aggregation requirements: Retain intermediate, finished and final packaging/dispatch net masses by lot; reconcile transfers, accepted final gate output, rejects, losses and stock changes separately. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "kg, percent moisture or solids"
       frequency: "each lot"
       temporal_coverage: "representative production year or campaign"
       site_scope: "production line and finished-goods warehouse"
-      aggregation_rule: "sum conforming net product and normalize all flows to 1 kg reference product"
+      aggregation_rule: "per reference flow"
       quality_evidence: "lab report, certificate of analysis, scale record, and finished-goods ledger"
     - protocol_id: cp_residue_records
       process_id: "all_processes"
       flow_role: "rejected biomass, bagasse, spent leaves, wastewater sludge, off-grade gum, and packaging waste"
       record_type: "waste, residue, or by-product record"
       raw_fields: "residue_type; quantity; moisture_or_solids; fate; sale_or_disposal_route; internal_reuse_flag"
-      collection_method: "waste manifest, residue collection record, by-product sales note, or internal reuse log"
+      collection_method: "waste manifest, residue collection record, by-product sales note, or internal reuse log; Raw aggregation requirements: sum by fate; convert to dry matter where relevant; link valuable co-products to allocation rule. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "kg and percent moisture or solids"
       frequency: "batch, monthly, or campaign"
       temporal_coverage: "representative production year or campaign"
       site_scope: "field, extraction, finishing, storage, and waste handling areas"
-      aggregation_rule: "sum by fate; convert to dry matter where relevant; link valuable co-products to allocation rule"
+      aggregation_rule: "per reference flow"
       quality_evidence: "waste manifest, by-product invoice, disposal ticket, and internal reuse record"
     - protocol_id: cp_packaging_records
       process_id: "packaging_storage_and_dispatch"
       flow_role: "primary packaging input"
       record_type: "packaging issue or bill of materials record"
       raw_fields: "packaging_material; unit_mass; units_used; reusable_flag; supplier; product_lot"
-      collection_method: "packaging BOM, warehouse issue, or supplier record"
+      collection_method: "packaging BOM, warehouse issue, or supplier record; Raw aggregation requirements: sum non-returnable packaging per net product mass. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage."
       unit: "kg"
       frequency: "lot or monthly"
       temporal_coverage: "representative production year or campaign"
       site_scope: "packaging area and finished-goods warehouse"
-      aggregation_rule: "sum non-returnable packaging per net product mass"
+      aggregation_rule: "per reference flow"
       quality_evidence: "packaging BOM, supplier specification, and stock issue record"
   calculation_rules:
     - id: normalize_to_reference_product
       applies_to: "all inventory rows"
-      rule: "row amount per kg reference product = campaign row amount / conforming net saleable product mass"
+      rule: "Reconstruct raw quantities under stage_throughput_linkage and attribute once under existing rules; final contribution = attributable raw amount * declared reference amount / measured accepted final gate net output of the same period. Do not scale physical transfers by burden allocation or divide an already normalized amount again."
       inputs:
-        - "row amount"
-        - "conforming product mass from cp_product_quality_records"
-      output: "normalized inventory amount per 1 kg reference product"
+        - "raw quantities and bases"
+        - "final gate net output from cp_product_quality_records"
+        - route
+        - "period and allocation records"
+      output: "exchange amount per 1 kg reference product"
       source_ids: []
     - id: convert_to_dry_matter
       applies_to: "source material, residues, and intermediate products"
@@ -952,19 +959,19 @@ data_sources:
     used_for: "Allocation hierarchy, data quality, and LCA reporting basis"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:60a87a5c45d87644c3822ae2bbf980fd731aa3db31b00d5485781103cfd99562"
+  source_sha256: "sha256:05d73ac563e822ce2f51c08f28b54e2b29df966cda60d9126343b4c68a8682a8"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5711"
+    - unit_id: "normative_7211"
       family: "system_boundary"
       span:
         start:
-          offset: 5711
-          line: 59
+          offset: 7211
+          line: 61
           column: 1
         end:
-          offset: 7215
-          line: 78
+          offset: 8715
+          line: 80
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | `declared_source_stand_or_raw_gum_lot` |\n| starting_condition_role | Boundary anchor for the first foreground collection or raw material receipt record. |\n| product_classification_scope | CPC 3.0:03211 natural gums and similar plant gum primary forms only. |\n| recursive_input_rule | If an input is itself CPC 03211 primary natural gum, model it as a purchased raw gum input with an upstream dataset; do not recursively reopen this PCR inside the same foreground process. |\n| upstream_dataset_requirement | Use an upstream dataset for purchased latex, crude gum, harvested leaf, shrub biomass, solvent, packaging, electricity, fuel, water, or transport services that cross into the foreground boundary. |\n| disclosure | Disclose source species or supplier source category, source system, harvesting or tapping route, purchased raw lot share, product form, moisture basis, purification state, co-product treatment, and any excluded establishment, land management, or long-distance transport activities. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| boundary_declared_source_or_raw_lot | all foreground data packages | Begin foreground modelling at the declared source stand or raw gum lot, use upstream datasets for each purchased input crossing the boundary, and do not recursively reopen this PCR for a purchased CPC 03211 gum input. |  |\n\n"
       headings:
@@ -983,12 +990,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5711
-              line: 59
+              offset: 7211
+              line: 61
               column: 1
             end:
-              offset: 5732
-              line: 59
+              offset: 7232
+              line: 61
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1003,16 +1010,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_30095"
+    - unit_id: "normative_38357"
       family: "allocation"
       span:
         start:
-          offset: 30095
-          line: 623
+          offset: 38357
+          line: 677
           column: 1
         end:
-          offset: 30861
-          line: 627
+          offset: 39123
+          line: 681
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\nIf the foreground process produces only the declared primary gum product and internal residues are discarded, no allocation is required. If guayule rubber, guayule resin, bagasse, purified gutta fraction, resinous fraction, fuel residue, or another co-product leaves the system with economic value, allocate shared collection, extraction, and finishing burdens by dry mass as the default physical allocation. Use economic allocation only when the co-products have materially different functions and sale prices are documented for the same campaign. Internal rework is not a co-product; record it as a loop or yield loss. Residues used internally for process heat displace purchased energy only when measured and disclosed.\n\n"
       headings:
@@ -1031,12 +1038,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 30095
-              line: 623
+              offset: 38357
+              line: 677
               column: 1
             end:
-              offset: 30135
-              line: 623
+              offset: 38397
+              line: 677
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1051,16 +1058,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_39478"
+    - unit_id: "normative_49824"
       family: "validation"
       span:
         start:
-          offset: 39478
-          line: 663
+          offset: 49824
+          line: 717
           column: 1
         end:
-          offset: 40717
-          line: 674
+          offset: 51063
+          line: 728
           column: 1
       markdown: "## 9. Validation Rules\n\n- The dataset is invalid if it omits the required product qualifiers, especially gum type, product form, moisture basis, source system, and production route.\n- The reference flow must be 1 kg net saleable product mass. Packaging and reusable containers are not part of the reference product mass.\n- The dry-matter mass balance must reconcile source material, product, co-products, residues, and moisture losses. Unreconciled dry-matter loss above 5 percent of source dry matter requires explanation.\n- Purchased raw gum, latex, leaves, shrub biomass, solvents, process aids, packaging, electricity, fuels, and transport services must be linked to upstream datasets when they cross the foreground boundary.\n- Chicle routes must disclose tapping interval assumptions and whether tree damage or stand management activities are included.\n- Gutta-percha routes must disclose whether material comes from tapping, leaves, prunings, crude blocks, or purchased raw material.\n- Guayule routes must disclose aqueous or solvent extraction, resin/rubber separation state, bagasse treatment, and solvent recovery where applicable.\n- Balata routes must disclose whether downstream gutta/resin separation is included or excluded.\n\n"
       headings:
@@ -1079,12 +1086,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 39478
-              line: 663
+              offset: 49824
+              line: 717
               column: 1
             end:
-              offset: 39500
-              line: 663
+              offset: 49846
+              line: 717
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1103,181 +1110,181 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_declared_source_or_raw_lot"
       identity_kind: "explicit"
-      unit_id: "normative_5711"
+      unit_id: "normative_7211"
       source_span:
         start:
-          offset: 6920
-          line: 76
+          offset: 8420
+          line: 78
           column: 1
         end:
-          offset: 7213
-          line: 76
+          offset: 8713
+          line: 78
           column: 294
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_30095"
+      unit_id: "normative_38357"
       source_span:
         start:
-          offset: 30137
-          line: 625
+          offset: 38399
+          line: 679
           column: 1
         end:
-          offset: 30859
-          line: 625
+          offset: 39121
+          line: 679
           column: 723
     - pointer: "/validation_rules/0"
       rule_id: "validation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 39502
-          line: 665
+          offset: 49848
+          line: 719
           column: 1
         end:
-          offset: 39659
-          line: 665
+          offset: 50005
+          line: 719
           column: 158
     - pointer: "/validation_rules/1"
       rule_id: "validation_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 39660
-          line: 666
+          offset: 50006
+          line: 720
           column: 1
         end:
-          offset: 39798
-          line: 666
+          offset: 50144
+          line: 720
           column: 139
     - pointer: "/validation_rules/2"
       rule_id: "validation_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 39799
-          line: 667
+          offset: 50145
+          line: 721
           column: 1
         end:
-          offset: 40001
-          line: 667
+          offset: 50347
+          line: 721
           column: 203
     - pointer: "/validation_rules/3"
       rule_id: "validation_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 40002
-          line: 668
+          offset: 50348
+          line: 722
           column: 1
         end:
-          offset: 40207
-          line: 668
+          offset: 50553
+          line: 722
           column: 206
     - pointer: "/validation_rules/4"
       rule_id: "validation_rule_5"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 40208
-          line: 669
+          offset: 50554
+          line: 723
           column: 1
         end:
-          offset: 40335
-          line: 669
+          offset: 50681
+          line: 723
           column: 128
     - pointer: "/validation_rules/5"
       rule_id: "validation_rule_6"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 40336
-          line: 670
+          offset: 50682
+          line: 724
           column: 1
         end:
-          offset: 40467
-          line: 670
+          offset: 50813
+          line: 724
           column: 132
     - pointer: "/validation_rules/6"
       rule_id: "validation_rule_7"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 40468
-          line: 671
+          offset: 50814
+          line: 725
           column: 1
         end:
-          offset: 40618
-          line: 671
+          offset: 50964
+          line: 725
           column: 151
     - pointer: "/validation_rules/7"
       rule_id: "validation_rule_8"
       identity_kind: "snapshot_local"
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 40619
-          line: 672
+          offset: 50965
+          line: 726
           column: 1
         end:
-          offset: 40715
-          line: 672
+          offset: 51061
+          line: 726
           column: 97
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5711"
+      unit_id: "normative_7211"
       source_span:
         start:
-          offset: 5711
-          line: 59
+          offset: 7211
+          line: 61
           column: 1
         end:
-          offset: 5732
-          line: 59
+          offset: 7232
+          line: 61
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5711"
+      unit_id: "normative_7211"
       source_span:
         start:
-          offset: 5760
-          line: 63
+          offset: 7260
+          line: 65
           column: 1
         end:
-          offset: 6827
-          line: 70
+          offset: 8327
+          line: 72
           column: 299
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_30095"
+      unit_id: "normative_38357"
       source_span:
         start:
-          offset: 30095
-          line: 623
+          offset: 38357
+          line: 677
           column: 1
         end:
-          offset: 30135
-          line: 623
+          offset: 38397
+          line: 677
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_39478"
+      unit_id: "normative_49824"
       source_span:
         start:
-          offset: 39478
-          line: 663
+          offset: 49824
+          line: 717
           column: 1
         end:
-          offset: 39500
-          line: 663
+          offset: 49846
+          line: 717
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1286,5 +1293,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:60a87a5c45d87644c3822ae2bbf980fd731aa3db31b00d5485781103cfd99562"
-  generated_content_sha256: "sha256:71f47661ca0f67656a4f72885efcb526de0e3b764c4725923aa771a9200195d0"
+    sha256: "sha256:05d73ac563e822ce2f51c08f28b54e2b29df966cda60d9126343b4c68a8682a8"
+  generated_content_sha256: "sha256:027c2436758b26354fa67e7ecca01dd8b29dd1ac491a28f1a748e0eafac41cc1"

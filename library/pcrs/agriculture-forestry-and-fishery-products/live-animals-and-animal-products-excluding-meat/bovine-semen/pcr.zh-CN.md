@@ -31,7 +31,7 @@ sync_with: pcr.en-US.md
 | How much | 一剂合格品；另报实测体积或质量与精子数。 |
 | How well | 声明供体物种/品种、健康、合格等级、活力/存活性、精子数、稀释液和保存状态。 |
 | How long or cycle | 一个从采集到交付的批次；供体维持按观测服役期分摊。 |
-| reference_flow_link | `usable_dose` |
+| reference_flow_link | usable_dose |
 
 | 字段 | 值 |
 | --- | --- |
@@ -243,6 +243,23 @@ sync_with: pcr.en-US.md
   - 基准: 同期物种专属供体管理量除以相应合格剂量
   - 基准类型: 参考流 (`reference_flow`)
   - 证据类型: 推理估算 (`reasoned_estimate`)
+
+###### 粪污生物源甲烷排入空气（`manure_ch4_air`）
+
+适用于声明前景边界内实际粪污管理路径的 CH4 排放，包含适用的贮存、处理、消化及消化残余物贮存环节。与肠道甲烷分开记录；不得将无记录等同于零排放。若全部处理在独立外包边界，须记录粪污移交、前景贮存及处理服务覆盖，防止遗漏或重复计算。非适用或零排放须有路径与方法依据。
+
+原始数量及计算要求：依 c_manure_ch4，按动物类别、实际管理系统、气候及期间确定 CH4；保留挥发性固体、适用排放参数、回收及燃烧/利用记录。仅计入实际排入空气的 CH4；不得重复扣减所选方法已包含的回收或减排效果。原始总量经既有归属规则后，按 inventory_reference_normalization 与 stage_throughput_linkage 归一化一次。
+
+- 选定流：粪污管理产生的生物源甲烷，排入空气
+- 流属性/单位：Mass / kg CH4
+- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用同期路径记录和上述原始排放计算要求计算最终数据包交换量。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_manure_ch4`
+- 来源：`ipcc-livestock-2019`
 
 ###### 粪污氧化亚氮排入空气（`manure_n2o_air`）
 
@@ -1134,6 +1151,7 @@ sync_with: pcr.en-US.md
 | `cp_dosing` | `dosing` | 散装、剂量管、合格及淘汰 | 灌装运行台账 | run_id, bulk_volume, straw_issued, straw_returned, filled_count, reject_count, dose_volume, sperm_per_dose | 计数器与灌装平衡；原始汇总要求：件数与体积平衡。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | mL, dose | 每次运行 | 全部灌装运行 | 灌装线 | 每参考流 | 设备校准；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_preservation` | `preservation` | 能源、液氮、合格及淘汰 | 冷链日志 | batch_id, route, temperature, hold_days, kWh, nitrogen_mass, vessel_service, accepted_count, reject_count | 电表、记录仪和罐体平衡；原始汇总要求：路线/期间分母。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kWh, kg, dose | 每批/每日 | 全部储存批次 | 冷库与罐体 | 每参考流 | 记录仪与采购凭证；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_dispatch` | `centre_dispatch` | 包装、放行、不合格 | 放行台账 | lot_id, donor, species, route, grade, package_mass, vessel_cycle, released_count, reject_count, gate_time | 放行计数与材料发放日志；原始汇总要求：放行剂量仅计一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | dose, kg | 每批 | 全部交付 | 中心交付门 | 每参考流 | 质量放行与交接单；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_manure_ch4` | `donor_management` | 粪污 CH4 | 动物类别及粪污管理路径台账 | animal_category; animal_days; VS_mass_and_basis; system_share; storage_duration; climate_temperature; B0_or_selected_tier_factor; MCF_if_used; factor_version; methane_recovery; combustion_or_use; digestate_storage; handover; period | 核对动物事件、粪污分流、贮存/消化及气体计量记录；保留所选 IPCC 层级实际要求的参数、单位、来源和回收口径。先按类别、路径与期间计算原始排放总量，再依既有归属及归一化规则计算最终贡献一次；不得将已按年计算的挥发性固体再次乘 365。 | kg VS; kg CH4; animal-day; native factor units | 每次事件及月度 | 与动物活动及合格参考产出相同期间 | 声明的前景粪污管理边界 | 每参考流 | 路径份额对账、仪表校准、因子来源及版本、气体收支和归一化计算表 |
 
 ### 计算规则
 
@@ -1143,6 +1161,7 @@ sync_with: pcr.en-US.md
 | `donor_intensity` | 供体维持 | 独立输出归属后，用同期供体负担除以相关合格剂量。 | `cp_donor`, `cp_dispatch` | 每剂量负担 | `woah-hygiene-2024` |
 | `route_intensity` | 保存 | 状态专属能源、液氮、损失与储存占用量除以该状态的合格剂量。 | `cp_preservation`, `cp_dispatch` | 每路线剂量负担 | `fao-cryoconservation-2021` |
 | `shared_asset` | 基础设施 | 在完整服务期内按实测使用/占用将服务只归属到使用节点一次。 | `cp_donor`, `cp_preservation`, `cp_dispatch` | 唯一归属的资产负担 | `woah-hygiene-2024` |
+| `c_manure_ch4` | `manure_ch4_air` | 按 IPCC 第 10.4 节所选层级，以相同动物类别、实际系统份额、气候及期间计算粪污 CH4。记录适用的挥发性固体、产甲烷能力及转化参数，核对捕集、利用/燃烧、泄漏和后续贮存的口径；不得重复扣减回收量。与肠道 CH4 分开；移交边界外的处理仅在有覆盖证据时排除。按既有分配规则归属负担，最后归一化一次。 | `cp_manure_ch4`; 同期动物及产出记录；层级与因子来源 | kg CH4，再换算为每参考流贡献 | `ipcc-livestock-2019` |
 
 ### 数据质量要求
 
@@ -1162,6 +1181,7 @@ sync_with: pcr.en-US.md
 | `balance` | 全部材料接口 | 以实际记录核对精液、组分、等级去向、灌装数量、废物和包装。 | `fao-cryoconservation-2021` |
 | `attribution` | 输出、期间、资产 | 检查淘汰/降级交接、供体期间、因果分配和共享资产唯一归属。 | `woah-hygiene-2024` |
 | `identity_review` | 流 UUID | 元数据矛盾的平台牛精液候选仍留空，待源行修复及重新详情核实。 | `un-cpc-3` |
+| `v_manure_ch4` | `manure_ch4_air` | 核对实际路径、动物类别、挥发性固体时间基准、系统份额、气候及期间；核对回收及处理边界无遗漏或重复。零排放/非适用须有证据，不得由缺失数据推定；保持肠道与粪污 CH4 独立交换。 | `ipcc-livestock-2019` |
 
 ## 10. 发布数据集画像
 

@@ -35,11 +35,11 @@ This PCR excludes raw cotton lint for textile spinning, cottonseed itself, cotto
 | How much | 1 kg net linter mass |
 | How well | Meets the declared cut type, grade, moisture basis, impurity specification, bale or loose state, and buyer specification |
 | How long or cycle | One production batch, delinting campaign, or representative annual production period normalized to the reference amount |
-| reference_flow_link | Reference product output of the linter baling or dispatch process |
+| reference_flow_link | cotton_linters_at_producer_gate |
 
 | Field | Value |
 | --- | --- |
-| Reference amount | 1 kg |
+| Reference amount | 1 |
 | Reference product flow | Cotton linters `6587eccc-106f-4941-be4a-afdbe46df8b5` |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass unit group 93a60a57-a4c8-11da-a746-0800200c9a66 |
@@ -57,6 +57,8 @@ When constructing a foreground data package, the items listed in `Required quali
 | `cut_type_reporting` | Reference product and linter process outputs | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg by cut type | Distinguish first-cut, second-cut, third-cut, and mill-run linters because fibre length, impurity, and downstream use can differ materially. |
 | `co_product_mass_balance` | Cottonseed input, linters, delinted seed, residues, and dust | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Reconcile cottonseed input with linters, delinted seed, rejects, dust, and moisture changes before allocation. |
 | `energy_unit_consistency` | Electricity, fuel, compressed air, and mechanical services | Energy | kWh or MJ | Convert meters, fuel records, and equipment-hour calculations to kWh or MJ and state whether values are final electricity, fuel lower heating value, or delivered service energy. |
+| `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | Inventory and collection aggregation fields express final-package contributions per reference flow. Retain raw lots, periods, stage quantities and units; first derive the quantity under existing conversion, attribution and allocation rules, then multiply by the declared reference amount and divide by measured accepted final gate output of the same scope. Require a traceable positive denominator and normalize exactly once. Keep provisional QA ranges on their explicit bases; they are not conversion factors or production defaults. Physical transfers and mass balances use quantities before burden allocation; burden shares must not alter physical yields. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and raw basis | retain native numerator and stage denominator units | Link measured throughput, outputs, rejects, losses and opening/closing stocks by lot, stage and period. For amount a quoted per explicit stage basis B, reconstruct the total as a * Q_stage / B; for intensity r already per stage-unit, use r * Q_stage; use raw totals directly without dividing by the stage denominator again. Then normalize once to final gate output. Keep measured intermediate yields rather than fixing transfers to 1 kg; do not assign a second product burden to an internal transfer. Stage-native datasets retain their own references separately from final-package contributions. |
 
 ## 5. System Boundary
 
@@ -100,12 +102,15 @@ Ginned cottonseed with remaining short fibres received for linter removal.
 
 - Selected flow: Cottonseed, other `5ec72013-512e-4bb6-a5e6-648551f35d9d`
 - Flow property / unit: Mass / kg
-- Amount rule: measured incoming cottonseed mass with moisture and lot identity, allocated to saleable linters and co-products
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured incoming cottonseed mass with moisture and lot identity, allocated to saleable linters and co-products. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_cottonseed_receipt_records`
 - Sources: `usda-ers-natural-fibers-2006`; `usda-mrr56-cotton-linters`
 - Range: Cottonseed-to-linters mass QA screen
@@ -124,12 +129,15 @@ Electricity used for conveyors, seed cleaners, fans, magnets, metering equipment
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Energy / kWh or MJ
-- Amount rule: measured electricity or motor-hour calculation for receipt, storage movement, and pre-cleaning
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured electricity or motor-hour calculation for receipt, storage movement, and pre-cleaning. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_energy_records`
 - Sources:
 - Range: Initial pre-cleaning energy screen
@@ -151,10 +159,13 @@ Cottonseed after receiving, storage transfer, and pre-cleaning, transferred to m
 
 - Selected flow: Cleaned cottonseed for delinting
 - Flow property / unit: Mass / kg
-- Amount rule: calculated from incoming cottonseed minus measured receiving rejects, adjusted for moisture where applicable
+
+Raw quantity and calculation requirements: calculated from incoming cottonseed minus measured receiving rejects, adjusted for moisture where applicable. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_cottonseed_receipt_records`
@@ -176,12 +187,15 @@ Trash, stones, dust, hull fragments, and non-seed material removed before delint
 
 - Selected flow: Cottonseed cleaning residue
 - Flow property / unit: Mass / kg
-- Amount rule: measured reject mass or calculated from seed receiving mass balance
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured reject mass or calculated from seed receiving mass balance. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue_records`
 - Sources:
 - Range: Initial seed cleaning reject screen
@@ -207,12 +221,15 @@ Cleaned seed charged to first-cut, second-cut, third-cut, or mill-run delinting 
 
 - Selected flow: Cleaned cottonseed for delinting
 - Flow property / unit: Mass / kg
-- Amount rule: measured seed mass charged by pass, cut type, and batch
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured seed mass charged by pass, cut type, and batch. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_delinting_pass_records`
 - Sources: `cotton-inc-fiber-sourcing-2017`; `ncpa-trading-rules-2013`
 - Range: Seed charged to delinter screen
@@ -230,12 +247,15 @@ Electricity, compressed air, or mechanical service energy used by linter saws, a
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Energy / kWh or MJ
-- Amount rule: measured equipment electricity or calculated motor-hour energy for each delinting pass
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured equipment electricity or calculated motor-hour energy for each delinting pass. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_energy_records`
 - Sources:
 - Range: Initial delinting energy screen
@@ -253,12 +273,15 @@ Saw blades, brushes, screens, lubricants, and other consumables directly used in
 
 - Selected flow: Delinter maintenance materials
 - Flow property / unit: Mass / kg
-- Amount rule: measured replacement material, lubricant, or maintenance consumable issue records allocated to linter production
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured replacement material, lubricant, or maintenance consumable issue records allocated to linter production. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_maintenance_material_records`
 - Sources:
 - Range: Initial maintenance material screen
@@ -280,12 +303,15 @@ Linter fibre removed from seed before final cleaning, conditioning, and baling.
 
 - Selected flow: Cotton linters `6587eccc-106f-4941-be4a-afdbe46df8b5`
 - Flow property / unit: Mass / kg
-- Amount rule: measured raw linter mass by cut type and delinting pass
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured raw linter mass by cut type and delinting pass. Retain the original collection basis: per mechanical delinting process output. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per mechanical delinting process output
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_delinting_pass_records`
 - Sources:
 - Range: Raw linter output screen
@@ -303,12 +329,15 @@ Cottonseed after linter removal, transferred to crushing, feed, seed, or other d
 
 - Selected flow: Cottonseed, other `5ec72013-512e-4bb6-a5e6-648551f35d9d`
 - Flow property / unit: Mass / kg
-- Amount rule: measured delinted seed mass after each pass or calculated by mass balance
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured delinted seed mass after each pass or calculated by mass balance. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_coproduct_records`
 - Sources:
 - Range: Delinted seed co-product screen
@@ -328,12 +357,15 @@ Dust, fines, lint fragments, and seed coat fragments captured by aspiration or f
 
 - Selected flow: Cotton linter dust and fines
 - Flow property / unit: Mass / kg
-- Amount rule: measured collected dust and fines, or calculated from dust collector and mass balance records
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured collected dust and fines, or calculated from dust collector and mass balance records. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue_records`
 - Sources:
 - Range: Initial delinting dust screen
@@ -353,10 +385,13 @@ Particulate fibre dust emitted to workplace or ambient air after controls.
 
 - Selected flow: Particulates, cotton fibre dust
 - Flow property / unit: Mass / kg
-- Amount rule: measured emissions, filter balance, permit estimate, or calculated uncontrolled dust minus captured dust
+
+Raw quantity and calculation requirements: measured emissions, filter balance, permit estimate, or calculated uncontrolled dust minus captured dust. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_air_emission_records`
@@ -382,12 +417,15 @@ Raw linter fibre received from one or more delinting passes for final cleaning a
 
 - Selected flow: Cotton linters `6587eccc-106f-4941-be4a-afdbe46df8b5`
 - Flow property / unit: Mass / kg
-- Amount rule: measured raw linter mass by cut type, lot, and moisture basis
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured raw linter mass by cut type, lot, and moisture basis. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_linter_quality_and_baling_records`
 - Sources:
 - Range: Raw-to-saleable linter screen
@@ -405,12 +443,15 @@ Electricity or fuel used for linter cleaning, aspiration, conditioning, baling, 
 
 - Selected flow: Alternating current `50657322-939c-4829-a87b-47c093bfa6a7`
 - Flow property / unit: Energy / kWh or MJ
-- Amount rule: measured energy or calculated equipment-hour energy for linter finishing and baling
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured energy or calculated equipment-hour energy for linter finishing and baling. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_energy_records`
 - Sources:
 - Range: Initial cleaning and baling energy screen
@@ -428,12 +469,15 @@ Bale ties, straps, bags, wraps, labels, and other non-returnable packaging used 
 
 - Selected flow: Bale ties and linter packaging
 - Flow property / unit: Mass / kg
-- Amount rule: measured packaging issue records or standard bill of materials per linter bale or bag
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured packaging issue records or standard bill of materials per linter bale or bag. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_packaging_records`
 - Sources:
 - Range: Initial packaging material screen
@@ -455,23 +499,18 @@ Cleaned, conditioned, and baled or packaged cotton linters ready for storage or 
 
 - Selected flow: Cotton linters `6587eccc-106f-4941-be4a-afdbe46df8b5`
 - Flow property / unit: Mass / kg
-- Amount rule: fixed reference output after cleaning and baling
-- Value mode: Fixed value (`fixed_value`)
+
+Raw quantity and calculation requirements: Measure net finished product transferred to packaging/dispatch and reconcile it with final gate output, rejects, losses and stock changes; never assume this intermediate transfer equals 1 kg. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Identity reference (`identity_reference`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_linter_quality_and_baling_records`
 - Sources: `iso-14044-2006`
-- Range: Fixed saleable linter output
-  - Range role: Allowed range (`allowed_range`)
-  - Lower: 1
-  - Upper: 1
-  - Unit: kg
-  - Basis: per 1 kg saleable cotton linters
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Method formula (`method_formula`)
-  - Sources: `iso-14044-2006`
+
 
 ##### Waste flows
 
@@ -481,12 +520,15 @@ Trash, hull fragments, dust, off-grade fibre, and rejected linter fractions remo
 
 - Selected flow: Cotton linter cleaning residue
 - Flow property / unit: Mass / kg
-- Amount rule: measured reject mass by cleaning stage, lot, and disposition
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured reject mass by cleaning stage, lot, and disposition. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue_records`
 - Sources:
 - Range: Initial linter cleaning reject screen
@@ -512,12 +554,15 @@ Saleable linter bales, bags, or loose lots transferred to dispatch storage and l
 
 - Selected flow: Cotton linters `6587eccc-106f-4941-be4a-afdbe46df8b5`
 - Flow property / unit: Mass / kg
-- Amount rule: measured saleable linter mass entering dispatch storage
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured saleable linter mass entering dispatch storage. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_dispatch_records`
 - Sources:
 - Range: Dispatch input linter screen
@@ -535,12 +580,15 @@ Forklift, conveyor, compressed-air, electricity, or fuel use for storage, loadin
 
 - Selected flow: Dispatch and loading energy
 - Flow property / unit: Energy / kWh or MJ
-- Amount rule: measured fuel, electricity, equipment-hour, or contractor records for dispatch handling
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured fuel, electricity, equipment-hour, or contractor records for dispatch handling. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_energy_records`
 - Sources:
 - Range: Initial dispatch energy screen
@@ -562,10 +610,13 @@ Reference product leaving the foreground system at producer gate or dispatch poi
 
 - Selected flow: Cotton linters `6587eccc-106f-4941-be4a-afdbe46df8b5`
 - Flow property / unit: Mass / kg
-- Amount rule: fixed reference output at the declared producer-gate or dispatch point
+
+Raw reference-output records: Measure accepted net output for the same product, state, gate and period. Only this final reference exchange is fixed at 1 kg; the actual batch quantity is measured, not fixed at 1 kg.
+
+- Amount rule: 1 kg
 - Value mode: Fixed value (`fixed_value`)
 - Specificity: Product-specific (`product_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Identity reference (`identity_reference`)
 - Collection protocol: `cp_dispatch_records`
@@ -586,12 +637,15 @@ Co-product cottonseed after linter removal, transferred to oilseed crushing, fee
 
 - Selected flow: Cottonseed, other `5ec72013-512e-4bb6-a5e6-648551f35d9d`
 - Flow property / unit: Mass / kg
-- Amount rule: measured delinted seed mass leaving the foreground boundary or internal transfer point
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured delinted seed mass leaving the foreground boundary or internal transfer point. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_coproduct_records`
 - Sources:
 - Range: Delinted seed dispatch screen
@@ -611,12 +665,15 @@ Lost linter material, damaged packaging, sweepings, and non-product waste genera
 
 - Selected flow: Dispatch losses and waste packaging
 - Flow property / unit: Mass / kg
-- Amount rule: measured waste, inventory loss, or disposal record before product leaves the facility
-- Value mode: Foreground record (`foreground_record`)
+
+Raw quantity and calculation requirements: measured waste, inventory loss, or disposal record before product leaves the facility. Retain the original collection basis: per 1 kg saleable cotton linters. Link to measured final gate output under inventory_reference_normalization and stage_throughput_linkage.
+
+- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched raw records.
+- Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg saleable cotton linters
+- Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue_records`
 - Sources:
 - Range: Initial dispatch loss screen
@@ -645,22 +702,22 @@ Lost linter material, damaged packaging, sweepings, and non-product waste genera
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_cottonseed_receipt_records` | `cottonseed_receipt_and_precleaning` | incoming seed and cleaned seed transfer | receiving, scale, storage, and pre-cleaning record | supplier; lot_id; cotton_species_or_variety; seed_mass; moisture; trash; storage_bin; receipt_date; cleaned_seed_mass | weighbridge, scale ticket, receiving note, storage ledger, or seed cleaner log | kg seed, percent moisture, percent trash | each lot or campaign | representative production year or declared campaign | receiving site, storage bin, or seed lot | sum incoming lots and calculate cleaned seed transfer after rejects and moisture adjustment | scale calibration, receiving ticket, storage ledger, and moisture test |
-| `cp_delinting_pass_records` | `mechanical_delinting` | seed charged, pass type, raw linter output, and pass yield | delinter run sheet, production log, or control-system record | pass_number; cut_type; seed_mass_charged; raw_linter_mass; delinted_seed_mass; runtime; equipment_id; moisture | batch sheet, linter run sheet, plant historian, or operator log | kg, hour, percent moisture | each pass or batch | declared campaign or production year | delinter line, pass, and seed lot | reconcile seed charged with raw linters, delinted seed, dust, and moisture change | production logs, scale records, moisture tests, and mass-balance worksheet |
-| `cp_linter_quality_and_baling_records` | `linter_cleaning_conditioning_and_baling` | raw linters, cleaned linters, grade, bale, and packaging | quality, cleaning, conditioning, bale press, or finished-goods record | cut_type; grade; raw_linter_mass; cleaned_linter_mass; moisture; impurity; bale_id; bale_mass; packaging_mass | bale scale, lab test, visual grading record, product specification, or finished-goods ledger | kg, percent moisture, percent impurity | each bale, lot, or campaign | declared campaign or production year | finishing line, bale press, or warehouse | sum conforming bale mass and normalize all foreground rows to net saleable linters | bale tickets, lab records, grading notes, finished-goods ledger, and certificate of analysis where available |
-| `cp_energy_records` | all processes | electricity, fuel, compressed air, and mechanical service | meter, invoice, fuel issue, compressed-air allocation, or equipment-hour record | carrier; quantity; unit; equipment_id; process_id; runtime; date; allocation_basis | meter reading, invoice reconciliation, equipment-hour calculation, or submeter | kWh, MJ, L fuel, kg fuel, equipment-hour | monthly, per batch, or per campaign | representative production year or campaign | line, equipment, facility, or process area | allocate directly metered energy first, then by runtime, throughput, or saleable linter mass | meter calibration, invoice, fuel log, and allocation worksheet |
-| `cp_maintenance_material_records` | `mechanical_delinting` | saws, brushes, screens, lubricants, and maintenance consumables | inventory issue, maintenance work order, or equipment log | material_type; quantity; unit; equipment_id; replacement_date; process_id; allocation_basis | work order, stock issue, maintenance record, or supplier note | kg, item count, L lubricant | per replacement or monthly | representative production year or campaign | delinter line or equipment | allocate consumables by delinter runtime, seed throughput, or linter mass | maintenance log, stock issue record, and supplier specification |
-| `cp_packaging_records` | `linter_cleaning_conditioning_and_baling` | bale ties, straps, wraps, bags, labels, and non-returnable packaging | bill of materials, purchase, warehouse issue, or bale record | material_type; unit_mass; units_used; bales_covered; reusable_flag; supplier; waste_amount | BOM, packaging issue, bale press record, or supplier specification | kg material, item count | each lot or monthly | production year or campaign | bale press, warehouse, or dispatch area | sum non-returnable packaging per net saleable linter mass | purchase records, BOM, supplier specifications, and stock issue records |
-| `cp_coproduct_records` | `mechanical_delinting`; `co_product_residue_and_dispatch` | delinted seed and saleable off-grade linter co-products | co-product transfer, sales, or internal use record | co_product_type; mass; moisture; destination; sale_price_if_used; internal_transfer; date | scale ticket, transfer note, sales invoice, internal transfer ledger, or downstream production record | kg, percent moisture, currency per kg where used | each lot or monthly | production year or campaign | seed transfer point, warehouse, or customer lot | sum co-product quantities and calculate allocation factors when needed | scale records, invoices, transfer notes, and allocation worksheet |
-| `cp_residue_records` | all processes | seed cleaning rejects, dust, fines, off-grade waste, and waste packaging | waste, residue, disposal, composting, fuel-use, or rework record | residue_type; quantity; moisture; fate; disposal_route; internal_reuse_flag; date; process_id | waste ticket, dust collector log, residue measurement, disposal manifest, or rework ledger | kg, percent moisture | each lot, monthly, or campaign | production year or campaign | receiving, delinting, finishing, warehouse, or waste handling area | sum residues by fate and link saleable residues to co-product rule | disposal tickets, waste manifest, dust collector logs, and rework records |
-| `cp_air_emission_records` | `mechanical_delinting`; `linter_cleaning_conditioning_and_baling` | fugitive and controlled fibre dust emissions | filter balance, permit estimate, stack test, or dust collector record | captured_dust_mass; filter_efficiency; emission_factor_if_used; airflow; operating_hours; control_device | stack test, filter weighing, permit calculation, or dust collector log | kg particulate, m3 air, hour | test event, monthly, or campaign | representative production year or permit period | dust collector, delinter line, finishing line, or facility | calculate emitted dust as uncontrolled or generated dust minus captured dust and retained residues | stack test, filter log, permit file, and calculation worksheet |
-| `cp_dispatch_records` | `co_product_residue_and_dispatch` | final linter dispatch and loading | dispatch ticket, inventory release, loading record, or bill of lading | lot_id; bale_id; net_mass; packaging_state; dispatch_date; customer_or_destination; loading_energy_link | finished-goods ledger, bill of lading, loading ticket, or dispatch record | kg, bale count | each dispatch lot | production year or campaign | warehouse, loading dock, or producer gate | reconcile finished goods with shipped saleable linter mass and dispatch losses | bill of lading, finished-goods ledger, loading ticket, and inventory reconciliation |
+| `cp_cottonseed_receipt_records` | `cottonseed_receipt_and_precleaning` | incoming seed and cleaned seed transfer | receiving, scale, storage, and pre-cleaning record | supplier; lot_id; cotton_species_or_variety; seed_mass; moisture; trash; storage_bin; receipt_date; cleaned_seed_mass | weighbridge, scale ticket, receiving note, storage ledger, or seed cleaner log; Raw aggregation requirements: sum incoming lots and calculate cleaned seed transfer after rejects and moisture adjustment. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg seed, percent moisture, percent trash | each lot or campaign | representative production year or declared campaign | receiving site, storage bin, or seed lot | per reference flow | scale calibration, receiving ticket, storage ledger, and moisture test |
+| `cp_delinting_pass_records` | `mechanical_delinting` | seed charged, pass type, raw linter output, and pass yield | delinter run sheet, production log, or control-system record | pass_number; cut_type; seed_mass_charged; raw_linter_mass; delinted_seed_mass; runtime; equipment_id; moisture | batch sheet, linter run sheet, plant historian, or operator log; Raw aggregation requirements: reconcile seed charged with raw linters, delinted seed, dust, and moisture change. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg, hour, percent moisture | each pass or batch | declared campaign or production year | delinter line, pass, and seed lot | per reference flow | production logs, scale records, moisture tests, and mass-balance worksheet |
+| `cp_linter_quality_and_baling_records` | `linter_cleaning_conditioning_and_baling` | raw linters, cleaned linters, grade, bale, and packaging | quality, cleaning, conditioning, bale press, or finished-goods record | cut_type; grade; raw_linter_mass; cleaned_linter_mass; moisture; impurity; bale_id; bale_mass; packaging_mass | bale scale, lab test, visual grading record, product specification, or finished-goods ledger ; Raw aggregation requirements: Sum conforming net bale masses and link to the dispatch ledger; do not equate finishing output with final dispatched output. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg, percent moisture, percent impurity | each bale, lot, or campaign | declared campaign or production year | finishing line, bale press, or warehouse | per reference flow | bale tickets, lab records, grading notes, finished-goods ledger, and certificate of analysis where available |
+| `cp_energy_records` | all processes | electricity, fuel, compressed air, and mechanical service | meter, invoice, fuel issue, compressed-air allocation, or equipment-hour record | carrier; quantity; unit; equipment_id; process_id; runtime; date; allocation_basis | meter reading, invoice reconciliation, equipment-hour calculation, or submeter ; Raw aggregation requirements: allocate directly metered energy first, then by runtime, throughput, or saleable linter mass. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kWh, MJ, L fuel, kg fuel, equipment-hour | monthly, per batch, or per campaign | representative production year or campaign | line, equipment, facility, or process area | per reference flow | meter calibration, invoice, fuel log, and allocation worksheet |
+| `cp_maintenance_material_records` | `mechanical_delinting` | saws, brushes, screens, lubricants, and maintenance consumables | inventory issue, maintenance work order, or equipment log | material_type; quantity; unit; equipment_id; replacement_date; process_id; allocation_basis | work order, stock issue, maintenance record, or supplier note ; Raw aggregation requirements: allocate consumables by delinter runtime, seed throughput, or linter mass. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg, item count, L lubricant | per replacement or monthly | representative production year or campaign | delinter line or equipment | per reference flow | maintenance log, stock issue record, and supplier specification |
+| `cp_packaging_records` | `linter_cleaning_conditioning_and_baling` | bale ties, straps, wraps, bags, labels, and non-returnable packaging | bill of materials, purchase, warehouse issue, or bale record | material_type; unit_mass; units_used; bales_covered; reusable_flag; supplier; waste_amount | BOM, packaging issue, bale press record, or supplier specification ; Raw aggregation requirements: sum non-returnable packaging per net saleable linter mass. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg material, item count | each lot or monthly | production year or campaign | bale press, warehouse, or dispatch area | per reference flow | purchase records, BOM, supplier specifications, and stock issue records |
+| `cp_coproduct_records` | `mechanical_delinting`; `co_product_residue_and_dispatch` | delinted seed and saleable off-grade linter co-products | co-product transfer, sales, or internal use record | co_product_type; mass; moisture; destination; sale_price_if_used; internal_transfer; date | scale ticket, transfer note, sales invoice, internal transfer ledger, or downstream production record; Raw aggregation requirements: sum co-product quantities and calculate allocation factors when needed. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg, percent moisture, currency per kg where used | each lot or monthly | production year or campaign | seed transfer point, warehouse, or customer lot | per reference flow | scale records, invoices, transfer notes, and allocation worksheet |
+| `cp_residue_records` | all processes | seed cleaning rejects, dust, fines, off-grade waste, and waste packaging | waste, residue, disposal, composting, fuel-use, or rework record | residue_type; quantity; moisture; fate; disposal_route; internal_reuse_flag; date; process_id | waste ticket, dust collector log, residue measurement, disposal manifest, or rework ledger ; Raw aggregation requirements: sum residues by fate and link saleable residues to co-product rule. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg, percent moisture | each lot, monthly, or campaign | production year or campaign | receiving, delinting, finishing, warehouse, or waste handling area | per reference flow | disposal tickets, waste manifest, dust collector logs, and rework records |
+| `cp_air_emission_records` | `mechanical_delinting`; `linter_cleaning_conditioning_and_baling` | fugitive and controlled fibre dust emissions | filter balance, permit estimate, stack test, or dust collector record | captured_dust_mass; filter_efficiency; emission_factor_if_used; airflow; operating_hours; control_device | stack test, filter weighing, permit calculation, or dust collector log; Raw aggregation requirements: calculate emitted dust as uncontrolled or generated dust minus captured dust and retained residues. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg particulate, m3 air, hour | test event, monthly, or campaign | representative production year or permit period | dust collector, delinter line, finishing line, or facility | per reference flow | stack test, filter log, permit file, and calculation worksheet |
+| `cp_dispatch_records` | `co_product_residue_and_dispatch` | final linter dispatch and loading | dispatch ticket, inventory release, loading record, or bill of lading | lot_id; bale_id; net_mass; packaging_state; dispatch_date; customer_or_destination; loading_energy_link | finished-goods ledger, bill of lading, loading ticket, or dispatch record; Raw aggregation requirements: reconcile finished goods with shipped saleable linter mass and dispatch losses. Retain raw totals, stage denominators and accepted final gate output records; normalize once under inventory_reference_normalization and stage_throughput_linkage. | kg, bale count | each dispatch lot | production year or campaign | warehouse, loading dock, or producer gate | per reference flow | bill of lading, finished-goods ledger, loading ticket, and inventory reconciliation |
 
 ### Calculation Rules
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `normalize_to_reference_linter_mass` | all inventory rows | normalized amount = row amount / net saleable linter mass dispatched within the same boundary and period | row amount; net saleable linter mass from `cp_dispatch_records`; boundary and period definition | amount per 1 kg saleable cotton linters |  |
+| `normalize_to_reference_linter_mass` | all inventory rows | Reconstruct raw quantities under stage_throughput_linkage and attribute once under existing rules; final contribution = attributable raw amount * declared reference amount / measured accepted final gate net output of the same period. Do not scale physical transfers by burden allocation or divide an already normalized amount again. | raw quantities and bases; final gate net output from `cp_dispatch_records`; route, period and allocation records | exchange amount per 1 kg reference product |  |
 | `cottonseed_linter_mass_balance` | cottonseed, raw linters, cleaned linters, delinted seed, residues, and dust | incoming cottonseed mass = saleable linters + delinted seed + residues + dust + moisture change within stated tolerance | cottonseed receipt; raw linter output; final linter output; delinted seed; residues; moisture | reconciled mass balance and QA flag | `usda-ers-natural-fibers-2006`; `usda-mrr56-cotton-linters` |
 | `cut_type_yield_tracking` | first-cut, second-cut, third-cut, and mill-run linters | record each pass separately; if passes are blended, calculate weighted average grade, moisture, impurity, and yield | pass records; blend recipe; grade and moisture records | cut-type-specific linter yield and final product description | `cotton-inc-fiber-sourcing-2017`; `ncpa-trading-rules-2013` |
 | `co_product_allocation_factor` | shared facility burdens | allocation factor = selected physical or economic allocation measure for linters / total selected allocation measure for linters plus co-products | linter mass or value; delinted seed mass or value; off-grade co-products; shared burdens | allocation factors for shared processes | `iso-14044-2006` |

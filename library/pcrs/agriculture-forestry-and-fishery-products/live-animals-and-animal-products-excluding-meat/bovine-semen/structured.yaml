@@ -320,6 +320,25 @@ process_inventory:
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
+        - row_id: manure_ch4_air
+          role: "Manure biogenic methane to air"
+          name: "Biogenic methane from manure management, to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg CH4"
+          description: "Apply to CH4 from actual manure-management paths inside the declared foreground boundary, including applicable storage, treatment, digestion and digestate storage. Record separately from enteric methane; missing records do not establish zero emissions. If treatment is wholly outsourced across an independent boundary, document manure handover, foreground storage and treatment-service coverage to prevent omissions or double counting. A not-applicable or zero result requires pathway and method evidence. Raw quantity and calculation requirements: Under c_manure_ch4, determine CH4 by animal category, actual management system, climate and period; retain volatile solids, applicable emission parameters, recovery and combustion/use records. Count CH4 actually released to air only; do not deduct recovery or mitigation already included in the chosen method a second time. Apply existing attribution rules to raw totals, then normalize once under inventory_reference_normalization and stage_throughput_linkage."
+          amount:
+            expression: "Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched pathway records and the raw-emission requirements above."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_manure_ch4
+              source_ids:
+                - ipcc-livestock-2019
+            ranges: []
         - row_id: manure_n2o_air
           role: "Manure nitrous oxide to air"
           name: "Nitrous oxide"
@@ -1274,6 +1293,18 @@ dataset_production:
       site_scope: "centre gate"
       aggregation_rule: "per reference flow"
       quality_evidence: "QA release and receipt; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_manure_ch4
+      process_id: "donor_management"
+      flow_role: "manure CH4"
+      record_type: "animal-category and manure-pathway ledger"
+      raw_fields: "animal_category; animal_days; VS_mass_and_basis; system_share; storage_duration; climate_temperature; B0_or_selected_tier_factor; MCF_if_used; factor_version; methane_recovery; combustion_or_use; digestate_storage; handover; period"
+      collection_method: "Reconcile animal events, manure routing, storage/digester and gas-meter records; retain parameters, units, sources and recovery conventions required by the selected IPCC tier. Calculate raw emissions by category, path and period, then apply existing attribution and final normalization once; never multiply annual VS by 365 again."
+      unit: "kg VS; kg CH4; animal-day; native factor units"
+      frequency: "each event and monthly"
+      temporal_coverage: "same period as animal activity and accepted reference output"
+      site_scope: "declared foreground manure-management boundary"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "pathway-share reconciliation, meter calibration, parameter sources and versions, gas balance and normalization worksheet"
   calculation_rules:
     - id: material_reconcile
       applies_to: "collection through dispatch"
@@ -1317,6 +1348,16 @@ dataset_production:
       output: "unique attributed asset burden"
       source_ids:
         - woah-hygiene-2024
+    - id: c_manure_ch4
+      applies_to: "manure_ch4_air"
+      rule: "Apply the selected IPCC Section 10.4 tier to the same animal categories, actual system shares, climate and period. Retain applicable VS, methane-production and conversion parameters and reconcile capture, use/combustion, leakage and subsequent storage conventions; do not deduct recovery twice. Keep enteric CH4 separate; exclude treatment beyond the handover boundary only with evidence of its coverage. Attribute burdens under existing allocation rules, then normalize once."
+      inputs:
+        - cp_manure_ch4
+        - "matched animal and output records"
+        - "tier and parameter sources"
+      output: "kg CH4, then contribution per reference flow"
+      source_ids:
+        - ipcc-livestock-2019
   data_quality_requirements:
     - id: identity
       applies_to: "released doses"
@@ -1361,6 +1402,11 @@ validation_rules:
     rule: "Contradictory platform bovine-semen candidate remains unbound pending source correction and new detail review."
     source_ids:
       - un-cpc-3
+  - rule_id: v_manure_ch4
+    applies_to: "manure_ch4_air"
+    rule: "Check actual pathways, animal categories, VS time basis, system shares, climate and period; reconcile recovery and treatment boundaries without omissions or duplication. Zero/not-applicable requires evidence, not missing data; retain distinct enteric and manure CH4 exchanges."
+    source_ids:
+      - ipcc-livestock-2019
 published_dataset_profile:
   dataset_role: "Foreground bovine-semen production package at centre dispatch."
   downstream_use: "secondary_dataset; background_dataset only after route, identity and data-quality review."
@@ -1392,18 +1438,18 @@ data_sources:
     used_for: "Species- and pathway-specific livestock and manure emission calculations"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:dc6b46c897118ea492f419093b06c04ea2bc952eb5677404345c0474ecbf05bf"
+  source_sha256: "sha256:8a254c73bba0511d906231719c484e174c9473bbaa5f4f1b4de902fda0539e73"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_7124"
+    - unit_id: "normative_7122"
       family: "system_boundary"
       span:
         start:
-          offset: 7124
+          offset: 7122
           line: 59
           column: 1
         end:
-          offset: 9271
+          offset: 9269
           line: 82
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Identified eligible bovine donor entering a recorded centre service period, plus upstream feed, water, energy, extender, packaging and cryogen supplies. |\n| starting_condition_role | Donor biological management and centre preparation of reproductive goods, not live-animal sale or insemination service. |\n| product_classification_scope | CPC 3.0 `02411`; cattle and buffalo, with other Bovini only on direct evidence. |\n| recursive_input_rule | Purchased bovine semen is a traced upstream input, never counted again as on-site donor production. |\n| upstream_dataset_requirement | Species- and route-matched supplies, utilities, consumables and capital services. |\n| disclosure | Donor, period, gate, health/quality criteria, state route, rejects, co-outputs, shared assets and allocation. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `gate` | all routes | End at quality release from the collection centre after actual preparation and protective packing; exclude later distribution and insemination. | `woah-hygiene-2024`; `woah-bovine-2024` |\n| `donor` | donor management | Trace cattle and buffalo separately; other Bovini need source-specific evidence. Attribute observed feed, water, health and residues by donor-period, not a universal straw factor. | `un-cpc-3`; `fao-cryoconservation-2021` |\n| `interfaces` | centre processing | Identify collected raw, graded, first prepared, formulated bulk, filled, preserved and packed states; record rejected and lost states. | `woah-hygiene-2024`; `fao-cryoconservation-2021` |\n| `route_delta` | preservation | Fresh, chilled and frozen are mutually exclusive final states. The preservation parent activity differs in energy, cryogen, storage time, testing and losses; partition mixed lots. | `fao-cryoconservation-2021` |\n| `shared_service` | assets | Housing, laboratory, refrigeration and reusable vessels serve multiple nodes or periods; record service and burden once, separately from disposable packaging. | `woah-hygiene-2024` |\n\n"
@@ -1423,11 +1469,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 7124
+              offset: 7122
               line: 59
               column: 1
             end:
-              offset: 7145
+              offset: 7143
               line: 59
               column: 22
           text: "## 5. System Boundary"
@@ -1443,16 +1489,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_53290"
+    - unit_id: "normative_54991"
       family: "allocation"
       span:
         start:
-          offset: 53290
-          line: 1114
+          offset: 54991
+          line: 1131
           column: 1
         end:
-          offset: 54234
-          line: 1123
+          offset: 55935
+          line: 1140
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `subdivide` | all nodes | Partition by donor species, donor, batch and route before allocation; count only observed service for released doses. | `woah-hygiene-2024` |\n| `output_status` | culls and downgraded grades | Independent culls or saleable downgraded semen need actual destination and handoff; rejects and manure to treatment are waste. | `un-cpc-3`; `woah-bovine-2024` |\n| `residual` | inseparable burdens | Prefer causal donor-days, batch use or storage occupancy; disclose any residual physical/economic split and sensitivity, never hypothetical avoided-product credit. | `woah-hygiene-2024` |\n| `period_asset` | donor and shared assets | Link feed, health, donor replacement/cull, laboratory and tank service to actual periods and consuming nodes once; prevent duplicate tank or room burden. | `woah-hygiene-2024` |\n\n"
       headings:
@@ -1471,12 +1517,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 53290
-              line: 1114
+              offset: 54991
+              line: 1131
               column: 1
             end:
-              offset: 53330
-              line: 1114
+              offset: 55031
+              line: 1131
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1491,18 +1537,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_62090"
+    - unit_id: "normative_65455"
       family: "validation"
       span:
         start:
-          offset: 62090
-          line: 1156
+          offset: 65455
+          line: 1175
           column: 1
         end:
-          offset: 63036
-          line: 1166
+          offset: 66742
+          line: 1186
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `reference` | final dose | Require centre gate, donor species, accepted count, quality and state; unresolved product UUID blocks fixed-flow publication. | `un-cpc-3`; `woah-bovine-2024` |\n| `route` | fresh/chilled/frozen | One state per released unit; preserve only actual route inputs, storage periods and rejects. | `fao-cryoconservation-2021` |\n| `balance` | all material interfaces | Reconcile semen, components, grade destinations, filled count, waste and packaging with actual records. | `fao-cryoconservation-2021` |\n| `attribution` | outputs, periods, assets | Verify cull/downgrade handoffs, donor period, causal split and unique shared-asset ownership. | `woah-hygiene-2024` |\n| `identity_review` | flow UUIDs | Contradictory platform bovine-semen candidate remains unbound pending source correction and new detail review. | `un-cpc-3` |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `reference` | final dose | Require centre gate, donor species, accepted count, quality and state; unresolved product UUID blocks fixed-flow publication. | `un-cpc-3`; `woah-bovine-2024` |\n| `route` | fresh/chilled/frozen | One state per released unit; preserve only actual route inputs, storage periods and rejects. | `fao-cryoconservation-2021` |\n| `balance` | all material interfaces | Reconcile semen, components, grade destinations, filled count, waste and packaging with actual records. | `fao-cryoconservation-2021` |\n| `attribution` | outputs, periods, assets | Verify cull/downgrade handoffs, donor period, causal split and unique shared-asset ownership. | `woah-hygiene-2024` |\n| `identity_review` | flow UUIDs | Contradictory platform bovine-semen candidate remains unbound pending source correction and new detail review. | `un-cpc-3` |\n| `v_manure_ch4` | `manure_ch4_air` | Check actual pathways, animal categories, VS time basis, system shares, climate and period; reconcile recovery and treatment boundaries without omissions or duplication. Zero/not-applicable requires evidence, not missing data; retain distinct enteric and manure CH4 exchanges. | `ipcc-livestock-2019` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1519,12 +1565,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 62090
-              line: 1156
+              offset: 65455
+              line: 1175
               column: 1
             end:
-              offset: 62112
-              line: 1156
+              offset: 65477
+              line: 1175
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1543,233 +1589,246 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "gate"
       identity_kind: "explicit"
-      unit_id: "normative_7124"
+      unit_id: "normative_7122"
       source_span:
         start:
-          offset: 8120
+          offset: 8118
           line: 76
           column: 1
         end:
-          offset: 8331
+          offset: 8329
           line: 76
           column: 212
     - pointer: "/system_boundary/rules/1"
       rule_id: "donor"
       identity_kind: "explicit"
-      unit_id: "normative_7124"
+      unit_id: "normative_7122"
       source_span:
         start:
-          offset: 8332
+          offset: 8330
           line: 77
           column: 1
         end:
-          offset: 8586
+          offset: 8584
           line: 77
           column: 255
     - pointer: "/system_boundary/rules/2"
       rule_id: "interfaces"
       identity_kind: "explicit"
-      unit_id: "normative_7124"
+      unit_id: "normative_7122"
       source_span:
         start:
-          offset: 8587
+          offset: 8585
           line: 78
           column: 1
         end:
-          offset: 8811
+          offset: 8809
           line: 78
           column: 225
     - pointer: "/system_boundary/rules/3"
       rule_id: "route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_7124"
+      unit_id: "normative_7122"
       source_span:
         start:
-          offset: 8812
+          offset: 8810
           line: 79
           column: 1
         end:
-          offset: 9056
+          offset: 9054
           line: 79
           column: 245
     - pointer: "/system_boundary/rules/4"
       rule_id: "shared_service"
       identity_kind: "explicit"
-      unit_id: "normative_7124"
+      unit_id: "normative_7122"
       source_span:
         start:
-          offset: 9057
+          offset: 9055
           line: 80
           column: 1
         end:
-          offset: 9269
+          offset: 9267
           line: 80
           column: 213
     - pointer: "/allocation_rules/0"
       rule_id: "subdivide"
       identity_kind: "explicit"
-      unit_id: "normative_53290"
+      unit_id: "normative_54991"
       source_span:
         start:
-          offset: 53403
-          line: 1118
+          offset: 55104
+          line: 1135
           column: 1
         end:
-          offset: 53572
-          line: 1118
+          offset: 55273
+          line: 1135
           column: 170
     - pointer: "/allocation_rules/1"
       rule_id: "output_status"
       identity_kind: "explicit"
-      unit_id: "normative_53290"
+      unit_id: "normative_54991"
       source_span:
         start:
-          offset: 53573
-          line: 1119
+          offset: 55274
+          line: 1136
           column: 1
         end:
-          offset: 53784
-          line: 1119
+          offset: 55485
+          line: 1136
           column: 212
     - pointer: "/allocation_rules/2"
       rule_id: "residual"
       identity_kind: "explicit"
-      unit_id: "normative_53290"
+      unit_id: "normative_54991"
       source_span:
         start:
-          offset: 53785
-          line: 1120
+          offset: 55486
+          line: 1137
           column: 1
         end:
-          offset: 54009
-          line: 1120
+          offset: 55710
+          line: 1137
           column: 225
     - pointer: "/allocation_rules/3"
       rule_id: "period_asset"
       identity_kind: "explicit"
-      unit_id: "normative_53290"
+      unit_id: "normative_54991"
       source_span:
         start:
-          offset: 54010
-          line: 1121
+          offset: 55711
+          line: 1138
           column: 1
         end:
-          offset: 54232
-          line: 1121
+          offset: 55933
+          line: 1138
           column: 223
     - pointer: "/validation_rules/0"
       rule_id: "reference"
       identity_kind: "explicit"
-      unit_id: "normative_62090"
+      unit_id: "normative_65455"
       source_span:
         start:
-          offset: 62185
-          line: 1160
+          offset: 65550
+          line: 1179
           column: 1
         end:
-          offset: 62374
-          line: 1160
+          offset: 65739
+          line: 1179
           column: 190
     - pointer: "/validation_rules/1"
       rule_id: "route"
       identity_kind: "explicit"
-      unit_id: "normative_62090"
+      unit_id: "normative_65455"
       source_span:
         start:
-          offset: 62375
-          line: 1161
+          offset: 65740
+          line: 1180
           column: 1
         end:
-          offset: 62534
-          line: 1161
+          offset: 65899
+          line: 1180
           column: 160
     - pointer: "/validation_rules/2"
       rule_id: "balance"
       identity_kind: "explicit"
-      unit_id: "normative_62090"
+      unit_id: "normative_65455"
       source_span:
         start:
-          offset: 62535
-          line: 1162
+          offset: 65900
+          line: 1181
           column: 1
         end:
-          offset: 62710
-          line: 1162
+          offset: 66075
+          line: 1181
           column: 176
     - pointer: "/validation_rules/3"
       rule_id: "attribution"
       identity_kind: "explicit"
-      unit_id: "normative_62090"
+      unit_id: "normative_65455"
       source_span:
         start:
-          offset: 62711
-          line: 1163
+          offset: 66076
+          line: 1182
           column: 1
         end:
-          offset: 62873
-          line: 1163
+          offset: 66238
+          line: 1182
           column: 163
     - pointer: "/validation_rules/4"
       rule_id: "identity_review"
       identity_kind: "explicit"
-      unit_id: "normative_62090"
+      unit_id: "normative_65455"
       source_span:
         start:
-          offset: 62874
-          line: 1164
+          offset: 66239
+          line: 1183
           column: 1
         end:
-          offset: 63034
-          line: 1164
+          offset: 66399
+          line: 1183
           column: 161
+    - pointer: "/validation_rules/5"
+      rule_id: "v_manure_ch4"
+      identity_kind: "explicit"
+      unit_id: "normative_65455"
+      source_span:
+        start:
+          offset: 66400
+          line: 1184
+          column: 1
+        end:
+          offset: 66740
+          line: 1184
+          column: 341
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_7124"
+      unit_id: "normative_7122"
       source_span:
         start:
-          offset: 7124
+          offset: 7122
           line: 59
           column: 1
         end:
-          offset: 7145
+          offset: 7143
           line: 59
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_7124"
+      unit_id: "normative_7122"
       source_span:
         start:
-          offset: 7173
+          offset: 7171
           line: 63
           column: 1
         end:
-          offset: 8027
+          offset: 8025
           line: 70
           column: 127
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_53290"
+      unit_id: "normative_54991"
       source_span:
         start:
-          offset: 53290
-          line: 1114
+          offset: 54991
+          line: 1131
           column: 1
         end:
-          offset: 53330
-          line: 1114
+          offset: 55031
+          line: 1131
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_62090"
+      unit_id: "normative_65455"
       source_span:
         start:
-          offset: 62090
-          line: 1156
+          offset: 65455
+          line: 1175
           column: 1
         end:
-          offset: 62112
-          line: 1156
+          offset: 65477
+          line: 1175
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1778,5 +1837,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:dc6b46c897118ea492f419093b06c04ea2bc952eb5677404345c0474ecbf05bf"
-  generated_content_sha256: "sha256:37c48cf653c6a2ab0bd65a19803f3546661743d5c245b8e91106db5e30bef4bb"
+    sha256: "sha256:8a254c73bba0511d906231719c484e174c9473bbaa5f4f1b4de902fda0539e73"
+  generated_content_sha256: "sha256:092c99b509ad30496394846660c7256545470fedfa9e4abbdd9ae99aa08db38e"
