@@ -13,9 +13,9 @@ whenToUpdate:
 checkPaths:
   - docs/cpc01-remaining-147-review.md
   - library/pcrs/agriculture-forestry-and-fishery-products/products-of-agriculture-horticulture-and-market-gardening/**
-lastReviewedAt: 2026-10-12
+lastReviewedAt: 2026-10-13
 lastReviewedCommit: null
-lastReviewedNote: "Content consistency and focused primary-source audit; candidate status and unresolved review debt are explicit."
+lastReviewedNote: "Nine Chinese renderings aligned with canonical English; translation corrections and remaining review limitations recorded."
 ---
 
 # CPC 01 剩余 147 个 PCR 整理与检查记录
@@ -57,7 +57,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | Markdown 与 manifest 的状态冲突 | 其他油籽中文遗留 scaffold_pending_translation；两份浆果正文 frontmatter 仍为 candidate 而 manifest 为 active。统一到实际 manifest 状态，并对全部 294 份 Markdown 核对；不把历史 reviewed 标记当作本次重新审阅。 |
 | 巴西坚果把未开启的木质果荚与单粒带硬壳种子混作参考产品 | 参考产品明确为开荚后仍保留单粒硬壳的种子；未开荚中间投入不继承该产品 UUID。[FAO Brazil nuts](https://www.fao.org/forestry/nwfp/statistics/brazil-nuts) 区分果荚与其中的种子。 |
 | 七类坚果引用套用了作物题名，多个 CXC 4-1971 被改写成别的坚果标准 | 改用可核实的作物资料及正确的 CXC 6-1972（树坚果）、CXC 22-1979（花生）。CXC 4-1971 仅保留为脱水椰子下游范围背景。[Codex 标准目录](https://www.fao.org/fao-who-codexalimentarius/committees/committee/related-standards/en/?committee=CCPFV)；不能验证的套用指南退出规范引用。 |
-| 中文坚果文本遗留腰果“苹果”、错误文献和荚果开启排除项 | 改为对应的荚果、苞或外果皮术语，来源表与英文同步；中文整体仍标记为 draft_translation。 |
+| 中文坚果文本遗留腰果“苹果”、错误文献和荚果开启排除项 | 改为对应的荚果、苞或外果皮术语，来源表与英文同步；首次整理时中文整体仍标记为 draft_translation；后续九份中文对齐修复见下节。 |
 | 其他油籽把蓖麻籽当作 01449 的例子 | 明确排除，归属单独的 01447。[UNSD 01447](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/01447)。 |
 | 其他青豆类蔬菜把青蚕豆作为 01249 的例子 | 排除属于 01243 的青蚕豆/青马蚕豆；使用鲜鹰嘴豆、鲜扁豆和瓜尔豆等范围例子。[UNSD 01249](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/01249)、[01243](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/01243)。 |
 | Finnigan 2019 的菌蛋白文献期刊/DOI 错配 | 改为 Current Developments in Nutrition 3(6), nzz021，[DOI 10.1093/cdn/nzz021](https://doi.org/10.1093/cdn/nzz021)。 |
@@ -66,12 +66,25 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 
 甜菜种子 01940 的英文歧义已消除：排除的是糖用甜菜种子，牧草植物种子仍在范围内。没有把它误报为“应排除牧草种子”。没有充分证据把散装干茶 01620 判成分类错误，也没有把它列为已确认错误。
 
+## 2026-10-13 九份中文对齐修复
+
+PR #14 已合并。本次后续变更从合并提交 `58bcd3686dfd42e3eaa1f141e21c862d923a506c` 开始，仅涉及洋蓟、其他绿色豆科蔬菜和七类带壳坚果（板栗、榛子、开心果、核桃、椰子、巴西坚果、花生）的翻译及相关一致性修正。
+
+- 按规范英文补齐中文说明、过程、清单卡片、采集要求、计算和校验规则，修复洋蓟中文的半译词与机器身份误译；九份中文状态由 draft_translation 更新为 aligned，继续保留 candidate/authored_methodology。
+- 板栗旧中文把等级、返工、拒收和损失写为相加；现按英文表达投入减去相应扣除项。同步保留各产品的实际物理状态、门点、含水率和选择条件。
+- 区分栗苞、榛子苞衣、开心果/核桃外果皮、椰衣、巴西坚果木质蒴果壳和花生荚壳。巴西坚果英文正文原将开蒴果写为可选，与必需过程表及单粒带壳种子参考身份冲突；现将中英文统一为开蒴果必需，进一步调理仅在实际执行时纳入。
+- 板栗、榛子、开心果和核桃英文中误留的“坚果水”和棕榈叶用语改为果仁及修剪残余物，中文同步，并去除四类外层结构不恰当的纤维性概括。五份有英文变动的 structured.yaml 通过正式生成命令重新生成。
+- 七类坚果 manifest 的质量单位组审阅元数据原为 `93a60a57-a4c8-11da-a746-0800200b9a66`，与其既有正文及投影不一致，现统一为后两者使用的 `93a60a57-a4c8-11da-a746-0800200c9a66`；未改变实际流 UUID，也未据此声明新平台核验。
+- UUID 对应的既有平台英文显示名与原始文献题名保留；未获得官方中文流名的独立核验，因此未声明 localized_flow_names。代码、单位、来源编号和数值保持与英文一致。
+
+九份逐项 pcr:check 均通过；中英文有序代码、UUID 与数值列表一致，九份投影均与规范英文重生成结果逐字节一致。仓库全量验证已启动，最终结果在后续 PR 中记录。aligned 表示双语内容已对齐；reviewed 状态尚未设置，不能由 checker 通过推定完整人工语言审阅或发布就绪。
+
 ## 尚未完成的发布级审阅
 
 这是候选方法学整理和重点来源核查，没有对每篇外部文献、每项区间和全部 Tiangong 数据记录做独立实证验证。
 
 - 34 份参考产品身份仍明确未解决；没有伪造 UUID。已有 UUID 沿用原内容的身份证据，本次没有完成全量最新平台直读核验。
-- 9 份中文保留 draft_translation：洋蓟、其他青豆类蔬菜，以及巴西坚果、栗子、椰子、花生、榛子、开心果和核桃。检查覆盖行号、方向和计量关系，不证明所有说明文字已完成翻译。
+- 九份原草稿中文已补齐并与规范英文对齐，状态为 aligned，详见上节；尚未声明 reviewed 或发布级方法学审阅完成。
 - 一些旧卡片仍是能源载体、肥料、包装或残余物的聚合采集标签；数据生产时应按实际物质拆分，不能作为已解析的单一交换直接发布。
 - 一些重要流尚无数量区间，checker 将其报告为警告。本次没有为消除警告而填入未经核实的数字。
 - 暂定 reasoned_estimate 区间是可替换的作者筛选估计，不是文献实测范围、合规限值或默认工厂清单。作物资料只支持其声明范围内的定性背景。
@@ -88,7 +101,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01654 | anise-badian-coriander-cumin-caraway-fennel-and-juniper-berries-raw | exact | aligned | pass |
 | 01341 | apples | exact | aligned | pass |
 | 01343 | apricots | exact | aligned | pass |
-| 01216 | artichokes | exact | draft_translation | pass |
+| 01216 | artichokes | exact | aligned | pass |
 | 01211 | asparagus | exact | aligned | pass |
 | 01311 | avocados | exact | aligned | pass |
 | 01708 | bambara-beans-dry | exact | aligned | pass |
@@ -97,7 +110,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01701 | beans-dry | exact | aligned | pass |
 | 01241 | beans-green | exact | aligned | pass |
 | 01940 | beet-seeds-excluding-sugar-beet-seeds-and-seeds-of-forage-plants | exact | aligned | pass |
-| 01377 | brazil-nuts-in-shell | broader | draft_translation | pass |
+| 01377 | brazil-nuts-in-shell | broader | aligned | pass |
 | 01702 | broad-beans-and-horse-beans-dry | exact | aligned | pass |
 | 01243 | broad-beans-and-horse-beans-green | exact | aligned | pass |
 | 01192 | buckwheat | narrower | aligned | pass |
@@ -111,7 +124,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01213 | cauliflowers-and-broccoli | exact | aligned | pass |
 | 01913 | cereal-straw-husks-unprepared-ground-pressed-or-in-the-form-of-pellets | exact | aligned | pass |
 | 01344 | cherries | exact | aligned | pass |
-| 01373 | chestnuts-in-shell | exact | draft_translation | pass |
+| 01373 | chestnuts-in-shell | exact | aligned | pass |
 | 01703 | chick-peas-dry | exact | aligned | pass |
 | 01691 | chicory-roots | exact | aligned | pass |
 | 01652 | chillies-and-peppers-dry-capsicum-spp-pimenta-spp-raw | exact | aligned | pass |
@@ -119,7 +132,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01655 | cinnamon-and-cinnamon-tree-flowers-raw | exact | aligned | pass |
 | 01656 | cloves-whole-stems-raw | exact | aligned | pass |
 | 01640 | cocoa-beans | narrower | aligned | pass |
-| 01460 | coconuts-in-shell | exact | draft_translation | pass |
+| 01460 | coconuts-in-shell | exact | aligned | pass |
 | 01610 | coffee-green | exact | aligned | pass |
 | 01492 | copra | exact | aligned | pass |
 | 01921 | cotton-whether-or-not-ginned | exact | aligned | pass |
@@ -138,9 +151,9 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01657 | ginger-raw | narrower | aligned | pass |
 | 01330 | grapes | exact | aligned | pass |
 | 01252 | green-garlic | exact | aligned | pass |
-| 01422 | groundnuts-in-shell | exact | draft_translation | pass |
+| 01422 | groundnuts-in-shell | exact | aligned | pass |
 | 01421 | groundnuts-seed-for-planting | exact | aligned | pass |
-| 01374 | hazelnuts-in-shell | exact | draft_translation | pass |
+| 01374 | hazelnuts-in-shell | exact | aligned | pass |
 | 01659 | hop-cones | exact | aligned | pass |
 | 01922 | jute-kenaf-and-other-textile-bast-fibres-raw-or-retted-except-flax-true-hemp-and-ramie | exact | aligned | pass |
 | 01352 | kiwi-fruit | exact | aligned | pass |
@@ -171,7 +184,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01929 | other-fibre-crops-raw-n-e-c | exact | aligned | pass |
 | 01239 | other-fruit-bearing-vegetables | exact | aligned | pass |
 | 01359 | other-fruits-n-e-c | exact | aligned | pass |
-| 01249 | other-green-leguminous-vegetables | exact | draft_translation | pass |
+| 01249 | other-green-leguminous-vegetables | exact | aligned | pass |
 | 01219 | other-leafy-or-stem-vegetables | exact | aligned | pass |
 | 01379 | other-nuts-excluding-wild-edible-nuts-and-groundnuts-in-shell | exact | aligned | pass |
 | 01449 | other-oilseeds-n-e-c | narrower | aligned | pass |
@@ -191,7 +204,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01651 | pepper-piper-spp-raw | exact | aligned | pass |
 | 01707 | pigeon-peas-dry | exact | aligned | pass |
 | 01318 | pineapples | exact | aligned | pass |
-| 01375 | pistachios-in-shell | exact | draft_translation | pass |
+| 01375 | pistachios-in-shell | exact | aligned | pass |
 | 01313 | plantains-and-cooking-bananas | exact | aligned | pass |
 | 01930 | plants-and-parts-of-plants-used-primarily-in-perfumery-in-pharmacy-or-for-insecticidal-e225248a | exact | aligned | pass |
 | 01346 | plums-and-sloes | exact | aligned | pass |
@@ -226,7 +239,7 @@ Node 24.19.0 下已运行 `npm run validate`：运行时、迁移清单、全量
 | 01658 | vanilla-raw | narrower | aligned | pass |
 | 01260 | vegetable-seeds-except-beet-seeds | exact | aligned | pass |
 | 01290 | vegetables-fresh-n-e-c | exact | aligned | pass |
-| 01376 | walnuts-in-shell | exact | draft_translation | pass |
+| 01376 | walnuts-in-shell | exact | aligned | pass |
 | 01221 | watermelons | exact | aligned | pass |
 | 01540 | yams | narrower | aligned | pass |
 | 01591 | yautia | narrower | aligned | pass |

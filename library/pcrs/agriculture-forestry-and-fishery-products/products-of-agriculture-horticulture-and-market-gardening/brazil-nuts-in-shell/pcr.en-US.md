@@ -50,7 +50,7 @@ This PCR applies to conventional, organic, rain-fed, irrigated, mixed-crop, and 
 | Reference unit | kg |
 | Required qualifiers | cultivar or cultivar group; tree block and geography; establishment year, tree age, productive status, and replacement events; soil and climate; irrigation status and water source; crop year or averaging period; harvest maturity; in-shell seed state after woody-capsule opening; pod status; moisture basis; shell condition; size or grade; accepted, downgraded, rejected, and loss mass; pod destination; storage duration and condition; and gate |
 
-The required qualifiers must be declared in dataset metadata, process notes, the reference-flow comment, product description, or an equivalent data-package field. Net product mass excludes container tare. The platform identity is the fresh, unprocessed farm-gate product flow; pod opening, grading, drying, or storage is an extended gate and must retain that qualifier rather than being represented as a new product category. A shelled or split Brazil nut must not be used as the reference product for this PCR.
+The required qualifiers must be declared in dataset metadata, process notes, the reference-flow comment, product description, or an equivalent data-package field. Net product mass excludes container tare. The platform identity is the fresh, unprocessed farm-gate product flow after woody-capsule opening. Opening the capsule is required to obtain the individual in-shell seeds; any further grading, drying, or storage is an extended gate and must retain that qualifier rather than being represented as a new product category. A shelled or split Brazil nut must not be used as the reference product for this PCR.
 
 Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
 
@@ -357,7 +357,7 @@ Raw activity or stage basis: per 1,000 kg accepted brazil-nuts in shell.
 
 ### Process: Brazil nut Depoding, Primary Conditioning, and Grading (`brazil-nut_primary_conditioning_and_grading`)
 
-This process is conditional. Depoding removes the fibrous pod while leaving the hard shell intact; shell removal, splitting, and kernel or brazil-nut-water recovery are outside this PCR.
+Woody-capsule opening is required before the individual in-shell seed reference. It removes the woody capsule while leaving each seed hard shell intact; shell removal, splitting, and kernel recovery are outside this PCR. Include further conditioning only when actually performed before the declared gate.
 The pod opening and primary conditioning step is the material treatment node; its treated output and all residual destinations are recorded separately.
 
 #### Inputs
@@ -445,7 +445,7 @@ Raw activity or stage basis: per 1,000 kg accepted conditioning-gate product.
 
 ###### Accepted brazil-nuts in shell (`brazil-nut_conditioned_accepted_output`)
 
-Record accepted whole or pod-opened brazil-nuts with shell retained, grade, maturity, pod status, and declared gate.
+Record accepted individual Brazil-nut seeds after woody-capsule opening, with each hard shell retained, grade, maturity, pod status, and declared gate.
 The accepted brazil-nut lot is the intended output of this conditioning process.
 
 - Selected flow: Brazil nuts, in shell `5eada32e-7ae8-44ae-9f1e-66f84b193b84`
