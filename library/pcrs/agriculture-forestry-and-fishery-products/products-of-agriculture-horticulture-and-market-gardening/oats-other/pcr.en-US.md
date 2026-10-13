@@ -35,13 +35,15 @@ The default declared gate is either (a) farm gate at harvest or (b) the gate aft
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Tempered oats grain `04f2dc00-d9b9-456f-b3d1-7d6c33055ecc` |
+| Reference product flow | Non-seed oats grain at the selected declared gate |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | non-seed end use; food/feed/industrial declaration; oats class or variety where material; moisture basis; quality or grade descriptors; cleaning/drying status; geography; crop year; declared gate; bulk or packaging state |
-When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. The generic Tiangong oats identity is constrained by this PCR's non-seed product boundary; it must not be used to imply that the dataset is oats seed for sowing.
+When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. The category reference describes non-seed oats grain, not seed for sowing. It does not supply a verified Tiangong identity for every terminal state.
 Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+Select `grain_at_handoff` for harvest farm-gate delivery, `conditioned_oats_grain` when the route ends after actual primary conditioning, or `declared_gate_oats_grain` when the route continues through storage or a later hand-off. Record actual drying, cleaning, grading and any tempering; these states do not share a UUID by default. Confirm each concrete state independently, and retain unresolved identity when confirmation is unavailable.
 
 ## 4. Measurement and Unit Rules
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -75,14 +77,15 @@ Each foreground dataset must explicitly select one actual route, declared gate, 
 | --- | --- | --- | --- | --- | --- |
 | oats_crop_production | Oats Crop Production | required |  | foreground | harvested oats grain and associated residues |
 | harvest_and_field_delivery | Harvest and Field Delivery | required |  | foreground | harvested grain at farm or conditioning hand-off |
-| primary_conditioning | Primary Drying, Cleaning, and Grading | conditional | include when the declared gate is after primary drying, cleaning, grading, or short-term storage | foreground | conditioned oats grain at declared gate |
+| primary_conditioning | Primary Drying, Cleaning, and Grading | conditional | include when primary drying, cleaning or grading is actually performed before the selected gate | foreground | conditioned oats grain at declared gate |
 | storage_and_declared_gate | Storage and Declared Gate Handoff | conditional | include when storage or a delivery hand-off materially changes the declared reference flow | foreground | declared oats grain at selected gate |
 ### Process: Oats Crop Production (`oats_crop_production`)
 #### Inputs
 ##### Product flows
 ###### Seed for sowing used in the oats crop (`seed_for_sowing_input`)
 Seed for sowing is an upstream crop-establishment input, not the reference product. Record its source and lot identity and do not label the resulting non-seed grain dataset as oats seed for sowing.
-- Selected flow: Oats ``- Flow property / unit: Mass / kg
+- Selected flow: Oats seed for sowing
+- Flow property / unit: Mass / kg
 - Amount rule: measured seed-for-sowing mass per field or crop lot
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
@@ -182,7 +185,7 @@ Raw activity or stage basis: per 1,000 kg harvested oats grain at the selected g
 #### Outputs
 ##### Product flows
 ###### Harvested non-seed oats grain (`harvested_oats_grain`)
-Harvested oats grain is the output handed to the farm-gate or primary-conditioning route. It remains a non-seed grain process output; the fixed reference UUID is used only where the declared product state matches the verified primary-conditioning flow.
+Harvested oats grain is the output handed to the farm-gate or primary-conditioning route. Its identity is the harvested, non-seed grain state; a UUID for another conditioning state must not be inherited.
 - Selected flow: harvested non-seed oats grain at the field hand-off
 - Flow property / unit: Mass / kg
 - Amount rule: measured harvested grain mass with moisture basis and harvest lot retained
@@ -265,11 +268,11 @@ Raw activity or stage basis: per 1,000 kg harvested oats grain at the selected g
 ### Process: Harvest and Field Delivery (`harvest_and_field_delivery`)
 #### Inputs
 ##### Product flows
-###### Standing or harvested oats crop received for harvest (`oats_crop_received_for_harvest`)
-The harvest node receives the oats crop from the production route and records harvested grain and residue outcomes separately.
-- Selected flow: oats grain or standing crop material received for harvest 04f2dc00-d9b9-456f-b3d1-7d6c33055ecc
+###### Harvested oats grain received for field delivery (`oats_crop_received_for_harvest`)
+This transfer receives harvested oats grain from the crop-production route for field delivery. Record grain and residue outcomes separately, and count each harvest operation only once across the connected processes.
+- Selected flow: harvested non-seed oats grain at the field hand-off
 - Flow property / unit: Mass / kg
-- Amount rule: measured crop or grain mass entering the harvest and field-delivery operation
+- Amount rule: measured harvested grain mass entering field delivery with moisture basis
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per harvest event and per reference output.
@@ -345,8 +348,8 @@ No additional elementary flow is required without a confirmed method and identit
 #### Inputs
 ##### Product flows
 ###### Harvested oats grain entering primary conditioning (`grain_to_primary_conditioning`)
-This input is used only when the declared gate is after primary drying, cleaning, grading, or short-term storage.
-- Selected flow: oats grain received for primary conditioning 04f2dc00-d9b9-456f-b3d1-7d6c33055ecc
+This input is used only when primary drying, cleaning or grading is actually performed before the selected gate. Storage alone does not require a conditioning process.
+- Selected flow: harvested non-seed oats grain before primary conditioning
 - Flow property / unit: Mass / kg
 - Amount rule: measured grain mass entering the conditioning batch with moisture basis
 - Value mode: Foreground record (`foreground_record`)
@@ -390,7 +393,7 @@ Raw activity or stage basis: per kg grain entering primary conditioning.
 ##### Product flows
 ###### Conditioned non-seed oats grain (`conditioned_oats_grain`)
 Conditioned oats grain is the accepted reference output when the declared gate is after primary conditioning.
-- Selected flow: Oats, other `04f2dc00-d9b9-456f-b3d1-7d6c33055ecc`
+- Selected flow: non-seed oats grain after the declared drying, cleaning and grading operations
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured accepted grain output with moisture basis and quality descriptors
 
@@ -433,9 +436,9 @@ Raw activity or stage basis: per kg conditioned oats grain output.
 ### Process: Storage and Declared Gate Handoff (`storage_and_declared_gate`)
 #### Inputs
 ##### Product flows
-###### Conditioned grain entering declared storage or handoff (`grain_to_declared_storage`)
+###### Grain entering declared storage or handoff (`grain_to_declared_storage`)
 This process is conditional and is included when the selected gate follows storage or a delivery hand-off.
-- Selected flow: Oats, other `04f2dc00-d9b9-456f-b3d1-7d6c33055ecc`
+- Selected flow: non-seed oats grain at the preceding declared gate
 - Flow property / unit: Mass / kg
 - Amount rule: measured grain mass entering storage or declared handoff
 - Value mode: Foreground record (`foreground_record`)
@@ -492,7 +495,7 @@ No storage elementary flow is added without a confirmed identity and method.
 ##### Product flows
 ###### Declared-gate non-seed oats grain (`declared_gate_oats_grain`)
 The declared-gate output is the reference product when the selected gate includes storage or a downstream hand-off.
-- Selected flow: Oats, other `04f2dc00-d9b9-456f-b3d1-7d6c33055ecc`
+- Selected flow: non-seed oats grain after the declared storage or hand-off
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured grain mass at the declared gate, with moisture basis and quality descriptors
 
@@ -562,7 +565,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
 | `validation_non_seed_boundary` | product identity | Confirm that the reference product is non-seed oats grain and that seed for sowing, flour, malt, starch, ethanol, and downstream products are excluded or separately modelled. | `usda-oats-standards-2020`; `fao-oats-postharvest-operations-1999` |
-| `validation_reference_flow` | reference flow | Confirm one 1 kg reference flow uses the verified Tempered oats grain identity, mass property, kg unit, declared end use, moisture basis, quality descriptors, geography, crop year, and gate. | `usda-oats-standards-2020` |
+| `validation_reference_flow` | reference flow | Confirm exactly one selected output provides 1 kg of non-seed oats grain at the actual declared gate, using the mass property and kg unit. Record end use, moisture, quality, geography and crop year. Verify its UUID against that physical state before finalization; an unresolved identity is not a verified product, and tempering is not required unless actually performed. | `usda-oats-standards-2020` |
 | `validation_process_completeness` | process map and inventory | Confirm crop production, harvest, and the applicable primary-conditioning or storage processes are present or explicitly excluded by the declared gate. | `fao-grain-postharvest-systems-1998`; `fao-oats-postharvest-operations-1999` |
 | `validation_nitrogen` | fertilizer and emissions | Confirm product mass differs from kg N, factor selection is declared, N2O-N conversion is transparent, and other nitrogen pathways are addressed or justified. | `ipcc-2019-managed-soils-n2o` |
 | `validation_water` | irrigation | Confirm withdrawal, delivered irrigation, consumption, and water-footprint results are distinguished and not double counted. | `fao-crop-evapotranspiration-56` |

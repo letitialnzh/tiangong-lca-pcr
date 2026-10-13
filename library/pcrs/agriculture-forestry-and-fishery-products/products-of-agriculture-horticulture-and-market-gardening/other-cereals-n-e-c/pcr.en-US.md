@@ -11,7 +11,7 @@ sync_with: pcr.zh-CN.md
 
 This PCR guides construction of a foreground data package for a cultivated cereal grain classified in CPC 3.0 `01199` Other cereals n.e.c. and not represented by a named CPC cereal leaf with a dedicated PCR. The category is residual by classification, so the dataset must identify the biological crop, cultivar where material, intended use, and physical market state.
 
-The default boundary runs from seed-for-sowing and crop establishment through field operations, harvest, primary drying, cleaning, grading, and delivery of tempered grain to the declared primary-conditioning gate. A dataset may use an earlier farm-gate hand-off as an intermediate process output when that output is measured, but the reference output remains the tempered grain gate. Food, feed, industrial, and specialty grain uses are covered only when the use and quality state are declared.
+The boundary runs from seed-for-sowing and crop establishment through field operations, harvest, primary drying, cleaning, tempering and grading to delivery of tempered grain at the primary-conditioning gate, or at a declared later storage or hand-off gate. An earlier farm-gate output is a measured internal transfer only and cannot be selected as the reference output under this PCR. A route ending before tempering falls outside this PCR scope. Food, feed, industrial, and specialty grain uses are covered only when the use and quality state are declared.
 
 This PCR excludes named cereal categories with dedicated PCR coverage, including buckwheat, canary seed, fonio, millet, quinoa, triticale, rye, sorghum, wheat, barley, oats, rice, maize, and any other crop separately classified with a narrower applicable PCR. It also excludes seed sold for sowing, whole-crop forage, hay, silage, flour, malt, starch, alcohol, prepared foods, feed manufacture, retail packaging, consumer use, and downstream transport beyond the declared gate.
 
@@ -31,11 +31,11 @@ This PCR excludes named cereal categories with dedicated PCR coverage, including
 
 | Field | Value |
 | --- | --- |
-| What | identified tempered grain in the CPC 01199 residual category at the declared primary-conditioning gate |
+| What | identified tempered grain in the CPC 01199 residual category at the declared primary-conditioning or subsequent storage/hand-off gate |
 | How much | 1 kg |
 | How well | biological crop and cultivar where material; intended use; as-is or dry-matter moisture basis; grade or quality descriptors; tempering and cleaning state; geography; crop year; and declared gate |
 | How long or cycle | one declared crop cycle and harvest year; storage duration is declared separately when the gate follows storage |
-| reference_flow_link | farm_gate_grain_output; conditioned_grain_output; declared_gate_grain_output |
+| reference_flow_link | conditioned_grain_output; declared_gate_grain_output |
 | reference_flow_selection | exactly_one_declared_terminal_output |
 | reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
 
@@ -46,7 +46,7 @@ This PCR excludes named cereal categories with dedicated PCR coverage, including
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
-| Required qualifiers | crop identity and cultivar where material; residual CPC 01199 classification; intended use; moisture basis; grade or quality descriptors; tempering/cleaning/drying status; geography; crop year; primary-conditioning gate; bulk or packaging state |
+| Required qualifiers | crop identity and cultivar where material; residual CPC 01199 classification; intended use; moisture basis; grade or quality descriptors; tempering/cleaning/drying status; geography; crop year; selected primary-conditioning or subsequent storage/hand-off gate; bulk or packaging state |
 
 When constructing a foreground data package, declare every required qualifier in dataset metadata, process notes, the reference-flow comment, the product description, or an equivalent data-package field. A specific named cereal must be redirected to its narrower PCR when one exists.
 
@@ -363,19 +363,19 @@ No elementary input is assumed at the hand-off beyond those documented in the ha
 
 ###### Grain delivered to declared farm gate (`farm_gate_grain_output`)
 
-The accepted grain at the declared farm gate is the provisional reference output when no conditioning or storage process is included.
+The accepted grain at the farm gate is an intermediate transfer to the required primary-conditioning process. It is never the final reference output under this PCR; retain its measured mass and moisture basis separately from the accepted tempered output.
 
 - Selected flow: Other cereal grain, harvested and unprocessed
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured accepted grain at the declared hand-off, with moisture and quality qualifiers
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured internal-transfer grain mass with moisture basis; reconcile with the later accepted tempered output
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-Raw activity or stage basis: quantitative reference output.
+Raw activity or stage basis: measured farm-gate intermediate process output before primary conditioning.
 
 - Normalization basis: per declared reference flow
-- Basis kind: Reference flow (`reference_flow`)
+- Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_harvest_output_records`
 - Range: Provisional accepted-grain output guardrail
@@ -773,7 +773,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | --- | --- | --- | --- |
 | `validation_residual_category` | product identity | Confirm the biological crop is declared, belongs to CPC 01199, and is not a named cereal with a more specific PCR; redirect to the narrower PCR when applicable. | `iso-14044-2006` |
 | `validation_reference_flow` | reference flow | Confirm one 1 kg mass reference at the declared gate has crop identity, intended use, moisture basis, quality state, geography, crop year, and gate qualifiers. | `mass-balance-identity` |
-| `validation_process_completeness` | process map and inventory | Confirm crop production and harvest are present, and conditioning or storage is present or explicitly excluded by the declared gate. | `fao-grain-postharvest-systems-1998` |
+| `validation_process_completeness` | process map and inventory | Confirm crop production, harvest and primary conditioning including tempering are present. Include storage or later hand-off only when it precedes the selected final output; the farm-gate transfer cannot replace the tempered reference output. | `fao-grain-postharvest-systems-1998` |
 | `validation_nutrient_and_emission_accounting` | nutrients and emissions | Confirm commercial fertilizer mass is distinct from nutrient mass, factor selection is declared, N2O-N conversion is transparent, and relevant nitrogen pathways are addressed. | `ipcc-2019-managed-soils-n2o` |
 | `validation_water` | irrigation | Confirm withdrawal, delivery, consumption, and discharge are distinguished and no water amount is double counted. | `fao-crop-evapotranspiration-56` |
 | `validation_moisture_and_mass_balance` | outputs | Confirm harvest, conditioning, storage, residue, reject, and loss reconciliation uses a common moisture basis and every stream has a fate. | `mass-balance-identity` |

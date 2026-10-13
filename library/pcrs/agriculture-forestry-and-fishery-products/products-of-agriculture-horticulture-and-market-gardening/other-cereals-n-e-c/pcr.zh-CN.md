@@ -11,7 +11,7 @@ sync_with: pcr.en-US.md
 
 本 PCR 用于构建 CPC 3.0 `01199`“其他未列名谷物”项下栽培谷物籽粒的前景数据包，适用于没有被具名 CPC 谷物叶节点及其专用 PCR 覆盖的谷物。该类别是分类学上的剩余项，因此数据集必须说明生物学作物、在结果有影响时说明品种、预期用途和实物市场状态。
 
-默认边界从播种用种子和作物建立开始，经过田间作业、收获、初级干燥、清理、分级，至声明的初级调制门的调质籽粒交付。若有实测数据，数据集可以把较早的农场门交接作为中间过程产出，但参考产出仍为调质谷物交付门。食品、饲料、工业和特色谷物用途均须声明用途和质量状态后才能纳入。
+边界从播种用种子和作物建立开始，经过田间作业、收获、初级干燥、清理、调质和分级，至初级调制门或声明的后续储存、交接门的调质籽粒交付。较早农场门输出仅为实测内部转移，在本 PCR 下不能选择为参考输出。调质之前即结束的路线不属于本 PCR 范围。食品、饲料、工业和特色谷物用途均须声明用途和质量状态后才能纳入。
 
 本 PCR 排除已有专用 PCR 的具名谷物类别，包括荞麦、金丝雀种子、福尼奥米、小米、藜麦、小黑麦、黑麦、高粱、小麦、大麦、燕麦、水稻、玉米，以及具有更窄适用 PCR 的其他作物。还排除播种用种子、全株饲草、干草、青贮、面粉、麦芽、淀粉、酒精、预制食品、饲料制造、零售包装、消费者使用及声明交付门之后的运输。
 
@@ -31,11 +31,11 @@ sync_with: pcr.en-US.md
 
 | 字段 | 值 |
 | --- | --- |
-| What | CPC 01199 剩余类别中、在声明初级调制门的已识别调质谷物籽粒 |
+| What | CPC 01199 剩余类别中、在声明初级调制门或后续储存、交接门的已识别调质谷物籽粒 |
 | How much | 1 kg |
 | How well | 生物学作物及在结果有影响时的品种；用途；原样或干物质水分基准；等级或质量描述；调质和清理状态；地理范围；作物年度；声明交付门 |
 | How long or cycle | 一个声明的作物周期和收获年度；当交付门位于储存之后时单独声明储存时长 |
-| reference_flow_link | farm_gate_grain_output; conditioned_grain_output; declared_gate_grain_output |
+| reference_flow_link | conditioned_grain_output; declared_gate_grain_output |
 | reference_flow_selection | exactly_one_declared_terminal_output |
 | reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
 
@@ -47,7 +47,7 @@ sync_with: pcr.en-US.md
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 绑定模式 | fixed |
-| 必需限定信息 | 作物身份及在结果有影响时的品种；CPC 01199 剩余类别；用途；水分基准；等级或质量描述；调质/清理/干燥状态；地理范围；作物年度；初级调制门；散装或包装状态 |
+| 必需限定信息 | 作物身份及在结果有影响时的品种；CPC 01199 剩余类别；用途；水分基准；等级或质量描述；调质/清理/干燥状态；地理范围；作物年度；所选初级调制门或后续储存、交接门；散装或包装状态 |
 
 构建前景数据包时，应在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中声明全部必需限定信息。若某具名谷物已有更窄 PCR，应转用该 PCR。
 
@@ -359,19 +359,19 @@ sync_with: pcr.en-US.md
 
 ###### 交付至声明农场门的籽粒（`farm_gate_grain_output`）
 
-当不包含调制或储存过程时，声明农场门的合格籽粒是暂定参考产出。
+农场门合格籽粒是进入必需初级调制过程的中间转移。在本 PCR 下不得将其作为最终参考输出；保留其独立实测质量和水分基准，并与后续合格调质产出区分。
 
 - 选定流：其他谷物籽粒，收获后未加工
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：计量交接点合格籽粒并记录水分和质量限定信息
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：带水分基准的实测内部转移谷物质量；与后续合格调质产出核对
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-原始活动或阶段基准：定量参考产出.
+原始活动或阶段基准：初级调制之前的实测农场门中间过程输出。
 
 - 归一化基准：每声明的参考流
-- 基准类型：参考流（`reference_flow`）
+- 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest_output_records`
 - 数量范围：暂定合格籽粒产出校验范围
@@ -765,7 +765,7 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- |
 | `validation_residual_category` | 产品身份 | 确认生物学作物已声明、属于 CPC 01199，且不是已有更具体 PCR 的具名谷物；适用时转用更窄 PCR。 | `iso-14044-2006` |
 | `validation_reference_flow` | 参考流 | 确认在声明交付门上以 1 kg 质量为基准，并具备作物身份、用途、水分基准、质量状态、地理范围、作物年度和交付门限定信息。 | `mass-balance-identity` |
-| `validation_process_completeness` | 过程图和清单 | 确认包含田间生产和收获，并根据声明交付门纳入或明确排除调制及储存。 | `fao-grain-postharvest-systems-1998` |
+| `validation_process_completeness` | 过程图和清单 | 确认已纳入作物生产、收获以及包含调质的初级调制。仅在所选最终输出之前实际发生储存或后续交接时纳入对应过程；农场门转移不能替代调质参考输出。 | `fao-grain-postharvest-systems-1998` |
 | `validation_nutrient_and_emission_accounting` | 养分和排放 | 确认商品肥料质量与养分质量分开，因子选择已声明，N2O-N 换算透明，相关氮路径已处理。 | `ipcc-2019-managed-soils-n2o` |
 | `validation_water` | 灌溉 | 确认取水、输送、消耗和排放相互区分，且水量没有重复计算。 | `fao-crop-evapotranspiration-56` |
 | `validation_moisture_and_mass_balance` | 产出 | 确认收获、调制、储存、残余物、拒收物和损失的核对使用共同水分基准，且每个流都有去向。 | `mass-balance-identity` |
