@@ -277,9 +277,9 @@ process_inventory:
           name: "Managed land occupation and dinitrogen monoxide to air, unresolved"
           flow_type: "elementary"
           property_unit: "Area × time and mass / ha·year and kg N2O"
-          description: "Keep land occupation and N2O as separate calculated elementary-flow records even though they share this card. Raw activity or stage basis: per 1,000 kg harvest-ready organ."
+          description: "Keep land occupation and N2O as separate calculated elementary-flow records even though they share this card. Raw activity or stage basis: per 1,000 kg harvest-ready organ. Calculation method corresponds to Section 8 rules: calc_land, calc_soil_n2o."
           amount:
-            expression: "Apply calc_land and calc_soil_n2o from mapped area, dates, and nitrogen records"
+            expression: "hectares × occupied days ÷ 365.25; normalize by output; Apply IPCC managed-soil equations to recorded synthetic/organic N and residue N; convert N2O-N to N2O by 44/28"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -739,9 +739,9 @@ process_inventory:
           name: "Water to air, unresolved"
           flow_type: "elementary"
           property_unit: "Mass / kg"
-          description: "This row represents moisture removed from the product and released to air during drying. Raw activity or stage basis: per 1,000 kg dried output."
+          description: "This row represents moisture removed from the product and released to air during drying. Raw activity or stage basis: per 1,000 kg dried output. Calculation method corresponds to Section 8 rules: calc_drying_water."
           amount:
-            expression: "Apply calc_drying_water"
+            expression: "wet input × input moisture − dried output × output moisture; investigate negative results"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -1143,7 +1143,7 @@ data_sources:
     used_for: "Managed-soil N2O method"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:c2afd50bc372c5ff9afa88d4b3744c4d2342cc77db1f7d173a3c54d19c30fbe1"
+  source_sha256: "sha256:63095dee1025f02c93f28d699b872a12607b589784fcfdc8848c3297521d0814"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_4540"
@@ -1194,16 +1194,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_36251"
+    - unit_id: "normative_36553"
       family: "allocation"
       span:
         start:
-          offset: 36251
-          line: 836
+          offset: 36553
+          line: 840
           column: 1
         end:
-          offset: 37642
-          line: 846
+          offset: 37944
+          line: 850
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_avoid_first` | All multi-output nodes | Subdivide by species lot, field/stand, crop cycle or harvest year, operation, and batch; directly assign causal burdens. |  |\n| `allocation_co_outputs` | Marketed leaves, stems, straw, planting seed, wood, or downgraded spice | After subdivision, use physical dry mass when outputs have comparable biological function; otherwise use documented economic allocation with contemporaneous prices and a physical-mass sensitivity. Residues without economic function receive no upstream burden, but handling remains included. |  |\n| `allocation_periods` | Perennial stands | Annualize operator-incurred establishment/termination over recorded productive life. Assign annual maintenance and harvest burdens to their year/cohort. Do not invent establishment for naturally established collection stands. | `ncsu-common-juniper` |\n| `allocation_batches` | Conditioning, drying, grading | Assign metered batch burdens directly; allocate shared cleaning/changeover once by processed mass or run time. Rework retains previous and incremental burdens. |  |\n| `allocation_rejects` | Rework and rejects | Link each rejected state to exactly one rework, downgrade, recovery, return, or disposal path; never count it as accepted output. |  |\n\n"
       headings:
@@ -1222,12 +1222,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 36251
-              line: 836
+              offset: 36553
+              line: 840
               column: 1
             end:
-              offset: 36291
-              line: 836
+              offset: 36593
+              line: 840
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1242,16 +1242,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_43607"
+    - unit_id: "normative_43909"
       family: "validation"
       span:
         start:
-          offset: 43607
-          line: 882
+          offset: 43909
+          line: 886
           column: 1
         end:
-          offset: 45720
-          line: 897
+          offset: 46022
+          line: 901
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | Reference flow | Fail if species, crop, organ, route, geography, harvest year, grade, moisture/basis, or drying status is missing, or unrelated species are averaged without separate datasets and mass shares. |  |\n| `validate_route` | Graph | Require one production delta per lot and matching period/input records; annual and perennial routes coexist only as traceable lots. | `icar-rabi-coriander-2021`; `ncsu-common-juniper` |\n| `validate_nodes` | Graph | Require production, harvest, conditioning, and grading; require drying when moisture reduction occurs. Every node declares states and hand-offs. | `codex-spice-hygiene` |\n| `validate_mass` | Harvest through grading | Batch input equals accepted + downgraded + rejects + measured moisture loss ± inventory change within 5%; otherwise investigate/disclose. |  |\n| `validate_ranges` | Inventory | Every quantitative card has role, bounds, unit, denominator, basis kind, evidence kind, and sources when external. Outliers require explanation; reasoned ranges are screens, not limits. |  |\n| `validate_nutrients` | Production | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n| `validate_outputs` | Multi-output nodes | Enumerate intended outputs/hand-offs, residue/waste, allocation precedence, and shares summing to 1; prevent duplicate hand-offs. |  |\n| `validate_periods` | Perennial route | Require period and replacement/termination decisions and reject duplicated establishment or maintenance burdens. | `ncsu-common-juniper` |\n| `validate_rework` | Post-harvest | Route every off-spec state exactly once; accepted output excludes unresolved rejects; rework retains prior burdens. |  |\n| `validate_star_anise` | Star anise claiming cited specification | Verify moisture ≤10% dry basis, extraneous matter ≤1%, stalks ≤3%, broken/abnormal fruit ≤25%; do not apply to other species. | `fssai-star-anise-2023` |\n\n"
       headings:
@@ -1270,12 +1270,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 43607
-              line: 882
+              offset: 43909
+              line: 886
               column: 1
             end:
-              offset: 43629
-              line: 882
+              offset: 43931
+              line: 886
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1359,197 +1359,197 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_avoid_first"
       identity_kind: "explicit"
-      unit_id: "normative_36251"
+      unit_id: "normative_36553"
       source_span:
         start:
-          offset: 36364
-          line: 840
+          offset: 36666
+          line: 844
           column: 1
         end:
-          offset: 36543
-          line: 840
+          offset: 36845
+          line: 844
           column: 180
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_co_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_36251"
+      unit_id: "normative_36553"
       source_span:
         start:
-          offset: 36544
-          line: 841
+          offset: 36846
+          line: 845
           column: 1
         end:
-          offset: 36941
-          line: 841
+          offset: 37243
+          line: 845
           column: 398
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_periods"
       identity_kind: "explicit"
-      unit_id: "normative_36251"
+      unit_id: "normative_36553"
       source_span:
         start:
-          offset: 36942
-          line: 842
+          offset: 37244
+          line: 846
           column: 1
         end:
-          offset: 37237
-          line: 842
+          offset: 37539
+          line: 846
           column: 296
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_batches"
       identity_kind: "explicit"
-      unit_id: "normative_36251"
+      unit_id: "normative_36553"
       source_span:
         start:
-          offset: 37238
-          line: 843
+          offset: 37540
+          line: 847
           column: 1
         end:
-          offset: 37459
-          line: 843
+          offset: 37761
+          line: 847
           column: 222
     - pointer: "/allocation_rules/4"
       rule_id: "allocation_rejects"
       identity_kind: "explicit"
-      unit_id: "normative_36251"
+      unit_id: "normative_36553"
       source_span:
         start:
-          offset: 37460
-          line: 844
+          offset: 37762
+          line: 848
           column: 1
         end:
-          offset: 37640
-          line: 844
+          offset: 37942
+          line: 848
           column: 181
     - pointer: "/validation_rules/0"
       rule_id: "validate_identity"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 43702
-          line: 886
+          offset: 44004
+          line: 890
           column: 1
         end:
-          offset: 43938
-          line: 886
+          offset: 44240
+          line: 890
           column: 237
     - pointer: "/validation_rules/1"
       rule_id: "validate_route"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 43939
-          line: 887
+          offset: 44241
+          line: 891
           column: 1
         end:
-          offset: 44153
-          line: 887
+          offset: 44455
+          line: 891
           column: 215
     - pointer: "/validation_rules/2"
       rule_id: "validate_nodes"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 44154
-          line: 888
+          offset: 44456
+          line: 892
           column: 1
         end:
-          offset: 44353
-          line: 888
+          offset: 44655
+          line: 892
           column: 200
     - pointer: "/validation_rules/3"
       rule_id: "validate_mass"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 44354
-          line: 889
+          offset: 44656
+          line: 893
           column: 1
         end:
-          offset: 44542
-          line: 889
+          offset: 44844
+          line: 893
           column: 189
     - pointer: "/validation_rules/4"
       rule_id: "validate_ranges"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 44543
-          line: 890
+          offset: 44845
+          line: 894
           column: 1
         end:
-          offset: 44767
-          line: 890
+          offset: 45069
+          line: 894
           column: 225
     - pointer: "/validation_rules/5"
       rule_id: "validate_nutrients"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 44768
-          line: 891
+          offset: 45070
+          line: 895
           column: 1
         end:
-          offset: 44979
-          line: 891
+          offset: 45281
+          line: 895
           column: 212
     - pointer: "/validation_rules/6"
       rule_id: "validate_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 44980
-          line: 892
+          offset: 45282
+          line: 896
           column: 1
         end:
-          offset: 45158
-          line: 892
+          offset: 45460
+          line: 896
           column: 179
     - pointer: "/validation_rules/7"
       rule_id: "validate_periods"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 45159
-          line: 893
+          offset: 45461
+          line: 897
           column: 1
         end:
-          offset: 45338
-          line: 893
+          offset: 45640
+          line: 897
           column: 180
     - pointer: "/validation_rules/8"
       rule_id: "validate_rework"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 45339
-          line: 894
+          offset: 45641
+          line: 898
           column: 1
         end:
-          offset: 45496
-          line: 894
+          offset: 45798
+          line: 898
           column: 158
     - pointer: "/validation_rules/9"
       rule_id: "validate_star_anise"
       identity_kind: "explicit"
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 45497
-          line: 895
+          offset: 45799
+          line: 899
           column: 1
         end:
-          offset: 45718
-          line: 895
+          offset: 46020
+          line: 899
           column: 222
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -1578,27 +1578,27 @@ normative_context:
           column: 201
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_36251"
+      unit_id: "normative_36553"
       source_span:
         start:
-          offset: 36251
-          line: 836
+          offset: 36553
+          line: 840
           column: 1
         end:
-          offset: 36291
-          line: 836
+          offset: 36593
+          line: 840
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_43607"
+      unit_id: "normative_43909"
       source_span:
         start:
-          offset: 43607
-          line: 882
+          offset: 43909
+          line: 886
           column: 1
         end:
-          offset: 43629
-          line: 882
+          offset: 43931
+          line: 886
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1607,5 +1607,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:c2afd50bc372c5ff9afa88d4b3744c4d2342cc77db1f7d173a3c54d19c30fbe1"
-  generated_content_sha256: "sha256:58796f501abd22fc78a0da70a8d98b0de32bd234032af13cd34eb52080b307c9"
+    sha256: "sha256:63095dee1025f02c93f28d699b872a12607b589784fcfdc8848c3297521d0814"
+  generated_content_sha256: "sha256:5d997c34c1d8c3759f1c0746350aacc3cd4048a119c42dba9adb37768e818063"

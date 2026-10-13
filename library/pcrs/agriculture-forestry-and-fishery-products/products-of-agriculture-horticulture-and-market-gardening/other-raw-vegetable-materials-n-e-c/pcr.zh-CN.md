@@ -35,9 +35,7 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 净产品；林木种子批次可补充粒数或种球数 |
 | How well | 声明物种或菌株、材料部位/形态、组成或生活力、水分、纯度/等级、批次、种源（如适用）和稳定化状态 |
 | How long or cycle | 菌丝蛋白为一个生产批次或连续运行期；魔芋为一个作物周期；林木种子为一个结实年份和采集批次，并纳入声明的多年期种源负担 |
-| reference_flow_link | mycoprotein_product; konjac_tuber_product; forest_tree_seed_product |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
@@ -48,7 +46,9 @@ sync_with: pcr.en-US.md
 | Reference unit | kg |
 | Required qualifiers | 路线；物种或菌株；产品形态；批次/田块/种源；交付点；水分；固形物或纯度/生活力；等级；处理状态；地域和时间 |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -95,6 +95,7 @@ sync_with: pcr.en-US.md
 | tree_seed_source_management | 林木种源管理 | conditional | 仅在林木种子路线包含受管理母树林、种子园或已识别母树时纳入。 | 跨期受控生物生产 | 按种源和年份声明的可采种球或种子产量 |
 | tree_seed_collection | 林木种子或种球采集 | conditional | 仅在林木种子路线中必需；须明确直接采种还是采集含种子的种球或果实。 | 收获与采集 | 按种源和采集批次计量的净采集种子或含种子物料 |
 | tree_seed_conditioning | 林木种子脱取与首次整理 | conditional | 当种球、果实或原始种子在选定交付点前进行干燥、开裂、脱取、清理、分级或稳定化时纳入。 | 初级整理、分级与稳定化 | 净合格林木种子或声明的含种子种球产品 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：受控真菌生物量发酵 (`fungal_fermentation`)
 
@@ -420,7 +421,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位: kg
 原始产出计量与核对要求：记录净合格质量、固形物、水分和稳定化状态
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式: 前景记录 (`foreground_record`)
 - 适用范围: 产品特定 (`product_specific`)
 原始活动或阶段基准：参考流.
@@ -430,14 +431,16 @@ sync_with: pcr.en-US.md
 - 证据类型: 采集记录 (`collected_record`)
 - 采集协议: `cp_fungal_recovery`
 
-- 数量范围: 暂定筛选与核查范围；在评审前用具体产品、场址、技术和交付点证据替换
-  - 范围角色: 默认估计 (`default_estimate`)
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限: 1
   - 上限: 1
-  - 单位: kg
-  - 基准: Reference product identity check
-  - 基准类型: 参考流 (`reference_flow`)
-  - 证据类型: 推理估算 (`reasoned_estimate`)
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+
+  - 来源：`declared-handoff-measurement-definition`
 
 ###### 其他预期回收的真菌产品 (`fungal_coproduct`)
 
@@ -819,7 +822,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位: kg
 原始产出计量与核对要求：记录净合格质量、水分、损伤等级和整理状态
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式: 前景记录 (`foreground_record`)
 - 适用范围: 产品特定 (`product_specific`)
 原始活动或阶段基准：参考流.
@@ -829,14 +832,16 @@ sync_with: pcr.en-US.md
 - 证据类型: 采集记录 (`collected_record`)
 - 采集协议: `cp_konjac_harvest`
 
-- 数量范围: 暂定筛选与核查范围；在评审前用具体产品、场址、技术和交付点证据替换
-  - 范围角色: 默认估计 (`default_estimate`)
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限: 1
   - 上限: 1
-  - 单位: kg
-  - 基准: Reference product identity check
-  - 基准类型: 参考流 (`reference_flow`)
-  - 证据类型: 推理估算 (`reasoned_estimate`)
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+
+  - 来源：`declared-handoff-measurement-definition`
 
 ###### 可销售低等级魔芋块茎 (`konjac_lower_grade`)
 
@@ -1220,7 +1225,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位: kg
 原始产出计量与核对要求：记录净合格质量、树种、种源、纯度、发芽率或生活力、水分和批次数量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式: 前景记录 (`foreground_record`)
 - 适用范围: 产品特定 (`product_specific`)
 原始活动或阶段基准：参考流.
@@ -1230,14 +1235,16 @@ sync_with: pcr.en-US.md
 - 证据类型: 采集记录 (`collected_record`)
 - 采集协议: `cp_tree_seed_conditioning`
 
-- 数量范围: 暂定筛选与核查范围；在评审前用具体产品、场址、技术和交付点证据替换
-  - 范围角色: 默认估计 (`default_estimate`)
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限: 1
   - 上限: 1
-  - 单位: kg
-  - 基准: Reference product identity check
-  - 基准类型: 参考流 (`reference_flow`)
-  - 证据类型: 推理估算 (`reasoned_estimate`)
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+
+  - 来源：`declared-handoff-measurement-definition`
 
 ###### 其他预期种子等级 (`tree_seed_lower_grade`)
 
@@ -1296,6 +1303,64 @@ sync_with: pcr.en-US.md
 本路线未定义该类流；若实际记录显示该流，须先补充语义卡及范围后再纳入。
 
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：选定交付点的具名原始植物材料（UUID 未解析）
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：选定交付点的具名原始植物材料（UUID 未解析）
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | Applies to | Rule | source_ids |
@@ -1321,6 +1386,7 @@ sync_with: pcr.en-US.md
 | cp_tree_seed_source | tree_seed_source_management | seed_source_energy; collectable_seed_crop | 计量、台账、批次或场址记录 | 产品/物料标识、批次/场址、时间、数量、单位、状态、去向、计量装置 | 从原始记录逐条采集并保留可追溯链接；原始汇总与分配：先按批次/场址核对质量平衡，再归一到参考流 | 原始单位并记录换算 | 每批次、每批采集或每作物期；至少年度汇总 | 覆盖形成参考产品的完整代表期 | 单一场址或按场址分别记录 | 每声明的参考流 | 仪表/磅单/发票/批记录、校准状态、缺失数据说明 |
 | cp_tree_seed_collection | tree_seed_collection | collectable_seed_input; seed_collection_energy; collected_seed_material; collection_incidental_biomass | 计量、台账、批次或场址记录 | 产品/物料标识、批次/场址、时间、数量、单位、状态、去向、计量装置 | 从原始记录逐条采集并保留可追溯链接；原始汇总与分配：先按批次/场址核对质量平衡，再归一到参考流 | 原始单位并记录换算 | 每批次、每批采集或每作物期；至少年度汇总 | 覆盖形成参考产品的完整代表期 | 单一场址或按场址分别记录 | 每声明的参考流 | 仪表/磅单/发票/批记录、校准状态、缺失数据说明 |
 | cp_tree_seed_conditioning | tree_seed_conditioning | raw_seed_material; seed_conditioning_water; seed_conditioning_energy; seed_transport_service; forest_tree_seed_product; tree_seed_lower_grade; seed_conditioning_rejects | 计量、台账、批次或场址记录 | 产品/物料标识、批次/场址、时间、数量、单位、状态、去向、计量装置 | 从原始记录逐条采集并保留可追溯链接；原始汇总与分配：先按批次/场址核对质量平衡，再归一到参考流 | 原始单位并记录换算 | 每批次、每批采集或每作物期；至少年度汇总 | 覆盖形成参考产品的完整代表期 | 单一场址或按场址分别记录 | 每声明的参考流 | 仪表/磅单/发票/批记录、校准状态、缺失数据说明 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 
 ### 计算规则
@@ -1375,3 +1441,7 @@ sync_with: pcr.en-US.md
 | fao-forest-seed-handling-1985 | handbook | FAO Forestry Paper 20/2, A Guide to Forest Seed Handling, 1985 | 种源、采集、种球/果实处理、脱取、清理、分级、储前稳定化和种子质量 |
 | ipcc-2019-managed-soils | method_factor | 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11 | 魔芋栽培土壤直接 N2O 计算 |
 | iso-14044-2006 | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | 避免分配、分配层级和披露 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

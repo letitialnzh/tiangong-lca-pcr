@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1 kg as sold at the declared moisture and preparation state"
   how_well: "Declared species or cultivar, fresh market state, trim and grade, moisture basis, and product-gate condition"
   how_long_or_cycle: "One crop cycle from planting-material receipt through harvest and any included conditioning or delivery operation"
-  reference_flow_link: "marketable_field_product; conditioned_product; delivered_product"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: system_boundary_rule_1
@@ -50,7 +48,7 @@ reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
     name: "Fresh leek or other alliaceous vegetable <>"
-    uuid: "ce835a83-4945-40f9-b6c7-edfe84933a16"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -118,6 +116,12 @@ process_map:
     inclusion_condition: "Include when the declared gate is downstream of the farm or packhouse and the route is controlled or reported."
     role: "foreground delivery"
     quantitative_reference: "per 1 kg product delivered to the declared gate"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: field_preparation_and_establishment
     label: "Field preparation and establishment"
@@ -559,7 +563,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Marketable fresh product leaving harvest and field handling is weighed at the declared moisture, trimming, and quality basis. The species or cultivar and lot mix remain explicit for final product-flow identity resolution. Original reference-state unit annotation: Mass / kg as sold Raw output measurement and reconciliation: weighed marketable product after field sorting Raw activity or stage basis: per 1 kg fresh marketable allium product at the declared field gate."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "product_specific"
             basis:
@@ -728,7 +732,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Fresh product leaving washing, trimming, sorting, cooling, or packing is weighed at the declared product state. The product output remains unmapped until species, preparation, grade, moisture, and gate are fixed. Original reference-state unit annotation: Mass / kg as sold Raw output measurement and reconciliation: weighed conditioned product dispatched from the operation Raw activity or stage basis: per 1 kg conditioned allium product at the declared gate."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "product_specific"
             basis:
@@ -819,7 +823,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Product dispatched at the declared downstream gate is weighed and reconciled with the shipment record. This output is a product-flow identity requiring the declared species or mix, product state, and gate before resolution. Original reference-state unit annotation: Mass / kg as sold Raw output measurement and reconciliation: dispatched product mass after route-specific losses, if any Raw activity or stage basis: per 1 kg product delivered to the declared gate."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "calculated_value"
             specificity: "route_specific"
             basis:
@@ -838,6 +842,74 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
+      waste:
+        []
+      elementary:
+        []
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Fresh leek or other alliaceous vegetable <>"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Fresh leek or other alliaceous vegetable <>"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
       waste:
         []
       elementary:
@@ -1089,6 +1161,18 @@ dataset_production:
       site_scope: "declared delivery route and gate"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "dispatch and receiving records, scale calibration, and loss log"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: normalize_mass_to_reference_flow
       applies_to: "all product and waste mass rows"
@@ -1237,20 +1321,24 @@ data_sources:
     type: "method_factor"
     reference: "PCR method identity: conserve mass across each included field, conditioning, and delivery gate after moisture conversion."
     used_for: "normalization, allocation, and gate reconciliation"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:3e8b44cf346630ebaeacf055e8a45c2a2a67e217c178957e39a32687ef4bf943"
+  source_sha256: "sha256:0bd7f0f34343842169c5eb4d8ed6d3f8b046c2549429f4659bb23a43d29383bb"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_4898"
+    - unit_id: "normative_4983"
       family: "system_boundary"
       span:
         start:
-          offset: 4898
+          offset: 4983
           line: 62
           column: 1
         end:
-          offset: 7281
+          offset: 7366
           line: 85
           column: 1
       markdown: "## 5. System Boundary\n\nThe foreground system begins with accepted planting material and the production plot and ends at the declared farm, packhouse, or downstream delivery gate. It includes directly controlled field operations and the nutrient, water, energy, crop-protection, land, and transport services that cross the boundary. Upstream production of purchased inputs is linked as separate datasets where required by the study.\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | accepted planting material and prepared production plot |\n| starting_condition_role | foreground cultivation start with disclosed source material, field, and crop cycle |\n| product_classification_scope | fresh leeks and other edible alliaceous vegetables within CPC 01254 |\n| recursive_input_rule | same-category planting material is recorded as an explicit product input with source and treatment disclosure; its upstream production is not recursively included |\n| upstream_dataset_requirement | declare planting-material source, species or cultivar, material type, treatment, and any linked upstream dataset |\n| disclosure | declare field location, crop cycle, species or cultivar, cultivation route, irrigation and nutrient basis, crop-protection route, declared gate, and market-quality basis |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_declared_gate` | foreground system boundary | Include cultivation, harvest, and directly controlled handling up to the declared farm or packhouse gate. Include conditioning or delivery processes only when the declared gate and responsible operator require them. | `iso-14044-2006`; `unece-ffv-21-leeks-2023` |\n| `boundary_purchased_inputs` | purchased planting material and inputs | Represent planting material, fertilizer or soil amendments, crop-protection products, water, energy, packaging, and transport as foreground inputs when they cross the declared boundary; link their upstream production separately. | `iso-14044-2006` |\n| `boundary_nutrient_emissions` | nutrient-related elementary outputs | Include direct and indirect nutrient-related emissions when they are calculated from recorded nutrient applications and declared receiving media. Preserve reported substance, medium, factor basis, and uncertainty. | `ipcc-2019-refinement-vol4-ch11` |\n\n"
@@ -1270,11 +1358,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 4898
+              offset: 4983
               line: 62
               column: 1
             end:
-              offset: 4919
+              offset: 5004
               line: 62
               column: 22
           text: "## 5. System Boundary"
@@ -1290,16 +1378,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_41721"
+    - unit_id: "normative_45675"
       family: "allocation"
       span:
         start:
-          offset: 41721
-          line: 829
+          offset: 45675
+          line: 888
           column: 1
         end:
-          offset: 42762
-          line: 837
+          offset: 46716
+          line: 896
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_subdivide_lots` | separate species, cultivars, or product routes | Subdivide field, harvest, conditioning, and delivery records by species, cultivar, product state, or destination whenever separate records are available before applying allocation. | `iso-14044-2006` |\n| `allocation_shared_operations` | shared operations for multiple allium products | If a field or conditioning operation serves multiple products and cannot be subdivided, allocate shared inputs by harvested or dispatched mass at the declared moisture basis and disclose the allocation key. | `iso-14044-2006` |\n| `allocation_residue_status` | rejects and residues | Treat nonmarketable rejects and removed residues as waste outputs unless a documented sale or useful co-product route exists. If a useful co-product is reported, disclose its identity, destination, quantity, and allocation method. | `iso-14044-2006`; `mass-balance-identity` |\n\n"
       headings:
@@ -1318,12 +1406,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 41721
-              line: 829
+              offset: 45675
+              line: 888
               column: 1
             end:
-              offset: 41761
-              line: 829
+              offset: 45715
+              line: 888
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1338,16 +1426,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_58283"
+    - unit_id: "normative_62883"
       family: "validation"
       span:
         start:
-          offset: 58283
-          line: 889
+          offset: 62883
+          line: 949
           column: 1
         end:
-          offset: 59656
-          line: 899
+          offset: 64256
+          line: 959
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_qualifiers` | reference flow | Reject a data package that omits species or cultivar, fresh market state, trim or grade, moisture basis, or declared gate. | `unece-ffv-21-leeks-2023` |\n| `validate_mass_balance` | process gates | Check that input, marketable output, rejects, removed residues, and documented losses reconcile after moisture conversion at each included gate. | `mass-balance-identity` |\n| `validate_nutrient_basis_and_pathways` | nutrient inputs and elementary outputs | Check that fertilizer or amendment product mass is separate from N/P/K or organic nutrient basis and that every calculated emission states its pathway, factor basis, receiving medium, and reported substance. | `ipcc-2019-refinement-vol4-ch11` |\n| `validate_conditional_processes` | post-harvest conditioning and delivery | Check that every conditional process is supported by a declared gate and operator responsibility and that omitted conditional processes are disclosed when they are known to occur outside scope. | `iso-14044-2006` |\n| `validate_allocation_disclosure` | shared operations and mixed allium lots | Check that separate records were subdivided where available, otherwise the mass-based allocation key and moisture basis are stated. | `iso-14044-2006` |\n\n"
       headings:
@@ -1366,12 +1454,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 58283
-              line: 889
+              offset: 62883
+              line: 949
               column: 1
             end:
-              offset: 58305
-              line: 889
+              offset: 62905
+              line: 949
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1390,207 +1478,207 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "system_boundary_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_4898"
+      unit_id: "normative_4983"
       source_span:
         start:
-          offset: 4921
+          offset: 5006
           line: 64
           column: 1
         end:
-          offset: 5329
+          offset: 5414
           line: 64
           column: 409
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_declared_gate"
       identity_kind: "explicit"
-      unit_id: "normative_4898"
+      unit_id: "normative_4983"
       source_span:
         start:
-          offset: 6312
+          offset: 6397
           line: 81
           column: 1
         end:
-          offset: 6633
+          offset: 6718
           line: 81
           column: 322
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_purchased_inputs"
       identity_kind: "explicit"
-      unit_id: "normative_4898"
+      unit_id: "normative_4983"
       source_span:
         start:
-          offset: 6634
+          offset: 6719
           line: 82
           column: 1
         end:
-          offset: 6956
+          offset: 7041
           line: 82
           column: 323
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_nutrient_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_4898"
+      unit_id: "normative_4983"
       source_span:
         start:
-          offset: 6957
+          offset: 7042
           line: 83
           column: 1
         end:
-          offset: 7279
+          offset: 7364
           line: 83
           column: 323
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_subdivide_lots"
       identity_kind: "explicit"
-      unit_id: "normative_41721"
+      unit_id: "normative_45675"
       source_span:
         start:
-          offset: 41834
-          line: 833
+          offset: 45788
+          line: 892
           column: 1
         end:
-          offset: 42116
-          line: 833
+          offset: 46070
+          line: 892
           column: 283
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_shared_operations"
       identity_kind: "explicit"
-      unit_id: "normative_41721"
+      unit_id: "normative_45675"
       source_span:
         start:
-          offset: 42117
-          line: 834
+          offset: 46071
+          line: 893
           column: 1
         end:
-          offset: 42428
-          line: 834
+          offset: 46382
+          line: 893
           column: 312
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_residue_status"
       identity_kind: "explicit"
-      unit_id: "normative_41721"
+      unit_id: "normative_45675"
       source_span:
         start:
-          offset: 42429
-          line: 835
+          offset: 46383
+          line: 894
           column: 1
         end:
-          offset: 42760
-          line: 835
+          offset: 46714
+          line: 894
           column: 332
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference_qualifiers"
       identity_kind: "explicit"
-      unit_id: "normative_58283"
+      unit_id: "normative_62883"
       source_span:
         start:
-          offset: 58378
-          line: 893
+          offset: 62978
+          line: 953
           column: 1
         end:
-          offset: 58583
-          line: 893
+          offset: 63183
+          line: 953
           column: 206
     - pointer: "/validation_rules/1"
       rule_id: "validate_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_58283"
+      unit_id: "normative_62883"
       source_span:
         start:
-          offset: 58584
-          line: 894
+          offset: 63184
+          line: 954
           column: 1
         end:
-          offset: 58800
-          line: 894
+          offset: 63400
+          line: 954
           column: 217
     - pointer: "/validation_rules/2"
       rule_id: "validate_nutrient_basis_and_pathways"
       identity_kind: "explicit"
-      unit_id: "normative_58283"
+      unit_id: "normative_62883"
       source_span:
         start:
-          offset: 58801
-          line: 895
+          offset: 63401
+          line: 955
           column: 1
         end:
-          offset: 59129
-          line: 895
+          offset: 63729
+          line: 955
           column: 329
     - pointer: "/validation_rules/3"
       rule_id: "validate_conditional_processes"
       identity_kind: "explicit"
-      unit_id: "normative_58283"
+      unit_id: "normative_62883"
       source_span:
         start:
-          offset: 59130
-          line: 896
+          offset: 63730
+          line: 956
           column: 1
         end:
-          offset: 59422
-          line: 896
+          offset: 64022
+          line: 956
           column: 293
     - pointer: "/validation_rules/4"
       rule_id: "validate_allocation_disclosure"
       identity_kind: "explicit"
-      unit_id: "normative_58283"
+      unit_id: "normative_62883"
       source_span:
         start:
-          offset: 59423
-          line: 897
+          offset: 64023
+          line: 957
           column: 1
         end:
-          offset: 59654
-          line: 897
+          offset: 64254
+          line: 957
           column: 232
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_4898"
+      unit_id: "normative_4983"
       source_span:
         start:
-          offset: 4898
+          offset: 4983
           line: 62
           column: 1
         end:
-          offset: 4919
+          offset: 5004
           line: 62
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_4898"
+      unit_id: "normative_4983"
       source_span:
         start:
-          offset: 5357
+          offset: 5442
           line: 68
           column: 1
         end:
-          offset: 6219
+          offset: 6304
           line: 75
           column: 187
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_41721"
+      unit_id: "normative_45675"
       source_span:
         start:
-          offset: 41721
-          line: 829
+          offset: 45675
+          line: 888
           column: 1
         end:
-          offset: 41761
-          line: 829
+          offset: 45715
+          line: 888
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_58283"
+      unit_id: "normative_62883"
       source_span:
         start:
-          offset: 58283
-          line: 889
+          offset: 62883
+          line: 949
           column: 1
         end:
-          offset: 58305
-          line: 889
+          offset: 62905
+          line: 949
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1599,5 +1687,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:3e8b44cf346630ebaeacf055e8a45c2a2a67e217c178957e39a32687ef4bf943"
-  generated_content_sha256: "sha256:b2d1992f8c79082fd6663dbd540a50f6596836002a5054b9eef4c5c74a0e3f0e"
+    sha256: "sha256:0bd7f0f34343842169c5eb4d8ed6d3f8b046c2549429f4659bb23a43d29383bb"
+  generated_content_sha256: "sha256:5c48ee1a9070175fc6adbeb2d71632d64f9b88977e5d1b3f6f0ce3938f8f4068"

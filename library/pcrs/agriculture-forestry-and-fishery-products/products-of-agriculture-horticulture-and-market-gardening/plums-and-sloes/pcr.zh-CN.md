@@ -35,9 +35,7 @@ translation_status: aligned
 | How much | 1 kg 净合格水果 |
 | How well | 声明物种或品种、生产系统、成熟度、可销售标准、等级、水分状态、地理位置和包装状态 |
 | How long or cycle | 一个声明的采收年度或多年平均期；建园、补植和移除按声明的生产寿命年度化 |
-| reference_flow_link | accepted_fresh_fruit; conditioned_accepted_fruit |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
@@ -50,7 +48,9 @@ translation_status: aligned
 
 参考数量是声明门点的净合格鲜果质量。工业级果、降级果、次果、田间损失和调理废弃物须作为独立输出，记录质量及有证据的去向或处置方式。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -97,6 +97,7 @@ translation_status: aligned
 | `orchard_cultivation_and_protection` | 果园种植管理和植物保护 | required | 每个受管理果园或黑刺李园地均纳入 | foreground | 一个采收年度或声明平均期，每 1 kg 合格水果 |
 | `harvest_and_field_collection` | 采收和田间收集 | required | 向果园门交接交付水果的每条路线均纳入 | foreground | 每 1 kg 合格水果的采收和分流输出 |
 | `primary_conditioning_and_gate_handoff` | 初步调理和果园门交接 | conditional | 清洗、冷却、分拣、分级、周转箱或其他准备步骤位于声明门点内时纳入 | foreground | 每 1 kg 参考产品的调理后合格水果 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：果园建园、补植和移除（`orchard_establishment_and_removal`）
 
@@ -428,7 +429,7 @@ translation_status: aligned
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：净实测合格质量；参考数量归一化为 1 kg
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：固定值（`fixed_value`）
 - 适用范围：通用（`generic`）
 原始活动或阶段基准：参考流.
@@ -568,7 +569,7 @@ translation_status: aligned
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：净实测合格输出；归一化为 1 kg 参考产品
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：固定值（`fixed_value`）
 - 适用范围：通用（`generic`）
 原始活动或阶段基准：参考流.
@@ -617,6 +618,64 @@ translation_status: aligned
 
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：果园门鲜整果李或黑刺李
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：果园门鲜整果李或黑刺李
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -640,6 +699,7 @@ translation_status: aligned
 | `cp_orchard_energy_records` | `orchard_cultivation_and_protection;harvest_and_field_collection` | mobile_machinery_fuel; purchased_electricity; harvest_fuel | fuel, machine, and electricity records | fuel type; quantity; meter or invoice; operation; machine; date; block; electricity allocation | retain fuel tickets, machine logs, meters, and allocation method；原始汇总与分配：assign shared energy by measured use or documented hours | L; kg; MJ; kWh | each transaction or operation, reconciled monthly | one harvest year or declared averaging period | each block, fleet, or facility | 每声明的参考流 | invoices, meters, machine hours, worksheet |
 | `cp_yield_and_harvest_records` | `orchard_cultivation_and_protection;harvest_and_field_collection` | standing_fruit_for_harvest; fruit_presented_for_harvest; accepted_fresh_fruit; downgraded_processing_fruit; harvest_culls_and_losses | harvest and weighbridge records | species; cultivar; block; date; gross and tare mass; grade; destination; rejected or lost mass; moisture or maturity where relevant | weigh each lot or use documented sampling and reconciliation；原始汇总与分配：reconcile gross harvest to accepted, downgraded, cull, and loss outputs | kg fresh fruit | each lot, aggregated by period | one harvest year or declared averaging period | each block, lot, and destination | 每声明的参考流 | weighbridge tickets, grade sheets, sales records, mass-balance check |
 | `cp_conditioning_and_packaging_records` | `primary_conditioning_and_gate_handoff` | conditioning_fruit_input; conditioning_water; conditioning_electricity; conditioning_packaging_materials; conditioned_accepted_fruit; conditioning_rejects_and_wastewater; packaging_rejects | conditioning, packing, and hand-off records | intake and output mass; water; electricity; package material; tare; reuse cycles; rejects; destination; hand-off date | collect batch sheets, meters, packaging invoices, and dispatch records only for included operations；原始汇总与分配：reconcile intake, accepted output, rejects, wastewater, and packaging; remove reusable tare | kg; m3; kWh; count | each batch or dispatch, reconciled by period | declared harvest and conditioning period | each line, block, or gate facility | 每声明的参考流 | batch records, meters, package specifications, dispatch records |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -693,3 +753,7 @@ translation_status: aligned
 | `ipcc-2019-soils-n2o` | method_factor | 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11: https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O.pdf | 养分基准和管理土壤排放方法 |
 | `fao-56-crop-evapotranspiration-1998` | official_guidance | FAO Irrigation and drainage paper 56, Crop evapotranspiration: https://www.fao.org/4/X0490E/X0490E00.htm | 灌溉记录和水量平衡背景 |
 | `source_foreground_records` | dataset | 按本 PCR 协议采集的果园、受管理园地、采收、调理、供应商、计量、发票和称重记录 | 场址特定数量、身份、质量平衡、分配和数据质量证据 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

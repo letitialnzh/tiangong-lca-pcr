@@ -228,7 +228,7 @@ Raw activity or stage basis: all formulations retained by identity before any to
 
 Record harvested fresh oleaginous fruit at this node while preserving traceable species, state, batch, and destination evidence.
 
-- Selected flow: Other oleaginous fruits, n.e.c. `d72a964f-f916-4c72-9f53-6a1126f1ecac`
+- Selected flow: Other oleaginous fruits, n.e.c.
 - Flow property / unit: Mass / kg
 - Amount rule: measure accepted fresh harvest mass with species, maturity, moisture, grade and gate
 - Value mode: Foreground record (`foreground_record`)
@@ -248,6 +248,8 @@ Raw activity or stage basis: fresh accepted harvest from the declared productive
   - Basis kind: 过程输出 (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 
@@ -396,7 +398,7 @@ Raw activity or stage basis: route-conditional energy before farm-gate hand-off.
 
 Record sorted fresh oleaginous fruit at this node while preserving traceable species, state, batch, and destination evidence.
 
-- Selected flow: Other oleaginous fruits, n.e.c. `d72a964f-f916-4c72-9f53-6a1126f1ecac`
+- Selected flow: Other oleaginous fruits, n.e.c.
 - Flow property / unit: Mass / kg
 - Amount rule: measure accepted fresh output by grade; no extraction, drying-to-commodity, or manufacture
 - Value mode: Foreground record (`foreground_record`)
@@ -416,6 +418,8 @@ Raw activity or stage basis: matched fresh batch after sorting and prompt stabil
   - Basis kind: 过程输出 (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 

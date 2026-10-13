@@ -37,14 +37,12 @@ Wet, honey or semi-washed, and dry or natural processing are alternative route s
 | How much | 1 kg |
 | How well | species or cultivar group, processing method, green-bean moisture basis, grade, defect criterion, geography, production system and gate declared |
 | How long or cycle | one declared crop year and processing campaign; perennial establishment, replacement and termination phases annualized and indexed to the represented crop years |
-| reference_flow_link | coffee_green_reference_output; coffee_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Coffee, green `b8869823-9c26-4580-9c45-95a626e0ca2a` |
+| Reference product flow | Coffee, green |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -57,7 +55,9 @@ The reference flow is net green coffee at the declared gate. Tare, foreign matte
 | Green-bean moisture | 8-13 percent wet basis; replace with lot measurement | `fao-green-coffee-processing-africa` |
 | Processing route | wet/washed, honey/semi-washed, or dry/natural; one route per lot or explicitly separated lot set | `fao-arabica-coffee-manual-lao`; `fao-green-coffee-processing-africa` |
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -108,6 +108,7 @@ The boundary ends at green coffee at the declared farm, first mill or warehouse 
 | coffee_primary_processing_and_drying | Primary coffee conditioning, processing and drying | required | green coffee is produced through wet, honey or dry processing before the declared gate | primary conditioning and stabilization | per 1 kg green coffee |
 | coffee_hulling_and_grading | Hulling, cleaning and grading | required | parchment, dry cherry or another intermediate is converted to graded green coffee before the gate | prepared-output separation | per 1 kg graded green coffee |
 | coffee_storage_and_gate_handoff | Green coffee storage and gate hand-off | conditional | storage or warehouse handling occurs before the declared gate | stabilization, storage and hand-off | per 1 kg green coffee and storage day |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Managed coffee production (`coffee_plantation_production`)
 
@@ -670,7 +671,7 @@ Record net accepted green coffee by lot, grade, moisture, defect criterion, dest
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: weighed accepted green coffee output at declared gate
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per 1 kg green coffee at gate.
@@ -808,7 +809,7 @@ Record the net green-coffee lot dispatched at the declared gate after storage re
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: weighed lot dispatched at declared gate, net of tare and documented storage loss
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per 1 kg green coffee at gate.
@@ -845,6 +846,64 @@ Raw activity or stage basis: per 1 kg green coffee at gate.
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `mass-balance-identity`
 
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Coffee, green
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Coffee, green
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
+
 ## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
@@ -880,6 +939,7 @@ The first dataset is produced from primary records. Coffee farms and mills must 
 | `cp_coffee_residue_destination_records` | `coffee_primary_processing_and_drying`, `coffee_hulling_and_grading` | pulp, mucilage, parchment, husk, wastewater solids and waste | residue log, treatment receipt and recipient record | stream; wet/dry basis; quantity; treatment; recipient; function; destination; date | residue mass balance and hand-off review; Raw aggregation and attribution: reconcile raw input to product, co-product, residue, treatment and loss | kg; m3; date | batch and hand-off | all included batches | mill and destination | per declared reference flow | scale, treatment receipt and destination record |
 | `cp_coffee_wastewater_records` | `coffee_primary_processing_and_drying` | wastewater and treatment | meter, lab result, discharge or treatment record | volume; solids; pollutant; treatment; medium; date; batch | meter, lab and treatment review; Raw aggregation and attribution: apply one discharge or treatment pathway per stream | m3; kg; date | batch or discharge | all included wet-processing batches | mill and receiving medium | per declared reference flow | meter, lab result and receipt |
 | `cp_coffee_storage_records` | `coffee_storage_and_gate_handoff` | storage, moisture, handling and loss | warehouse lot, meter, inventory and dispatch record | lot; opening; closing; moisture; days; energy; packaging; loss; gate; date | inventory and moisture reconciliation; Raw aggregation and attribution: reconcile opening mass, dispatch, loss and closing balance | kg; percent; day; kWh; date | lot and dispatch | all included storage periods | warehouse and lot | per declared reference flow | inventory, moisture and dispatch records |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -939,3 +999,7 @@ The first dataset is produced from primary records. Coffee farms and mills must 
 | `ipcc-2019-refinement-afolu` | method_factor | IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4 AFOLU, <https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/index.html> | managed-soil, residue and fuel-related elementary-flow methods |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, <https://committee.iso.org/standard/38498.html> | system boundary, allocation, co-product function, data quality and attribution disclosure |
 | `mass-balance-identity` | method_factor | Declared crop-year, lot, moisture, product, co-product, residue, wastewater and loss reconciliation method | normalization, output completeness and double-counting checks |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

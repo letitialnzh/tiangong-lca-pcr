@@ -40,7 +40,7 @@ This PCR excludes processed, frozen, dried, juiced, fermented, preserved, or oth
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Marketable fresh currants and gooseberries at farm gate — unmapped |
+| Reference product flow | Marketable fresh currants and gooseberries at farm gate [unmapped] |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

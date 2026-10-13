@@ -36,7 +36,7 @@ This PCR covers fresh, unprocessed cherries from orchard establishment or the de
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Fresh cherries at orchard or pack-house gate |
+| Reference product flow | Fresh cherries at declared gate |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

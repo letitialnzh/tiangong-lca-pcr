@@ -33,14 +33,12 @@ Green and cured routes coexist in this category but are mutually exclusive termi
 | How much | 1,000 kg as-received tobacco leaf |
 | How well | declared green or cured state, curing method where applicable, moisture, grade, variety, origin, crop year, and acceptance specification |
 | How long or cycle | one crop cycle and, for cured leaf, its matched curing and grading batches |
-| reference_flow_link | green_leaf_output; graded_cured_leaf_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Unmanufactured tobacco, production mix, at farm gate, fresh unprocessed `e903dd1d-1d82-41e7-9526-2ae250746688` for green leaf only; cured-leaf identity unresolved |
+| Reference product flow | Unmanufactured tobacco, production mix, at farm gate, fresh unprocessed for green leaf only; cured-leaf identity unresolved |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -48,7 +46,9 @@ Green and cured routes coexist in this category but are mutually exclusive termi
 
 The fixed fresh-leaf UUID shall never identify cured tobacco.
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -91,6 +91,7 @@ Each foreground dataset must explicitly select one actual route, declared gate, 
 | `tobacco_field_production` | Tobacco field production and harvest | required | always | managed biological production and separate leaf harvest | hectare and harvested green-leaf mass for one crop cycle |
 | `tobacco_leaf_curing` | Tobacco leaf curing | conditional | terminal product is cured leaf | stabilize leaf by one declared curing technology | incoming green leaf and accepted cured leaf per batch |
 | `cured_leaf_grading_packing` | Cured-leaf grading and packing | conditional | cured leaf is graded, reworked, or packed before hand-off | grade and present cured leaf | incoming and accepted packed-leaf mass |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Tobacco field production and harvest (`tobacco_field_production`)
 
@@ -250,7 +251,7 @@ Record accepted harvested green leaf as the terminal product or the measured int
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured accepted green-leaf mass at declared moisture, grade, and gate
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per hectare; scale to 1,000 kg only when green leaf is terminal.
@@ -580,7 +581,7 @@ Record the accepted terminal cured-leaf grade or explicitly declared grade mix.
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured accepted mass by grade at declared moisture and package form
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: terminal output scaled to 1,000 kg.
@@ -651,6 +652,64 @@ Raw activity or stage basis: per 1,000 kg accepted packed leaf.
 
 ##### Elementary flows
 
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Unmanufactured tobacco, production mix, at farm gate, fresh unprocessed for green leaf only; cured-leaf identity unresolved
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Unmanufactured tobacco, production mix, at farm gate, fresh unprocessed for green leaf only; cured-leaf identity unresolved
+- Flow property / unit: Mass / kg
+- Amount rule: 1000 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
+
 ## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
@@ -674,6 +733,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cp_field_emissions` | `tobacco_field_production` | emissions | nutrient, soil, weather, residue, model | N; residue N; soil; climate; application; drainage; factors; model | declared applicable calculation method; Raw aggregation and attribution: calculate per field, area-weight, normalize | kg N; kg emission; ha | each event/cycle | full cycle | all fields | per declared reference flow | activity and factor provenance; model file |
 | `cp_curing_records` | `tobacco_leaf_curing` | leaf, energy, rejects, emissions | batch, scale, moisture, meter, barn log | batch; method; barn; input mass/moisture; carrier; energy; time; outputs | match each run to inputs/outputs/meters; Raw aggregation and attribution: reconcile mass; allocate shared services by measured driver | kg; percent; kWh; MJ; h | each batch/period | full curing period | all barns and curing sites | per declared reference flow | calibrated scale/meter; invoice; barn log |
 | `cp_grading_records` | `cured_leaf_grading_packing` | grades, packaging, rework, rejects | batch, scale, grade, issue, destination | batch; input; moisture; accepted; downgrade; rework; reject; packaging | reconcile grades/destinations; Raw aggregation and attribution: count rework once and close mass balance | kg; item; percent | each batch | full grading period | all grading and packing sites | per declared reference flow | calibration; grade sheet; package record |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -732,3 +792,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `iso-14044-2006` | standard | ISO 14044:2006 | allocation and disclosure |
 | `mass-balance-identity` | method_factor | Conservation of mass for matched harvest, curing, and grading batches | batch calculations and validation |
 | `reference-normalization-rule` | method_factor | PCR normalization: terminal reference output equals 1,000 kg | exact terminal range |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

@@ -36,7 +36,7 @@ sync_with: pcr.en-US.md
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Plants and parts of plants used primarily in perfumery, in pharmacy, or for insecticidal, fungicidal or similar purposes |
+| Reference product flow | Plants or plant parts for declared perfumery, pharmacy, insecticidal, fungicidal or similar use |
 | 参考流属性 | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

@@ -454,7 +454,7 @@ sync_with: pcr.en-US.md
 
 记录完成所需去外果皮和干燥后的声明物种；硬壳保持完整。
 
-- 选定流: Other nuts (excluding wild edible nuts and groundnuts), in shell `85d33932-8c99-4207-8011-1bec84102f55`
+- 选定流: Other nuts (excluding wild edible nuts and groundnuts), in shell
 - 流属性/单位: Mass / kg
 - 数量规则: 计量合格质量、含水率、外果皮状态和交付点
 - 数值来源模式: 前景记录 (`foreground_record`)
@@ -473,6 +473,8 @@ sync_with: pcr.en-US.md
   - 基准: 匹配的湿基至干基及脱外果皮平衡
   - 基准类型: `process_output`
   - 证据类型: 推理估算 (`reasoned_estimate`)
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 

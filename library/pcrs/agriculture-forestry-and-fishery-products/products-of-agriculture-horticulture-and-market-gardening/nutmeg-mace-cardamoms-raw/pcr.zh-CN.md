@@ -306,7 +306,7 @@ This is the process's only nutrient Product-input card; collect actual mineral, 
 本卡记录该过程边界上的声明流及其数量。
 
 - 选定流： Nitrous oxide to air
-- 数量规则： calculate from collected N inputs and applicable IPCC tier by `calc_soil_n2o`
+- 数量规则：apply selected IPCC tier to collected synthetic, organic and residue N; convert N2O-N to N2O once using 44/28
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：per kg N included in the direct managed-soil equation.
@@ -324,6 +324,8 @@ This is the process's only nutrient Product-input card; collect actual mineral, 
   - 基准： per kg N in the applicable direct-emission equation
   - 基准类型：氮投入（`n_input`）
   - 证据类型：推理估算（`reasoned_estimate`）
+
+计算方法对应第 8 节规则：`calc_soil_n2o`。
 
 ### 过程：收获与路线特定分离（`harvest_separation`）
 
@@ -569,7 +571,7 @@ This is the process's only nutrient Product-input card; collect actual mineral, 
 本卡记录该过程边界上的声明流及其数量。
 
 - 选定流： Water to air
-- 数量规则： calculate by `calc_conditioning_balance` after rejects and samples
+- 数量规则：wet input = conditioned output + rejects + samples + moisture loss, all on consistent basis
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：per 1,000 kg raw spice entering conditioning.
@@ -587,6 +589,8 @@ This is the process's only nutrient Product-input card; collect actual mineral, 
   - 基准类型：过程产出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源： `iisir-cardamom-2022`; `fao-nutmeg-handling`
+
+计算方法对应第 8 节规则：`calc_conditioning_balance`。
 
 ### 过程：分级与交付（`grading_dispatch`）
 

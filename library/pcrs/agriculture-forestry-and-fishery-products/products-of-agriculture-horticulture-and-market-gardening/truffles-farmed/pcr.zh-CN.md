@@ -33,14 +33,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 接收状态的新鲜松露 |
 | How well | 符合所声明物种或品种、成熟度、附土、损伤、分级和整理状态的完整新鲜松露 |
 | How long or cycle | 一个声明的生产期间；若数据集采用从摇篮到农场交付的多年生基础，则包括种植群落建立期间 |
-| reference_flow_link | harvested_fresh_truffle_output; farm_gate_fresh_truffle_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1 |
-| 参考产品流 | Truffles, farmed `862ab1a6-8876-46bf-8b73-d3f22280449c` |
+| 参考产品流 | Truffles, farmed |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
@@ -50,7 +48,9 @@ sync_with: pcr.en-US.md
 
 构建前景数据包时，`必需限定信息` 中列出的信息应在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中明确声明。缺失必需限定信息的数据包视为参考流定义不完整。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -92,6 +92,7 @@ sync_with: pcr.en-US.md
 | `truffle_stand_management` | 受管理多年生或林地—果园型种植群落管理 | required | 声明的生产期间始终纳入 | 维护宿主共生种植群落及其土壤、水、植被和服务投入 | 管理面积、报告期间、种植群落年龄、年度投入和新鲜松露生产量 |
 | `truffle_harvest` | 新鲜松露采收 | required | 只要松露从受管理种植群落中移出就纳入 | 定位、挖取、收集并核对新鲜松露和采收损失 | 采收量、合格量、拒收量、采收人工或机械以及土壤扰动记录 |
 | `truffle_farm_gate_conditioning` | 农场交付前新鲜松露整理 | conditional | 交付前发生刷洗、清洗、分选、分级、冷却或其他准备，且尚未包含在采收记录中 | 将采收松露整理到声明的新鲜市场状态 | 进料量、合格量、拒收量、水、能源和整理记录 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：接种宿主建立（`truffle_host_establishment`）
 
@@ -400,7 +401,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：按采收事件、成熟度和分级状态记录实测采收量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：采收终端输出缩放至 1 kg 合格新鲜松露.
@@ -486,7 +487,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：记录整理和分级后的实测合格输出
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：终端输出缩放至 1 kg 合格新鲜松露.
@@ -518,6 +519,64 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Truffles, farmed
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Truffles, farmed
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 按以下顺序应用规则：
@@ -541,6 +600,7 @@ sync_with: pcr.en-US.md
 | `cp_stand_management_records` | `truffle_stand_management` | nutrient or amendment, irrigation, fuel, electricity, soil transformation, soil emissions inputs | stand-period activity record | stand age; area; irrigation meter; product identity; product mass; nutrient basis; fuel; electricity; soil state; residues; management dates | meters, invoices, equipment logs, agronomic records, and method-ready soil or residue inventory；原始汇总与分配：aggregate by stand block and period after removing duplicates and shared-service double counting | kg product, kg nutrient, m3, kg, MJ, kWh, ha | monthly or per application, reconciled annually | declared reporting period plus linked stand establishment basis | each stand block or contributing site | 每声明的参考流 | meter or invoice reconciliation, site log, soil plan, and period completeness review |
 | `cp_harvest_output_records` | `truffle_harvest` | harvest service, harvested product, rejects, soil disturbance | harvest lot record | harvest date; block; method; labor or service; incoming mass; accepted mass; reject mass; maturity; grade; soil disturbance; destination | weighed lot records and harvest logs reconciled to sales or transfer records；原始汇总与分配：sum lots by block and period; reconcile harvested = accepted + rejected + documented loss | kg, h, service unit | each harvest lot | complete harvest season and declared reporting period | each harvest block | 每声明的参考流 | calibrated scale, lot ticket, sales or transfer record, and reject destination |
 | `cp_conditioning_records` | `truffle_farm_gate_conditioning` | incoming truffle, water, accepted output, rejects and removed soil | conditioning batch record | batch id; incoming mass; water; energy if applicable; operation; accepted mass; grade; moisture or soil state; rejects; destination | batch sheets, scale records, utility meter, and farm-gate hand-off record；原始汇总与分配：aggregate batches and reconcile incoming mass to accepted output and rejects | kg, m3, kWh | each conditioning batch | only the included pre-farm-gate conditioning period | conditioning facility or site | 每声明的参考流 | scale calibration, batch reconciliation, market-state specification, and hand-off record |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -591,3 +651,7 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html | 功能单位缩放、边界定义、时间基准披露、分配层级和数据质量规则 |
 | `ipcc-2019-afolu` | official_guidance | IPCC 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4: Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html | 受管理土壤和残余物相关排放的方法选择及活动数据要求 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

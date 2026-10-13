@@ -226,7 +226,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：受管理土地占用和一氧化二氮排放至空气，未解析
 - 流属性/单位：面积×时间和质量 / ha·year 和 kg N2O
-- 数量规则：以制图面积、日期和氮记录应用 `calc_land` 与 `calc_soil_n2o`
+- 数量规则：公顷×占用天数÷365.25，再按产出归一化; 对合成/有机 N 和残余物 N 应用 IPCC 公式；N2O-N 乘 44/28 转为 N2O
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每 1,000 kg 待收获器官.
@@ -244,6 +244,8 @@ sync_with: pcr.en-US.md
   - 基准：每 1,000 kg 待收获器官；N2O 另按公式校验
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
+
+计算方法对应第 8 节规则：`calc_land`, `calc_soil_n2o`。
 
 #### 输出
 ##### 产品流
@@ -667,7 +669,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：排放至空气的水，未解析
 - 流属性/单位：质量 / kg
-- 数量规则：应用 `calc_drying_water`
+- 数量规则：湿输入×输入水分−干燥产出×产出水分；负值须调查
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每 1,000 kg 干燥产出.
@@ -684,6 +686,8 @@ sync_with: pcr.en-US.md
   - 基准：每 1,000 kg 干燥产出
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
+
+计算方法对应第 8 节规则：`calc_drying_water`。
 
 ### 过程：农场门点分级和分流（`grading_sorting`）
 

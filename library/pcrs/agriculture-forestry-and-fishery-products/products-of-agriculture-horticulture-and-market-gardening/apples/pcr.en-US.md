@@ -35,14 +35,12 @@ Conventional, integrated, organic, rain-fed, and irrigated routes are included w
 | How much | 1 kg |
 | How well | cultivar or mix, marketability criterion, grade, production system, and moisture state declared |
 | How long or cycle | one declared harvest year; establishment and removal annualized over the declared productive life |
-| reference_flow_link | accepted_fresh_apples; orchard_gate_handled_apples |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Apple, natural mix, at orchard `dae75a0f-16b9-47ff-9ee7-63058aebcfe2` |
+| Reference product flow | Apple, natural mix, at orchard |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -50,7 +48,9 @@ Conventional, integrated, organic, rain-fed, and irrigated routes are included w
 
 The reference mass is accepted marketable fruit. Industrial-grade fruit and culls are separate outputs with measured mass and an evidenced fate.
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -95,6 +95,7 @@ The foreground boundary includes material nursery-tree and support-system instal
 | --- | --- | --- | --- | --- | --- |
 | orchard_lifecycle_and_production | Orchard Lifecycle and Apple Production | required |  | foreground | 1 kg accepted fresh apples at orchard gate |
 | orchard_gate_handling | Orchard-gate Handling | conditional | include on-orchard washing, pre-cooling, grading, or other handling before the gate | foreground | 1 kg accepted fresh apples at orchard gate |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Orchard Lifecycle and Apple Production (`orchard_lifecycle_and_production`)
 
@@ -301,7 +302,7 @@ Accepted fresh apples are the marketable reference product measured at the decla
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured net accepted mass at orchard gate
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: quantitative reference.
@@ -311,13 +312,13 @@ Raw activity or stage basis: quantitative reference.
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_land_and_output_records`
 - Sources: `codex-cxs-299-2010`
-- Range: Reference output identity
+- Range: Same-stage output measurement reconciliation
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg reference product
-  - Basis: quantitative reference output
-  - Basis kind: Reference flow (`reference_flow`)
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `mass-balance-identity`
 
@@ -383,7 +384,7 @@ Calculate direct and indirect nitrous oxide from orchard nitrogen inputs with th
 
 - Selected flow: nitrous oxide, emissions to air unspecified `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
-- Amount rule: apply `calculate_direct_soil_n2o` and convert reported N2O-N to N2O by 44/28
+- Amount rule: apply selected IPCC tier and convert N2O-N to N2O by 44/28
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per 1 kg reference product.
@@ -393,6 +394,8 @@ Raw activity or stage basis: per 1 kg reference product.
 - Evidence kind: Method formula (`method_formula`)
 - Collection protocol: `cp_orchard_input_records`
 - Sources: `ipcc-2019-managed-soils-n2o`
+
+Calculation method corresponds to Section 8 rules: `calculate_direct_soil_n2o`.
 
 ###### Ammonia volatilization to air (`direct_soil_ammonia_emission`)
 
@@ -481,7 +484,7 @@ Orchard-gate handled apples are the accepted reference product after included on
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured accepted output after on-orchard handling
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: quantitative reference.
@@ -491,13 +494,13 @@ Raw activity or stage basis: quantitative reference.
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_land_and_output_records`
 - Sources: `codex-cxs-299-2010`
-- Range: Reference output identity
+- Range: Same-stage output measurement reconciliation
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg reference product
-  - Basis: quantitative reference output
-  - Basis kind: Reference flow (`reference_flow`)
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `mass-balance-identity`
 
@@ -508,6 +511,64 @@ Measure additional culls and reconcile them with input fruit.
 ##### Elementary flows
 
 Record direct handling emissions only when they occur inside the foreground boundary.
+
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Apple, natural mix, at orchard
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Apple, natural mix, at orchard
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
 
 ## 7. Allocation and Co-product Handling
 
@@ -534,6 +595,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | cp_irrigation_records | orchard_lifecycle_and_production | irrigation and withdrawal | meter and pumping record | source; meter; readings; volume; pumping energy; date; block | calibrated meter, pumping log, invoice; Raw aggregation and attribution: sum by source and normalize to accepted mass | m3 and energy unit | per event or month | irrigation season | block and source | per declared reference flow | calibration, readings, invoice |
 | cp_energy_records | orchard_lifecycle_and_production | fuel and electricity | energy record | operation; machine; energy type; quantity; period; block | fuel log, telematics, meter, invoice; Raw aggregation and attribution: allocate by operation and normalize to accepted mass | L, kg, MJ, kWh | per operation or billing interval | harvest year | orchard block | per declared reference flow | invoice, meter, equipment log |
 | cp_land_and_output_records | orchard_lifecycle_and_production | land and apple outputs | block and harvest record | area; age; cultivar; harvest date; gross; tare; accepted; industrial; culled; biomass; grade; fate | GIS, calibrated scale, dispatch and fate records; Raw aggregation and attribution: reconcile outputs and normalize by accepted mass | ha, year, kg | per harvest and annual reconciliation | complete harvest year | orchard block and gate | per declared reference flow | field map, calibration, tickets, grade and fate records |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -591,3 +653,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `ipcc-2019-managed-soils-n2o` | method_factor | IPCC 2019 Refinement, Volume 4, Chapter 11, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf> | managed-soil N2O calculation |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | allocation hierarchy |
 | `mass-balance-identity` | method_factor | Conservation of mass applied as a PCR calculation identity. | output reconciliation and annualization checks |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

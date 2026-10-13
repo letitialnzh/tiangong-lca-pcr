@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1,000 kg net accepted walnuts in shell"
   how_well: "Cultivar or cultivar group; production country, region, and climate; tree age and productive status; crop year; fresh or conditioned state; hull status; shell integrity; maturity; size or grade; accepted, downgraded, rejected, and loss mass; hull fate; and gate"
   how_long_or_cycle: "One declared crop year within the perennial tree productive life; establishment, immature years, replacement, and removal are allocated over the declared tree-life and accepted-output basis"
-  reference_flow_link: "walnut_conditioned_accepted_output; walnut_gate_output"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: system_boundary_rule_1
@@ -64,7 +62,7 @@ reference_flow_definition:
   reference_amount: "1000"
   product_flow_ref:
     name: "Walnuts, in shell"
-    uuid: "b87dc835-33df-4974-a2e7-679529cdec70"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -191,6 +189,12 @@ process_map:
     inclusion_condition: "include when storage or a post-harvest gate is part of the declared foreground boundary"
     role: "storage and delivery hand-off"
     quantitative_reference: "1,000 kg declared gate output"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: walnut_orchard_establishment_and_management
     label: "Walnut tree establishment and management"
@@ -556,7 +560,7 @@ process_inventory:
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
           description: "Record accepted whole or dehulled walnuts with shell retained, grade, maturity, hull status, and declared gate. The accepted walnut lot is the intended output of this conditioning process. Raw output measurement and reconciliation: measured net accepted lot output excluding tare Raw activity or stage basis: per 1,000 kg declared conditioning-gate output."
           amount:
-            expression: "1000 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "product_specific"
             basis:
@@ -782,7 +786,7 @@ process_inventory:
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
           description: "Record net dispatched product with the declared whole-fruit or dehulled-with-shell state, grade, freshness or moisture, and gate. Raw output measurement and reconciliation: measured net dispatch mass excluding tare Raw activity or stage basis: per 1,000 kg declared gate output."
           amount:
-            expression: "1000 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "product_specific"
             basis:
@@ -829,6 +833,74 @@ process_inventory:
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
+      elementary:
+        []
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Walnuts, in shell"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Walnuts, in shell"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1000 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
       elementary:
         []
 allocation_rules:
@@ -994,6 +1066,18 @@ dataset_production:
       site_scope: "each storage facility"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "stock reconciliation, dispatch ticket, freshness or moisture and pest record"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: calc_01
       applies_to: "perennial tree inputs"
@@ -1169,20 +1253,24 @@ data_sources:
     type: "standard"
     reference: "Codex Alimentarius, Code of Hygienic Practice for Tree Nuts, CXC 6-1972, https://www.fao.org/fao-who-codexalimentarius/sh-proxy/zh/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FStandards%252FCXC%2B6-1972%252FCXC_006e.pdf"
     used_for: "hygiene, product-state and handling context; not default LCA quantities or crop-specific yield factors"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:c89863ded2bec59d79d734c5a51f231f8c229568eba5677c61d751c037a04f70"
+  source_sha256: "sha256:3911cbbb650530d8d0fcea797fc299877bcec07b6f28532b02625b9a8c9434c0"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_8626"
+    - unit_id: "normative_8718"
       family: "system_boundary"
       span:
         start:
-          offset: 8626
+          offset: 8718
           line: 72
           column: 1
         end:
-          offset: 12676
+          offset: 12768
           line: 97
           column: 1
       markdown: "## 5. System Boundary\n\nThe default foreground boundary runs from the declared tree-orchard starting condition through perennial tree management, harvest and collection, and the fresh farm-gate hand-off of accepted walnuts in shell. An extended route additionally includes dehulling that leaves the hard shell intact, cleaning, grading, storage, and the declared post-harvest gate. Upstream production of planting material, fertilizers, crop-protection products, supplied irrigation water, energy carriers, machinery services, and packaging uses representative background datasets. Shell removal, splitting, kernel processing, oil extraction, roasted or otherwise processed walnut products, retail, post-gate transport, and post-gate storage are outside the default boundary.\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | tree-orchard site before or at establishment, with planting material and purchased management inputs crossing the foreground boundary; prior land use and existing tree history are disclosed |\n| starting_condition_role | start of managed perennial walnut production and tree-asset accounting |\n| product_classification_scope | CPC 3.0 `01376`, Walnuts, in shell; shelled, split, kernel, oil, shell, and downstream processed walnut products are outside this PCR |\n| recursive_input_rule | Same-category planting material or retained walnuts crossing the boundary are recorded as upstream inputs and are not recursively expanded into another in-shell product output. Internal hand-offs between orchard, harvest, conditioning, grading, and storage are process links and are not additional market outputs. |\n| upstream_dataset_requirement | Use representative upstream datasets for nursery material, nutrient products, crop protection, irrigation supply, fuel, electricity, dehulling or grading services, packaging, machinery services, and waste treatment when these inputs cross the boundary. |\n| disclosure | cultivar and tree block; geography, soil, climate, and land history; establishment year, tree age, productive life, and replacement; irrigation source and quality; nutrient and crop-protection records; harvest maturity; whole-fruit or dehulled state; moisture or freshness; shell quality; grade, reject, hull, and storage records; gate; and any intended hull co-product hand-off |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_tree_to_farm_gate` | all conforming datasets | Include perennial tree establishment, immature years, productive management, harvest, collection, and the declared fresh farm-gate hand-off of accepted walnuts in shell. | `ucdavis-walnut-harvest-processing`; `iso-14044-2006` |\n| `boundary_dehulling_extension` | extended post-harvest route | Include dehulling, cleaning, grading, and storage only when the declared dataset gate extends beyond the fresh whole-fruit farm gate. Report the extended gate and do not relabel it as the platform fresh/unprocessed state. | `ucdavis-walnut-harvest-processing`; `codex-tree-nuts-hygiene-cxc-6-1972` |\n| `boundary_perennial_tree_disclosure` | establishment and replacement | Allocate establishment, immature years, replacement trees, and removal over the declared tree life and accepted-output basis; disclose life, non-bearing years, intercropping, and replacement events. | `ucdavis-walnut-harvest-processing`; `iso-14044-2006` |\n| `boundary_no_shell_removal` | in-shell product | Retain the hard shell in the product boundary. Exclude hatcheting or shell removal, splitting, kernel processing, oil extraction, roasted or otherwise processed walnut products, and shell processing. | `codex-tree-nuts-hygiene-cxc-6-1972`; `ucdavis-walnut-harvest-processing` |\n| `boundary_quality_and_fate` | all outputs | Separate accepted in-shell walnuts, hull, downgraded lots, rejected fruit, foreign material, dust, water loss, storage loss, and unexplained loss by measured mass and declared fate. | `ucdavis-walnut-harvest-processing`; `mass-balance-identity` |\n\n"
@@ -1202,11 +1290,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 8626
+              offset: 8718
               line: 72
               column: 1
             end:
-              offset: 8647
+              offset: 8739
               line: 72
               column: 22
           text: "## 5. System Boundary"
@@ -1222,16 +1310,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_41935"
+    - unit_id: "normative_45779"
       family: "allocation"
       span:
         start:
-          offset: 41935
-          line: 714
+          offset: 45779
+          line: 773
           column: 1
         end:
-          offset: 44813
-          line: 727
+          offset: 48657
+          line: 786
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | applies_to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_01` | tree management and harvest with an intended hull output | Prefer process subdivision when tree, harvest, dehulling, hull collection, and nut records are independently available. When hull is deliberately collected and transferred as an intended co-product, allocate shared burdens by measured dry-matter mass; if dry-matter data are unavailable, use measured as-received mass and disclose the limitation. | `iso-14044-2006`; `ucdavis-walnut-harvest-processing` |\n| `allocation_02` | hull retained on site or discarded | If hull remains on the field, is composted without an intended product hand-off, or is discarded as residue, do not assign a co-product credit. Retain its mass and fate as residue or waste and assign shared burden to the intended in-shell walnut output. | `iso-14044-2006`; `mass-balance-identity` |\n| `allocation_03` | premium, standard, and downgraded in-shell grades | Use physical mass allocation between mutually exclusive accepted grade outputs when common conditioning burdens cannot be subdivided. Grade-specific operations remain with the grade receiving them; do not allocate the same lot to both a grade row and an aggregate output row. | `iso-14044-2006`; `mass-balance-identity` |\n| `allocation_04` | perennial tree periods and phases | Annualize establishment, immature years, replacement, intercropping attribution, and removal over the declared tree life and accepted output basis. Link every input and output to a crop year or lifecycle phase; do not count a replacement event in both the original and replacement tree phases. | `ucdavis-walnut-harvest-processing`; `iso-14044-2006` |\n| `allocation_05` | downgraded, reworked, rejected, and recovered lots | Keep rejected and downgraded lots separate from accepted product. Rework retains the producing-node burden and is linked once; recovered or intentionally marketed material requires a declared destination and allocation decision; discarded material receives its declared treatment burden. | `mass-balance-identity`; `iso-14044-2006` |\n| `allocation_06` | batch, campaign, and changeover attribution | Link tree, harvest, conditioning, dehulling, grading, and storage inputs and outputs to the batch or campaign that generated them. Record cleaning and changeover events once and do not allocate shared-run burdens to more than one batch without a documented driver. | `mass-balance-identity`; `iso-14044-2006` |\n\nThe hard shell remains part of the in-shell reference product and is not a separate co-product in this PCR. Kernel, oil, and shell-removal outputs belong to downstream walnut-product PCRs and must not be introduced into this inventory. No output may be counted both as a marketed hull co-product and as orchard or conditioning residue.\n\n"
       headings:
@@ -1250,12 +1338,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 41935
-              line: 714
+              offset: 45779
+              line: 773
               column: 1
             end:
-              offset: 41975
-              line: 714
+              offset: 45819
+              line: 773
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1270,16 +1358,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_55850"
+    - unit_id: "normative_60340"
       family: "validation"
       span:
         start:
-          offset: 55850
-          line: 771
+          offset: 60340
+          line: 831
           column: 1
         end:
-          offset: 58365
-          line: 785
+          offset: 62855
+          line: 845
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_01` | reference flow | Reference product is the verified `Walnuts, in shell` UUID with Mass and kg. The dataset declares whole-fruit or extended dehulled gate state and does not substitute a shelled or split walnut. | `codex-tree-nuts-hygiene-cxc-6-1972` |\n| `validation_02` | process map | Every required process is present; conditional dehulling, cleaning, grading, and storage processes are present when the declared gate or route requires them. | `ucdavis-walnut-harvest-processing` |\n| `validation_03` | perennial production | Tree establishment, immature years, productive phase, replacement, intercropping attribution, and removal are linked to declared crop years and are not double-counted. | `ucdavis-walnut-harvest-processing`; `iso-14044-2006` |\n| `validation_04` | harvest and collection | Harvested, collected, uncollected, damaged, residue, and accepted walnut masses are mutually reconciled; maturity and hand-off state are declared. | `mass-balance-identity` |\n| `validation_05` | dehulling and quality | Whole-fruit input, hull, accepted in-shell product, grade, downgraded/rework, reject, foreign material, water loss, and residuals are mutually exclusive and mass-balanced. | `mass-balance-identity`; `ucdavis-walnut-harvest-processing` |\n| `validation_06` | storage and gate | Opening stock, receipts, dispatches, closing stock, storage damage, product state, storage duration, and gate output reconcile. Storage losses are excluded from accepted output. | `mass-balance-identity`; `ucdavis-walnut-harvest-processing` |\n| `validation_07` | allocation and rework | Hull allocation, grade allocation, downgraded routes, rework loops, rejected-material treatment, and any intercropping attribution are explicit and no burden or output is counted twice. | `iso-14044-2006` |\n| `validation_08` | evidence and disclosure | All important quantitative flows have a foreground collection rule and candidate range or method constraint; estimates, unresolved identities, gate state, hull fate, and evidence limitations are disclosed. | `ucdavis-walnut-harvest-processing`; `mass-balance-identity` |\n| `validation_09` | batch and campaign records | Every harvest round, conditioning batch, grade lot, and storage receipt has a declared boundary, linked inputs and outputs, cleaning or changeover status, and reporting period; shared-run burdens are not counted twice. | `mass-balance-identity` |\n\n"
       headings:
@@ -1298,12 +1386,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 55850
-              line: 771
+              offset: 60340
+              line: 831
               column: 1
             end:
-              offset: 55872
-              line: 771
+              offset: 60362
+              line: 831
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1322,337 +1410,337 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "system_boundary_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 8649
+          offset: 8741
           line: 74
           column: 1
         end:
-          offset: 9400
+          offset: 9492
           line: 74
           column: 752
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_tree_to_farm_gate"
       identity_kind: "explicit"
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 11071
+          offset: 11163
           line: 91
           column: 1
         end:
-          offset: 11357
+          offset: 11449
           line: 91
           column: 287
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_dehulling_extension"
       identity_kind: "explicit"
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 11358
+          offset: 11450
           line: 92
           column: 1
         end:
-          offset: 11722
+          offset: 11814
           line: 92
           column: 365
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_perennial_tree_disclosure"
       identity_kind: "explicit"
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 11723
+          offset: 11815
           line: 93
           column: 1
         end:
-          offset: 12052
+          offset: 12144
           line: 93
           column: 330
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_no_shell_removal"
       identity_kind: "explicit"
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 12053
+          offset: 12145
           line: 94
           column: 1
         end:
-          offset: 12381
+          offset: 12473
           line: 94
           column: 329
     - pointer: "/system_boundary/rules/5"
       rule_id: "boundary_quality_and_fate"
       identity_kind: "explicit"
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 12382
+          offset: 12474
           line: 95
           column: 1
         end:
-          offset: 12674
+          offset: 12766
           line: 95
           column: 293
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_01"
       identity_kind: "explicit"
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 42048
-          line: 718
+          offset: 45892
+          line: 777
           column: 1
         end:
-          offset: 42531
-          line: 718
+          offset: 46375
+          line: 777
           column: 484
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_02"
       identity_kind: "explicit"
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 42532
-          line: 719
+          offset: 46376
+          line: 778
           column: 1
         end:
-          offset: 42888
-          line: 719
+          offset: 46732
+          line: 778
           column: 357
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_03"
       identity_kind: "explicit"
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 42889
-          line: 720
+          offset: 46733
+          line: 779
           column: 1
         end:
-          offset: 43282
-          line: 720
+          offset: 47126
+          line: 779
           column: 394
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_04"
       identity_kind: "explicit"
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 43283
-          line: 721
+          offset: 47127
+          line: 780
           column: 1
         end:
-          offset: 43690
-          line: 721
+          offset: 47534
+          line: 780
           column: 408
     - pointer: "/allocation_rules/4"
       rule_id: "allocation_05"
       identity_kind: "explicit"
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 43691
-          line: 722
+          offset: 47535
+          line: 781
           column: 1
         end:
-          offset: 44097
-          line: 722
+          offset: 47941
+          line: 781
           column: 407
     - pointer: "/allocation_rules/5"
       rule_id: "allocation_06"
       identity_kind: "explicit"
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 44098
-          line: 723
+          offset: 47942
+          line: 782
           column: 1
         end:
-          offset: 44474
-          line: 723
+          offset: 48318
+          line: 782
           column: 377
     - pointer: "/allocation_rules/6"
       rule_id: "allocation_rule_7"
       identity_kind: "snapshot_local"
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 44476
-          line: 725
+          offset: 48320
+          line: 784
           column: 1
         end:
-          offset: 44811
-          line: 725
+          offset: 48655
+          line: 784
           column: 336
     - pointer: "/validation_rules/0"
       rule_id: "validation_01"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 55945
-          line: 775
+          offset: 60435
+          line: 835
           column: 1
         end:
-          offset: 56215
-          line: 775
+          offset: 60705
+          line: 835
           column: 271
     - pointer: "/validation_rules/1"
       rule_id: "validation_02"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 56216
-          line: 776
+          offset: 60706
+          line: 836
           column: 1
         end:
-          offset: 56447
-          line: 776
+          offset: 60937
+          line: 836
           column: 232
     - pointer: "/validation_rules/2"
       rule_id: "validation_03"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 56448
-          line: 777
+          offset: 60938
+          line: 837
           column: 1
         end:
-          offset: 56716
-          line: 777
+          offset: 61206
+          line: 837
           column: 269
     - pointer: "/validation_rules/3"
       rule_id: "validation_04"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 56717
-          line: 778
+          offset: 61207
+          line: 838
           column: 1
         end:
-          offset: 56936
-          line: 778
+          offset: 61426
+          line: 838
           column: 220
     - pointer: "/validation_rules/4"
       rule_id: "validation_05"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 56937
-          line: 779
+          offset: 61427
+          line: 839
           column: 1
         end:
-          offset: 57217
-          line: 779
+          offset: 61707
+          line: 839
           column: 281
     - pointer: "/validation_rules/5"
       rule_id: "validation_06"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 57218
-          line: 780
+          offset: 61708
+          line: 840
           column: 1
         end:
-          offset: 57499
-          line: 780
+          offset: 61989
+          line: 840
           column: 282
     - pointer: "/validation_rules/6"
       rule_id: "validation_07"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 57500
-          line: 781
+          offset: 61990
+          line: 841
           column: 1
         end:
-          offset: 57750
-          line: 781
+          offset: 62240
+          line: 841
           column: 251
     - pointer: "/validation_rules/7"
       rule_id: "validation_08"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 57751
-          line: 782
+          offset: 62241
+          line: 842
           column: 1
         end:
-          offset: 58067
-          line: 782
+          offset: 62557
+          line: 842
           column: 317
     - pointer: "/validation_rules/8"
       rule_id: "validation_09"
       identity_kind: "explicit"
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 58068
-          line: 783
+          offset: 62558
+          line: 843
           column: 1
         end:
-          offset: 58363
-          line: 783
+          offset: 62853
+          line: 843
           column: 296
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 8626
+          offset: 8718
           line: 72
           column: 1
         end:
-          offset: 8647
+          offset: 8739
           line: 72
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_8626"
+      unit_id: "normative_8718"
       source_span:
         start:
-          offset: 9428
+          offset: 9520
           line: 78
           column: 1
         end:
-          offset: 10978
+          offset: 11070
           line: 85
           column: 396
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_41935"
+      unit_id: "normative_45779"
       source_span:
         start:
-          offset: 41935
-          line: 714
+          offset: 45779
+          line: 773
           column: 1
         end:
-          offset: 41975
-          line: 714
+          offset: 45819
+          line: 773
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_55850"
+      unit_id: "normative_60340"
       source_span:
         start:
-          offset: 55850
-          line: 771
+          offset: 60340
+          line: 831
           column: 1
         end:
-          offset: 55872
-          line: 771
+          offset: 60362
+          line: 831
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1661,5 +1749,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:c89863ded2bec59d79d734c5a51f231f8c229568eba5677c61d751c037a04f70"
-  generated_content_sha256: "sha256:8a63d0a0ff54bed0bbba3e0ec6a7b3f9dad62465236bb29c0c90a25a7703eddf"
+    sha256: "sha256:3911cbbb650530d8d0fcea797fc299877bcec07b6f28532b02625b9a8c9434c0"
+  generated_content_sha256: "sha256:0bd5c277c0a87dbb22808a9d2d9b10ab8d2945b0bb8ccec65ea42ab50fbff4fd"

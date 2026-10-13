@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1 kg"
   how_well: "species or cultivar group, processing method, green-bean moisture basis, grade, defect criterion, geography, production system and gate declared"
   how_long_or_cycle: "one declared crop year and processing campaign; perennial establishment, replacement and termination phases annualized and indexed to the represented crop years"
-  reference_flow_link: "coffee_green_reference_output; coffee_gate_output"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: system_boundary_rule_1
@@ -67,7 +65,7 @@ reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
     name: "Coffee, green"
-    uuid: "b8869823-9c26-4580-9c45-95a626e0ca2a"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -164,6 +162,12 @@ process_map:
     inclusion_condition: "storage or warehouse handling occurs before the declared gate"
     role: "stabilization, storage and hand-off"
     quantitative_reference: "per 1 kg green coffee and storage day"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: coffee_plantation_production
     label: "Managed coffee production"
@@ -776,7 +780,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Record net accepted green coffee by lot, grade, moisture, defect criterion, destination and gate. This is the PCR reference output. Raw output measurement and reconciliation: weighed accepted green coffee output at declared gate Raw activity or stage basis: per 1 kg green coffee at gate."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "product_specific"
             basis:
@@ -927,7 +931,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Record the net green-coffee lot dispatched at the declared gate after storage reconciliation. Raw output measurement and reconciliation: weighed lot dispatched at declared gate, net of tare and documented storage loss Raw activity or stage basis: per 1 kg green coffee at gate."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "calculated_value"
             specificity: "product_specific"
             basis:
@@ -966,6 +970,74 @@ process_inventory:
                 evidence_kind: "method_formula"
                 source_ids:
                   - mass-balance-identity
+      elementary:
+        []
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Coffee, green"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Coffee, green"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
       elementary:
         []
 allocation_rules:
@@ -1147,6 +1219,18 @@ dataset_production:
       site_scope: "warehouse and lot"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "inventory, moisture and dispatch records"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: calc_01
       applies_to: "perennial production"
@@ -1325,20 +1409,24 @@ data_sources:
     type: "method_factor"
     reference: "Declared crop-year, lot, moisture, product, co-product, residue, wastewater and loss reconciliation method"
     used_for: "normalization, output completeness and double-counting checks"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:845dec1e3dc0117b719487fca4194e63efd0d2635da6634996394071f0cf0c85"
+  source_sha256: "sha256:e657a2f3a7f023104d3d2771c70ac0d679eb4af2ee2101e2c446ce80e2ac4fbb"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_6964"
+    - unit_id: "normative_7061"
       family: "system_boundary"
       span:
         start:
-          offset: 6964
+          offset: 7061
           line: 73
           column: 1
         end:
-          offset: 11024
+          offset: 11121
           line: 100
           column: 1
       markdown: "## 5. System Boundary\n\nThe default foreground boundary starts with the managed coffee production object and its declared crop year or perennial phase. It includes establishment and replacement when attributable to the represented output; soil and nutrient management; irrigation; crop protection; field energy; harvest; primary processing; drying; stabilization; hulling; cleaning; grading; sorting; and storage before the declared gate. Upstream production of fertilizers, crop-protection products, energy, water supply, treatment services and packaging uses background datasets unless the study declares them as foreground.\n\nThe boundary ends at green coffee at the declared farm, first mill or warehouse gate. Roasting, grinding, decaffeination, soluble coffee, beverage preparation, retail, consumer use and post-gate distribution are downstream. A dry or natural route may bypass pulping and washing, but it still declares whole-cherry drying, hulling and the associated residue states. A wet or honey route records pulping, fermentation or mucilage removal, washing where used, drying and wastewater treatment or discharge.\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | established_orchard_or_coffee_stand_and_declared_crop_year |\n| starting_condition_role | perennial_biological_production_condition |\n| product_classification_scope | CPC 3.0 `01610`, Coffee, green; unroasted green coffee at the declared gate |\n| recursive_input_rule | Coffee in the same product category entering a processing or blending boundary is recorded as a separately identified lot and is not recursively traced into another coffee PCR; purchased coffee used only for blending is outside the default single-origin route and requires explicit scope review |\n| upstream_dataset_requirement | Use reviewed upstream datasets for planting material, nutrients, crop protection, water supply, energy, treatment, packaging and transport services when they cross the declared foreground boundary |\n| disclosure | Declare farm or mill identity, block or supplier scope, crop year, species or cultivar group, production system, processing route, cherry-to-green mass balance, moisture basis, grade, gate, storage duration, intended outputs, residues, rejects, wastewater and allocation decisions |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_01` | managed production | Include the managed coffee stand, crop-year management, actual inputs, field emissions, harvest and the hand-off to primary processing; include establishment, replacement and termination when they are attributable to the declared perennial production period. | `fao-good-farming-practices`; `iso-14044-2006` |\n| `boundary_02` | primary processing | Include the route actually used: wet/washed, honey/semi-washed or dry/natural. Identify raw cherry, intermediate parchment or dry cherry, prepared green coffee, water, energy, rejects and wastewater or dry-processing residues. | `fao-arabica-coffee-manual-lao`; `fao-green-coffee-processing-africa` |\n| `boundary_03` | drying and storage | Include drying and stabilization before the gate. Record drying technology, weather or energy service, moisture measurements, storage duration and re-wetting, mould or quality-loss events when material. | `fao-ota-coffee-code`; `fao-green-coffee-processing-africa` |\n| `boundary_04` | recursive inputs and services | Treat purchased coffee, materials, utilities and treatment services as separately identified upstream inputs. Do not recurse into another green-coffee PCR or invent a fixed identity for an unresolved route-specific exchange. | `iso-14044-2006` |\n| `boundary_05` | losses, residues and rejects | Keep cherries lost in the field, pulp, mucilage, parchment, husk, wastewater solids, defects, broken beans, rejected lots and storage losses in the foreground until a documented co-product, recovery, treatment or disposal hand-off is recorded. | `fao-green-coffee-processing-africa`; `mass-balance-identity` |\n\n"
@@ -1358,11 +1446,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 6964
+              offset: 7061
               line: 73
               column: 1
             end:
-              offset: 6985
+              offset: 7082
               line: 73
               column: 22
           text: "## 5. System Boundary"
@@ -1378,16 +1466,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_47504"
+    - unit_id: "normative_51348"
       family: "allocation"
       span:
         start:
-          offset: 47504
-          line: 848
+          offset: 51348
+          line: 907
           column: 1
         end:
-          offset: 49607
-          line: 860
+          offset: 53451
+          line: 919
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_01` | perennial coffee production | Allocate establishment, replacement, shade or support systems and shared production phases by documented area-time, plant-year, crop-year, throughput or another justified physical basis. Disclose the represented phases and prevent double attribution across crop years. | `iso-14044-2006`; `fao-good-farming-practices` |\n| `allocation_02` | shared farm, wet mill and dry mill resources | Attribute shared meters, machinery, water, storage, operators, cleaning and changeover burdens once using measured activity, run time, batch throughput, lot mass or documented service. | `iso-14044-2006`; `mass-balance-identity` |\n| `allocation_03` | green coffee and intended co-products | Treat accepted green coffee as the reference output. Apply one documented PCR-specific allocation decision at each genuine multi-output boundary; use physical properties, economic allocation or another justified method consistently and disclose sensitivity when material. | `iso-14044-2006` |\n| `allocation_04` | pulp, mucilage, parchment, husk, residues and rejects | Treat a stream as a co-product or recovered material only when function, recipient, quantity, quality, destination and hand-off are documented. Otherwise retain its burden as residue or waste through treatment or disposal. | `iso-14044-2006`; `mass-balance-identity` |\n| `allocation_05` | rework, downgrade and storage loss | Keep burden on off-spec, reworked, downgraded or storage-loss material until its next declared hand-off; never count a lot as both accepted green coffee and reject, co-product or loss. | `mass-balance-identity` |\n\nThe PCR does not force one universal allocation method. The dataset must select and justify one method for each genuine multi-output boundary and apply it consistently. Avoided-production credit is not allowed from a destination label alone; it requires a documented recipient, function, comparable product, quantity, quality and attribution decision.\n\n"
       headings:
@@ -1406,12 +1494,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 47504
-              line: 848
+              offset: 51348
+              line: 907
               column: 1
             end:
-              offset: 47544
-              line: 848
+              offset: 51388
+              line: 907
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1426,16 +1514,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_60812"
+    - unit_id: "normative_65302"
       family: "validation"
       span:
         start:
-          offset: 60812
-          line: 906
+          offset: 65302
+          line: 966
           column: 1
         end:
-          offset: 63199
-          line: 919
+          offset: 67689
+          line: 979
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_01` | reference flow and metadata | Reject missing species or cultivar group, geography, crop year, processing route, moisture basis, grade, gate or mass property; verify the Coffee, green flow identity before final publication. | `fao-arabica-coffee-manual-lao`; `mass-balance-identity` |\n| `validation_02` | process map and route | Require managed production, harvest hand-off, selected wet/honey/dry route, drying or stabilization state, hulling/grading hand-off and explicit gate. | `fao-arabica-coffee-manual-lao`; `fao-green-coffee-processing-africa` |\n| `validation_03` | batch and mass balance | Reconcile every included lot from raw cherry or intermediate through green coffee, intended co-products, residues, wastewater, rejects and loss; reject mixed moisture bases or double counting. | `fao-green-coffee-processing-africa`; `mass-balance-identity` |\n| `validation_04` | multi-output boundaries | Enumerate every intended output and hand-off; reject co-product or avoided-production credit without function, recipient, quantity, quality, destination and allocation decision. | `iso-14044-2006` |\n| `validation_05` | processing and drying | Check wet, honey or dry route consistency, drying records, moisture measurement, storage condition, re-wetting or mould event and route-specific water use. | `fao-ota-coffee-code`; `fao-green-coffee-processing-africa` |\n| `validation_06` | periods, storage and campaigns | Link establishment, replacement, termination, crop year, harvest lot, processing batch, changeover, storage duration and dispatch to one period or phase; prevent double attribution. | `iso-14044-2006`; `mass-balance-identity` |\n| `validation_07` | nutrient, water and elementary flows | Verify product versus nutrient basis, irrigation versus withdrawal, process water versus wastewater, receiving medium and one selected emissions method; prevent duplicate nitrogen or water pathways. | `ipcc-2019-refinement-afolu`; `fao-good-farming-practices` |\n| `validation_08` | rejects and residues | Require a declared fate for pulp, mucilage, parchment, husk, defects, broken beans, foreign matter, wastewater solids, storage loss and rejected lots; a destination label alone is insufficient. | `fao-green-coffee-processing-africa`; `mass-balance-identity` |\n\n"
       headings:
@@ -1454,12 +1542,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 60812
-              line: 906
+              offset: 65302
+              line: 966
               column: 1
             end:
-              offset: 60834
-              line: 906
+              offset: 65324
+              line: 966
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1478,324 +1566,324 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "system_boundary_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 6987
+          offset: 7084
           line: 75
           column: 1
         end:
-          offset: 7589
+          offset: 7686
           line: 75
           column: 603
     - pointer: "/system_boundary/rules/1"
       rule_id: "system_boundary_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 7591
+          offset: 7688
           line: 77
           column: 1
         end:
-          offset: 8093
+          offset: 8190
           line: 77
           column: 503
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_01"
       identity_kind: "explicit"
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 9373
+          offset: 9470
           line: 94
           column: 1
         end:
-          offset: 9721
+          offset: 9818
           line: 94
           column: 349
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_02"
       identity_kind: "explicit"
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 9722
+          offset: 9819
           line: 95
           column: 1
         end:
-          offset: 10061
+          offset: 10158
           line: 95
           column: 340
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_03"
       identity_kind: "explicit"
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 10062
+          offset: 10159
           line: 96
           column: 1
         end:
-          offset: 10367
+          offset: 10464
           line: 96
           column: 306
     - pointer: "/system_boundary/rules/5"
       rule_id: "boundary_04"
       identity_kind: "explicit"
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 10368
+          offset: 10465
           line: 97
           column: 1
         end:
-          offset: 10663
+          offset: 10760
           line: 97
           column: 296
     - pointer: "/system_boundary/rules/6"
       rule_id: "boundary_05"
       identity_kind: "explicit"
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 10664
+          offset: 10761
           line: 98
           column: 1
         end:
-          offset: 11022
+          offset: 11119
           line: 98
           column: 359
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_01"
       identity_kind: "explicit"
-      unit_id: "normative_47504"
+      unit_id: "normative_51348"
       source_span:
         start:
-          offset: 47617
-          line: 852
+          offset: 51461
+          line: 911
           column: 1
         end:
-          offset: 47986
-          line: 852
+          offset: 51830
+          line: 911
           column: 370
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_02"
       identity_kind: "explicit"
-      unit_id: "normative_47504"
+      unit_id: "normative_51348"
       source_span:
         start:
-          offset: 47987
-          line: 853
+          offset: 51831
+          line: 912
           column: 1
         end:
-          offset: 48284
-          line: 853
+          offset: 52128
+          line: 912
           column: 298
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_03"
       identity_kind: "explicit"
-      unit_id: "normative_47504"
+      unit_id: "normative_51348"
       source_span:
         start:
-          offset: 48285
-          line: 854
+          offset: 52129
+          line: 913
           column: 1
         end:
-          offset: 48637
-          line: 854
+          offset: 52481
+          line: 913
           column: 353
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_04"
       identity_kind: "explicit"
-      unit_id: "normative_47504"
+      unit_id: "normative_51348"
       source_span:
         start:
-          offset: 48638
-          line: 855
+          offset: 52482
+          line: 914
           column: 1
         end:
-          offset: 48982
-          line: 855
+          offset: 52826
+          line: 914
           column: 345
     - pointer: "/allocation_rules/4"
       rule_id: "allocation_05"
       identity_kind: "explicit"
-      unit_id: "normative_47504"
+      unit_id: "normative_51348"
       source_span:
         start:
-          offset: 48983
-          line: 856
+          offset: 52827
+          line: 915
           column: 1
         end:
-          offset: 49252
-          line: 856
+          offset: 53096
+          line: 915
           column: 270
     - pointer: "/allocation_rules/5"
       rule_id: "allocation_rule_6"
       identity_kind: "snapshot_local"
-      unit_id: "normative_47504"
+      unit_id: "normative_51348"
       source_span:
         start:
-          offset: 49254
-          line: 858
+          offset: 53098
+          line: 917
           column: 1
         end:
-          offset: 49605
-          line: 858
+          offset: 53449
+          line: 917
           column: 352
     - pointer: "/validation_rules/0"
       rule_id: "validation_01"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 60907
-          line: 910
+          offset: 65397
+          line: 970
           column: 1
         end:
-          offset: 61210
-          line: 910
+          offset: 65700
+          line: 970
           column: 304
     - pointer: "/validation_rules/1"
       rule_id: "validation_02"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 61211
-          line: 911
+          offset: 65701
+          line: 971
           column: 1
         end:
-          offset: 61479
-          line: 911
+          offset: 65969
+          line: 971
           column: 269
     - pointer: "/validation_rules/2"
       rule_id: "validation_03"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 61480
-          line: 912
+          offset: 65970
+          line: 972
           column: 1
         end:
-          offset: 61783
-          line: 912
+          offset: 66273
+          line: 972
           column: 304
     - pointer: "/validation_rules/3"
       rule_id: "validation_04"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 61784
-          line: 913
+          offset: 66274
+          line: 973
           column: 1
         end:
-          offset: 62028
-          line: 913
+          offset: 66518
+          line: 973
           column: 245
     - pointer: "/validation_rules/4"
       rule_id: "validation_05"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 62029
-          line: 914
+          offset: 66519
+          line: 974
           column: 1
         end:
-          offset: 62292
-          line: 914
+          offset: 66782
+          line: 974
           column: 264
     - pointer: "/validation_rules/5"
       rule_id: "validation_06"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 62293
-          line: 915
+          offset: 66783
+          line: 975
           column: 1
         end:
-          offset: 62573
-          line: 915
+          offset: 67063
+          line: 975
           column: 281
     - pointer: "/validation_rules/6"
       rule_id: "validation_07"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 62574
-          line: 916
+          offset: 67064
+          line: 976
           column: 1
         end:
-          offset: 62894
-          line: 916
+          offset: 67384
+          line: 976
           column: 321
     - pointer: "/validation_rules/7"
       rule_id: "validation_08"
       identity_kind: "explicit"
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 62895
-          line: 917
+          offset: 67385
+          line: 977
           column: 1
         end:
-          offset: 63197
-          line: 917
+          offset: 67687
+          line: 977
           column: 303
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 6964
+          offset: 7061
           line: 73
           column: 1
         end:
-          offset: 6985
+          offset: 7082
           line: 73
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_6964"
+      unit_id: "normative_7061"
       source_span:
         start:
-          offset: 8121
+          offset: 8218
           line: 81
           column: 1
         end:
-          offset: 9280
+          offset: 9377
           line: 88
           column: 298
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_47504"
+      unit_id: "normative_51348"
       source_span:
         start:
-          offset: 47504
-          line: 848
+          offset: 51348
+          line: 907
           column: 1
         end:
-          offset: 47544
-          line: 848
+          offset: 51388
+          line: 907
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_60812"
+      unit_id: "normative_65302"
       source_span:
         start:
-          offset: 60812
-          line: 906
+          offset: 65302
+          line: 966
           column: 1
         end:
-          offset: 60834
-          line: 906
+          offset: 65324
+          line: 966
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1804,5 +1892,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:845dec1e3dc0117b719487fca4194e63efd0d2635da6634996394071f0cf0c85"
-  generated_content_sha256: "sha256:baf01b81bad08990dce2ed9c4df39c00a34ca3cea3ed9728cc3fad8996e92275"
+    sha256: "sha256:e657a2f3a7f023104d3d2771c70ac0d679eb4af2ee2101e2c446ce80e2ac4fbb"
+  generated_content_sha256: "sha256:ee0a65d58992861f69c4d6627a8ebbb453b43af931e89011f1e66f053dad6d06"

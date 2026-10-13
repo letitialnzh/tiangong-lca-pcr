@@ -287,7 +287,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：向空气排放的氧化亚氮；具体基本流身份待方法和区室绑定
 - 流属性/单位：质量 / kg N2O
-- 数量规则：`calc_soil_n2o`
+- 数量规则：对已记录的化肥、有机肥和残茬氮应用声明的地区方法或 IPCC 2019 直接与间接 N2O 方法；已出售或焚烧残茬不计入返田残茬氮
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：田块和种植周期.
@@ -305,6 +305,8 @@ sync_with: pcr.en-US.md
   - 基准：按 calculated managed-soil N2O per cultivated hectare; retain factor-method audit 及所列单位作宽区间筛查；逐批使用实测与计算记录，超界须说明；该值不是默认值或合规限值
   - 基准类型：作物周期（`crop_cycle`）
   - 证据类型：推理估算（`reasoned_estimate`）
+
+计算方法对应第 8 节规则：`calc_soil_n2o`。
 
 ### 过程：割晒或直收及脱粒（`flax_harvest`）
 
@@ -378,7 +380,7 @@ sync_with: pcr.en-US.md
 
 脱粒后的籽粒进入首次清选；记录实测湿质量及水分、种皮损伤和田间损失。[manitoba-flax-management]
 
-- 选定流：亚麻籽 `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- 选定流：亚麻籽
 - 流属性/单位：质量 / kg
 - 数量规则：扣除皮重的联合收获籽粒实测质量
 - 数值来源模式：前景记录（`foreground_record`）
@@ -397,6 +399,8 @@ sync_with: pcr.en-US.md
   - 基准：按 raw harvested linseed grain per harvested hectare 及所列单位作宽区间筛查；逐批使用实测与计算记录，超界须说明；该值不是默认值或合规限值
   - 基准类型：作物周期（`crop_cycle`）
   - 证据类型：推理估算（`reasoned_estimate`）
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ###### 出售的亚麻秸秆（`linseed_sold_straw`）
 
@@ -521,7 +525,7 @@ sync_with: pcr.en-US.md
 
 清选后的籽粒按需进入水分稳定过程，再进入分级过程。[manitoba-flax-management]
 
-- 选定流：亚麻籽 `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- 选定流：亚麻籽
 - 流属性/单位：质量 / kg
 - 数量规则：清选后实测籽粒质量
 - 数值来源模式：前景记录（`foreground_record`）
@@ -541,6 +545,8 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`iso-14044-lci`
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 
@@ -668,7 +674,7 @@ sync_with: pcr.en-US.md
 
 籽粒按实测含水率离开本节点，并记录与该操作相关的降温及农场内暂存。[manitoba-growing-flax]
 
-- 选定流：亚麻籽 `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- 选定流：亚麻籽
 - 流属性/单位：质量 / kg
 - 数量规则：实测处理后湿质量及含水率
 - 数值来源模式：前景记录（`foreground_record`）
@@ -688,6 +694,8 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`iso-14044-lci`
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 
@@ -724,7 +732,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：水蒸气；基本流身份待本地流约定确认
 - 流属性/单位：质量 / kg
-- 数量规则：`calc_moisture_balance`
+- 数量规则：干物质 = 入料湿质量 ×（1 − 入料湿基含水率）；预期出料湿质量 = 守恒干物质 /（1 − 出料湿基含水率），另扣实测干物质拒收量
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：调质批次.
@@ -742,6 +750,8 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`iso-14044-lci`
+
+计算方法对应第 8 节规则：`calc_moisture_balance`。
 
 ### 过程：批次分级与农场门交接（`linseed_grading`）
 
@@ -814,7 +824,7 @@ sync_with: pcr.en-US.md
 
 低等级籽粒只有单独计量、出售且明确去向时才作为预期产品；记录等级，不得加入合格参考质量。[manitoba-flax-management]
 
-- 选定流：亚麻籽 `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- 选定流：亚麻籽
 - 流属性/单位：质量 / kg
 - 数量规则：单独称量的降级出售质量；未出售时为零
 - 数值来源模式：前景记录（`foreground_record`）
@@ -835,6 +845,8 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`iso-14044-lci`
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 
@@ -1013,7 +1025,7 @@ sync_with: pcr.en-US.md
 
 未达种用等级但仍可作为油用籽粒出售时，只在最终油用分级交接点计入一次，并声明等级和质量。[cfia-common-seed]
 
-- 选定流：亚麻籽 `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- 选定流：亚麻籽
 - 流属性/单位：质量 / kg
 - 数量规则：称量的降级籽粒质量
 - 数值来源模式：前景记录（`foreground_record`）
@@ -1033,6 +1045,8 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`iso-14044-lci`
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 

@@ -35,7 +35,7 @@ The boundary starts with managed cultivation or an explicitly identified sourced
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Raw dried *Capsicum* or *Pimenta* fruit (UUID unresolved) |
+| Reference product flow | whole raw dried Capsicum or Pimenta fruit; UUID unresolved |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

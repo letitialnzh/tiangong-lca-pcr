@@ -37,14 +37,12 @@ translation_status: aligned
 | How much | 1,000 kg 净合格带壳核桃 |
 | How well | 品种或品种组；生产国家、地区和气候；树龄和结果状态；作物年度；鲜品或调理状态；外果皮状态；硬壳完整性；成熟度；尺寸或等级；合格、降级、拒收和损失质量；外果皮去向；交接节点 |
 | How long or cycle | 多年生树木结果寿命内声明的一个作物年度；建植、未结果年份、补植和清除按声明树木寿命及合格产出基准分配 |
-| reference_flow_link | walnut_conditioned_accepted_output; walnut_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Walnuts, in shell `b87dc835-33df-4974-a2e7-679529cdec70` |
+| 参考产品流 | Walnuts, in shell |
 | 参考流属性 | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
@@ -52,7 +50,9 @@ translation_status: aligned
 
 必需限定信息必须在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中声明。净产品质量排除容器皮重。平台身份对应农场鲜品节点的产品流；去外果皮、分级、干燥或储存属于延伸交接节点，必须保留该限定信息，不能表示成新的产品类别。不得将去壳或劈开的核桃用作本 PCR 的参考产品。
 
-每个前景数据集必须明确选择一个实际路线、声明交接节点、产品状态和输出行。仅将选定的终端输出归一化至参考数量；纳入后续过程时，前序输出仍采用实测内部转移量。原始称量、质量核对和批次追踪要求仍然适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 
@@ -106,6 +106,7 @@ translation_status: aligned
 | `walnut_harvest_and_collection` | 核桃采收和收集 | required |  | foreground | 可选去外果皮前收集的完整果实 |
 | `walnut_primary_conditioning_and_grading` | 核桃去外果皮、物料处理、初级调理和分级 | conditional | 前景数据包包含去外果皮、清理、分级或延伸交接节点时纳入 | 初级调理和稳定化 | 接收批次及等级输出 |
 | `walnut_storage_and_gate_handoff` | 核桃储存和交接 | conditional | 声明前景边界包含储存或采后交接节点时纳入 | 储存和交付交接 | 1,000 kg 声明交接节点输出 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：核桃树建植和管理（`walnut_orchard_establishment_and_management`）
 
@@ -450,7 +451,7 @@ translation_status: aligned
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始输出测量与核对：实测净合格批次输出，排除皮重
 
-- 数量规则：当选为参考输出时为 1000 kg；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 声明调理节点输出。
@@ -666,7 +667,7 @@ translation_status: aligned
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始输出测量与核对：实测净发货质量，排除皮重
 
-- 数量规则：当选为参考输出时为 1000 kg；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 声明交接节点输出。
@@ -711,6 +712,64 @@ translation_status: aligned
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估计（`reasoned_estimate`）
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Walnuts, in shell
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Walnuts, in shell
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与副产品处理
 
 | rule_id | applies_to | 规则 | source_ids |
@@ -743,6 +802,7 @@ translation_status: aligned
 | `cp_walnut_hull_destination_records` | `walnut_primary_conditioning_and_grading` | 外果皮副产品、残余物或废物 | 去向和转移记录 | 外果皮质量；干物质或水分；去向；接收方；价格或用途；最终处理方式；转移日期 | 称量、转移记录及去向确认；原始汇总与归属：区分预期输出、残余物和废物 | kg 和声明分数 | 每次转移 | 调理期间 | 每个外果皮去向 | 每声明的参考流 | 收据、转移单、去向证据 |
 | `cp_walnut_grade_reject_records` | `walnut_primary_conditioning_and_grading` | 等级、降级、拒收、异物 | 检验和分级记录 | 批次；成熟度；外果皮状态；硬壳状况；霉变；虫害；异物；合格质量；返工；去向 | 检验、抽样和称量记录；原始汇总与归属：等级和拒收状态互斥 | kg、%、等级代码 | 每批次 | 声明采后期间 | 每个分级点 | 每声明的参考流 | 检验表、抽样方案、秤校准 |
 | `cp_walnut_storage_records` | `walnut_storage_and_gate_handoff` | 储存投入、损失、包装、交接输出 | 库存和发货台账 | 期初库存；收货；批次；产品状态；水分或鲜度；储存时长；包装；能源；损伤；期末库存；发货质量；交接节点 | 库存台账、发货单和储存日志；原始汇总与归属：期初库存 + 收货 = 发货 + 期末库存 + 损失 | kg、%、天、kWh、item | 收货、检查和发货 | 声明储存期间 | 每个储存设施 | 每声明的参考流 | 库存核对、发货单、鲜度或水分及虫害记录 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -805,3 +865,7 @@ translation_status: aligned
 | `mass-balance-identity` | method_factor | Conservation-of-mass method identity for lot reconciliation | 采收、去外果皮、分级、储存、拒收、残余物及水分损失核对 |
 | `ucdavis-walnut-harvest-processing` | official_guidance | UC Davis Fruit and Nut Research and Information Center, Walnut Harvesting & Processing, https://fruitsandnuts.ucdavis.edu/walnut-harvesting-processing | 仅支持作物身份、采收或初级处理及储存背景；不提供定量清单系数 |
 | `codex-tree-nuts-hygiene-cxc-6-1972` | standard | Codex Alimentarius, Code of Hygienic Practice for Tree Nuts, CXC 6-1972, https://www.fao.org/fao-who-codexalimentarius/sh-proxy/zh/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FStandards%252FCXC%2B6-1972%252FCXC_006e.pdf | 卫生、产品状态和处理背景；不提供默认 LCA 数量或作物专属产量因子 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

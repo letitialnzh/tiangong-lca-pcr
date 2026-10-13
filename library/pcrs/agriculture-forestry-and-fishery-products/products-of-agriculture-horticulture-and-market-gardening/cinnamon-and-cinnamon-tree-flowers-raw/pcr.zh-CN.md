@@ -341,7 +341,7 @@ sync_with: pcr.en-US.md
 
 记录初级整备后、分级前的剥取树皮、桂皮筒、碎筒、碎片或带外皮树皮；产品保持未研磨状态。
 
-- 选定流： Cinnamon and cinnamon-tree flowers, raw `6e9b5ee6-fbb3-48f8-9b7a-dc50936ee79a`
+- 选定流： Cinnamon and cinnamon-tree flowers, raw
 - 流属性/单位： Mass / kg
 - 数量规则：按批次特定水分测量整备树皮预期产出的净质量。
 - 数值来源模式： 前景记录（`foreground_record`）
@@ -362,6 +362,8 @@ sync_with: pcr.en-US.md
   - 基准类型： 过程输出（`process_output`）
   - 证据类型： 外部来源（`external_source`）
   - 来源： `eurlex-2020-ceylon-cinnamon`
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ###### 作为共产品出售的木材、叶片与细枝（`bark_route_coproducts`）
 
@@ -506,7 +508,7 @@ sync_with: pcr.en-US.md
 
 记录分级前清洁的鲜花/花芽或初级干燥产品；声明交易材料是花、未成熟花芽，还是作为“花芽”销售的未成熟果实。
 
-- 选定流： Cinnamon and cinnamon-tree flowers, raw `6e9b5ee6-fbb3-48f8-9b7a-dc50936ee79a`
+- 选定流： Cinnamon and cinnamon-tree flowers, raw
 - 流属性/单位： Mass / kg
 - 数量规则：按批次特定水分测量整备花/花芽的净质量。
 - 数值来源模式： 前景记录（`foreground_record`）
@@ -526,6 +528,8 @@ sync_with: pcr.en-US.md
   - 基准：整备花/花芽接收态；因未找到跨物种官方限值而作为暂定校验
   - 基准类型： 过程输出（`process_output`）
   - 证据类型： 推理估算（`reasoned_estimate`）
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 

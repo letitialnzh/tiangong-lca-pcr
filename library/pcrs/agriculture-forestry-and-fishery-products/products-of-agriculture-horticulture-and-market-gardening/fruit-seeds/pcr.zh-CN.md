@@ -43,25 +43,25 @@ sync_with: pcr.en-US.md
 | How much | 1 kg |
 | How well | 作物或植物身份；品种、品系或杂交状态；种子等级；生产地理位置；一年生或多年生路线；多汁果实或干果路线；取种和处理状态；含水率或活力基准；物理纯度；发芽率或活力结果；包装状态；纳入的储存期；以及申报交付门 |
 | How long or cycle | 一个声明的种子生产周期和采收活动；多年生果园或母株应记录建植、生产、更新和终止期间，以及将其归属到种子批次的分配基准 |
-| reference_flow_link | accepted_seed_lot_before_presentation; fruit_seed_reference_flow |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 ### 3.2 参考产品
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Fruit seeds, production mix, at farm gate, seed-grade cleaned for sowing (`51c9dbb5-2bed-4546-b6aa-84e2b59bf91f`) |
+| Reference product flow | Fruit seeds, production mix, at farm gate, seed-grade cleaned for sowing |
 | Reference flow property | Mass (`93a60a56-a3c8-11da-a746-0800200b9a66`) |
 | Reference unit group | Units of mass (`93a60a57-a4c8-11da-a746-0800200c9a66`) |
 | Reference unit | kg |
 | Required qualifiers | 作物或植物物种；品种、品系或杂交状态；种子等级；生产地理位置；生产单元类型；一年生或多年生周期；多汁果实、干果、荚果、果核或其他生殖结构；湿取种或干取种路线；含水率基准或顽拙性种子状态；物理纯度；发芽率或活力结果及检验方法；处理状态；包装状态；储存期；申报交付门；预期共产品；残余物、拒收物和返工物去向 |
-| Reference identity status | 已根据 CPC 01360 精确产品候选及保存的质量流属性/单位组索引复核固定 UUID |
+| Reference identity status | 实际交接状态 UUID 待核实；既有 UUID 证据仅适用于原有明确状态。 |
 
 计量基准补充：1 kg 净合格种子
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 ### 测量和换算规则
@@ -108,6 +108,7 @@ sync_with: pcr.en-US.md
 | `seed_drying_primary_conditioning` | 干燥与初级调制 | 必需；包括干燥、脱粒/清选等首轮处理，直至可分级种子。 |
 | `seed_grading_testing_lot_release` | 分级、检验与批次放行 | 必需；把合格、降级、拒收和样品路径分开。 |
 | `seed_treatment_packaging_storage` | 处理、包装与储存 | 条件过程；只对实际处理、包装或声明储存期建模。 |
+| declared_reference_handoff | 声明交接门的产品计量 | 必需；仅记录实际路线交接数量，增加零物理工序，唯一交接参考输出。 |
 
 `fleshy_seed_extraction` 和 `dry_seed_extraction` 是技术替代，不应对同一批次重复计入。若生产记录在同一场所混合多种路线，应按批次拆分。若有替代技术或备用路线，应分别记录技术差异、产率和质量结果；不得用一个平均路线隐藏技术变化。
 
@@ -726,7 +727,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：按放行证书对应的净质量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
 原始活动或阶段基准：1 kg 放行合格种子.
 
@@ -877,7 +878,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：放行批次净质量减皮重、样品、拒收和交付前损失
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
 原始活动或阶段基准：1 kg 放行合格种子.
 
@@ -915,6 +916,64 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`, `fao-tree-seed-handling`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Fruit seeds, production mix, at farm gate, seed-grade cleaned for sowing
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Fruit seeds, production mix, at farm gate, seed-grade cleaned for sowing
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与联产品处理
 
 | `rule_id` | 规则 |
@@ -946,6 +1005,7 @@ sync_with: pcr.en-US.md
 | cp_treatment_packaging_storage | seed_treatment_packaging_storage | 处理、包装、储存和交付形态 | 处理日志、包装规格、领用记录、库存台账、储存日志 | 批次编号；处理产品和剂量；包装类型和质量；装填数量；复用；期初和期末库存；相关时的温度或湿度；损失；发运 | 将处理和包装记录与库存变动及门口产出核对；逐批核对，共享储存按有记录的质量时间基础分摊 | kg；件；kWh；百分比；日期；储存时长 | 每次处理、包装作业、库存变动或每月储存记录 | 纳入边界的处理和储存期间 | 每个设施、储存室和批次 | 每声明的参考流 | 处理记录、包装规格、仪表、库存台账 |
 | cp_co_product_and_residue_fate | fruit_seed_harvest_capture_or_extraction_conditioning_process | 共产品、残体、拒收品和废物去向 | 销售或转移记录、接收方确认、堆肥或处置单据 | 物流；质量；含水率；预定用途；接收方；质量状况；交接；处理；日期 | 将产出物流关联至可长期追溯的去向记录；不得汇总不同去向而不保留各物流身份 | kg；百分比；分类去向 | 每个产出物流 | 完整生产和加工季 | 每个生产单元及接收目的地 | 每声明的参考流 | 发票、转移单、废物单据、接收方记录 |
 | cp_emission_context | fruit_seed_multiplication_or_seed_drying_primary_conditioning | 基本流排放和方法背景 | 土壤、气候、养分、排水、排放、粉尘和因子记录 | 物质；接收介质；土壤；气候；养分投入；残体去向；灌溉；排水；方法层级；因子；测量；日期 | 采集方法输入和计算结果并保留来源及单位；按声明方法计算一次，并与活动数据核对 | kg 物质；kg N；ha；m3；因子单位 | 每次施用、事件或报告期 | 完整作物周期、批次或期间 | 每个生产单元和排放源 | 每声明的参考流 | 方法表、实验室或仪表记录、因子引用 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -1032,3 +1092,7 @@ sync_with: pcr.en-US.md
 | `mass-balance-identity` | 过程入口、输出、损失和共产品的质量守恒检查；内部方法恒等式，不代表外部数据库身份。 |
 
 本中文文件是 `pcr.en-US.md` 的对齐翻译。
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

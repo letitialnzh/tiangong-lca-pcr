@@ -35,14 +35,12 @@ translation_status: aligned
 | How much | 1,000 kg |
 | How well | 新鲜、整果、未加工，并声明带荚或去荚形态、类型、品种、成熟度、嫩度、颜色、大小、等级和包装状态 |
 | How long or cycle | 从种植或移栽到最后一次纳入数据集的采收的完整作物周期，报告生产年度和采收窗口 |
-| reference_flow_link | marketable_green_pea_dispatch; green_peas_at_declared_gate |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Peas, green；生产混合，在农场；鲜品、未加工 `b0d5d264-fa1a-4230-8bf8-423b8125d8a7` |
+| 参考产品流 | Peas, green；生产混合，在农场；鲜品、未加工 |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
@@ -51,7 +49,9 @@ translation_status: aligned
 
 参考产品流及质量支持对象已按 CPC 3.0:01242 完成平台核验，选定 UUID 不包含数据集版本。不得用干豌豆、成熟豌豆或加工产品替代鲜青豌豆。构建前景数据包时必须披露上述限定信息，并使带荚和去荚产品的质量平衡保持一致。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 ## 5. 系统边界
@@ -87,6 +87,7 @@ translation_status: aligned
 | `crop_management` | 青豌豆 crop management | required | each represented green pea 作物周期 | foreground managed biological production | production-unit area, irrigation, nutrients, protection, energy, and harvest campaign |
 | `harvest_and_gate_preparation` | 青豌豆 harvest and gate preparation | required | each represented harvest campaign | foreground harvest, optional shelling, conditioning, packaging, and gate hand-off | 1,000 kg 商品 fresh green pea output |
 | `purchased_transport_to_gate` | Purchased transport to declared gate | conditional | when a transport service crosses the foreground boundary before the declared gate | foreground delivery service | tonne-kilometres from production unit or pack-house to gate |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: 青豌豆 crop establishment (`crop_establishment`)
 
@@ -720,7 +721,7 @@ Accepted podded or shelled 青豌豆 leave the conditioning process at the decla
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：Sum net accepted mass after grading and any included shelling, washing, or cooling, excluding packaging tare.
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： Calculated value (`calculated_value`)
 - 具体性： Site-specific (`site_specific`)
 原始活动或阶段基准：per 1,000 kg accepted fresh green pea output.
@@ -837,7 +838,7 @@ The transport process delivers the declared reference product when purchased tra
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：Carry forward the net accepted mass from the pre-transport hand-off after documenting transport loss or rejected loads, if any.
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： Calculated value (`calculated_value`)
 - 具体性： Route-specific (`route_specific`)
 原始活动或阶段基准：per 1,000 kg accepted fresh green pea output.
@@ -851,6 +852,64 @@ The transport process delivers the declared reference product when purchased tra
 ##### 废物流
 
 ##### 基本流
+
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Peas, green；生产混合，在农场；鲜品、未加工
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Peas, green；生产混合，在农场；鲜品、未加工
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
 
 ## 7. 分配与联产品处理
 
@@ -883,6 +942,7 @@ The transport process delivers the declared reference product when purchased tra
 | `cp_packaging_records` | `harvest_and_gate_preparation` | crates, pallets, cartons, boxes, films, and bags | packaging specification, issue log, return log | package type; material; tare; capacity; count; reuse cycles; return; loss; lot | reconcile issue and return records to lot throughput and reuse basis；原始汇总与分配：allocate by capacity or documented mass basis | kg, item, cycle | each issue and return event | full included gate period | each pack-house and route | 每声明的参考流 | supplier specification; issue and return log |
 | `cp_transport_records` | `purchased_transport_to_gate` | purchased road freight | transport order, bill, route record | material; loaded mass; origin; destination; distance; vehicle or service; return assumption; date | calculate tonne-kilometres from verified route and loaded mass；原始汇总与分配：aggregate by material and pea lot | tkm, kg, km | each shipment | all included pre-gate shipments | each route and declared gate | 每声明的参考流 | bill of lading; route record; mass record |
 | `cp_emission_records` | `crop_management` | ammonia, nitrous oxide, nitrate, phosphate, and methane | nutrient plan, drainage record, residue log, emission worksheet | N and P inputs; factor or method; soil or substrate; drainage; residue fate; receiving medium; date | calculate using one declared method and retain source fields and method version；原始汇总与分配：aggregate by receiving medium and 作物周期 | kg nutrient; kg emission | each 作物周期 or method period | full 作物周期 and residue period | each production unit | 每声明的参考流 | method worksheet; input reconciliation; receiving-medium evidence |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -948,3 +1008,7 @@ The transport process delivers the declared reference product when purchased tra
 | `ipcc-2019-managed-soils` | method_factor | IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html; retrieved 2026-09-14 | managed-soil nitrogen emission pathways and calculation-method selection |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html; retrieved 2026-09-14 | allocation, co-product, attribution, packaging reuse, and data-quality principles |
 | `mass-balance-identity` | method_factor | PCR mass-balance reconciliation method: gross harvested or received mass equals accepted product plus separately recorded downgraded, residue, treatment, and unexplained loss streams | product-form conversion, normalization, transport, and validation mass closure |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

@@ -33,14 +33,12 @@ sync_with: pcr.en-US.md
 | How much | 1,000 kg 接收状态烟叶 |
 | How well | 已声明的青叶或调制状态、适用时的调制方法、水分、等级、品种、产地、作物年份和验收规格 |
 | How long or cycle | 一个作物周期；调制烟叶还包括匹配的调制和分级批次 |
-| reference_flow_link | green_leaf_output; graded_cured_leaf_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | 未加工烟草，生产混合，农场门，鲜叶未加工 `e903dd1d-1d82-41e7-9526-2ae250746688` 仅用于青烟叶；调制烟叶标识未解析 |
+| Reference product flow | 未加工烟草，生产混合，农场门，鲜叶未加工 仅用于青烟叶；调制烟叶标识未解析 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -48,7 +46,9 @@ sync_with: pcr.en-US.md
 
 固定的鲜叶 UUID 不得用于标识调制烟叶。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用于 | 必需属性 | 必需单位 | 规则 |
@@ -90,6 +90,7 @@ sync_with: pcr.en-US.md
 | `tobacco_field_production` | Tobacco field production and harvest | required | always | managed biological production and separate leaf harvest | hectare and harvested green-leaf mass for 一个作物周期 |
 | `tobacco_leaf_curing` | Tobacco leaf curing | conditional | terminal product is cured leaf | stabilize leaf by one declared curing technology | incoming green leaf and accepted cured leaf per batch |
 | `cured_leaf_grading_packing` | Cured-leaf grading and packing | conditional | cured leaf is graded, reworked, or packed before hand-off | grade and present cured leaf | incoming and accepted packed-leaf mass |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：烟草田间生产与采收 (`tobacco_field_production`)
 
@@ -247,7 +248,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位： Mass / kg
 原始产出计量与核对要求：在声明水分、等级和门点下实测的合格青烟叶质量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： 前景记录（`foreground_record`）
 - 适用范围： 场址特定（`site_specific`）
 原始活动或阶段基准：per hectare; scale to 1,000 kg only when green leaf is terminal.
@@ -573,7 +574,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位： Mass / kg
 原始产出计量与核对要求：按等级、声明水分和包装形式实测的合格质量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： 前景记录（`foreground_record`）
 - 适用范围： 场址特定（`site_specific`）
 原始活动或阶段基准：terminal output scaled to 1,000 kg.
@@ -644,6 +645,64 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：未加工烟草，生产混合，农场门，鲜叶未加工 仅用于青烟叶；调制烟叶标识未解析
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：未加工烟草，生产混合，农场门，鲜叶未加工 仅用于青烟叶；调制烟叶标识未解析
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与联产品处理
 
 | rule_id | 适用于 | 规则 | source_ids |
@@ -667,6 +726,7 @@ sync_with: pcr.en-US.md
 | `cp_field_emissions` | `tobacco_field_production` | emissions | nutrient, soil, weather, residue, model | N; residue N; soil; climate; application; drainage; factors; model | declared applicable calculation method；原始汇总与分配：calculate per field, area-weight, normalize | kg N; kg emission; ha | each event/cycle | full cycle | all fields | 每声明的参考流 | activity and factor provenance; model file |
 | `cp_curing_records` | `tobacco_leaf_curing` | leaf, energy, rejects, emissions | batch, scale, moisture, meter, barn log | batch; method; barn; input mass/moisture; carrier; energy; time; outputs | match each run to inputs/outputs/meters；原始汇总与分配：reconcile mass; allocate shared services by measured driver | kg; percent; kWh; MJ; h | 每批次/周期 | 完整调制期 | 所有调制设施和场址 | 每声明的参考流 | calibrated scale/meter; invoice; barn log |
 | `cp_grading_records` | `cured_leaf_grading_packing` | grades, packaging, rework, rejects | batch, scale, grade, issue, destination | batch; input; moisture; accepted; downgrade; rework; reject; packaging | reconcile grades/destinations；原始汇总与分配：count rework once and close mass balance | kg; item; percent | 每批次 | 完整分级期 | 所有分级和包装场址 | 每声明的参考流 | calibration; grade sheet; package record |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -725,3 +785,7 @@ sync_with: pcr.en-US.md
 | `iso-14044-2006` | standard | ISO 14044:2006 | allocation and disclosure |
 | `mass-balance-identity` | method_factor | Conservation of mass for matched harvest, curing, and grading batches | batch calculations and validation |
 | `reference-normalization-rule` | method_factor | PCR normalization: terminal reference output equals 1,000 kg | exact terminal range |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

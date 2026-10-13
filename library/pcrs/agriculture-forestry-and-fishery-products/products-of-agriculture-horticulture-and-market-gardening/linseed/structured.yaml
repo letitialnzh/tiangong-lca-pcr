@@ -332,9 +332,9 @@ process_inventory:
           name: "Nitrous oxide to air, elementary identity pending method/compartment binding"
           flow_type: "elementary"
           property_unit: "Mass / kg N2O"
-          description: "Calculate direct and indirect N2O from recorded fertilizer, manure and returned crop-residue N with the selected region-specific method or IPCC 2019 method, avoiding duplicate residue N. [ipcc-2019-managed-soils] Raw activity or stage basis: field and crop cycle."
+          description: "Calculate direct and indirect N2O from recorded fertilizer, manure and returned crop-residue N with the selected region-specific method or IPCC 2019 method, avoiding duplicate residue N. [ipcc-2019-managed-soils] Raw activity or stage basis: field and crop cycle. Calculation method corresponds to Section 8 rules: calc_soil_n2o."
           amount:
-            expression: "calc_soil_n2o"
+            expression: "apply declared region-specific or IPCC 2019 direct and indirect N2O method to documented synthetic, organic and residue N; subtract sold or burnt residue from returned residue pool"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -422,10 +422,8 @@ process_inventory:
           role: "Raw harvested linseed grain"
           name: "Linseed"
           flow_type: "product"
-          flow_ref:
-            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
           property_unit: "Mass / kg"
-          description: "Threshed grain passes to first cleaning, with measured wet mass and moisture; seed coat damage and field loss are recorded. [manitoba-flax-management] Raw activity or stage basis: harvest run."
+          description: "Threshed grain passes to first cleaning, with measured wet mass and moisture; seed coat damage and field loss are recorded. [manitoba-flax-management] Raw activity or stage basis: harvest run. Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row."
           amount:
             expression: "measured combine grain mass, corrected for tare"
             value_mode: "foreground_record"
@@ -570,10 +568,8 @@ process_inventory:
           role: "First-cleaned grain"
           name: "Linseed"
           flow_type: "product"
-          flow_ref:
-            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
           property_unit: "Mass / kg"
-          description: "Cleaned grain passes to moisture stabilization if needed and then grading. [manitoba-flax-management] Raw activity or stage basis: cleaning lot."
+          description: "Cleaned grain passes to moisture stabilization if needed and then grading. [manitoba-flax-management] Raw activity or stage basis: cleaning lot. Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row."
           amount:
             expression: "measured cleaned grain mass"
             value_mode: "foreground_record"
@@ -722,10 +718,8 @@ process_inventory:
           role: "Stabilized grain"
           name: "Linseed"
           flow_type: "product"
-          flow_ref:
-            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
           property_unit: "Mass / kg"
-          description: "The grain exits at measured moisture for the declared hand-off; cooling and temporary on-farm holding associated with this operation are recorded. [manitoba-growing-flax] Raw activity or stage basis: conditioning lot."
+          description: "The grain exits at measured moisture for the declared hand-off; cooling and temporary on-farm holding associated with this operation are recorded. [manitoba-growing-flax] Raw activity or stage basis: conditioning lot. Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row."
           amount:
             expression: "measured post-intervention wet mass and moisture"
             value_mode: "foreground_record"
@@ -781,9 +775,9 @@ process_inventory:
           name: "Water vapour, elementary identity pending local flow convention"
           flow_type: "elementary"
           property_unit: "Mass / kg"
-          description: "Calculate water removed from measured before and after mass/moisture, separate from dry-grain or spill losses. Raw activity or stage basis: conditioning lot."
+          description: "Calculate water removed from measured before and after mass/moisture, separate from dry-grain or spill losses. Raw activity or stage basis: conditioning lot. Calculation method corresponds to Section 8 rules: calc_moisture_balance."
           amount:
-            expression: "calc_moisture_balance"
+            expression: "dry matter = incoming wet mass × (1 − incoming wet-basis moisture); expected outgoing wet mass = conserved dry matter / (1 − outgoing wet-basis moisture), adjusted for measured dry-matter reject"
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -874,10 +868,8 @@ process_inventory:
           role: "Downgraded sale grain"
           name: "Linseed"
           flow_type: "product"
-          flow_ref:
-            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
           property_unit: "Mass / kg"
-          description: "Grain sold at a lower grade remains an intended product only if there is a measured separate sale and destination; declare its grade and prevent it entering accepted reference mass. [manitoba-flax-management] Raw activity or stage basis: gate lot."
+          description: "Grain sold at a lower grade remains an intended product only if there is a measured separate sale and destination; declare its grade and prevent it entering accepted reference mass. [manitoba-flax-management] Raw activity or stage basis: gate lot. Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row."
           amount:
             expression: "separately weighed sold downgraded mass, zero absent sale"
             value_mode: "foreground_record"
@@ -1082,10 +1074,8 @@ process_inventory:
           role: "Non-qualifying grain sold as oilseed"
           name: "Linseed"
           flow_type: "product"
-          flow_ref:
-            uuid: "b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f"
           property_unit: "Mass / kg"
-          description: "If it fails seed grade but remains salable as oilseed, route it once to the oilseed grading hand-off with its own grade and mass. [cfia-common-seed] Raw activity or stage basis: seed lot."
+          description: "If it fails seed grade but remains salable as oilseed, route it once to the oilseed grading hand-off with its own grade and mass. [cfia-common-seed] Raw activity or stage basis: seed lot. Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row."
           amount:
             expression: "weighed downgraded grain"
             value_mode: "foreground_record"
@@ -1390,7 +1380,7 @@ data_sources:
     used_for: "Life-cycle inventory quantitative-reference and input/output accounting framework; the 0–1 material-fraction and 1 kg reference bounds here are algebraic checks, not empirical ISO rates."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:562583290b04916587c04e231907ee324c3177fcd517f8c7c85ff958c8d65691"
+  source_sha256: "sha256:107eec8055e59cb171dd0ddc94c02db64f24493400044d9e107add098dff0058"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_4894"
@@ -1441,16 +1431,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_51356"
+    - unit_id: "normative_52258"
       family: "allocation"
       span:
         start:
-          offset: 51356
-          line: 1080
+          offset: 52258
+          line: 1094
           column: 1
         end:
-          offset: 53261
-          line: 1090
+          offset: 54163
+          line: 1104
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_grain` | Grain and straw | First document whether sold straw or separately sold downgraded grain exists. Retained straw and field losses are residues, not co-products. Keep accepted and downgraded grain masses distinct. | `manitoba-flax-management` |\n| `allocation_biophysical` | Multiple sold outputs | Where a process has independent sold grain and straw, first divide separable collection, baling and handling directly. For inseparable field and harvest burdens, use a documented physically causal relationship if one is justified; otherwise use a crop-year revenue share based on actual gate prices and masses, report the shares, and test sensitivity to a mass share. Do not allocate residue returned to soil as a sold output. | `manitoba-flax-management`, `eu-pef-allocation` |\n| `allocation_batch` | Shared runs | Index field portions, harvest runs and conditioning lots. Attribute common cleaning, dryer startup and changeover energy once using measured run time or throughput; reconcile totals before allocating to accepted, downgraded and rejected outputs. | `manitoba-growing-flax` |\n| `allocation_rework` | Re-cleaned or downgraded grain | Re-cleaning adds its actual energy and losses to the linked lot; do not create extra primary grain production. Recovered sale grain is counted once at its final hand-off and discarded reject carries no product credit. | `manitoba-flax-management` |\n| `allocation_seed` | Seed and oilseed outputs | Assign additional seed-grade cleaning, treatment and tests directly to seed lots. Share inseparable cultivation and harvest burdens only between the final sold seed, oilseed and straw outputs under the declared joint-burden method; a downgraded seed lot becomes oilseed only at its final hand-off. | `cfia-common-seed` |\n\n"
       headings:
@@ -1469,12 +1459,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 51356
-              line: 1080
+              offset: 52258
+              line: 1094
               column: 1
             end:
-              offset: 51396
-              line: 1080
+              offset: 52298
+              line: 1094
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1489,16 +1479,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_60352"
+    - unit_id: "normative_61254"
       family: "validation"
       span:
         start:
-          offset: 60352
-          line: 1127
+          offset: 61254
+          line: 1141
           column: 1
         end:
-          offset: 61924
-          line: 1138
+          offset: 62826
+          line: 1152
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | Gate lot | Require linseed grain, actual moisture and grade, crop year and farm-gate hand-off; reject oil and fibre identities. Require a separate flow and test-backed grade for a planting-seed reference. | `manitoba-flax-management`, `cfia-common-seed` |\n| `validate_routes` | Field and lot | Exactly one direct-combine or swath route per field portion; a drying or aeration node appears only when logged and must contain pre/post moisture, energy and hand-off. | `manitoba-flax-management`, `manitoba-growing-flax` |\n| `validate_outputs` | Grain and straw | Reconcile accepted, downgraded, rejected, reworked and moisture-loss states to incoming lot; record each straw fate and any sale hand-off; do not count retained or burnt straw as a sold co-product. | `manitoba-flax-management` |\n| `validate_runs` | Field, machine and lot | Link shared inputs, cleaning/changeover, outputs and rework to one run or period; assign each shared burden and final product once. | `manitoba-growing-flax` |\n| `validate_residue_n` | Soil emissions | Show residue N returned, removed and burnt separately and avoid double-counting in N2O calculations. | `ipcc-2019-managed-soils` |\n| `validate_seed_branch` | Planting-seed lot | Reconcile diverted grain into qualified seed, oilseed downgrade and reject; require purity/germination evidence, additional conditioning records and a verified seed UUID before a planting-seed dataset is validated. | `cfia-common-seed` |\n\n"
       headings:
@@ -1517,12 +1507,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 60352
-              line: 1127
+              offset: 61254
+              line: 1141
               column: 1
             end:
-              offset: 60374
-              line: 1127
+              offset: 61276
+              line: 1141
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1593,145 +1583,145 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_single_grain"
       identity_kind: "explicit"
-      unit_id: "normative_51356"
+      unit_id: "normative_52258"
       source_span:
         start:
-          offset: 51469
-          line: 1084
+          offset: 52371
+          line: 1098
           column: 1
         end:
-          offset: 51740
-          line: 1084
+          offset: 52642
+          line: 1098
           column: 272
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_biophysical"
       identity_kind: "explicit"
-      unit_id: "normative_51356"
+      unit_id: "normative_52258"
       source_span:
         start:
-          offset: 51741
-          line: 1085
+          offset: 52643
+          line: 1099
           column: 1
         end:
-          offset: 52272
-          line: 1085
+          offset: 53174
+          line: 1099
           column: 532
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_batch"
       identity_kind: "explicit"
-      unit_id: "normative_51356"
+      unit_id: "normative_52258"
       source_span:
         start:
-          offset: 52273
-          line: 1086
+          offset: 53175
+          line: 1100
           column: 1
         end:
-          offset: 52583
-          line: 1086
+          offset: 53485
+          line: 1100
           column: 311
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_rework"
       identity_kind: "explicit"
-      unit_id: "normative_51356"
+      unit_id: "normative_52258"
       source_span:
         start:
-          offset: 52584
-          line: 1087
+          offset: 53486
+          line: 1101
           column: 1
         end:
-          offset: 52889
-          line: 1087
+          offset: 53791
+          line: 1101
           column: 306
     - pointer: "/allocation_rules/4"
       rule_id: "allocation_seed"
       identity_kind: "explicit"
-      unit_id: "normative_51356"
+      unit_id: "normative_52258"
       source_span:
         start:
-          offset: 52890
-          line: 1088
+          offset: 53792
+          line: 1102
           column: 1
         end:
-          offset: 53259
-          line: 1088
+          offset: 54161
+          line: 1102
           column: 370
     - pointer: "/validation_rules/0"
       rule_id: "validate_identity"
       identity_kind: "explicit"
-      unit_id: "normative_60352"
+      unit_id: "normative_61254"
       source_span:
         start:
-          offset: 60447
-          line: 1131
+          offset: 61349
+          line: 1145
           column: 1
         end:
-          offset: 60726
-          line: 1131
+          offset: 61628
+          line: 1145
           column: 280
     - pointer: "/validation_rules/1"
       rule_id: "validate_routes"
       identity_kind: "explicit"
-      unit_id: "normative_60352"
+      unit_id: "normative_61254"
       source_span:
         start:
-          offset: 60727
-          line: 1132
+          offset: 61629
+          line: 1146
           column: 1
         end:
-          offset: 60989
-          line: 1132
+          offset: 61891
+          line: 1146
           column: 263
     - pointer: "/validation_rules/2"
       rule_id: "validate_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_60352"
+      unit_id: "normative_61254"
       source_span:
         start:
-          offset: 60990
-          line: 1133
+          offset: 61892
+          line: 1147
           column: 1
         end:
-          offset: 61259
-          line: 1133
+          offset: 62161
+          line: 1147
           column: 270
     - pointer: "/validation_rules/3"
       rule_id: "validate_runs"
       identity_kind: "explicit"
-      unit_id: "normative_60352"
+      unit_id: "normative_61254"
       source_span:
         start:
-          offset: 61260
-          line: 1134
+          offset: 62162
+          line: 1148
           column: 1
         end:
-          offset: 61464
-          line: 1134
+          offset: 62366
+          line: 1148
           column: 205
     - pointer: "/validation_rules/4"
       rule_id: "validate_residue_n"
       identity_kind: "explicit"
-      unit_id: "normative_60352"
+      unit_id: "normative_61254"
       source_span:
         start:
-          offset: 61465
-          line: 1135
+          offset: 62367
+          line: 1149
           column: 1
         end:
-          offset: 61637
-          line: 1135
+          offset: 62539
+          line: 1149
           column: 173
     - pointer: "/validation_rules/5"
       rule_id: "validate_seed_branch"
       identity_kind: "explicit"
-      unit_id: "normative_60352"
+      unit_id: "normative_61254"
       source_span:
         start:
-          offset: 61638
-          line: 1136
+          offset: 62540
+          line: 1150
           column: 1
         end:
-          offset: 61922
-          line: 1136
+          offset: 62824
+          line: 1150
           column: 285
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -1760,27 +1750,27 @@ normative_context:
           column: 207
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_51356"
+      unit_id: "normative_52258"
       source_span:
         start:
-          offset: 51356
-          line: 1080
+          offset: 52258
+          line: 1094
           column: 1
         end:
-          offset: 51396
-          line: 1080
+          offset: 52298
+          line: 1094
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_60352"
+      unit_id: "normative_61254"
       source_span:
         start:
-          offset: 60352
-          line: 1127
+          offset: 61254
+          line: 1141
           column: 1
         end:
-          offset: 60374
-          line: 1127
+          offset: 61276
+          line: 1141
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1789,5 +1779,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:562583290b04916587c04e231907ee324c3177fcd517f8c7c85ff958c8d65691"
-  generated_content_sha256: "sha256:b723ab53e56c151f82648fe0ce8a2b90d286d3c799d54574a9bb169e4b7c8502"
+    sha256: "sha256:107eec8055e59cb171dd0ddc94c02db64f24493400044d9e107add098dff0058"
+  generated_content_sha256: "sha256:9bc067b7cc9ad9e30b0e7a28f35d010fb1cf59fb82e27bc1e0820ec3a089ee7e"

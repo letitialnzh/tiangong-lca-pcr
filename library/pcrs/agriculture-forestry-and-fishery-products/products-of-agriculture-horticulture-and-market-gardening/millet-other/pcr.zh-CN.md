@@ -209,7 +209,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：Nitrous oxide to ambient air
 - 流属性/单位：Mass / kg N2O
-- 数量规则：应用 `calc_direct_n2o` 并保留 N2O-N 至 N2O 换算。
+- 数量规则：应用选定 IPCC 层级并以 44/28 将 N2O-N 换算为 N2O。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：作物周期排放量除以合格谷物质量.
@@ -228,6 +228,8 @@ sync_with: pcr.en-US.md
   - 基准类型：氮投入（`n_input`）
   - 证据类型：推理估算（`reasoned_estimate`）
   - 来源：`ipcc-2019-managed-soils`
+
+计算方法对应第 8 节规则：`calc_direct_n2o`。
 
 ### 过程：收获与农场门准备（`millet_harvest_preparation`）
 

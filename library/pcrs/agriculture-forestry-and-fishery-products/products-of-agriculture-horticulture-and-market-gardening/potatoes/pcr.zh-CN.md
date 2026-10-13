@@ -224,7 +224,7 @@ sync_with: pcr.en-US.md
 
 只有小薯或等外品具有记录的有益去向或销售时，才作为独立产品输出。保留等级、去向和收到状态质量，不得静默并入参考数量。
 
-- 选定流：Potatoes; fresh, unprocessed produce; production mix, at farm gate `65443696-51af-4ba8-8f73-06d434a36605`
+- 选定流：Potatoes; fresh, unprocessed produce; production mix, at farm gate
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：按记录的有益去向计量收到状态质量
 - 数值来源模式：前景记录（`foreground_record`）
@@ -236,6 +236,8 @@ sync_with: pcr.en-US.md
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_and_harvest_records`
 - 来源：
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 
@@ -264,7 +266,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：排放到环境空气的一氧化二氮
 - 流属性/单位：质量 / kg N2O
-- 数量规则：应用 `calc_managed_soil_n2o`
+- 数量规则：将所选 IPCC 层级或地理适用方法应用于肥料氮、有机氮、还田残余物氮、挥发和淋溶路径
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每个声明作物周期及每 1,000 kg 合格马铃薯.
@@ -274,6 +276,8 @@ sync_with: pcr.en-US.md
 - 证据类型：方法公式（`method_formula`）
 - 采集协议：`cp_soil_emission_activity`
 - 来源：`ipcc-2019-managed-soils`
+
+计算方法对应第 8 节规则：`calc_managed_soil_n2o`。
 
 ###### 尿素或石灰施用产生的二氧化碳（`soil_carbon_dioxide_output`）
 

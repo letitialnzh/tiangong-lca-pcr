@@ -37,9 +37,7 @@ sync_with: pcr.en-US.md
 | How much | 声明交接点处净参考产品 1,000 kg |
 | How well | 成熟豆类籽粒，符合数据集声明的等级和含水率规格；报告含水率及其基准 |
 | How long or cycle | 一个作物季及相关收获和采后调理；如包括储存，声明储存期 |
-| reference_flow_link | reference_pulse_seed_output; stored_pulse_seed_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
@@ -50,7 +48,9 @@ sync_with: pcr.en-US.md
 | 参考单位 | kg |
 | 必需限定信息 | 物种或作物类型；品种或种子批次；作物年度；生产地理范围；产品等级；含水率数值及基准；农场或初级调理交接点；是否包括储存及其持续时间 |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | Applies to | 必需流属性 | 必需单位 | 规则 |
@@ -109,6 +109,7 @@ sync_with: pcr.en-US.md
 | `pulse_conditioning` | 初级干燥与清理 | required | 需要时纳入干燥，并纳入首次清理/准备交接 | primary conditioning | 调理前后的籽粒质量及含水率 |
 | `pulse_grading` | 分级与筛选 | conditional | 当来料被筛选为两个或更多已声明等级或去向时纳入 | grading and sorting | 各合格等级、降级产出、拒收产出和交接的质量 |
 | `pulse_storage` | 农场储存 | conditional | 仅当声明参考交接点位于农场储存后时纳入 | preservation and stabilization | 储存期、进出质量与品质、能源、处理剂和损失 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：豆类作物田间管理生产（`pulse_cultivation`）
 
@@ -816,7 +817,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始产出计量与核对要求：将声明的参考等级净产出归一化为恰好 1,000 kg；在来源数据集中保留未缩放批次实测量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：声明交接点处恰好 1,000 kg.
@@ -828,14 +829,16 @@ sync_with: pcr.en-US.md
 - 来源：
 
 
-- 数量范围：与英文规范一致的临时 QA 筛查范围；须以作物、场址和路线特定记录替换，不得作为允许限值
-  - 范围角色：QA 校验（`qa_guardrail`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限：1
   - 上限：1
-  - 单位：kg/kg reference product
-  - 基准：exact normalized reference output; retain the unscaled measured batch mass
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估计（`reasoned_estimate`)
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+
+  - 来源：`declared-handoff-measurement-definition`
 
 ###### 其他有意豆类等级或产品（`other_intended_grade_outputs`）
 
@@ -990,7 +993,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始产出计量与核对要求：将储存后合格产出归一化为 1,000 kg，并分别保留实测进出质量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：声明储存后交接点处恰好 1,000 kg.
@@ -1002,14 +1005,16 @@ sync_with: pcr.en-US.md
 - 来源：`fao-pulse-postharvest-2020`; `fao-onfarm-grain-manual-2009`
 
 
-- 数量范围：与英文规范一致的临时 QA 筛查范围；须以作物、场址和路线特定记录替换，不得作为允许限值
-  - 范围角色：QA 校验（`qa_guardrail`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限：1
   - 上限：1
-  - 单位：kg/kg reference product
-  - 基准：exact normalized post-storage reference output; retain measured entry and exit masses
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估计（`reasoned_estimate`)
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+
+  - 来源：`declared-handoff-measurement-definition`
 
 ##### 废物流
 ###### 储存期间损失或弃置的豆类籽粒（`storage_losses`）
@@ -1039,6 +1044,64 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：其他豆类；位于声明交接点的干燥、清理后豆类籽粒
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：其他豆类；位于声明交接点的干燥、清理后豆类籽粒
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | Applies to | 规则 | source_ids |
@@ -1066,6 +1129,7 @@ sync_with: pcr.en-US.md
 | `cp_threshing_conditioning` | `pulse_threshing`, `pulse_conditioning` | 来料和调理后籽粒、能源、有意产出、拒收物及含水率 | 过程批次记录 | 批次编号、作物形态、投入/产出质量、干燥前后含水率及基准、设备、作业时间、各载体、干燥方法和天气、清理/拒收比例、去向 | 记录称重单或经校准的批次秤、含水率仪读数、设备日志及拒收物处置；保留过程阶段区分；原始汇总与分配：核对投入干物质、合格籽粒、共产品、拒收物和实测损失；避免在不同阶段重复计算能源 | kg、% 湿基或干基、h、各载体的 kg/L/kWh/m3 | 每次脱粒及调理批次 | 完整代表性作物季、批次或纳入的储存期 | 已识别批次、地块/活动及共用设备 | 每声明的参考流 | 衡器及含水率仪校准、批次单、设备仪表/发票、代表性样本和去向记录 |
 | `cp_grading_balance` | `pulse_grading` | 分级投入、参考等级、其他有意等级和拒收物 | 分级与销售/使用记录 | 来料批次、声明等级标准/买方条件、各等级产出质量、含水率、降级/返工/拒收状态、去向、接收方 | 称量每个等级组分；按声明的商品条件采样和测试各等级；将每项产出连接至一个交接点；原始汇总与分配：用各等级产出和拒收物核对调理后投入；指定哪一等级为参考产品 | kg、% 含水率 | 每个分拣批次和销售批次 | 完整代表性作物季、批次或纳入的储存期 | 一个作物批次和分拣活动 | 每声明的参考流 | 校准衡器、等级检测记录、买方规格、销售/转移收据、质量平衡表 |
 | `cp_storage_balance` | `pulse_storage` | 储存产品、储存能源和保护产品、损失及出口品质 | 储存进出及设施记录 | 批次编号、储存设施/容器、进出日期、质量、含水率及基准、有条件时的温度/湿度、处理剂、载体、共享设施使用者、降级/回收/弃置数量 | 进出时称重并取样；保留设施日志、处理记录、发票、监测和损失去向；原始汇总与分配：在一致含水率基准下比较进出干物质；共享设施能源和处理剂仅分配一次 | kg、% 含水率、天、载体特定单位 | 每个纳入的储存批次及监测周期 | 完整代表性作物季、批次或纳入的储存期 | 声明的设施、容器和储存期 | 每声明的参考流 | 校准衡器和仪表、含水率读数、处理剂标签/日志、检查记录、处置或接收方凭证 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -1123,3 +1187,7 @@ sync_with: pcr.en-US.md
 | `fao-pulse-postharvest-2020` | `official_guidance` | https://www.fao.org/platform-food-loss-waste/resources/news/news-detail/COVID-19-Series-Improving-the-Storability-and-Availability-of-Pulses-by-Reducing-Post-Harvest-Losses/en | 豆类成熟期收获、田间暴露、干燥和搬运、安全储存含水率及替代干燥/储存实践 |
 | `fao-onfarm-grain-manual-2009` | `handbook` | https://www.fao.org/4/i0959e/i0959e00.pdf | 包含豆类的谷物采后作业；热带/亚热带储存含水率指导；清理、干燥和储存监测实践 |
 | `fao-postharvest-system-1994` | `official_guidance` | https://www.fao.org/4/ac301e/AC301e03.htm | 采后过程阶段、干燥和脱粒顺序，以及时机和含水率对损失的影响 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

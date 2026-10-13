@@ -33,9 +33,7 @@ Include establishment and management attributable to the declared production per
 | How much | 1 kg of the selected output at its declared hand-off; retain the crop, plant part, moisture, and market-state qualifiers |
 | How well | Identify species/cultivar where known, crop purpose, harvest or tapping method, moisture/state, grade, and destination |
 | How long or cycle | One declared tap season for maple; one crop cycle for sorghum; one harvest cycle or declared multi-cut season for stevia |
-| reference_flow_link | maple_sap_output; sorghum_stalk_output; stevia_leaf_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
@@ -46,7 +44,9 @@ Include establishment and management attributable to the declared production per
 | Reference unit | kg |
 | Required qualifiers | Exactly one crop branch; species/cultivar; plant part; intended sugar-crop purpose; fresh/dried state and moisture; geography; production period; crop-specific hand-off; grade; allocation and multi-period treatment |
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -91,6 +91,7 @@ Each foreground dataset must explicitly select one actual route, declared gate, 
 | `maple_sap_route` | Sugar maple stand management, tapping, and raw sap collection | conditional | Use only when the selected product is sugar maple sap from *Acer saccharum*. | Managed perennial production and resource removal | kg raw sap per declared tap-season and 1 kg reference flow |
 | `sweet_sorghum_stalk_route` | Sweet-purpose sorghum cultivation and stalk harvest | conditional | Use only when the selected product is stalks from sorghum grown for sugar or syrup feedstock. | Annual crop production and harvest capture | kg harvested stalk per crop cycle and 1 kg reference flow |
 | `stevia_dried_leaf_route` | Stevia cultivation, leaf harvest, and farm drying | conditional | Use only for *Stevia rebaudiana* leaves declared as dried at the hand-off. Fresh-leaf datasets must declare a distinct state and omit drying. | Managed leaf production, harvest, and primary stabilization | kg dried leaves per harvest cycle and 1 kg reference flow |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Sugar maple stand management, tapping, and raw sap collection (`maple_sap_route`)
 
@@ -202,7 +203,7 @@ Weigh or measure raw sap as collected before concentration or syrup production; 
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Record accepted raw sap output by tap-season; normalize inventory exchanges to 1 kg.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per kg raw sap.
@@ -354,7 +355,7 @@ Weigh harvested stalks at the crop hand-off before pressing or juice extraction.
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Record accepted stalk mass and moisture by crop cycle; normalize exchanges to 1 kg.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per kg harvested stalk.
@@ -507,7 +508,7 @@ Record leaf mass at the declared dried-leaf hand-off and retain moisture and dry
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Record accepted dry-leaf mass, residual moisture, and grade by harvest cycle; normalize exchanges to 1 kg.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per kg dried leaves.
@@ -527,6 +528,64 @@ Raw activity or stage basis: per kg dried leaves.
   - Evidence kind: External source (`external_source`)
   - Sources: `src_sweet_project_stevia_lca`
 
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Route-specific harvested product listed above; UUID unresolved
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Route-specific harvested product listed above; UUID unresolved
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
+
 ## 7. Allocation and Co-product Handling
 
 Inventory one crop branch only. If one stand or field produces multiple intended products in the declared period, first test subdivision by field, operation, harvest, or lot. If subdivision is not feasible, choose and justify a physical or economic allocation driver consistent with the question, document all products and hand-offs, and test a material alternative. Maple timber, sorghum grain, and stevia stems are co-products only when they are intentionally harvested and leave the process as useful products. Leaves, tops, roots, weeds, rejected material, sap leakage, and field losses are residues or waste unless a real use and hand-off are documented. Record multi-year assets and shared equipment once, allocate them by measured productive area, use, tap-season, or machine time, and prevent duplicate attribution across periods or outputs.
@@ -543,6 +602,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cp_maple_field_records` | `maple_sap_route` | stand stock; nutrient products; irrigation; energy; raw sap | stand, purchase, application, meter, and production records | species; stand_id; trees_planted; replacements; taps; tap_dates; sap_mass_or_volume; density_basis; nutrients; irrigation; fuel; electricity; area; losses; co_products; gate | reconcile invoices, stand maps, meters, tapping log, and calibrated scale; Raw aggregation and attribution: aggregate by stand and tap-season; annualize establishment over declared productive periods | plant; kg; m3; kWh; ha | each operation and each tap season | complete represented tap season | each represented sugarbush | per declared reference flow | supplier records; field maps; calibrated scale and meter checks |
 | `cp_sorghum_field_records` | `sweet_sorghum_stalk_route` | seed; nutrient products; irrigation; energy; crop protection; stalk output | seed, field-operation, application, meter, and harvest records | cultivar; crop_purpose; seed_mass; area; sowing_date; fertilizer_product; nutrient_analysis; irrigation; fuel; electricity; pesticide; harvest_date; stalk_mass; moisture; grain; residues; rejects; gate | reconcile invoices, field log, meters, application records, and calibrated harvest scale; Raw aggregation and attribution: aggregate by field and crop cycle; retain grain and stalk quantities separately | kg; m3; kWh; ha; mass fraction | each operation and crop cycle | complete represented crop cycle | each represented field | per declared reference flow | seed labels; invoices; application log; calibrated scale; meter records |
 | `cp_stevia_field_records` | `stevia_dried_leaf_route` | planting stock; nutrient products; irrigation; energy; crop protection; dry leaves | planting, field-operation, application, meter, drying-batch, and production records | cultivar; planting_stock_type; plants; replacements; area; harvest_dates; fertilizer_product; nutrient_analysis; irrigation; fuel; electricity; pesticide; fresh_leaf_mass; dried_leaf_mass; moisture; drying_loss; residues; gate | reconcile field book, invoices, meters, dryer log, and calibrated scales; Raw aggregation and attribution: sum accepted dry leaves by harvest cycle; reconcile fresh input, dry output, moisture, rejects, and residues | plant; kg; m3; kWh; ha; mass fraction | each operation and each harvest/drying batch | complete represented harvest and drying cycle | each represented field and dryer | per declared reference flow | planting invoice; application log; calibrated scales; moisture test; dryer meter |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -601,3 +661,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `src_jecfa_stevia` | standard | FAO/JECFA, Steviol glycosides monograph, https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf | Boundary distinction between harvested leaves and extracted sweetener |
 | `src_sweet_project_stevia_lca` | literature | SWEET project stevia cultivation and LCA case, https://pmc.ncbi.nlm.nih.gov/articles/PMC9839952/ | Region-specific planting density and dried-leaf yield case; not universal |
 | `src_ipcc_managed_soils` | method_factor | IPCC 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | Managed-soil nitrogen-emission method inputs and uncertainty disclosure |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

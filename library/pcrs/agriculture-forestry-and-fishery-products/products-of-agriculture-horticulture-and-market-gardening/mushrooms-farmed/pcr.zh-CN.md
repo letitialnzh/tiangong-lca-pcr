@@ -36,14 +36,12 @@ sync_with: pcr.en-US.md
 | How much | 1,000 kg 净合格新鲜蘑菇 |
 | How well | 已声明物种或物种组、相关时的菌株或品种、成熟度、子实体状态、尺寸和等级、修整、洁净度、含水状态、清洗或冷却状态、包装状态和声明门的食用新鲜蘑菇 |
 | How long or cycle | 从基质接收或制备至最后采收潮次的一个声明基质或段木周期；段木路线还应披露生产年度归属和段木年龄 |
-| reference_flow_link | marketable_fresh_mushroom_output; delivered_mushroom_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | 声明门的新鲜栽培蘑菇 `793ef502-67bc-4a8c-a2aa-79159500fa9b` |
+| Reference product flow | 声明门的新鲜栽培蘑菇 |
 | Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -52,7 +50,9 @@ sync_with: pcr.en-US.md
 
 构建前景数据包时，所有 `Required qualifiers` 必须在元数据、过程注释、参考流注释、产品描述或等效字段中声明。其他未映射的产品和过程流身份仍须在最终发布 TIDAS 过程数据集前完成前景绑定。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -100,6 +100,7 @@ sync_with: pcr.en-US.md
 | `fruiting_and_cropping` | 出菇、气候控制和重复潮次 | required | 每个出菇周期和采收潮次 | 前景生物生产 | 房间天数、水、能源、潮次日期和作物产出 |
 | `harvest_grading_and_primary_packaging` | 采收、分级和初级包装 | required | 每次采收周期和声明门 | 前景采收、调理、包装和交接 | 1,000 kg 合格新鲜蘑菇 |
 | `purchased_transport_to_gate` | 至声明门的外购运输 | conditional | 外购运输在声明门前且跨越边界时 | 前景交付服务 | 声明质量的吨公里 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：蘑菇基质制备和调理（`substrate_preparation_and_conditioning`）
 
@@ -760,7 +761,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：称量并与分级前采收量、降级量、拒收量及包装记录核对。
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 特异性：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 声明门合格新鲜蘑菇.
@@ -883,7 +884,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：核对发运和收货合格质量、温度、包装状态及损失。
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 声明门合格新鲜蘑菇.
@@ -896,6 +897,64 @@ sync_with: pcr.en-US.md
 ##### 废物流
 
 ##### 基本流
+
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：声明门的新鲜栽培蘑菇
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：声明门的新鲜栽培蘑菇
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
 
 ## 7. 分配与副产品处理
 
@@ -930,6 +989,7 @@ sync_with: pcr.en-US.md
 | `cp_wash_water_records` | `harvest_grading_and_primary_packaging` | 清洗水和废水 | 水表、平衡和处理记录 | water_source; supplied_volume; recirculated_volume; discharge_volume; product_washed; cleaning_use; treatment; destination | 计量供水和排放或核验水量平衡；原始汇总与分配：按运行和合格质量汇总 | m3，实测时含 kg | 每次清洗及月度核对 | 全周期 | 每条清洗或包装线 | 每声明的参考流 | 水表或平衡；处理凭证 |
 | `cp_harvest_grade_records` | `harvest_grading_and_primary_packaging` | 合格品、降级品、拒收物和冷却电力 | 采收票、分级日志和电表 | batch_id; species; harvest_mass; accepted_mass; downgraded_mass; reject_mass; grade; size; maturity; trim; cooling_energy; gate_date | 称量分级前后产出并连接电表；原始汇总与分配：按批次、物种、等级和门汇总 | kg、grade、size、kWh | 每次采收和包装 | 全周期 | 每包装厂或门 | 每声明的参考流 | 校准秤；等级记录；冷库电表 |
 | `cp_transport_records` | `purchased_transport_to_gate` | 公路运输和交付产出 | 货运记录和发票 | shipment_id; origin; destination; distance; product_mass; package_mass; vehicle; temperature; load; return; received_mass; loss | 核验货运、路线、服务和收货；原始汇总与分配：汇总 t*km 并核对收货质量 | t、km、t*km、°C、kg | 每次发运 | 全周期 | 声明路线至门 | 每声明的参考流 | 承运商记录；路线证据；收货单 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -998,3 +1058,7 @@ sync_with: pcr.en-US.md
 | `robinson-2018-mushroom-lca` | literature | Robinson et al., *A life cycle assessment of Agaricus bisporus mushroom production in the USA*, International Journal of Life Cycle Assessment (2018), https://doi.org/10.1007/s11367-018-1456-6（访问 2026-09-14） | 从摇篮到声明门的过程分解、基质和覆土、房间公用工程、产量和废菌糠核算、排放背景及范围 |
 | `usda-ams-mushroom-grade-standard` | official_guidance | USDA Agricultural Marketing Service, *Mushrooms Grades and Standards*, https://www.ams.usda.gov/grades-standards/mushrooms-grades-and-standards（访问 2026-09-14） | 鲜市场身份、成熟度、尺寸、缺陷、等级、修整和门质量检查 |
 | `iso-14044-2006` | standard | ISO, *ISO 14044:2006 Environmental management — Life cycle assessment — Requirements and guidelines*, https://www.iso.org/standard/38498.html（访问 2026-09-14） | 过程拆分、分配层级、副产品和替代披露以及数据质量规则 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

@@ -37,9 +37,7 @@ sync_with: pcr.en-US.md
 | How much | 1 kg net product at the declared state and gate |
 | How well | One botanical species and product part; declared cultivar or variety when known; fresh or dried state; measured moisture content for dried material; declared grade and contamination or rejection criteria |
 | How long or cycle | One identified crop lot and crop cycle. For perennial crops, include the establishment and productive periods or document how establishment burdens are attributed across productive output. |
-| reference_flow_link | harvested_target_product; conditioned_reference_product |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
@@ -52,7 +50,9 @@ sync_with: pcr.en-US.md
 
 不能从宽泛的作物家族标签推断所选 UUID。只有在数据集明确物种、植物部分、物理状态、交接点、地理位置和相关产品分类后，才能解析参考产品。候选面积时间流不是产品参考流。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -96,6 +96,7 @@ sync_with: pcr.en-US.md
 | managed_crop_production | Managed crop establishment and production | required | Record annual, rhizome, or perennial route; separate establishment and productive periods for multi-year crops. | Managed biological production | Crop area and production period linked to net target-organ output |
 | harvest_capture | Harvest and field capture | required | Identify manual or mechanized harvest and the actual target organ, collection state and handoff. | Harvest/capture | Net harvested lot by botanical product and grade |
 | primary_conditioning | First primary conditioning and stabilization | conditional | Include when sorting, cleaning, washing, drying, or simple stabilization occurs before the selected gate. If absent, the reference flow leaves at the harvest gate. | Material treatment, preservation and primary conditioning | Net accepted conditioned output and material-state change by lot |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：作物建立与生产 (`managed_crop_production`)
 
@@ -475,7 +476,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：Net harvested mass by lot after tare, linked to grade and moisture records
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式: Foreground record (`foreground_record`)
 - 适用范围: Product-specific (`product_specific`)
 原始活动或阶段基准：Per 1 kg of product at the selected gate.
@@ -751,7 +752,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：Net accepted output after tare and grading; record mass and lot-level moisture
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式: Foreground record (`foreground_record`)
 - 适用范围: Product-specific (`product_specific`)
 原始活动或阶段基准：Per 1 kg of product at the selected gate.
@@ -879,6 +880,64 @@ sync_with: pcr.en-US.md
   - 来源: `mass-balance-identity`
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Crop-specific spice or aromatic product at declared gate (UUID unresolved)
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Crop-specific spice or aromatic product at declared gate (UUID unresolved)
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | applies_to | rule | source_ids |
@@ -913,6 +972,7 @@ sync_with: pcr.en-US.md
 | cp_conditioning_energy | primary_conditioning | conditioning_energy | equipment meter, fuel receipt and dryer log | carrier, amount, unit, dryer/cleaner, operation, batch, input/output moisture, operating time, shared use | Reconcile measured energy and operating records to each batch；原始汇总与分配：Aggregate by carrier and operation; allocate shared utilities by metered use or operating time | Carrier-native unit; kWh-equivalent only with documented conversion | Each batch or billing period | Each included conditioning season | Declared first-conditioning facility and equipment | 每声明的参考流 | Meter/invoice, dryer log, moisture measurements and calibration record |
 | cp_conditioner_transport | primary_conditioning | raw_crop_transport | freight bill, vehicle and route record | crop mass, vehicle, loaded distance, origin, destination, load, date, third-party/own-account status, empty return | Reconcile waybill or vehicle log to weighed crop lot and route distance；原始汇总与分配：Loaded tonne-kilometres by lot; disclose return-trip allocation and exclude own-account fuel when service flow is used | t·km, t and km | Every transfer or shipment | Transfers within the selected boundary | Declared field and first-conditioning site | 每声明的参考流 | Waybill, vehicle log, route evidence and lot mass |
 | cp_conditioning_wastewater | primary_conditioning | wastewater_treatment_service; conditioning_wastewater | wastewater meter, treatment invoice, discharge or treatment log | wastewater volume/mass, batch, source operation, destination, treatment route, provider and date | Meter, sample or reconcile service provider records to the crop batch；原始汇总与分配：Reconcile generated effluent with onsite reuse, discharge and treatment; avoid duplicate treatment routes | m3 or kg | Each washing batch or billing period | Each included wet-conditioning period | Declared site, discharge point and provider | 每声明的参考流 | Meter/sample, provider invoice, discharge permit or treatment log |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -974,3 +1034,7 @@ sync_with: pcr.en-US.md
 | ipcc-2019-managed-soils | official_guidance | 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | Managed-soil direct and indirect N2O method selection and nitrogen application activity data |
 | iso-14044-lca-allocation | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html | Subdivision, co-product attribution, shared process handling and documented allocation choices |
 | mass-balance-identity | method_factor | Physical mass-balance identity: input material equals intended outputs, residues, waste, removed water and measured loss on a consistent moisture basis | Candidate QA guardrails for nonnegative mutually exclusive lot disposition; not an external source or product-specific yield factor |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

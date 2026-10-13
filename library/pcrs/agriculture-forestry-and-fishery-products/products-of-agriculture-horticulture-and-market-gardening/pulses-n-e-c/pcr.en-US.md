@@ -37,9 +37,7 @@ The functional unit is 1,000 kg of one declared pulse species/crop type, at the 
 | How much | 1,000 kg net reference product at the declared gate |
 | How well | Mature pulse seed meeting the dataset's declared grade and moisture specification; report moisture basis and measured value |
 | How long or cycle | One crop season and its associated harvest and post-harvest conditioning; disclose any included storage duration |
-| reference_flow_link | reference_pulse_seed_output; stored_pulse_seed_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
@@ -51,7 +49,9 @@ The functional unit is 1,000 kg of one declared pulse species/crop type, at the 
 | Required qualifiers | species or crop type; cultivar or seed lot; crop year; production geography; output grade; moisture value and basis; farm or primary-conditioning gate; storage included or excluded and duration |
 
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -111,6 +111,7 @@ Inventory rows represent exchanges crossing each named unit-process boundary. Pr
 | `pulse_conditioning` | Primary drying and cleaning | required | Include drying when needed and the first cleaning/preparation handoff | Primary conditioning | wet/dry seed mass and moisture before and after conditioning |
 | `pulse_grading` | Grading and sorting | conditional | Include where incoming pulse seed is sorted into two or more declared grades or destinations | Grading and sorting | mass by accepted grade, downgraded output, rejected output and handoff |
 | `pulse_storage` | On-farm pulse storage | conditional | Include only when the declared reference handoff follows on-farm storage | Preservation and stabilization | storage duration, entry/exit mass and quality, energy, treatments and loss |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Managed pulse crop production (`pulse_cultivation`)
 
@@ -824,7 +825,7 @@ Record the grade selected as this dataset's reference product. State its quality
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 Raw output measurement and reconciliation: normalize the net accepted reference-grade output to exactly 1,000 kg for the functional unit; retain the measured unscaled batch amount in the source dataset
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: exactly 1,000 kg dry cleaned pulse seed at the declared handoff.
@@ -836,14 +837,16 @@ Raw activity or stage basis: exactly 1,000 kg dry cleaned pulse seed at the decl
 - Sources:
 
 
-- Range: Provisional broad QA screen; replace with crop-, site-, and route-specific records and do not treat as an allowed limit
+- Range: Same-stage output measurement reconciliation
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg reference product
-  - Basis: exact normalized reference output; retain the unscaled measured batch mass
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+
+  - Sources: `declared-handoff-measurement-definition`
 
 ###### Other intended pulse grades or products (`other_intended_grade_outputs`)
 
@@ -1000,7 +1003,7 @@ This is the declared reference handoff only when storage is included. Record net
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 Raw output measurement and reconciliation: normalize accepted post-storage output to 1,000 kg and retain measured entry and exit masses separately
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: exactly 1,000 kg at the declared post-storage handoff.
@@ -1012,14 +1015,16 @@ Raw activity or stage basis: exactly 1,000 kg at the declared post-storage hando
 - Sources: `fao-pulse-postharvest-2020`; `fao-onfarm-grain-manual-2009`
 
 
-- Range: Provisional broad QA screen; replace with crop-, site-, and route-specific records and do not treat as an allowed limit
+- Range: Same-stage output measurement reconciliation
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg reference product
-  - Basis: exact normalized post-storage reference output; retain measured entry and exit masses
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+
+  - Sources: `declared-handoff-measurement-definition`
 
 ##### Waste flows
 ###### Pulse seed lost or discarded during storage (`storage_losses`)
@@ -1049,6 +1054,64 @@ Raw activity or stage basis: per 1,000 kg accepted pulse seed at the declared po
 
 ##### Elementary flows
 
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Pulses, n.e.c.; dry cleaned pulse seed at the declared gate
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Pulses, n.e.c.; dry cleaned pulse seed at the declared gate
+- Flow property / unit: Mass / kg
+- Amount rule: 1000 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
+
 ## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
@@ -1076,6 +1139,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cp_threshing_conditioning` | `pulse_threshing`, `pulse_conditioning` | incoming and prepared seed, energy, intended outputs, rejects and moisture | process batch records | lot id, crop form, input/output masses, moisture and basis before/after drying, equipment, operation time, each carrier, drying method and weather, cleaning/reject fractions, destinations | record weigh tickets or calibrated batch scales, moisture-meter readings, equipment logs and reject disposition; preserve process-stage separation; Raw aggregation and attribution: reconcile input dry matter, accepted seed, co-products, rejects and measured losses; avoid duplicate energy between stages | kg, % wet or dry basis, h, kg/L/kWh/m3 by carrier | each threshing and conditioning batch | complete represented crop-season, batch, or included storage period | identified batch, field/campaign, shared equipment | per declared reference flow | scale and moisture-meter calibration, batch sheets, equipment meter/invoice, representative sample and destination records |
 | `cp_grading_balance` | `pulse_grading` | grade input, reference grade, other intended grades and rejects | grade and sale/use records | incoming lot, declared grade standard/buyer criteria, output mass per grade, moisture, downgraded/rework/reject state, destination, recipient | weigh each grade fraction; sample and test each grade against its declared commercial criteria; link every output to a handoff; Raw aggregation and attribution: sum grade outputs and rejects against incoming conditioned mass; nominate exactly which grade is the reference product | kg, % moisture | each sorted batch and sale lot | complete represented crop-season, batch, or included storage period | one crop lot and sorting campaign | per declared reference flow | calibrated scale, grade test record, buyer specification, sales/transfer receipt, mass-balance sheet |
 | `cp_storage_balance` | `pulse_storage` | stored product, storage energy and protection products, losses and exit quality | storage entry/exit and facility records | lot id, storage facility/container, entry/exit date, mass, moisture and basis, temperature/humidity when available, treatments, carrier, shared facility users, downgraded/recovered/discarded amounts | weigh and sample at entry and exit; retain facility logs, treatment records, invoices, monitoring and loss disposition; Raw aggregation and attribution: compare entry/exit dry matter at consistent moisture basis; allocate shared facility energy/treatment once | kg, % moisture, days, carrier-specific unit | each included storage lot and monitoring interval | complete represented crop-season, batch, or included storage period | declared facility, container and storage period | per declared reference flow | calibrated scale and meter, moisture readings, treatment label/log, inspection record, disposal or recipient receipt |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -1133,3 +1197,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `fao-pulse-postharvest-2020` | `official_guidance` | https://www.fao.org/platform-food-loss-waste/resources/news/news-detail/COVID-19-Series-Improving-the-Storability-and-Availability-of-Pulses-by-Reducing-Post-Harvest-Losses/en | Pulse harvest maturity, field exposure, drying and handling, safe storage moisture and alternative drying/storage practices |
 | `fao-onfarm-grain-manual-2009` | `handbook` | https://www.fao.org/4/i0959e/i0959e00.pdf | Post-harvest grain operations including pulses; tropical/subtropical storage moisture guidance; cleaning, drying and storage monitoring practices |
 | `fao-postharvest-system-1994` | `official_guidance` | https://www.fao.org/4/ac301e/AC301e03.htm | Post-harvest process stages, drying and threshing sequence, and the effect of timing and moisture on losses |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

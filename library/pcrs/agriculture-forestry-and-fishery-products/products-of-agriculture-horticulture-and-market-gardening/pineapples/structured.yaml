@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1 kg"
   how_well: "variety where material; plant or ratoon cycle; maturity or quality class; geography; crop year; irrigation and water-source status; accepted fraction; handling state; and gate"
   how_long_or_cycle: "one declared crop cycle and crop year; disclose planting, ratoon, replant, and productive-duration treatment"
-  reference_flow_link: "fresh_pineapple_farm_gate_output; conditioned_pineapple_gate_output"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: boundary_crop_establishment_and_maintenance
@@ -137,6 +135,12 @@ process_map:
     inclusion_condition: "include when the gate follows washing, sorting, trimming, packaging, or cooling"
     role: "foreground"
     quantitative_reference: "conditioned fruit at selected gate"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: pineapple_crop_production
     label: "Pineapple Crop Establishment and Maintenance"
@@ -398,7 +402,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Record accepted fresh pineapple delivered at the declared farm or field-delivery gate and reconcile it with harvest inputs and losses. Raw output measurement and reconciliation: net accepted fruit mass by lot with quality basis and gate retained Raw activity or stage basis: 1,000 kg accepted fresh pineapple output at declared gate."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -508,7 +512,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Record the accepted whole fresh pineapple after the declared primary-conditioning boundary and retain its quality basis. Raw output measurement and reconciliation: measured accepted output mass after conditioning Raw activity or stage basis: 1,000 kg accepted fresh pineapple output at declared gate."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -561,6 +565,74 @@ process_inventory:
               source_ids:
                 - mass-balance-identity
             ranges: []
+      elementary:
+        []
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Fresh whole pineapple at the declared gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Fresh whole pineapple at the declared gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
       elementary:
         []
 allocation_rules:
@@ -728,6 +800,18 @@ dataset_production:
       site_scope: "conditioning site"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "meter, log, invoice"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: calc_reference_normalization
       applies_to: "all inventory rows"
@@ -892,20 +976,24 @@ data_sources:
     type: "method_factor"
     reference: "Conservation of mass applied as a PCR calculation identity"
     used_for: "harvest and conditioning reconciliation"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:579c33c04fd3290873c7b46695521d3f66dc5b1210428fd97cde0326dc6994d6"
+  source_sha256: "sha256:b332b197129aca2f80c8218f22eb577f0267895b6a809685e1ce7fdc0da42eb2"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5373"
+    - unit_id: "normative_5491"
       family: "system_boundary"
       span:
         start:
-          offset: 5373
+          offset: 5491
           line: 65
           column: 1
         end:
-          offset: 7913
+          offset: 8031
           line: 88
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | planting_material_and_declared_pineapple_crop_cycle |\n| starting_condition_role | crop_establishment_or_ratoon_cycle_start |\n| product_classification_scope | whole fresh pineapples corresponding to CPC 3.0 `01318`; processed and nursery products are outside scope |\n| recursive_input_rule | Same-category pineapple used as planting or ratoon material is recorded as propagation input with source, lot, cycle, and upstream disclosure; it is not silently traced as the fresh reference product. |\n| upstream_dataset_requirement | Identify or disclose datasets for propagation material, fertilizer and amendments, crop protection, electricity, fuels, water, transport, conditioning, waste treatment, and emission factors. |\n| disclosure | Declare cycle, planting and ratoon treatment, geography, variety, crop year, area, yield, quality basis, route, gate, output fates, allocation, and identity evidence gaps. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_establishment_and_maintenance` | field production | Include establishment, soil and field preparation, nutrient and amendment inputs, irrigation, crop protection, field operations, land occupation, and managed-soil emissions through harvest. | `fao-crop-production-methodology`; `fao-pineapple-production-guide`; `ipcc-2019-refinement` |\n| `boundary_harvest_and_field_delivery` | harvest and field hand-off | Include harvest, collection, internal handling, and transport to the declared farm or field-delivery hand-off when foreground. | `fao-pineapple-production-guide`; `fao-postharvest-handling` |\n| `boundary_primary_conditioning` | optional conditioning | Include washing, sorting, trimming, cooling, conditioning energy, wastewater, and culls only when the gate follows them. | `codex-cxs-182-1993`; `fao-postharvest-handling` |\n| `boundary_downstream_exclusion` | downstream conversion and use | Exclude juice, canning, drying, freezing, fermentation, cutting, sweetening, retail, consumer use, and logistics beyond the gate. | `codex-cxs-182-1993`; `iso-14067` |\n| `boundary_input_completeness` | all routes | Address propagation material, nutrients, crop protection, water, land, energy, harvest, transport, emissions, output fates, and conditioning inputs with a value, justified zero, or documented exclusion. | `fao-crop-production-methodology`; `ipcc-2019-refinement`; `mass-balance-identity` |\n\n"
@@ -925,11 +1013,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5373
+              offset: 5491
               line: 65
               column: 1
             end:
-              offset: 5394
+              offset: 5512
               line: 65
               column: 22
           text: "## 5. System Boundary"
@@ -945,16 +1033,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_26665"
+    - unit_id: "normative_30588"
       family: "allocation"
       span:
         start:
-          offset: 26665
-          line: 496
+          offset: 30588
+          line: 555
           column: 1
         end:
-          offset: 27635
-          line: 504
+          offset: 31558
+          line: 563
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_subdivision_priority` | crop, harvest, and conditioning | First subdivide plant, ratoon, harvest, field delivery, conditioning, and storage responsibilities when records support separate nodes. | `iso-14044`; `fao-crop-production-methodology` |\n| `allocation_plant_and_ratoon_cycles` | shared field and infrastructure burdens | Attribute shared establishment and multi-cycle burdens using declared cycle, duration, and accepted-output bases; disclose sensitivity when incomplete. | `iso-14044`; `fao-pineapple-production-guide` |\n| `allocation_fruit_and_nonreference_outputs` | accepted fruit, culls, residues, and losses | Record intended outputs, residues, culls, and waste with separate fates. If subdivision is unavailable, use a declared physical or economic method and disclose the alternative. | `iso-14044`; `mass-balance-identity` |\n\n"
       headings:
@@ -973,12 +1061,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 26665
-              line: 496
+              offset: 30588
+              line: 555
               column: 1
             end:
-              offset: 26705
-              line: 496
+              offset: 30628
+              line: 555
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -993,16 +1081,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_36487"
+    - unit_id: "normative_41056"
       family: "validation"
       span:
         start:
-          offset: 36487
-          line: 547
+          offset: 41056
+          line: 607
           column: 1
         end:
-          offset: 37950
-          line: 558
+          offset: 42519
+          line: 618
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_reference_flow` | reference product | Confirm one 1 kg reference flow uses whole fresh pineapple at the declared gate, with qualifiers and identity status recorded. | `codex-cxs-182-1993` |\n| `validation_cycle_coverage` | process map | Confirm plant, ratoon, replant, and crop-year treatment is explicit and not double counted. | `fao-pineapple-production-guide`; `iso-14044` |\n| `validation_input_completeness` | production and harvest | Confirm propagation material, nutrients, crop protection, water, land, energy, transport, and emissions have a value, justified zero, or documented exclusion. | `fao-crop-production-methodology`; `ipcc-2019-refinement` |\n| `validation_water_and_energy` | irrigation and conditioning | Confirm withdrawal, delivered water, pumping energy, field fuel, and conditioning electricity remain distinct and have a declared basis. | `fao-crop-evapotranspiration-56`; `fao-postharvest-handling` |\n| `validation_mass_balance` | harvest and conditioning | Confirm input, accepted fruit, culls, residues, wastewater, and losses reconcile and each non-reference output has a fate. | `mass-balance-identity` |\n| `validation_allocation_and_disclosure` | shared burdens and outputs | Confirm cycle allocation, multi-output treatment, gate, quality, geography, crop year, and sensitivity are disclosed. | `iso-14044`; `iso-14067` |\n\n"
       headings:
@@ -1021,12 +1109,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 36487
-              line: 547
+              offset: 41056
+              line: 607
               column: 1
             end:
-              offset: 36509
-              line: 547
+              offset: 41078
+              line: 607
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1045,233 +1133,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_crop_establishment_and_maintenance"
       identity_kind: "explicit"
-      unit_id: "normative_5373"
+      unit_id: "normative_5491"
       source_span:
         start:
-          offset: 6487
+          offset: 6605
           line: 82
           column: 1
         end:
-          offset: 6841
+          offset: 6959
           line: 82
           column: 355
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_harvest_and_field_delivery"
       identity_kind: "explicit"
-      unit_id: "normative_5373"
+      unit_id: "normative_5491"
       source_span:
         start:
-          offset: 6842
+          offset: 6960
           line: 83
           column: 1
         end:
-          offset: 7104
+          offset: 7222
           line: 83
           column: 263
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_primary_conditioning"
       identity_kind: "explicit"
-      unit_id: "normative_5373"
+      unit_id: "normative_5491"
       source_span:
         start:
-          offset: 7105
+          offset: 7223
           line: 84
           column: 1
         end:
-          offset: 7338
+          offset: 7456
           line: 84
           column: 234
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_downstream_exclusion"
       identity_kind: "explicit"
-      unit_id: "normative_5373"
+      unit_id: "normative_5491"
       source_span:
         start:
-          offset: 7339
+          offset: 7457
           line: 85
           column: 1
         end:
-          offset: 7574
+          offset: 7692
           line: 85
           column: 236
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_input_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_5373"
+      unit_id: "normative_5491"
       source_span:
         start:
-          offset: 7575
+          offset: 7693
           line: 86
           column: 1
         end:
-          offset: 7911
+          offset: 8029
           line: 86
           column: 337
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_subdivision_priority"
       identity_kind: "explicit"
-      unit_id: "normative_26665"
+      unit_id: "normative_30588"
       source_span:
         start:
-          offset: 26778
-          line: 500
+          offset: 30701
+          line: 559
           column: 1
         end:
-          offset: 27036
-          line: 500
+          offset: 30959
+          line: 559
           column: 259
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_plant_and_ratoon_cycles"
       identity_kind: "explicit"
-      unit_id: "normative_26665"
+      unit_id: "normative_30588"
       source_span:
         start:
-          offset: 27037
-          line: 501
+          offset: 30960
+          line: 560
           column: 1
         end:
-          offset: 27321
-          line: 501
+          offset: 31244
+          line: 560
           column: 285
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_fruit_and_nonreference_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_26665"
+      unit_id: "normative_30588"
       source_span:
         start:
-          offset: 27322
-          line: 502
+          offset: 31245
+          line: 561
           column: 1
         end:
-          offset: 27633
-          line: 502
+          offset: 31556
+          line: 561
           column: 312
     - pointer: "/validation_rules/0"
       rule_id: "validation_reference_flow"
       identity_kind: "explicit"
-      unit_id: "normative_36487"
+      unit_id: "normative_41056"
       source_span:
         start:
-          offset: 36582
-          line: 551
+          offset: 41151
+          line: 611
           column: 1
         end:
-          offset: 36785
-          line: 551
+          offset: 41354
+          line: 611
           column: 204
     - pointer: "/validation_rules/1"
       rule_id: "validation_cycle_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_36487"
+      unit_id: "normative_41056"
       source_span:
         start:
-          offset: 36786
-          line: 552
+          offset: 41355
+          line: 612
           column: 1
         end:
-          offset: 36973
-          line: 552
+          offset: 41542
+          line: 612
           column: 188
     - pointer: "/validation_rules/2"
       rule_id: "validation_input_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_36487"
+      unit_id: "normative_41056"
       source_span:
         start:
-          offset: 36974
-          line: 553
+          offset: 41543
+          line: 613
           column: 1
         end:
-          offset: 37255
-          line: 553
+          offset: 41824
+          line: 613
           column: 282
     - pointer: "/validation_rules/3"
       rule_id: "validation_water_and_energy"
       identity_kind: "explicit"
-      unit_id: "normative_36487"
+      unit_id: "normative_41056"
       source_span:
         start:
-          offset: 37256
-          line: 554
+          offset: 41825
+          line: 614
           column: 1
         end:
-          offset: 37521
-          line: 554
+          offset: 42090
+          line: 614
           column: 266
     - pointer: "/validation_rules/4"
       rule_id: "validation_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_36487"
+      unit_id: "normative_41056"
       source_span:
         start:
-          offset: 37522
-          line: 555
+          offset: 42091
+          line: 615
           column: 1
         end:
-          offset: 37729
-          line: 555
+          offset: 42298
+          line: 615
           column: 208
     - pointer: "/validation_rules/5"
       rule_id: "validation_allocation_and_disclosure"
       identity_kind: "explicit"
-      unit_id: "normative_36487"
+      unit_id: "normative_41056"
       source_span:
         start:
-          offset: 37730
-          line: 556
+          offset: 42299
+          line: 616
           column: 1
         end:
-          offset: 37948
-          line: 556
+          offset: 42517
+          line: 616
           column: 219
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5373"
+      unit_id: "normative_5491"
       source_span:
         start:
-          offset: 5373
+          offset: 5491
           line: 65
           column: 1
         end:
-          offset: 5394
+          offset: 5512
           line: 65
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5373"
+      unit_id: "normative_5491"
       source_span:
         start:
-          offset: 5422
+          offset: 5540
           line: 69
           column: 1
         end:
-          offset: 6394
+          offset: 6512
           line: 76
           column: 189
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_26665"
+      unit_id: "normative_30588"
       source_span:
         start:
-          offset: 26665
-          line: 496
+          offset: 30588
+          line: 555
           column: 1
         end:
-          offset: 26705
-          line: 496
+          offset: 30628
+          line: 555
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_36487"
+      unit_id: "normative_41056"
       source_span:
         start:
-          offset: 36487
-          line: 547
+          offset: 41056
+          line: 607
           column: 1
         end:
-          offset: 36509
-          line: 547
+          offset: 41078
+          line: 607
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1280,5 +1368,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:579c33c04fd3290873c7b46695521d3f66dc5b1210428fd97cde0326dc6994d6"
-  generated_content_sha256: "sha256:bdd7c2f438c285ec49d962e4e443eb8d6017765adad359d57ed57d3f92507def"
+    sha256: "sha256:b332b197129aca2f80c8218f22eb577f0267895b6a809685e1ce7fdc0da42eb2"
+  generated_content_sha256: "sha256:c9d328abadf5fc866dcde31eeef90f50e0205540e659609a606363f9c2d4cf5a"

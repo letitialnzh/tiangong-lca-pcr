@@ -27,9 +27,7 @@ sync_with: pcr.en-US.md
 | How much | 1 kg 鲜草莓 |
 | How well | 等级、成熟度、水分状态和可销售状态 |
 | How long or cycle | 一个作物年度或生产周期 |
-| reference_flow_link | row_11; row_16 |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
@@ -40,7 +38,9 @@ sync_with: pcr.en-US.md
 | Reference unit | kg |
 | Required qualifiers | 生产系统；地点/区域；作物年度；品种/品种组；采收和可销售质量；拒收/损失/返工/回收去向；灌溉和能源；肥料产品及养分基础；调理；交接点；分配基础；报告期和资产归属 |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -74,6 +74,7 @@ sync_with: pcr.en-US.md
 | `process-02` | 采收和捕获 | required | 全部采收作业 | harvest capture | 采收和可销售 kg |
 | `process-03` | 分级和交付 | required | 发生分级或交付时 | grading and sorting | 交付 kg |
 | `process-04` | 初级调理 | conditional | 交付前发生清洗、冷却或包装时 | primary conditioning | 调理 kg |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：作物栽培管理（`process-01`）
 #### 输入
@@ -345,7 +346,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：分级和发运记录
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1 kg 交付草莓.
@@ -508,7 +509,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：发运记录
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1 kg 交付草莓.
@@ -550,6 +551,64 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp-conditioning`
 - 来源：`source-01`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：声明交接点的可销售新鲜草莓（UUID 未解析；有意留空）
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：声明交接点的可销售新鲜草莓（UUID 未解析；有意留空）
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与联产品处理
 
 | rule_id | Applies to | Rule | source_ids |
@@ -571,6 +630,7 @@ sync_with: pcr.en-US.md
 | `cp-harvest` | `process-02` | harvested fruit and loss | 称重单和采收日志 | 批次、日期、质量、地块、去向 | 每批次称量并对账；原始汇总与分配：汇总批次 | kg | 每批次 | 采收季 | 各地块 | 每声明的参考流 | 校准秤和日志 |
 | `cp-grading` | `process-03` | incoming, accepted and rejected fruit | 分级和发运记录 | 进料、等级、质量、去向 | 批次质量平衡；原始汇总与分配：核对全部状态 | kg | 每批次 | 分级期间 | 各产线/地点 | 每声明的参考流 | 发运和去向记录 |
 | `cp-conditioning` | `process-04` | conditioning input, output and waste | 运行日志、水表、发票 | 批次、投入、公用工程、产出、废物 | 与批次关联的对账；原始汇总与分配：按批次质量分配 | kg、m3、kWh | 每次运行 | 调理期间 | 调理单元 | 每声明的参考流 | 水表和运行记录 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -616,3 +676,7 @@ sync_with: pcr.en-US.md
 | `source-01` | dataset | 当前产品路线证据和草莓生产周期前景记录 | 身份、数量、边界、产出状态和采集完整性 |
 | `source-02` | official_guidance | 审查阶段选定的官方农艺指南 | 实践背景，不替代场址特定数量 |
 | `source-03` | standard | 审查阶段选定的 ISO 14040/14044 一致 LCA 原则和项目规则 | 边界、分配、记录和数据质量 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

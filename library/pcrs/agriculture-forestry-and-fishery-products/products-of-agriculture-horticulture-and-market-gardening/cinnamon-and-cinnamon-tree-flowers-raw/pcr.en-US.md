@@ -345,7 +345,7 @@ Raw activity or stage basis: per 1 kg accepted bark at farm gate.
 
 Record peeled bark, quills, quillings, featherings or chips after primary conditioning and before grading; product remains unground.
 
-- Selected flow: Cinnamon and cinnamon-tree flowers, raw `6e9b5ee6-fbb3-48f8-9b7a-dc50936ee79a`
+- Selected flow: Cinnamon and cinnamon-tree flowers, raw
 - Flow property / unit: Mass / kg
 - Amount rule: Measured net intended output of prepared bark at lot-specific moisture.
 - Value mode: Foreground record (`foreground_record`)
@@ -366,6 +366,8 @@ Raw activity or stage basis: per bark-conditioning lot.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: External source (`external_source`)
   - Sources: `eurlex-2020-ceylon-cinnamon`
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ###### Wood, leaves and twigs sold as co-products (`bark_route_coproducts`)
 
@@ -512,7 +514,7 @@ Raw activity or stage basis: per 1 kg accepted flower/bud at farm gate.
 
 Record cleaned fresh or primary dried flowers/buds before grading; declare whether traded material is flower, immature bud or immature fruit marketed as a bud.
 
-- Selected flow: Cinnamon and cinnamon-tree flowers, raw `6e9b5ee6-fbb3-48f8-9b7a-dc50936ee79a`
+- Selected flow: Cinnamon and cinnamon-tree flowers, raw
 - Flow property / unit: Mass / kg
 - Amount rule: Measured net prepared flower/bud mass at lot-specific moisture.
 - Value mode: Foreground record (`foreground_record`)
@@ -532,6 +534,8 @@ Raw activity or stage basis: per flower-conditioning lot.
   - Basis: prepared flower/bud as received; provisional screen because no cross-species official limit was located
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 

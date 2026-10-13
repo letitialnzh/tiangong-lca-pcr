@@ -49,7 +49,7 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
-    name: "Whole primary dried black Piper pepper; UUID unresolved"
+    name: "Whole raw Piper pepper; UUID unresolved for dried state"
     uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
@@ -152,9 +152,9 @@ process_inventory:
           name: "Nitrous oxide to air; receiving air subcompartment to be verified"
           flow_type: "elementary"
           property_unit: "Mass / kg N2O"
-          description: "Calculate direct and indirect N₂O from recorded nitrogen inputs and site-year activity. Keep its quantity separate from carbon dioxide and verify the receiving air subcompartment before binding a UUID. Raw activity or stage basis: Plot-year then accepted pepper output."
+          description: "Calculate direct and indirect N₂O from recorded nitrogen inputs and site-year activity. Keep its quantity separate from carbon dioxide and verify the receiving air subcompartment before binding a UUID. Raw activity or stage basis: Plot-year then accepted pepper output. Calculation method corresponds to Section 8 rules: calc_soil_gases."
           amount:
-            expression: "apply calc_soil_gases to nitrogen inputs and the declared N₂O factors"
+            expression: "Apply IPCC direct/indirect N₂O and applicable lime/urea CO₂ equations with site-year activity and documented factors."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -171,9 +171,9 @@ process_inventory:
           name: "Carbon dioxide to air from lime or urea; receiving air subcompartment to be verified"
           flow_type: "elementary"
           property_unit: "Mass / kg CO2"
-          description: "Include this exchange only when lime or urea use and the selected method support a direct CO₂ calculation. Keep its quantity separate from N₂O and verify the receiving air subcompartment before binding a UUID. Raw activity or stage basis: Plot-year then accepted pepper output."
+          description: "Include this exchange only when lime or urea use and the selected method support a direct CO₂ calculation. Keep its quantity separate from N₂O and verify the receiving air subcompartment before binding a UUID. Raw activity or stage basis: Plot-year then accepted pepper output. Calculation method corresponds to Section 8 rules: calc_soil_gases."
           amount:
-            expression: "apply calc_soil_gases to recorded lime or urea inputs and the declared CO₂ factors"
+            expression: "Apply IPCC direct/indirect N₂O and applicable lime/urea CO₂ equations with site-year activity and documented factors."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -515,7 +515,7 @@ data_sources:
     used_for: "Managed-soil gases"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:5e7afb0513a2a231600fc3f6a5315e2de92ce0bd20634a0af33490fd60701a68"
+  source_sha256: "sha256:156a2d33b7bd42cadfede3575b06dd196e59b2be12faf0875b50ec2210b6ea04"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_3843"
@@ -566,16 +566,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_16131"
+    - unit_id: "normative_16352"
       family: "allocation"
       span:
         start:
-          offset: 16131
-          line: 348
+          offset: 16352
+          line: 352
           column: 1
         end:
-          offset: 17135
-          line: 357
+          offset: 17356
+          line: 361
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocate_periods` | Establishment and replacements | Assign recorded vine and support burdens to evidenced productive years and outputs; retain nonproductive establishment and termination events and count each burden once. | `fao-ecocrop-pepper` |\n| `allocate_shared` | Supports, pumps and dryers | List consumers and service years, allocate by measured use or documented physical proxy, and reconcile assigned burden to recorded total. | `fao-ecocrop-pepper` |\n| `allocate_grades` | Saleable whole grades | Partition common burdens by measured mass when grades have the same physical function; justify another rule if materially different. Rejects receive no co-product credit. | `un-cpc3` |\n| `allocate_rework` | Reworked or recovered berries | Keep prior lot burden and add incremental rework once; credit recovery only with evidenced destination and method. | `kau-pepper-harvest` |\n\n"
       headings:
@@ -594,12 +594,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 16131
-              line: 348
+              offset: 16352
+              line: 352
               column: 1
             end:
-              offset: 16171
-              line: 348
+              offset: 16392
+              line: 352
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -614,16 +614,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_21564"
+    - unit_id: "normative_21785"
       family: "validation"
       span:
         start:
-          offset: 21564
-          line: 389
+          offset: 21785
+          line: 393
           column: 1
         end:
-          offset: 22556
-          line: 399
+          offset: 22777
+          line: 403
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_identity` | Reference product | Reject processed, crushed, ground, non-*Piper* or unidentified state; require a reviewed dried-state flow UUID before publication. | `un-cpc3` |\n| `validate_balance` | Harvest, conditioning and grading | Require moisture and reconcile input, accepted, downgraded, rejected and moisture-loss masses within documented tolerance. | `kau-pepper-harvest` |\n| `validate_route` | Process graph | Check cultivation → harvest → optional conditioning → grading hand-offs and every grade, reject and rework path. | `fao-ecocrop-pepper` |\n| `validate_shared` | Perennial/shared assets | Each attributed asset has service years and consumers; assigned totals equal recorded totals once. | `fao-ecocrop-pepper` |\n| `validate_soil` | Fertilized plots | Report N activity and direct/indirect factors; flag relevant uncalculated soil emissions. | `ipcc-2019-afolu11` |\n\n"
       headings:
@@ -642,12 +642,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 21564
-              line: 389
+              offset: 21785
+              line: 393
               column: 1
             end:
-              offset: 21586
-              line: 389
+              offset: 21807
+              line: 393
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -718,119 +718,119 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocate_periods"
       identity_kind: "explicit"
-      unit_id: "normative_16131"
+      unit_id: "normative_16352"
       source_span:
         start:
-          offset: 16244
-          line: 352
+          offset: 16465
+          line: 356
           column: 1
         end:
-          offset: 16494
-          line: 352
+          offset: 16715
+          line: 356
           column: 251
     - pointer: "/allocation_rules/1"
       rule_id: "allocate_shared"
       identity_kind: "explicit"
-      unit_id: "normative_16131"
+      unit_id: "normative_16352"
       source_span:
         start:
-          offset: 16495
-          line: 353
+          offset: 16716
+          line: 357
           column: 1
         end:
-          offset: 16708
-          line: 353
+          offset: 16929
+          line: 357
           column: 214
     - pointer: "/allocation_rules/2"
       rule_id: "allocate_grades"
       identity_kind: "explicit"
-      unit_id: "normative_16131"
+      unit_id: "normative_16352"
       source_span:
         start:
-          offset: 16709
-          line: 354
+          offset: 16930
+          line: 358
           column: 1
         end:
-          offset: 16939
-          line: 354
+          offset: 17160
+          line: 358
           column: 231
     - pointer: "/allocation_rules/3"
       rule_id: "allocate_rework"
       identity_kind: "explicit"
-      unit_id: "normative_16131"
+      unit_id: "normative_16352"
       source_span:
         start:
-          offset: 16940
-          line: 355
+          offset: 17161
+          line: 359
           column: 1
         end:
-          offset: 17133
-          line: 355
+          offset: 17354
+          line: 359
           column: 194
     - pointer: "/validation_rules/0"
       rule_id: "validate_identity"
       identity_kind: "explicit"
-      unit_id: "normative_21564"
+      unit_id: "normative_21785"
       source_span:
         start:
-          offset: 21659
-          line: 393
+          offset: 21880
+          line: 397
           column: 1
         end:
-          offset: 21847
-          line: 393
+          offset: 22068
+          line: 397
           column: 189
     - pointer: "/validation_rules/1"
       rule_id: "validate_balance"
       identity_kind: "explicit"
-      unit_id: "normative_21564"
+      unit_id: "normative_21785"
       source_span:
         start:
-          offset: 21848
-          line: 394
+          offset: 22069
+          line: 398
           column: 1
         end:
-          offset: 22054
-          line: 394
+          offset: 22275
+          line: 398
           column: 207
     - pointer: "/validation_rules/2"
       rule_id: "validate_route"
       identity_kind: "explicit"
-      unit_id: "normative_21564"
+      unit_id: "normative_21785"
       source_span:
         start:
-          offset: 22055
-          line: 395
+          offset: 22276
+          line: 399
           column: 1
         end:
-          offset: 22229
-          line: 395
+          offset: 22450
+          line: 399
           column: 175
     - pointer: "/validation_rules/3"
       rule_id: "validate_shared"
       identity_kind: "explicit"
-      unit_id: "normative_21564"
+      unit_id: "normative_21785"
       source_span:
         start:
-          offset: 22230
-          line: 396
+          offset: 22451
+          line: 400
           column: 1
         end:
-          offset: 22401
-          line: 396
+          offset: 22622
+          line: 400
           column: 172
     - pointer: "/validation_rules/4"
       rule_id: "validate_soil"
       identity_kind: "explicit"
-      unit_id: "normative_21564"
+      unit_id: "normative_21785"
       source_span:
         start:
-          offset: 22402
-          line: 397
+          offset: 22623
+          line: 401
           column: 1
         end:
-          offset: 22554
-          line: 397
+          offset: 22775
+          line: 401
           column: 153
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -859,27 +859,27 @@ normative_context:
           column: 135
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_16131"
+      unit_id: "normative_16352"
       source_span:
         start:
-          offset: 16131
-          line: 348
+          offset: 16352
+          line: 352
           column: 1
         end:
-          offset: 16171
-          line: 348
+          offset: 16392
+          line: 352
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_21564"
+      unit_id: "normative_21785"
       source_span:
         start:
-          offset: 21564
-          line: 389
+          offset: 21785
+          line: 393
           column: 1
         end:
-          offset: 21586
-          line: 389
+          offset: 21807
+          line: 393
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -888,5 +888,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:5e7afb0513a2a231600fc3f6a5315e2de92ce0bd20634a0af33490fd60701a68"
-  generated_content_sha256: "sha256:b8e0152319e84975ffa4e556f36525a649932ed6d87a0230c36aed1557179944"
+    sha256: "sha256:156a2d33b7bd42cadfede3575b06dd196e59b2be12faf0875b50ec2210b6ea04"
+  generated_content_sha256: "sha256:148526f788f9eaa76f78fd65e5ba57591e2e2bb6d647fdb59d4834886cd1eed5"

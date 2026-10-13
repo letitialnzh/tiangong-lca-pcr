@@ -210,7 +210,7 @@ Calculate managed-soil N2O from collected nitrogen inputs and the selected IPCC 
 
 - Selected flow: Nitrous oxide to ambient air
 - Flow property / unit: Mass / kg N2O
-- Amount rule: Apply `calc_direct_n2o` and retain N2O-N to N2O conversion.
+- Amount rule: Apply the selected IPCC tier and convert N2O-N to N2O by 44/28.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: crop-cycle emission divided by accepted grain mass.
@@ -229,6 +229,8 @@ Raw activity or stage basis: crop-cycle emission divided by accepted grain mass.
   - Basis kind: N input (`n_input`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
   - Sources: `ipcc-2019-managed-soils`
+
+Calculation method corresponds to Section 8 rules: `calc_direct_n2o`.
 
 ### Process: Harvest and farm-gate preparation (`millet_harvest_preparation`)
 

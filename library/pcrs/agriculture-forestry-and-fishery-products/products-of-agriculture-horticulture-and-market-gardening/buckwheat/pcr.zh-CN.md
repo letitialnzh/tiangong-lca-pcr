@@ -31,14 +31,12 @@ sync_with: pcr.en-US.md
 | How much | 1,000 kg 按接收状态计的籽粒 |
 | How well | 已收获、未加工，并符合声明的水分、杂质、损伤和预期用途规格的籽粒 |
 | How long or cycle | 一个声明的作物周期 |
-| reference_flow_link | harvested_buckwheat_grain_output; conditioned_buckwheat_grain_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Buckwheat, production mix, at farm gate, harvested grain, unprocessed `7f337a9e-f24a-4d48-841e-0b5326d028d7` |
+| 参考产品流 | Buckwheat, production mix, at farm gate, harvested grain, unprocessed |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
@@ -47,7 +45,9 @@ sync_with: pcr.en-US.md
 
 构建前景数据包时，`必需限定信息` 中列出的信息应在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中明确声明。缺失必需限定信息的数据包视为参考流定义不完整。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -86,6 +86,7 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- | --- | --- |
 | `buckwheat_field_production` | 荞麦田间生产与收获 | required | always | 管理型生物生产与收获 | 一个作物周期的栽培公顷数和收获籽粒质量 |
 | `farm_gate_buckwheat_conditioning` | 农场内荞麦籽粒调制 | conditional | 在农场交付前发生清理、干燥、分选或临时处理，且未嵌入田间记录 | 将收获籽粒处理为声明市场状态 | 进入量和合格籽粒质量 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：荞麦田间生产与收获（`buckwheat_field_production`）
 
@@ -248,7 +249,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：按声明水分和质量状态计量收获籽粒质量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：终端输出缩放到 1,000 kg 参考籽粒.
@@ -456,7 +457,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：按声明水分和杂质计量合格籽粒质量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：终端输出缩放到 1,000 kg 参考籽粒.
@@ -529,6 +530,64 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Buckwheat, production mix, at farm gate, harvested grain, unprocessed
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Buckwheat, production mix, at farm gate, harvested grain, unprocessed
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -551,6 +610,7 @@ sync_with: pcr.en-US.md
 | `cp_harvest_output_records` | `buckwheat_field_production` | grain, removed straw, harvest losses, residue fate | 地磅、产量监测、打捆记录、水分检测 | field_id; harvest_date; grain_mass; grain_moisture; straw_mass; straw_moisture; loss_mass; residue_fate; destination | 将收获量和移出量与田地面积及作物周期核对；原始汇总与分配：分别汇总合格籽粒、每个残余物去向和损失 | kg; percent; ha | 每次收获 | 完整作物周期 | 所有代表性田地 | 每声明的参考流 | 地磅或产量监测校准；水分记录；去向证据 |
 | `cp_field_emission_activity` | `buckwheat_field_production` | emissions to air and water | 养分、土壤、天气、残余物和排放模型记录 | fertilizer_N; organic_N; residue_N; application_method; soil; climate; drainage; factor_set; model_version | 使用一个声明的、适用于地理位置的方法计算每种排放；原始汇总与分配：按田地计算、按面积加权，再以同周期产量归一化 | kg N; kg emission; ha | 每个事件及作物周期计算 | 完整作物周期 | 所有代表性田地 | 每声明的参考流 | 源记录；因子来源；模型文件；养分平衡审查 |
 | `cp_conditioning_records` | `farm_gate_buckwheat_conditioning` | grain, energy, screenings, rejects | 批次单、地磅、水分检测、计量表、燃料和去向记录 | batch_id; incoming_mass; incoming_moisture; electricity; heat; accepted_mass; accepted_moisture; screenings; rejects | 将批次和计量表与合格输出核对；原始汇总与分配：汇总匹配批次；按时间或处理质量分配共用计量表；关闭湿质量平衡 | kg; percent; kWh; MJ | 每个批次或计量周期 | 所有交付前调制 | 所有纳入的设备和批次 | 每声明的参考流 | 地磅和水分仪校准；计量表核对 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -604,3 +664,7 @@ sync_with: pcr.en-US.md
 | `emep-eea-2023-guidebook` | method_factor | European Environment Agency, EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023 | 农业氨方法和 QA 背景 |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | 分配层级和披露 |
 | `mass-balance-identity` | method_factor | Conservation of mass applied to matched grain-conditioning batches | 调制质量平衡计算和校验 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

@@ -459,7 +459,7 @@ Raw activity or stage basis: per 1,000 kg accepted in-shell nuts.
 
 Record the declared species after any required outer-hull removal and drying; the hard shell remains intact.
 
-- Selected flow: Other nuts (excluding wild edible nuts and groundnuts), in shell `85d33932-8c99-4207-8011-1bec84102f55`
+- Selected flow: Other nuts (excluding wild edible nuts and groundnuts), in shell
 - Flow property / unit: Mass / kg
 - Amount rule: measured accepted mass, moisture, outer-hull state, and gate
 - Value mode: Foreground record (`foreground_record`)
@@ -478,6 +478,8 @@ Raw activity or stage basis: per matched batch; scale to 1,000 kg terminal produ
   - Basis: matched wet-to-dry and hulling balance
   - Basis kind: `process_output`
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 

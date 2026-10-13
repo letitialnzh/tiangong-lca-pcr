@@ -227,7 +227,7 @@ Keep land occupation and N2O as separate calculated elementary-flow records even
 
 - Selected flow: Managed land occupation and dinitrogen monoxide to air, unresolved
 - Flow property / unit: Area × time and mass / ha·year and kg N2O
-- Amount rule: Apply `calc_land` and `calc_soil_n2o` from mapped area, dates, and nitrogen records
+- Amount rule: hectares × occupied days ÷ 365.25; normalize by output; Apply IPCC managed-soil equations to recorded synthetic/organic N and residue N; convert N2O-N to N2O by 44/28
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per 1,000 kg harvest-ready organ.
@@ -245,6 +245,8 @@ Raw activity or stage basis: per 1,000 kg harvest-ready organ.
   - Basis: per 1,000 kg harvest-ready organ; N2O is validated separately against the formula
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Calculation method corresponds to Section 8 rules: `calc_land`, `calc_soil_n2o`.
 
 #### Outputs
 
@@ -675,7 +677,7 @@ This row represents moisture removed from the product and released to air during
 
 - Selected flow: Water to air, unresolved
 - Flow property / unit: Mass / kg
-- Amount rule: Apply `calc_drying_water`
+- Amount rule: wet input × input moisture − dried output × output moisture; investigate negative results
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per 1,000 kg dried output.
@@ -692,6 +694,8 @@ Raw activity or stage basis: per 1,000 kg dried output.
   - Basis: per 1,000 kg dried output
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Calculation method corresponds to Section 8 rules: `calc_drying_water`.
 
 ### Process: Farm-gate grading and routing (`grading_sorting`)
 

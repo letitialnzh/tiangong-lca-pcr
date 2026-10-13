@@ -35,7 +35,7 @@ translation_status: aligned
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 未加工干辣椒属或多香果属果实（UUID 待确认） |
+| Reference product flow | 整粒未加工辣椒属或多香果属干果；UUID 待确认 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

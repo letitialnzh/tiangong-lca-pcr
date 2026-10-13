@@ -289,7 +289,7 @@ Calculate direct and indirect N2O from recorded fertilizer, manure and returned 
 
 - Selected flow: Nitrous oxide to air, elementary identity pending method/compartment binding
 - Flow property / unit: Mass / kg N2O
-- Amount rule: `calc_soil_n2o`
+- Amount rule: apply declared region-specific or IPCC 2019 direct and indirect N2O method to documented synthetic, organic and residue N; subtract sold or burnt residue from returned residue pool
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: field and crop cycle.
@@ -307,6 +307,8 @@ Raw activity or stage basis: field and crop cycle.
   - Basis: calculated managed-soil N2O per cultivated hectare; retain factor-method audit; screen only, not a default, mandatory limit, or substitute for measured records
   - Basis kind: Crop cycle (`crop_cycle`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Calculation method corresponds to Section 8 rules: `calc_soil_n2o`.
 
 ### Process: Swath or direct combine and thresh (`flax_harvest`)
 
@@ -382,7 +384,7 @@ No additional field withdrawal is prescribed beyond documented irrigation or fue
 
 Threshed grain passes to first cleaning, with measured wet mass and moisture; seed coat damage and field loss are recorded. [manitoba-flax-management]
 
-- Selected flow: Linseed `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- Selected flow: Linseed
 - Flow property / unit: Mass / kg
 - Amount rule: measured combine grain mass, corrected for tare
 - Value mode: Foreground record (`foreground_record`)
@@ -401,6 +403,8 @@ Raw activity or stage basis: harvest run.
   - Basis: raw harvested linseed grain per harvested hectare; screen only, not a default, mandatory limit, or substitute for measured records
   - Basis kind: Crop cycle (`crop_cycle`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ###### Removed flax straw for sale (`linseed_sold_straw`)
 
@@ -527,7 +531,7 @@ No inherent direct elementary input; energy upstream follows the electricity or 
 
 Cleaned grain passes to moisture stabilization if needed and then grading. [manitoba-flax-management]
 
-- Selected flow: Linseed `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- Selected flow: Linseed
 - Flow property / unit: Mass / kg
 - Amount rule: measured cleaned grain mass
 - Value mode: Foreground record (`foreground_record`)
@@ -547,6 +551,8 @@ Raw activity or stage basis: cleaning lot.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `iso-14044-lci`
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 
@@ -676,7 +682,7 @@ No direct resource input presumed; combustion emissions follow recorded on-site 
 
 The grain exits at measured moisture for the declared hand-off; cooling and temporary on-farm holding associated with this operation are recorded. [manitoba-growing-flax]
 
-- Selected flow: Linseed `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- Selected flow: Linseed
 - Flow property / unit: Mass / kg
 - Amount rule: measured post-intervention wet mass and moisture
 - Value mode: Foreground record (`foreground_record`)
@@ -696,6 +702,8 @@ Raw activity or stage basis: conditioning lot.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `iso-14044-lci`
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 
@@ -732,7 +740,7 @@ Calculate water removed from measured before and after mass/moisture, separate f
 
 - Selected flow: Water vapour, elementary identity pending local flow convention
 - Flow property / unit: Mass / kg
-- Amount rule: `calc_moisture_balance`
+- Amount rule: dry matter = incoming wet mass × (1 − incoming wet-basis moisture); expected outgoing wet mass = conserved dry matter / (1 − outgoing wet-basis moisture), adjusted for measured dry-matter reject
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: conditioning lot.
@@ -750,6 +758,8 @@ Raw activity or stage basis: conditioning lot.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `iso-14044-lci`
+
+Calculation method corresponds to Section 8 rules: `calc_moisture_balance`.
 
 ### Process: Lot grading and gate hand-off (`linseed_grading`)
 
@@ -824,7 +834,7 @@ Raw activity or stage basis: gate lot.
 
 Grain sold at a lower grade remains an intended product only if there is a measured separate sale and destination; declare its grade and prevent it entering accepted reference mass. [manitoba-flax-management]
 
-- Selected flow: Linseed `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- Selected flow: Linseed
 - Flow property / unit: Mass / kg
 - Amount rule: separately weighed sold downgraded mass, zero absent sale
 - Value mode: Foreground record (`foreground_record`)
@@ -845,6 +855,8 @@ Raw activity or stage basis: gate lot.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `iso-14044-lci`
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 
@@ -1025,7 +1037,7 @@ Raw activity or stage basis: seed lot.
 
 If it fails seed grade but remains salable as oilseed, route it once to the oilseed grading hand-off with its own grade and mass. [cfia-common-seed]
 
-- Selected flow: Linseed `b5ee43d6-cd60-48df-8ac2-c3bc5ca9011f`
+- Selected flow: Linseed
 - Flow property / unit: Mass / kg
 - Amount rule: weighed downgraded grain
 - Value mode: Foreground record (`foreground_record`)
@@ -1045,6 +1057,8 @@ Raw activity or stage basis: seed lot.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `iso-14044-lci`
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 

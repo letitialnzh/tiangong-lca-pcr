@@ -33,9 +33,7 @@ sync_with: pcr.en-US.md
 | How much | 所选产品在声明交接点的 1 kg；保留作物、植物部位、含水率和商品状态限定信息 |
 | How well | 记录物种/品种（如已知）、作物用途、采收或取汁方式、含水率/状态、等级和去向 |
 | How long or cycle | 糖槭为一个声明的采汁季；高粱为一个作物周期；甜叶菊为一次收获或一个声明的多茬季 |
-| reference_flow_link | maple_sap_output; sorghum_stalk_output; stevia_leaf_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
@@ -47,7 +45,9 @@ sync_with: pcr.en-US.md
 | 必需限定信息 | 唯一作物分支；物种/品种；植物部位；糖料用途；鲜/干状态和含水率；地理位置；生产期；作物专属交接点；等级；分配和多期处理 |
 | 绑定模式 | 省略；精确参考产品 UUID 尚未解决 |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -91,6 +91,7 @@ sync_with: pcr.en-US.md
 | `maple_sap_route` | 糖槭林管理、打孔和原树液收集 | conditional | 所选产品仅为 *Acer saccharum* 糖槭树液时使用。 | 多年生受管理生产和资源采集 | 每个声明采汁季的原树液 kg 及 1 kg 参考流 |
 | `sweet_sorghum_stalk_route` | 糖用高粱种植和收秆 | conditional | 所选产品仅为以糖或糖浆原料为目的种植的高粱秆时使用。 | 一年生作物生产和收获 | 每个作物周期收获高粱秆 kg 及 1 kg 参考流 |
 | `stevia_dried_leaf_route` | 甜叶菊种植、采叶和农场干燥 | conditional | 仅当 *Stevia rebaudiana* 叶片在交接点声明为干叶时使用。鲜叶数据集须声明不同状态并省略干燥。 | 受管理叶片生产、收获和初级稳定化 | 每次收获周期的干叶 kg 及 1 kg 参考流 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：糖槭林管理、打孔和原树液收集（`maple_sap_route`）
 
@@ -200,7 +201,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：按采汁季记录合格原树液产出；将清单交换归一化至 1 kg。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 kg 原树液.
@@ -350,7 +351,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：按作物周期记录合格高粱秆质量和含水率；交换归一化至 1 kg。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 kg 收获高粱秆.
@@ -501,7 +502,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：按收获周期记录合格干叶质量、残余含水率和等级；交换归一化至 1 kg。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 kg 干叶.
@@ -521,6 +522,64 @@ sync_with: pcr.en-US.md
   - 证据类型：外部来源（`external_source`）
   - 来源：`src_sweet_project_stevia_lca`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：上述路线对应的收获产品；UUID 未解决
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：上述路线对应的收获产品；UUID 未解决
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 每份清单只核算一条作物分支。如果同一林地或田块在声明时期产出多个预期产品，先评估能否按田块、作业、收获或批次拆分；若不可行，则选择并说明与研究问题一致的物理或经济分配驱动因子，记录全部产品和交接点，并对重要替代方案进行敏感性分析。只有在有意采收且作为有用产品离开过程时，槭木材、高粱籽粒和甜叶菊茎才属于共产品。除非记录了真实用途和交接点，叶片、顶部、根、杂草、拒收物、树液泄漏和田间损失均为残余物或废物。多年资产和共享设备只计入一次，并按实测生产面积、使用量、采汁季或机械时间分配；不得在时期或产品间重复归属。
@@ -537,6 +596,7 @@ sync_with: pcr.en-US.md
 | `cp_maple_field_records` | `maple_sap_route` | 林木存量；养分产品；灌溉；能源；原树液 | 林木、采购、施用、仪表和生产记录 | species; stand_id; trees_planted; replacements; taps; tap_dates; sap_mass_or_volume; density_basis; nutrients; irrigation; fuel; electricity; area; losses; co_products; gate | 核对发票、林地图、仪表、打孔日志和经校准的秤；原始汇总与分配：按林地和采汁季汇总；建植负荷按声明生产期年化 | plant; kg; m3; kWh; ha | 每项作业和每个采汁季 | 完整代表性采汁季 | 每片所代表的糖槭林 | 每声明的参考流 | 供应商记录；田地图；校准秤和仪表检查 |
 | `cp_sorghum_field_records` | `sweet_sorghum_stalk_route` | 种子；养分产品；灌溉；能源；作物保护；高粱秆产出 | 种子、田间作业、施用、仪表和收获记录 | cultivar; crop_purpose; seed_mass; area; sowing_date; fertilizer_product; nutrient_analysis; irrigation; fuel; electricity; pesticide; harvest_date; stalk_mass; moisture; grain; residues; rejects; gate | 核对发票、田间日志、仪表、施用记录和经校准的收获秤；原始汇总与分配：按田块和作物周期汇总；分别保留籽粒和高粱秆数量 | kg; m3; kWh; ha; 质量分数 | 每项作业和每个作物周期 | 完整代表性作物周期 | 每块所代表的田地 | 每声明的参考流 | 种子标签；发票；施用日志；校准秤；仪表记录 |
 | `cp_stevia_field_records` | `stevia_dried_leaf_route` | 种苗；养分产品；灌溉；能源；作物保护；干叶 | 种植、田间作业、施用、仪表、干燥批次和生产记录 | cultivar; planting_stock_type; plants; replacements; area; harvest_dates; fertilizer_product; nutrient_analysis; irrigation; fuel; electricity; pesticide; fresh_leaf_mass; dried_leaf_mass; moisture; drying_loss; residues; gate | 核对田间记录、发票、仪表、干燥机日志和经校准的秤；原始汇总与分配：按收获周期汇总合格干叶；核对鲜叶投入、干叶产出、含水率、拒收物和残余物 | plant; kg; m3; kWh; ha; 质量分数 | 每项作业及每个收获/干燥批次 | 完整代表性收获与干燥周期 | 每块所代表的田地及干燥设备 | 每声明的参考流 | 种苗发票；施用日志；校准秤；含水率检测；干燥机仪表 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -595,3 +655,7 @@ sync_with: pcr.en-US.md
 | `src_jecfa_stevia` | standard | FAO/JECFA, Steviol glycosides monograph, https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Steviol.pdf | 区分收获叶片和提取甜味剂的边界 |
 | `src_sweet_project_stevia_lca` | literature | SWEET project stevia cultivation and LCA case, https://pmc.ncbi.nlm.nih.gov/articles/PMC9839952/ | 区域性种植密度和干叶产量案例；非通用数据 |
 | `src_ipcc_managed_soils` | method_factor | IPCC 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | 受管理土壤氮排放方法的输入和不确定性披露 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |
