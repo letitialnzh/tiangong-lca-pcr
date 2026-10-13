@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1 kg as-received fresh truffle"
   how_well: "whole fresh truffle meeting the declared species or cultivar, maturity, soil-adherence, damage, grading, and conditioning state"
   how_long_or_cycle: "one declared production period, including the stand establishment period when the dataset uses a cradle-to-farm-gate perennial basis"
-  reference_flow_link: "harvested_fresh_truffle_output; farm_gate_fresh_truffle_output"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: boundary_establishment_to_farm_gate
@@ -50,7 +48,7 @@ reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
     name: "Truffles, farmed"
-    uuid: "862ab1a6-8876-46bf-8b73-d3f22280449c"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -122,6 +120,12 @@ process_map:
     inclusion_condition: "brushing, washing, sorting, grading, cooling, or other preparation occurs before hand-off and is not already included in harvest records"
     role: "prepare harvested truffles to the declared fresh market state"
     quantitative_reference: "incoming mass, accepted mass, rejects, water, energy, and conditioning records"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: truffle_host_establishment
     label: "Inoculated host establishment"
@@ -435,7 +439,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Record all truffles removed from the stand before sorting, including accepted, downgraded, and rejected mass. The accepted portion is the reference flow when no conditioning process is included. Raw output measurement and reconciliation: measured harvested mass by harvest event, maturity, and grading state Raw activity or stage basis: terminal harvest output scaled to 1 kg accepted fresh truffle."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -520,7 +524,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Record the accepted fresh truffle after any included conditioning. Declare the final mass, grading, maturity, soil-adherence, and conditioning state; this is the reference output when this conditional process is used. Raw output measurement and reconciliation: measured accepted output after conditioning and grading Raw activity or stage basis: terminal output scaled to 1 kg accepted fresh truffle."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -550,6 +554,74 @@ process_inventory:
               collection_protocol_id: cp_conditioning_records
               source_ids: []
             ranges: []
+      elementary:
+        []
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Truffles, farmed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Truffles, farmed"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
       elementary:
         []
 allocation_rules:
@@ -623,6 +695,18 @@ dataset_production:
       site_scope: "conditioning facility or site"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "scale calibration, batch reconciliation, market-state specification, and hand-off record"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: calc_reference_scaling
       applies_to: "all inventory rows"
@@ -744,20 +828,24 @@ data_sources:
     type: "official_guidance"
     reference: "IPCC 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4: Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html"
     used_for: "managed-soil and residue-related emission method selection and activity-data requirements"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:5b0ceeb9c1c03ffeb5fb860eb5d99d2e31667f3956e5fef85f0f2f3967f59b14"
+  source_sha256: "sha256:7f32842a10ac0f7222240a622ea07149070d809d645ffba72717944423e7688e"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5695"
+    - unit_id: "normative_5779"
       family: "system_boundary"
       span:
         start:
-          offset: 5695
+          offset: 5779
           line: 63
           column: 1
         end:
-          offset: 8218
+          offset: 8302
           line: 85
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | prepared planting or woodland-orchard site before inoculated host establishment, with planting stock and purchased management inputs crossing the foreground boundary |\n| starting_condition_role | start of managed farmed-truffle production |\n| product_classification_scope | farmed fresh truffles corresponding to CPC 3.0 code 01272 |\n| recursive_input_rule | purchased or retained truffles used as biological inoculum, planting stock, or host-establishment material are upstream inputs and must not loop back to the farmed fresh-truffle reference output; declare the actual inoculation or planting material and its source dataset |\n| upstream_dataset_requirement | compatible upstream datasets for inoculated host stock, nursery or propagation inputs, nutrient or soil-amendment products, irrigation supply, fuels, electricity, contracted services, and waste or residue treatment |\n| disclosure | species or cultivar; host species and inoculation status; site geography and area; stand age; establishment and productive periods; replacement or mortality events; management regime; irrigation; nutrient or amendment product and nutrient basis; harvest method; yield; grading; soil adherence; reject and residue fate; conditioning boundary; co-product allocation |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_establishment_to_farm_gate` | all conforming datasets | Include inoculated host establishment, managed stand care, harvest, and conditional on-farm preparation performed before the declared farm-gate hand-off. | `iso-14044-2006` |\n| `boundary_perennial_time_basis` | multi-year or multi-period stands | Link establishment, replacement, mortality, management, and harvest records to a declared period and prevent the same stand input or output from being attributed twice. | `iso-14044-2006` |\n| `boundary_managed_soil_emissions` | nutrient, amendment, residue, and soil-management records | Include direct and indirect managed-soil emissions using a geographically applicable method and the same activity data used for nutrient and residue accounting. | `ipcc-2019-afolu` |\n| `boundary_post_farm_gate_exclusion` | downstream activities | Exclude off-farm transport, storage, preservation, processing, packaging supplied after hand-off, distribution, retail, and use unless a study explicitly extends the system boundary. | `iso-14044-2006` |\n\n"
@@ -777,11 +865,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5695
+              offset: 5779
               line: 63
               column: 1
             end:
-              offset: 5716
+              offset: 5800
               line: 63
               column: 22
           text: "## 5. System Boundary"
@@ -797,16 +885,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_29941"
+    - unit_id: "normative_33778"
       family: "allocation"
       span:
         start:
-          offset: 29941
-          line: 529
+          offset: 33778
+          line: 588
           column: 1
         end:
-          offset: 31232
-          line: 539
+          offset: 35069
+          line: 598
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\nApply the following rules in order:\n\n1. `allocation_single_primary_output`: Treat accepted fresh farmed truffle as the primary output. Internal host-stand hand-offs and rejected material are not co-products.\n2. `allocation_avoid_subdivision`: Subdivide establishment, stand management, harvest, and conditioning where a separate co-product or service has a distinct measured hand-off. Avoid allocation when a process can be directly assigned.\n3. `allocation_co_product_evidence`: If host timber, fruit, prunings, nursery stock, or another product is intentionally sold or transferred as a co-product, declare its quantity, quality, destination, and hand-off evidence. Use a physical-causality allocation where a defensible relationship exists; otherwise use an explicitly justified economic allocation or another ISO 14044-consistent method.\n4. `allocation_residue_not_product`: Treat unmarketed mortality, prunings, removed soil, rejects, and losses as waste or elementary flows according to destination unless evidence shows an intentional product or service hand-off.\n5. `allocation_period_consistency`: Apply the same allocation choice across the complete declared stand period and reconcile it with replacement, mortality, and output records.\n\n"
       headings:
@@ -825,12 +913,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 29941
-              line: 529
+              offset: 33778
+              line: 588
               column: 1
             end:
-              offset: 29981
-              line: 529
+              offset: 33818
+              line: 588
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -845,16 +933,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_38794"
+    - unit_id: "normative_43277"
       family: "validation"
       span:
         start:
-          offset: 38794
-          line: 574
+          offset: 43277
+          line: 634
           column: 1
         end:
-          offset: 40224
-          line: 584
+          offset: 44707
+          line: 644
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_reference_output` | reference flow and terminal outputs | Exactly one terminal accepted fresh-truffle output must be linked to the reference flow; its species or cultivar, market state, mass basis, and farm-gate hand-off must be declared. | `iso-14044-2006` |\n| `validation_process_completeness` | process map | A conforming dataset must resolve whether host establishment, stand management, harvest, and conditional conditioning are included, and must not omit an applicable process without a documented reason. | `iso-14044-2006` |\n| `validation_period_reconciliation` | perennial production | Every establishment and stand input must be linked to a declared site, block, period, and output basis; replacement and mortality records must not be double counted. | `iso-14044-2006` |\n| `validation_mass_balance` | harvest and conditioning | For each harvest lot or conditioning batch, incoming mass must reconcile to accepted product, rejects, and documented loss within the declared measurement tolerance. | `iso-14044-2006` |\n| `validation_identity_and_parameterization` | all flow cards | identity evidence gaps must remain explicitly evidence gap or parameterized; an exact fixed identity may be added only after verified identity review and must not change the card's real direction, type, or boundary meaning. |  |\n\n"
       headings:
@@ -873,12 +961,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 38794
-              line: 574
+              offset: 43277
+              line: 634
               column: 1
             end:
-              offset: 38816
-              line: 574
+              offset: 43299
+              line: 634
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -897,233 +985,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_establishment_to_farm_gate"
       identity_kind: "explicit"
-      unit_id: "normative_5695"
+      unit_id: "normative_5779"
       source_span:
         start:
-          offset: 7163
+          offset: 7247
           line: 80
           column: 1
         end:
-          offset: 7405
+          offset: 7489
           line: 80
           column: 243
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_perennial_time_basis"
       identity_kind: "explicit"
-      unit_id: "normative_5695"
+      unit_id: "normative_5779"
       source_span:
         start:
-          offset: 7406
+          offset: 7490
           line: 81
           column: 1
         end:
-          offset: 7667
+          offset: 7751
           line: 81
           column: 262
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_managed_soil_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_5695"
+      unit_id: "normative_5779"
       source_span:
         start:
-          offset: 7668
+          offset: 7752
           line: 82
           column: 1
         end:
-          offset: 7948
+          offset: 8032
           line: 82
           column: 281
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_post_farm_gate_exclusion"
       identity_kind: "explicit"
-      unit_id: "normative_5695"
+      unit_id: "normative_5779"
       source_span:
         start:
-          offset: 7949
+          offset: 8033
           line: 83
           column: 1
         end:
-          offset: 8216
+          offset: 8300
           line: 83
           column: 268
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_29941"
+      unit_id: "normative_33778"
       source_span:
         start:
-          offset: 30020
-          line: 533
+          offset: 33857
+          line: 592
           column: 1
         end:
-          offset: 30190
-          line: 533
+          offset: 34027
+          line: 592
           column: 171
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_29941"
+      unit_id: "normative_33778"
       source_span:
         start:
-          offset: 30191
-          line: 534
+          offset: 34028
+          line: 593
           column: 1
         end:
-          offset: 30425
-          line: 534
+          offset: 34262
+          line: 593
           column: 235
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_29941"
+      unit_id: "normative_33778"
       source_span:
         start:
-          offset: 30426
-          line: 535
+          offset: 34263
+          line: 594
           column: 1
         end:
-          offset: 30824
-          line: 535
+          offset: 34661
+          line: 594
           column: 399
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_29941"
+      unit_id: "normative_33778"
       source_span:
         start:
-          offset: 30825
-          line: 536
+          offset: 34662
+          line: 595
           column: 1
         end:
-          offset: 31053
-          line: 536
+          offset: 34890
+          line: 595
           column: 229
     - pointer: "/allocation_rules/4"
       rule_id: "allocation_rule_5"
       identity_kind: "snapshot_local"
-      unit_id: "normative_29941"
+      unit_id: "normative_33778"
       source_span:
         start:
-          offset: 31054
-          line: 537
+          offset: 34891
+          line: 596
           column: 1
         end:
-          offset: 31230
-          line: 537
+          offset: 35067
+          line: 596
           column: 177
     - pointer: "/validation_rules/0"
       rule_id: "validation_reference_output"
       identity_kind: "explicit"
-      unit_id: "normative_38794"
+      unit_id: "normative_43277"
       source_span:
         start:
-          offset: 38889
-          line: 578
+          offset: 43372
+          line: 638
           column: 1
         end:
-          offset: 39162
-          line: 578
+          offset: 43645
+          line: 638
           column: 274
     - pointer: "/validation_rules/1"
       rule_id: "validation_process_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_38794"
+      unit_id: "normative_43277"
       source_span:
         start:
-          offset: 39163
-          line: 579
+          offset: 43646
+          line: 639
           column: 1
         end:
-          offset: 39436
-          line: 579
+          offset: 43919
+          line: 639
           column: 274
     - pointer: "/validation_rules/2"
       rule_id: "validation_period_reconciliation"
       identity_kind: "explicit"
-      unit_id: "normative_38794"
+      unit_id: "normative_43277"
       source_span:
         start:
-          offset: 39437
-          line: 580
+          offset: 43920
+          line: 640
           column: 1
         end:
-          offset: 39685
-          line: 580
+          offset: 44168
+          line: 640
           column: 249
     - pointer: "/validation_rules/3"
       rule_id: "validation_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_38794"
+      unit_id: "normative_43277"
       source_span:
         start:
-          offset: 39686
-          line: 581
+          offset: 44169
+          line: 641
           column: 1
         end:
-          offset: 39929
-          line: 581
+          offset: 44412
+          line: 641
           column: 244
     - pointer: "/validation_rules/4"
       rule_id: "validation_identity_and_parameterization"
       identity_kind: "explicit"
-      unit_id: "normative_38794"
+      unit_id: "normative_43277"
       source_span:
         start:
-          offset: 39930
-          line: 582
+          offset: 44413
+          line: 642
           column: 1
         end:
-          offset: 40222
-          line: 582
+          offset: 44705
+          line: 642
           column: 293
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5695"
+      unit_id: "normative_5779"
       source_span:
         start:
-          offset: 5695
+          offset: 5779
           line: 63
           column: 1
         end:
-          offset: 5716
+          offset: 5800
           line: 63
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5695"
+      unit_id: "normative_5779"
       source_span:
         start:
-          offset: 5744
+          offset: 5828
           line: 67
           column: 1
         end:
-          offset: 7070
+          offset: 7154
           line: 74
           column: 381
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_29941"
+      unit_id: "normative_33778"
       source_span:
         start:
-          offset: 29941
-          line: 529
+          offset: 33778
+          line: 588
           column: 1
         end:
-          offset: 29981
-          line: 529
+          offset: 33818
+          line: 588
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_38794"
+      unit_id: "normative_43277"
       source_span:
         start:
-          offset: 38794
-          line: 574
+          offset: 43277
+          line: 634
           column: 1
         end:
-          offset: 38816
-          line: 574
+          offset: 43299
+          line: 634
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1132,5 +1220,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:5b0ceeb9c1c03ffeb5fb860eb5d99d2e31667f3956e5fef85f0f2f3967f59b14"
-  generated_content_sha256: "sha256:4e98d6e7067d012adef5e959cfe01e6450268ac8d0854109054df22810e15239"
+    sha256: "sha256:7f32842a10ac0f7222240a622ea07149070d809d645ffba72717944423e7688e"
+  generated_content_sha256: "sha256:4cf7a6da858c62ae33ded50e0b13dafbdd60c6ddc1cd435015be598bf91174f8"

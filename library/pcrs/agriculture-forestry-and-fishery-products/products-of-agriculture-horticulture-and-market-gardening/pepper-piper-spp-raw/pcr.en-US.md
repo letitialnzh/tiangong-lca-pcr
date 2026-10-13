@@ -36,7 +36,7 @@ This PCR covers whole, neither crushed nor ground *Piper* spp. pepper berries at
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Whole primary dried black Piper pepper; UUID unresolved |
+| Reference product flow | Whole raw Piper pepper; UUID unresolved for dried state |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -138,7 +138,7 @@ Calculate direct and indirect N₂O from recorded nitrogen inputs and site-year 
 
 - Selected flow: Nitrous oxide to air; receiving air subcompartment to be verified
 - Flow property / unit: Mass / kg N2O
-- Amount rule: apply `calc_soil_gases` to nitrogen inputs and the declared N₂O factors
+- Amount rule: Apply IPCC direct/indirect N₂O and applicable lime/urea CO₂ equations with site-year activity and documented factors.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: Plot-year then accepted pepper output.
@@ -149,13 +149,15 @@ Raw activity or stage basis: Plot-year then accepted pepper output.
 - Collection protocol: `cp_cultivation`
 - Sources: `ipcc-2019-afolu11`
 
+Calculation method corresponds to Section 8 rules: `calc_soil_gases`.
+
 ###### Carbon dioxide from lime or urea (`soil_amendment_carbon_dioxide_emission`)
 
 Include this exchange only when lime or urea use and the selected method support a direct CO₂ calculation. Keep its quantity separate from N₂O and verify the receiving air subcompartment before binding a UUID.
 
 - Selected flow: Carbon dioxide to air from lime or urea; receiving air subcompartment to be verified
 - Flow property / unit: Mass / kg CO2
-- Amount rule: apply `calc_soil_gases` to recorded lime or urea inputs and the declared CO₂ factors
+- Amount rule: Apply IPCC direct/indirect N₂O and applicable lime/urea CO₂ equations with site-year activity and documented factors.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: Plot-year then accepted pepper output.
@@ -165,6 +167,8 @@ Raw activity or stage basis: Plot-year then accepted pepper output.
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_cultivation`
 - Sources: `ipcc-2019-afolu11`
+
+Calculation method corresponds to Section 8 rules: `calc_soil_gases`.
 
 ### Process: Berry harvest (`pepper_harvest`)
 

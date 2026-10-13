@@ -37,21 +37,21 @@ sync_with: pcr.en-US.md
 | How much | 净质量 1,000 kg |
 | How well | 声明物种与商品类别；声明湿基水分；声明等级或买方规格；不包含另行核算的拒收物和残余物 |
 | How long or cycle | 一个作物周期采用单一期间处理，不在作物周期之间分摊。多个作物年份的观测仅在每个作物年记录均可追溯后方可平均。 |
-| reference_flow_link | accepted_graded_beans; dried_reference_beans |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Beans, dry `b297a6cf-1d2e-4d88-a99a-02807441a4db` |
+| 参考产品流 | Beans, dry |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | 植物学物种；商品类别；商品粮或留种路线；地理；作物年份；雨养或灌溉制度；收获技术；干燥路线；水分含量及湿基声明；等级或买方规格；农场门交接点 |
 | 绑定模式 | `fixed` |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -96,6 +96,7 @@ sync_with: pcr.en-US.md
 | `mature_harvest` | 成熟收获与脱粒 | required |  | 收获与捕获及声明的替代技术路线差异 | 从田间移出的成熟作物总量 |
 | `cleaning_grading` | 清理与分级 | required |  | 初级调制与分级 | 收到的未清理粮粒总量 |
 | `farm_gate_drying` | 农场门干燥 | conditional | 合格粮粒在交接前需要有界除水干预时纳入 | 保藏与稳定 | 进入干燥作业的湿粮 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 生产属于季节性批次或作业期生产。每个田块、收获事件、调制批次、干燥作业、清理事件和作物年份均须保留标识符。投入、产出、清洁和换线负荷须关联这些标识符，或通过有据可查的报告期分配规则关联。
 
@@ -536,7 +537,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：在实测水分下计量的净合格质量。
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 合格干豆产出.
@@ -699,7 +700,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：稳定处理后、农场门交接前的实测净干豆质量。
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 干燥后合格豆产出.
@@ -771,6 +772,64 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Beans, dry
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Beans, dry
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -799,6 +858,7 @@ sync_with: pcr.en-US.md
 | `cp_lot_mass_quality` | mature_harvest; cleaning_grading | 批次质量、水分和等级状态 | 地磅、秤、水分与等级记录 | 批次；来源；物种；商品类别；进出质量；水分；等级；外来物；破损或损伤比例；去向 | 每个交接点校准称量并代表性质量取样；原始汇总与分配：跨交接守恒干物质，批次核算后再汇总 | kg 和 % | 每批次和交接点 | 完整收获与调制作业期 | 每批次和调制场址 | 每声明的参考流 | 校准；取样记录；等级证书或买方规格 |
 | `cp_co_products_losses` | mature_harvest; cleaning_grading | 残余物、共产品、降级、留种和损失 | 称量、去向和损失调查记录 | 产生节点；状态；质量；水分；质量类别；去向；分配所需价值；回收状态 | 尽可能称量，否则采用有据可查的取样和核算；原始汇总与分配：按状态和去向分别汇总；不得合并合格、降级、留种、残余物和废物 | kg 湿质量和 kg 干物质 | 每事件或批次 | 完整作物周期和作业期 | 每田块、批次和去向 | 每声明的参考流 | 秤记录；去向收据；损失调查；核算 |
 | `cp_drying_run` | farm_gate_drying | 湿料、干燥产出、拒收物、水分和能源 | 干燥作业记录 | 作业；批次；进出质量；进出水分；目标水分；能源载体及用量；拒收物；启动；停机；去向 | 每次作业校准称量、水分测量和能源计量；原始汇总与分配：计算干物质守恒与除水；共享能源仅分配一次；对干燥合格产出归一化 | kg；湿基 %；载体单位；MJ | 每次干燥作业 | 完整干燥作业期 | 每台干燥机和作业 | 每声明的参考流 | 秤和水分校准；计量记录；干物质核算 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -861,3 +921,7 @@ sync_with: pcr.en-US.md
 | `usda-dry-edible-beans-2021` | official_guidance | USDA Agricultural Marketing Service，Commodity Specification for Dry Edible Beans, Peas and Lentils，August 2021，https://www.ams.usda.gov/sites/default/files/media/CommoditySpecificationforDryEdibleBeansPeasandLentilsAugust2021.pdf | 成熟干豆商品身份、水分与质量状态背景及下游加工区分 |
 | `ipcc-2019-managed-soils` | method_factor | IPCC，2019 Refinement to the 2006 IPCC Guidelines，Volume 4，Chapter 11，https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | 受管理土壤直接 N2O 计算和 N2O-N 至 N2O 换算背景 |
 | `mass-balance-identity` | method_factor | 对实测前景交接应用质量与干物质守恒 | 参考归一化、产出状态核算及 1,000 kg 参考数量 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

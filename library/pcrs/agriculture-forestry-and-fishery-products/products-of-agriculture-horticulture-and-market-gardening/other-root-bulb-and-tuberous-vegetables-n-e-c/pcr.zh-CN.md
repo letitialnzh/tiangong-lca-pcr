@@ -40,7 +40,7 @@ sync_with: pcr.en-US.md
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 可销售鲜其他根、球茎、根茎、球茎或块茎蔬菜，未另列明＼ |
+| Reference product flow | 声明农场门的鲜可销售其他根、球茎、根茎、球茎或块茎蔬菜＼ |
 | Reference flow property | Mass（`93a60a56-a3c8-11da-a746-0800200b9a66`） |
 | Reference unit group | Mass units（`93a60a57-a4c8-11da-a746-0800200c9a66`） |
 | Reference unit | kg |

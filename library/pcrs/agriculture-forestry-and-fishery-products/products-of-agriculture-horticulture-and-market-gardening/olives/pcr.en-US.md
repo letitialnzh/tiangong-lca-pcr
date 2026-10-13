@@ -453,7 +453,7 @@ None.
 ##### Product flows
 ###### Fresh picked olive fruit (`picked_fruit`)
 Weigh whole fruit entering on-farm grading; if no grading occurs, weigh the net saleable fruit at the farm gate and assign any unsold damage to harvest loss.
-- Selected flow: Olives `b07470dd-3947-4e02-8058-11967225f927`
+- Selected flow: Olives
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: from block-year or lot records; never replace actual amount with the screening range
 - Value mode: Foreground record (`foreground_record`)
@@ -472,6 +472,8 @@ Raw activity or stage basis: per harvested lot; normalize to net accepted farm-g
   - Basis: per ha harvest year
   - Basis kind: Crop cycle (`crop_cycle`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
+
 ##### Waste flows
 ###### Fruit lost or uncollected at harvest (`uncollected_fruit`)
 Estimate fallen, uncollected or damaged fruit not sold; document the observation basis and destination.
@@ -574,7 +576,7 @@ Raw activity or stage basis: per harvested lot; normalize to net accepted farm-g
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 ###### Downgraded but sold whole olives (`downgraded_fruit`)
 Record whole fruit diverted from intended table grade to oil-fruit or other sold fresh-fruit grade; no oil is produced here.
-- Selected flow: Olives `b07470dd-3947-4e02-8058-11967225f927`
+- Selected flow: Olives
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: from block-year or lot records; never replace actual amount with the screening range
 - Value mode: Foreground record (`foreground_record`)
@@ -594,6 +596,8 @@ Raw activity or stage basis: per harvested lot; normalize to net accepted farm-g
   - Basis: per ha harvest year, conditional grading
   - Basis kind: Crop cycle (`crop_cycle`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
+
 ##### Waste flows
 ###### Rejected whole olive fruit (`rejected_fruit`)
 Weigh whole olive fruit rejected from sale; record damage reason and waste destination, excluding leaves, twigs and other foreign matter.

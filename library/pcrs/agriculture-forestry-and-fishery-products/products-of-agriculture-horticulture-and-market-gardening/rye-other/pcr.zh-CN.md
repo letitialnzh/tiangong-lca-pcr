@@ -28,9 +28,7 @@ translation_status: aligned
 | How much | 1 kg |
 | How well | 已声明终端用途（食品、饲料或工业）、重要时的黑麦类别或品种、水分基准、等级或质量描述、清理状态、地理范围、作物年度和门点 |
 | How long or cycle | 一个声明的作物周期和收获年度；门点包含储存时另行声明储存时长 |
-| reference_flow_link | grain_at_handoff; conditioned_rye_grain; declared_gate_rye_grain |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
@@ -41,9 +39,11 @@ translation_status: aligned
 | Reference unit | kg |
 | Required qualifiers | 非播种用途；食品/饲料/工业声明；重要时的黑麦类别或品种；水分基准；质量或等级描述；清理/干燥状态；地理范围；作物年度；声明门点；散装或包装状态 |
 构建前景数据包时，`Required qualifiers` 中的项目必须写入数据集元数据、过程说明、参考流注释、产品描述或等效数据包字段。类别参考描述的是非播种用黑麦谷物，不是播种用种子；它不代表每个终端状态均已有核实的 Tiangong 身份。
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
 
 收获后农场门交付选择 `grain_at_handoff`；实际初级处理后结束的路线选择 `conditioned_rye_grain`；继续储存或进入后续交接的路线选择 `declared_gate_rye_grain`。记录实际干燥、清理、分级及是否调质，不默认让这些状态共用 UUID。分别核实每个具体状态，无法确认时保留未解析身份。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | 规则编号 | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -79,6 +79,7 @@ translation_status: aligned
 | harvest_and_field_delivery | Harvest and Field Delivery | required |  | foreground | harvested grain at farm or conditioning hand-off |
 | primary_conditioning | Primary Drying, Cleaning, and Grading | conditional | include when primary drying, cleaning or grading is actually performed before the selected gate | foreground | conditioned rye grain at declared gate |
 | storage_and_declared_gate | Storage and Declared Gate Handoff | conditional | include when storage or a delivery hand-off materially changes the declared reference flow | foreground | declared rye grain at selected gate |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 ### 过程：黑麦作物生产（`rye_crop_production`）
 #### 输入
 ##### 产品流
@@ -318,7 +319,7 @@ translation_status: aligned
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：收获或处理交接点的实测谷物质量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：过程定量参考输出.
@@ -396,7 +397,7 @@ translation_status: aligned
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：带水分基准和质量描述的实测合格谷物输出
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：定量参考输出.
@@ -406,13 +407,13 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioned_output_records`
 - 来源：`fao-rye-postharvest-operations-1999`; `usda-rye-standards-2020`
-- 数量范围：合格输出身份
-  - 范围角色：QA 校验范围（`qa_guardrail`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限：1
   - 上限：1
-  - 单位：kg/kg reference output
-  - 基准：定量参考输出
-  - 基准类型：参考流（`reference_flow`）
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
 ##### 废物流
 所有处理拒收物、筛下物、破损谷物和包装或操作废物都必须在数据包中分配实测去向。
@@ -497,7 +498,7 @@ translation_status: aligned
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：声明门点的实测谷物质量，并保留水分基准和质量描述
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：定量参考输出.
@@ -510,6 +511,64 @@ translation_status: aligned
 未在储存损失行中记录的破损或拒收物料，也必须以自己的去向记录。
 ##### 基本流
 能源相关排放只有在能源记录和声明因子均确认时才计算。
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：所选声明门点的非播种用黑麦谷物
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：所选声明门点的非播种用黑麦谷物
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与联产品处理
 | 规则编号 | 适用对象 | 规则 | 来源 |
 | --- | --- | --- | --- |
@@ -539,6 +598,7 @@ translation_status: aligned
 | `cp_storage_and_handoff_records` | `storage_and_declared_gate` | storage energy and loss | storage inventory record | lot; opening mass; closing mass; moisture; duration; energy; losses; fate | inventory reconciliation, meter, utility bill, or storage log；原始汇总与分配：reconcile mass and allocate energy by lot and duration | kg, percent, days, MJ, or kWh | per lot or storage period | declared storage duration | storage site | 每声明的参考流 | inventory record, meter, bill |
 | `cp_packaging_records` | `storage_and_declared_gate` | transport packaging | packaging issue or dispatch record | packaging type; item count; mass; capacity; lot; gate; date | packaging inventory, packing log, or supplier record；原始汇总与分配：sum packaging mass or convert item count using recorded capacity and mass | item and kg | per packaged lot | declared gate period | declared gate or packing site | 每声明的参考流 | inventory record, packing log, supplier record |
 | `cp_declared_gate_output_records` | `storage_and_declared_gate` | declared-gate output | dispatch or gate record | lot; gate; date; mass; moisture; quality; packaging or bulk state | weighbridge, scale, dispatch, or receiving record；原始汇总与分配：sum output lots and preserve gate identity | kg and percent | per shipment or gate event | declared gate period | declared gate | 每声明的参考流 | scale ticket, dispatch record, quality record |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 ### 计算规则
 | 规则编号 | 适用对象 | 公式或规则 | 输入 | 输出 | 来源 |
 | --- | --- | --- | --- | --- | --- |
@@ -590,3 +650,7 @@ translation_status: aligned
 | `usda-rye-standards-2020` | official_guidance | USDA Agricultural Marketing Service，*United States Standards for Rye*，<https://www.ams.usda.gov/sites/default/files/media/RyeStandards.pdf> | 黑麦谷物质量、水分和等级描述，以及与种子语义区分 |
 | `iso-14044-2006` | standard | ISO 14044:2006，*Environmental management — Life cycle assessment — Requirements and guidelines*，<https://www.iso.org/standard/38498.html> | 分配层级、LCA 范围、清单、报告和数据质量披露 |
 | `mass-balance-identity` | method_factor | 将质量守恒作为 PCR 计算恒等式。 | 收获、处理、储存和输出核对 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

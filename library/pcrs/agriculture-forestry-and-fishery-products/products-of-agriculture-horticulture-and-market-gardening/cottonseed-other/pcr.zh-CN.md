@@ -35,14 +35,12 @@ sync_with: pcr.en-US.md
 | How much | 1,000 kg 收货状态棉籽 |
 | How well | 声明品种、作物年度、湿基水分、杂质、毛绒/脱绒状态、等级、储存/通风和验收规范 |
 | How long or cycle | 一个匹配作物周期与轧花季或可追溯轧花批次 |
-| reference_flow_link | gin_run_cottonseed_output; accepted_cottonseed_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Cottonseed, other, production mix at farm gate, fresh unprocessed `5ec72013-512e-4bb6-a5e6-648551f35d9d` |
+| Reference product flow | Cottonseed, other, production mix at farm gate, fresh unprocessed |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -50,7 +48,9 @@ sync_with: pcr.en-US.md
 
 固定 UUID 仅适用于该鲜品/未加工农场门身份下的完整非播种棉籽。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 所需属性 | 所需单位 | 规则 |
@@ -94,6 +94,7 @@ sync_with: pcr.en-US.md
 | `cotton_field_production` | 棉花种植与收获 | required | always | 受控生产与籽棉收获 | 公顷和验收籽棉质量 |
 | `cotton_ginning` | 籽棉接收、清理与轧花 | required | always | 通过材料处理分离皮棉和棉籽；声明批次模式或连续运行以及替代技术路线差异 | 投入批次与核对输出 |
 | `cottonseed_handling_storage` | 棉籽初级处理、分级、稳定化、包装与储存 | conditional | 交付前发生 | 交付前进行初级处理、分级/分选、保鲜/稳定化和包装呈现 | 投入批次与验收终端质量 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: 棉花种植与收获 (`cotton_field_production`)
 
@@ -446,7 +447,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位: Mass / kg
 原始产出计量与核对要求：measured accepted mass at declared moisture, foreign matter and gate
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式: 前景记录（`foreground_record`）
 - 适用范围: 场址特定（`site_specific`）
 原始活动或阶段基准：per gin lot; scale to 1,000 kg reference.
@@ -635,7 +636,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位: Mass / kg
 原始产出计量与核对要求：measured accepted mass with moisture, temperature, foreign matter and duration
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式: 前景记录（`foreground_record`）
 - 适用范围: 场址特定（`site_specific`）
 原始活动或阶段基准：1,000 kg reference product.
@@ -683,6 +684,64 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Cottonseed, other, production mix at farm gate, fresh unprocessed
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Cottonseed, other, production mix at farm gate, fresh unprocessed
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与联产品处理
 
 | rule_id | Applies to | Rule | source_ids |
@@ -709,6 +768,7 @@ sync_with: pcr.en-US.md
 | `cp_gin_utility` | `cotton_ginning` | energy/water | collected/calculated | meter; purchase; runtime; power; water; period | meters, invoices, runtime；原始汇总与分配：allocate shared total once | kWh; MJ; kg; L; m3 | shift/bill | full campaign | each gin/meter | 每声明的参考流 | calibration, invoice, log |
 | `cp_gin_emissions` | `cotton_ginning` | particulate | measured/calculated | source; control; fraction; concentration; flow; runtime; factor | test or approved permit method；原始汇总与分配：calculate by source/fraction without overlap | kg; mg/m3; m3; h | test/period | representative campaign | each source | 每声明的参考流 | report, permit, controls, runtime |
 | `cp_storage_lot` | `cottonseed_handling_storage` | cottonseed/energy/package/loss | collected/calculated | lot; mass; moisture; temperature; foreign matter; duration; runtime; package; reject | scales, probes, meters, logs；原始汇总与分配：reconcile input, accepted, reject, moisture | kg; %; C; h; kWh; item | receipt/daily/dispatch | full storage period | each bin/pile/site | 每声明的参考流 | calibration, monitoring, inspection, ticket |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -767,3 +827,7 @@ sync_with: pcr.en-US.md
 | `ipcc-2019-managed-soils` | method_factor | IPCC 2019 Refinement, Volume 4, Chapter 11 | managed-soil emissions |
 | `emep-eea-2023-guidebook` | method_factor | EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023 | fertilizer ammonia |
 | `pcr-reference-definition` | standard | This PCR, Reference Flow section | exact 1,000 kg output range |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

@@ -38,7 +38,7 @@ Excluded are sugar-beet seed, grain or forage biomass sold as feed, vegetative p
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Beet seeds (excluding sugar beet seeds) and seeds of forage plants; UUID unresolved |
+| Reference product flow | Beet seeds excluding sugar beet seeds and seeds of forage plants |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

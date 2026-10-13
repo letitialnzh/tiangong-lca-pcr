@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1 kg net accepted product"
   how_well: "Meets declared grade and moisture specification; excludes detached stems, opened flowers, spoiled buds, foreign matter, and unresolved rejects"
   how_long_or_cycle: "One reporting year of a productive perennial stand, with establishment, immature years, productive years, replacements, and termination indexed across the declared productive life"
-  reference_flow_link: "accepted_fresh_cloves; accepted_dried_cloves"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: boundary_perennial_phases
@@ -60,7 +58,7 @@ reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
     name: "Cloves (whole stems), raw"
-    uuid: "53a5a137-db87-42e1-a85d-4b187eb5281a"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -134,6 +132,12 @@ process_map:
     inclusion_condition: "Declared farm-gate product is dried"
     role: "Stabilize accepted buds by sun, solar, or assisted drying"
     quantitative_reference: "Accepted dried mass"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: stand_establishment
     label: "Stand establishment and immature years"
@@ -475,7 +479,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "This flow crosses the stated process boundary and is quantified using the amount rule below. Raw output measurement and reconciliation: Net accepted fresh output equals 1 kg for fresh hand-off; for a dried route it is measured input to drying and is not also counted as reference output Raw activity or stage basis: per 1 kg accepted farm-gate product."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "calculated_value"
             specificity: "route_specific"
             basis:
@@ -486,12 +490,12 @@ process_inventory:
               collection_protocol_id: cp_harvest_grade_records
               source_ids: []
             ranges:
-              - role: allowed_range
+              - role: qa_guardrail
                 lower: "1"
                 upper: "1"
-                unit: "kg/kg reference flow"
-                basis: "accepted fresh output when fresh hand-off is selected"
-                basis_kind: "reference_flow"
+                unit: "kg/kg net accepted output of this stage"
+                basis: "same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output"
+                basis_kind: "process_output"
                 evidence_kind: "method_formula"
                 source_ids:
                   - iso-14044-2006
@@ -630,7 +634,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "This flow crosses the stated process boundary and is quantified using the amount rule below. Raw output measurement and reconciliation: Net accepted dried output equals 1 kg when dried hand-off is selected; record final moisture and method Raw activity or stage basis: per 1 kg accepted farm-gate product."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "calculated_value"
             specificity: "route_specific"
             basis:
@@ -643,12 +647,12 @@ process_inventory:
                 - kau-clove-harvesting
                 - unido-spice-postharvest-2015
             ranges:
-              - role: allowed_range
+              - role: qa_guardrail
                 lower: "1"
                 upper: "1"
-                unit: "kg/kg reference flow"
-                basis: "accepted dried output when dried hand-off is selected"
-                basis_kind: "reference_flow"
+                unit: "kg/kg net accepted output of this stage"
+                basis: "same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output"
+                basis_kind: "process_output"
                 evidence_kind: "method_formula"
                 source_ids:
                   - iso-14044-2006
@@ -713,6 +717,74 @@ process_inventory:
                 source_ids:
                   - kau-clove-harvesting
                   - unido-spice-postharvest-2015
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Cloves (whole stems), raw"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Cloves (whole stems), raw"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
 allocation_rules:
   - rule_id: allocation_avoid_where_measured
     applies_to: "all nodes"
@@ -839,6 +911,18 @@ dataset_production:
       site_scope: "each dryer/mat/station"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "scale/meter calibration, moisture method, batch and weather/dryer log"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: calc_lifetime_attribution
       applies_to: "perennial phases and assets"
@@ -1008,20 +1092,24 @@ data_sources:
     type: "method_factor"
     reference: "Conservation-of-mass identity for a bounded process batch"
     used_for: "Harvest/grading/drying reconciliation and QA ranges"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:f729373ab145b24fc1e195b36c57fb5340a735145bf5957f08e1e8d0278cb39c"
+  source_sha256: "sha256:09b85f33150188afb9b7601ecc1597cbc6c46d8653c0ceef7cd1b185333932ae"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5225"
+    - unit_id: "normative_5327"
       family: "system_boundary"
       span:
         start:
-          offset: 5225
+          offset: 5327
           line: 60
           column: 1
         end:
-          offset: 7895
+          offset: 7997
           line: 83
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Propagation material and prepared site enter establishment; an existing stand enters with age, density, prior establishment history, and remaining productive life declared |\n| starting_condition_role | Starting condition for managed perennial production, not a zero-burden assumption |\n| product_classification_scope | CPC 3.0 01656 whole raw cloves at farm gate |\n| recursive_input_rule | Purchased raw cloves of this category in an aggregated lot remain separately quantified upstream inputs with conforming datasets and are not relabelled as on-farm production |\n| upstream_dataset_requirement | Each purchased input and service uses representative upstream data; mixed-crop shared burdens retain the declared causal or allocation basis |\n| disclosure | Declare geography, planting stock, sole/mixed crop, density, stand age, establishment year, productive-life assumption, replacement/termination, irrigation, harvest maturity, grade states, fresh/dried hand-off, drying method, moisture basis, and every residue/reject destination |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_perennial_phases` | establishment to farm gate | Include propagation, site preparation, planting, immature management, productive management, replacements, harvest, separation, grading, and route-dependent drying. Attribute establishment and long-lived assets across actual output over their service life. | `fao-ecocrop-clove`; `kau-clove-practices-2016` |\n| `boundary_harvest_state` | harvest | Harvest mature unopened buds before flowering; keep clusters and incidental material distinct. Harvest is separate because it removes output while the perennial tree remains productive. | `icar-iisr-clove`; `kau-clove-harvesting` |\n| `boundary_conditioning` | post-harvest | Include bud/stem separation and grading. Fresh lots bypass drying; dried lots record method, energy, duration, input/output moisture, mass loss, rejects, and stabilized hand-off. | `kau-clove-harvesting`; `unido-spice-postharvest-2015` |\n| `boundary_downstream_exclusion` | downstream | Exclude extraction, distillation, grinding, blending, manufacture, retail packing, and post-gate transport. | `icar-iisr-clove`; `fao-ecocrop-clove` |\n| `boundary_route_stratification` | alternative routes | Keep sole/mixed crop and rainfed/irrigated strata separate. Fresh, sun-dried, and assisted-dried lots are mutually exclusive routes and may only be output-weighted from route records. | `kau-clove-practices-2016`; `unido-spice-postharvest-2015` |\n\n"
@@ -1041,11 +1129,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5225
+              offset: 5327
               line: 60
               column: 1
             end:
-              offset: 5246
+              offset: 5348
               line: 60
               column: 22
           text: "## 5. System Boundary"
@@ -1061,16 +1149,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_33007"
+    - unit_id: "normative_37072"
       family: "allocation"
       span:
         start:
-          offset: 33007
-          line: 652
+          offset: 37072
+          line: 711
           column: 1
         end:
-          offset: 34522
-          line: 662
+          offset: 38587
+          line: 721
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_avoid_where_measured` | all nodes | Subdivide and measure route, batch, grade, residue, and destination states before allocation. Accepted output excludes rejects, losses, detached stems, and downgraded material. | `iso-14044-2006` |\n| `allocation_perennial_life` | establishment and long-lived assets | Attribute establishment, immature-year, replacement, and termination burdens once across actual accepted output during the declared service/productive life; do not repeat them in annual management. | `fao-ecocrop-clove`; `kau-clove-practices-2016` |\n| `allocation_mixed_crop` | mixed stands and shared infrastructure | Prefer measured use, area-time, irrigation volume, operating time, or another causal driver. If causality is unavailable and products have economic functions, use documented economic allocation with sensitivity. | `iso-14044-2006`; `kau-clove-practices-2016` |\n| `allocation_batches_routes` | harvest and drying | Link inputs, outputs, cleaning/changeover, and shared-run services to batches or periods; weight route strata by accepted output and count each shared burden once. | `iso-14044-2006` |\n| `allocation_rejects` | stems, residues, downgraded and rejected material | Retain burdens with the producing node until documented recovery or product function begins. Separately sold outputs trigger subdivision or allocation; wastes do not. | `iso-14044-2006` |\n\n"
       headings:
@@ -1089,12 +1177,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 33007
-              line: 652
+              offset: 37072
+              line: 711
               column: 1
             end:
-              offset: 33047
-              line: 652
+              offset: 37112
+              line: 711
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1109,16 +1197,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_42920"
+    - unit_id: "normative_47631"
       family: "validation"
       span:
         start:
-          offset: 42920
-          line: 701
+          offset: 47631
+          line: 761
           column: 1
         end:
-          offset: 45094
-          line: 714
+          offset: 49805
+          line: 774
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_identity` | reference flow | Require exact flow/property/unit-group UUIDs, 1 kg, and every qualifier; fresh and dried states cannot be silently combined. | `icar-iisr-clove`; `kau-clove-harvesting` |\n| `validate_period_attribution` | perennial life/shared assets | Require phase, period, replacement, termination, consuming-node, and attribution records; reject double attribution across establishment, annual management, mixed crops, and assets. | `fao-ecocrop-clove`; `iso-14044-2006` |\n| `validate_route_delta` | production/drying alternatives | Require parent activity, changed topology/inventory/calculation/data/validation fields, mutually exclusive lot route, and evidence for each stratum. | `kau-clove-practices-2016`; `unido-spice-postharvest-2015` |\n| `validate_batch_reconciliation` | harvest through drying | Require batch/period identifiers, input-output and cleaning/changeover linkage when present, mass reconciliation, and no duplicate shared-run burden. | `mass-balance-identity` |\n| `validate_reject_routes` | grading/drying | Every accepted, downgraded, rejected, residue, recovery, and disposal state requires mass and hand-off; reject unresolved material in accepted output or undocumented rework. | `kau-clove-harvesting`; `unido-spice-postharvest-2015` |\n| `validate_nutrient_cardinality` | nutrient inputs | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. | `kau-clove-practices-2016` |\n| `validate_drying_condition` | drying | If inactive, drying inputs and dried reference output are absent/zero. If active, require method, energy, fresh/dried mass, moisture, rejects, duration, and stabilized hand-off; count output once. | `kau-clove-harvesting`; `unido-spice-postharvest-2015` |\n| `validate_ranges` | all quantitative cards | Require exactly one Range per quantitative card; lower ≤ upper, basis/unit/evidence complete, external bounds source-supported, and EN/ZH/structured aligned. | `iso-14044-2006` |\n\n"
       headings:
@@ -1137,12 +1225,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 42920
-              line: 701
+              offset: 47631
+              line: 761
               column: 1
             end:
-              offset: 42942
-              line: 701
+              offset: 47653
+              line: 761
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1161,285 +1249,285 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_perennial_phases"
       identity_kind: "explicit"
-      unit_id: "normative_5225"
+      unit_id: "normative_5327"
       source_span:
         start:
-          offset: 6468
+          offset: 6570
           line: 77
           column: 1
         end:
-          offset: 6837
+          offset: 6939
           line: 77
           column: 370
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_harvest_state"
       identity_kind: "explicit"
-      unit_id: "normative_5225"
+      unit_id: "normative_5327"
       source_span:
         start:
-          offset: 6838
+          offset: 6940
           line: 78
           column: 1
         end:
-          offset: 7108
+          offset: 7210
           line: 78
           column: 271
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_conditioning"
       identity_kind: "explicit"
-      unit_id: "normative_5225"
+      unit_id: "normative_5327"
       source_span:
         start:
-          offset: 7109
+          offset: 7211
           line: 79
           column: 1
         end:
-          offset: 7389
+          offset: 7491
           line: 79
           column: 281
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_downstream_exclusion"
       identity_kind: "explicit"
-      unit_id: "normative_5225"
+      unit_id: "normative_5327"
       source_span:
         start:
-          offset: 7390
+          offset: 7492
           line: 80
           column: 1
         end:
-          offset: 7589
+          offset: 7691
           line: 80
           column: 200
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_route_stratification"
       identity_kind: "explicit"
-      unit_id: "normative_5225"
+      unit_id: "normative_5327"
       source_span:
         start:
-          offset: 7590
+          offset: 7692
           line: 81
           column: 1
         end:
-          offset: 7893
+          offset: 7995
           line: 81
           column: 304
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_avoid_where_measured"
       identity_kind: "explicit"
-      unit_id: "normative_33007"
+      unit_id: "normative_37072"
       source_span:
         start:
-          offset: 33120
-          line: 656
+          offset: 37185
+          line: 715
           column: 1
         end:
-          offset: 33367
-          line: 656
+          offset: 37432
+          line: 715
           column: 248
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_perennial_life"
       identity_kind: "explicit"
-      unit_id: "normative_33007"
+      unit_id: "normative_37072"
       source_span:
         start:
-          offset: 33368
-          line: 657
+          offset: 37433
+          line: 716
           column: 1
         end:
-          offset: 33687
-          line: 657
+          offset: 37752
+          line: 716
           column: 320
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_mixed_crop"
       identity_kind: "explicit"
-      unit_id: "normative_33007"
+      unit_id: "normative_37072"
       source_span:
         start:
-          offset: 33688
-          line: 658
+          offset: 37753
+          line: 717
           column: 1
         end:
-          offset: 34017
-          line: 658
+          offset: 38082
+          line: 717
           column: 330
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_batches_routes"
       identity_kind: "explicit"
-      unit_id: "normative_33007"
+      unit_id: "normative_37072"
       source_span:
         start:
-          offset: 34018
-          line: 659
+          offset: 38083
+          line: 718
           column: 1
         end:
-          offset: 34255
-          line: 659
+          offset: 38320
+          line: 718
           column: 238
     - pointer: "/allocation_rules/4"
       rule_id: "allocation_rejects"
       identity_kind: "explicit"
-      unit_id: "normative_33007"
+      unit_id: "normative_37072"
       source_span:
         start:
-          offset: 34256
-          line: 660
+          offset: 38321
+          line: 719
           column: 1
         end:
-          offset: 34520
-          line: 660
+          offset: 38585
+          line: 719
           column: 265
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference_identity"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 43015
-          line: 705
+          offset: 47726
+          line: 765
           column: 1
         end:
-          offset: 43236
-          line: 705
+          offset: 47947
+          line: 765
           column: 222
     - pointer: "/validation_rules/1"
       rule_id: "validate_period_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 43237
-          line: 706
+          offset: 47948
+          line: 766
           column: 1
         end:
-          offset: 43525
-          line: 706
+          offset: 48236
+          line: 766
           column: 289
     - pointer: "/validation_rules/2"
       rule_id: "validate_route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 43526
-          line: 707
+          offset: 48237
+          line: 767
           column: 1
         end:
-          offset: 43797
-          line: 707
+          offset: 48508
+          line: 767
           column: 272
     - pointer: "/validation_rules/3"
       rule_id: "validate_batch_reconciliation"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 43798
-          line: 708
+          offset: 48509
+          line: 768
           column: 1
         end:
-          offset: 44036
-          line: 708
+          offset: 48747
+          line: 768
           column: 239
     - pointer: "/validation_rules/4"
       rule_id: "validate_reject_routes"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 44037
-          line: 709
+          offset: 48748
+          line: 769
           column: 1
         end:
-          offset: 44315
-          line: 709
+          offset: 49026
+          line: 769
           column: 279
     - pointer: "/validation_rules/5"
       rule_id: "validate_nutrient_cardinality"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 44316
-          line: 710
+          offset: 49027
+          line: 770
           column: 1
         end:
-          offset: 44569
-          line: 710
+          offset: 49280
+          line: 770
           column: 254
     - pointer: "/validation_rules/6"
       rule_id: "validate_drying_condition"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 44570
-          line: 711
+          offset: 49281
+          line: 771
           column: 1
         end:
-          offset: 44866
-          line: 711
+          offset: 49577
+          line: 771
           column: 297
     - pointer: "/validation_rules/7"
       rule_id: "validate_ranges"
       identity_kind: "explicit"
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 44867
-          line: 712
+          offset: 49578
+          line: 772
           column: 1
         end:
-          offset: 45092
-          line: 712
+          offset: 49803
+          line: 772
           column: 226
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5225"
+      unit_id: "normative_5327"
       source_span:
         start:
-          offset: 5225
+          offset: 5327
           line: 60
           column: 1
         end:
-          offset: 5246
+          offset: 5348
           line: 60
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5225"
+      unit_id: "normative_5327"
       source_span:
         start:
-          offset: 5274
+          offset: 5376
           line: 64
           column: 1
         end:
-          offset: 6375
+          offset: 6477
           line: 71
           column: 296
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_33007"
+      unit_id: "normative_37072"
       source_span:
         start:
-          offset: 33007
-          line: 652
+          offset: 37072
+          line: 711
           column: 1
         end:
-          offset: 33047
-          line: 652
+          offset: 37112
+          line: 711
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_42920"
+      unit_id: "normative_47631"
       source_span:
         start:
-          offset: 42920
-          line: 701
+          offset: 47631
+          line: 761
           column: 1
         end:
-          offset: 42942
-          line: 701
+          offset: 47653
+          line: 761
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1448,5 +1536,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:f729373ab145b24fc1e195b36c57fb5340a735145bf5957f08e1e8d0278cb39c"
-  generated_content_sha256: "sha256:ecefedf8c3c062ac62194ef1ebb63b2a4c025964d85bf6cf7f6b4441f1669019"
+    sha256: "sha256:09b85f33150188afb9b7601ecc1597cbc6c46d8653c0ceef7cd1b185333932ae"
+  generated_content_sha256: "sha256:19b9ace37951a3f73bd2cc9b52c358e5b558ece57b36bbdc45ddbae1c6eedd68"

@@ -35,14 +35,12 @@ The managed crop is the production parent. Irrigated fields add water, pump ener
 | How much | 1 kg actual accepted whole-seed mass |
 | How well | Declare oilseed, confection/non-oil or bird-food class, grade/acceptance rule, measured moisture and foreign matter; no inferred cleaning or storage grade |
 | How long or cycle | Identified crop year, field and lot; every included conditioning run is traceable |
-| reference_flow_link | bulk_seed; clean_seed; accepted_seed; dry_seed |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Sunflower seed `a62436d6-249c-4ac3-b5f4-653d0f277519`; production mix “in the farm” |
+| Reference product flow | Sunflower seed; production mix “in the farm” |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -50,7 +48,9 @@ The managed crop is the production parent. Irrigated fields add water, pump ener
 
 Measurement basis qualifier: 1 kg actual mass; dry-mass or standardized-moisture quantities are separate declared calculations
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -93,6 +93,7 @@ Each foreground dataset must explicitly select one actual route, declared gate, 
 | `sunflower_cleaning` | First cleaning | conditional | Performed before hand-off | Raw bulk to prepared whole seed | Inlet/outlet kg |
 | `sunflower_grading` | Market-class sorting | conditional | Two or more quality/destination states are separated | Accepted, downgraded and rejected output hand-offs | kg by grade and fate |
 | `sunflower_drying` | On-farm preservation | conditional | Drying or active storage occurs before hand-off | Usable wet seed to stable measured-moisture state | Moisture, mass and energy by run |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 Field and harvest are separate because harvest removes mature heads/seeds from the growing crop; first cleaning cannot be assumed to occur. Oilseed, confection and bird-food destinations require actual lot records. Continuous cleaners and dryers need operating periods, while field harvest and grade sorting need lot/run IDs. Changeovers, re-cleaning and sequential drying are recorded as linked runs; one input or output is counted once. [ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022]
 
@@ -398,7 +399,7 @@ Collected bulk seed leaves harvest before any unverified cleaning or grading.
 - Flow property / unit: Mass / kg.
 Raw output measurement and reconciliation: Weigh by field and lot; test moisture and foreign material.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: Per harvest lot..
@@ -526,7 +527,7 @@ Prepared whole seed leaves the first cleaner for its documented next use.
 - Flow property / unit: Mass / kg.
 Raw output measurement and reconciliation: Weigh cleaned mass and record moisture and foreign matter.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: Per cleaning run..
@@ -652,7 +653,7 @@ An accepted whole-seed grade leaves at the actual declared in-farm commodity han
 - Flow property / unit: Mass / kg.
 Raw output measurement and reconciliation: Weigh accepted oilseed, confection or bird-food class by actual grade, lot and moisture.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: Per accepted output kg..
@@ -828,7 +829,7 @@ Stabilized whole seed leaves with its measured moisture and declared hand-off.
 - Flow property / unit: Mass / kg.
 Raw output measurement and reconciliation: Weigh output, test moisture and retain class/grade; do not infer a universal target moisture.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: Per drying lot..
@@ -901,6 +902,64 @@ Raw activity or stage basis: Per drying lot..
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Sunflower seed; production mix “in the farm”
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Sunflower seed; production mix “in the farm”
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
+
 ## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
@@ -926,6 +985,7 @@ The quantity ranges on flow cards are review triggers before normalization, not 
 | `cp_clean` | `sunflower_cleaning` | Prepared seed and screen-outs | Cleaner run log | lot_id, run_id, inlet_kg, outlet_kg, reject_kg, moisture_pct, kWh, reject_fate | Weigh inlet/outlet and meter service; Raw aggregation and attribution: Reconcile mass and linked returns | kg, %, kWh | Each run | All in-boundary runs | Farm cleaner | per declared reference flow | Scale and meter log |
 | `cp_grade` | `sunflower_grading` | Quality/destination states | Sorting and sale records | lot_id, run_id, class, grade, accepted_kg, downgraded_kg, reject_kg, destination, return_link | Weigh by state and destination; Raw aggregation and attribution: Balance distinct states; avoid duplicate returns | kg | Each run | All in-boundary runs | Farm sorter | per declared reference flow | Grade sheet, sale and reject tickets |
 | `cp_dry` | `sunflower_drying` | Preservation and water loss | Bin/dryer and meter log | lot_id, run_id, method, inlet_kg, inlet_moisture, outlet_kg, outlet_moisture, reject_kg, fan_kWh, fuel_L, days | Weigh/test before and after; meter energy; Raw aggregation and attribution: Balance dry solids and sum sequential stages once | kg, %, kWh, L, day | Each run | All on-farm treatment before hand-off | Farm bin or dryer | per declared reference flow | Scale, moisture test and meter log |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -975,3 +1035,7 @@ The quantity ranges on flow cards are review triggers before normalization, not 
 | `unsd-cpc-3-2025` | official_guidance | UN Statistics Division, CPC Ver. 3.0 explanatory notes (2025), https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf | Classification scope |
 | `ndsu-sunflower-guide-2020` | extension_guidance | North Dakota State University Extension, Sunflower Production Guide A1995, https://www.ndsu.edu/agriculture/sites/default/files/2023-12/a1995.pdf | Market types, field, harvest, grading and conditioning routes |
 | `ndsu-sunflower-drying-2022` | extension_guidance | North Dakota State University Extension, “NDSU offers advice on harvesting and drying sunflower in North Dakota” (2022), https://www.ag.ndsu.edu/news/newsreleases/2022/september/ndsu-offers-advice-on-harvesting-and-drying-sunflower-in-north-dakota/ | Conditional drying and moisture evidence |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

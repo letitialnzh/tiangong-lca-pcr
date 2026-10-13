@@ -37,14 +37,12 @@ sync_with: pcr.en-US.md
 | How much | 1 kg |
 | How well | 咖啡物种或品种组、处理方法、绿豆含水率基准、等级、缺陷标准、地理位置、生产系统和交接门 |
 | How long or cycle | 一个声明的作物年度和处理批次；多年生建植、替换和终止阶段按所代表作物年度建立索引并分摊 |
-| reference_flow_link | coffee_green_reference_output; coffee_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Coffee, green `b8869823-9c26-4580-9c45-95a626e0ca2a` |
+| Reference product flow | Coffee, green |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -57,7 +55,9 @@ sync_with: pcr.en-US.md
 | 绿豆含水率 | 8–13% 湿基；应以批次测量替代 | `fao-green-coffee-processing-africa` |
 | 处理路线 | 湿法/水洗、蜜处理/半水洗或干法/自然处理；每个批次或明确分开的批次使用一条路线 | `fao-arabica-coffee-manual-lao`; `fao-green-coffee-processing-africa` |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | Required property | Required unit | Rule |
@@ -107,6 +107,7 @@ sync_with: pcr.en-US.md
 | coffee_primary_processing_and_drying | 咖啡初级调理、处理和干燥 | required | 声明门前通过湿法、蜜处理或干法产生绿咖啡 | 第一处理和稳定化 | per 1 kg green coffee |
 | coffee_hulling_and_grading | 脱壳、清洁和分级 | required | 门前将羊皮纸、干樱桃或其他中间状态转为分级绿咖啡 | 制备输出分离 | per 1 kg graded green coffee |
 | coffee_storage_and_gate_handoff | 绿咖啡储存和门交接 | conditional | 声明门前发生储存或仓库处理 | 稳定化、储存和交接 | per 1 kg green coffee and storage day |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 生产模式按季节和批次记录。每个作物年度、多年生阶段、采收活动、处理批次、储存批次和包装运行都应建立索引；共享水、电、设备和换线事件必须关联到运行或批次，不得重复归属。
 
@@ -561,7 +562,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：声明门称量的合格净绿咖啡输出
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：per 1 kg green coffee at gate.
@@ -673,7 +674,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：声明门发出的称重批次，扣除皮重和记录的储存损失
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：per 1 kg green coffee at gate.
@@ -699,6 +700,64 @@ sync_with: pcr.en-US.md
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_coffee_storage_records`
 - 数量范围：储存损失 QA 范围；范围角色：QA 校验（`qa_guardrail`）；下限：0；上限：1；单位：kg loss/kg green coffee entering storage；基准类型：储存时长（`storage_duration`）；证据类型：方法公式（`method_formula`）；来源：`mass-balance-identity`
+
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Coffee, green
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Coffee, green
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
 
 ## 7. 分配与共产品处理
 
@@ -735,6 +794,7 @@ sync_with: pcr.en-US.md
 | `cp_coffee_residue_destination_records` | `coffee_primary_processing_and_drying`, `coffee_hulling_and_grading` | 果肉、黏液、羊皮纸、外壳、废水固体和废物 | 残余日志、处理收据和接收方记录 | stream; wet/dry basis; quantity; treatment; recipient; function; destination; date | 残余质量平衡和交接审核；原始汇总与分配：核对原料至产品、共产品、残余、处理和损失 | kg; m3; date | 批次和交接 | 所有纳入批次 | 加工厂和去向 | 每声明的参考流 | 磅单、处理收据和去向记录 |
 | `cp_coffee_wastewater_records` | `coffee_primary_processing_and_drying` | 废水和处理 | 水表、实验室结果、排放或处理记录 | volume; solids; pollutant; treatment; medium; date; batch | 水表、实验室和处理审核；原始汇总与分配：每股流只采用一条排放或处理路线 | m3; kg; date | 批次或排放 | 所有纳入湿法批次 | 加工厂和接收介质 | 每声明的参考流 | 水表、实验室结果和收据 |
 | `cp_coffee_storage_records` | `coffee_storage_and_gate_handoff` | 储存、含水率、搬运和损失 | 仓库批次、计量、库存和发运记录 | lot; opening; closing; moisture; days; energy; packaging; loss; gate; date | 库存和含水率核对；原始汇总与分配：核对期初质量、发运、损失和期末余额 | kg; percent; day; kWh; date | 批次和发运 | 所有纳入储存周期 | 仓库和批次 | 每声明的参考流 | 库存、含水率和发运记录 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### Calculation Rules
 
@@ -794,3 +854,7 @@ sync_with: pcr.en-US.md
 | `ipcc-2019-refinement-afolu` | method_factor | IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4 AFOLU, <https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/index.html> | 受管理土壤、残余和燃料相关基本流方法 |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, <https://committee.iso.org/standard/38498.html> | 系统边界、分配、共产品功能、数据质量和归属披露 |
 | `mass-balance-identity` | method_factor | 声明的作物年度、批次、含水率、产品、共产品、残余、废水和损失核对方法 | 归一化、输出完整性和重复计算检查 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

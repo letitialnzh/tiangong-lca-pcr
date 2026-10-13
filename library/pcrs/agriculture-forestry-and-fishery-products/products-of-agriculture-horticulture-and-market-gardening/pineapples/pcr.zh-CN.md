@@ -35,9 +35,7 @@ translation_status: aligned
 | How much | 1 kg |
 | How well | 重要时的品种；植株或宿根/再生周期；成熟度或质量类别；地理位置；作物年度；灌溉和水源状态；合格比例；处理状态；以及声明门 |
 | How long or cycle | 一个声明的生产周期和作物年度；披露种植、宿根/再生、重植和生产年限处理 |
-| reference_flow_link | fresh_pineapple_farm_gate_output; conditioned_pineapple_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
@@ -50,7 +48,9 @@ translation_status: aligned
 
 构建前景数据包时，`必需限定信息` 必须在数据包中声明。没有明确门声明时，不得从整理后果实身份推定农场门身份。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -93,6 +93,7 @@ translation_status: aligned
 | `pineapple_crop_production` | 菠萝建植与生产管理 | required |  | foreground | 周期投入和采收果实产出 |
 | `pineapple_harvest_and_delivery` | 菠萝采收与田间交接 | required |  | foreground | 农场门或田间交接门的完整果实 |
 | `pineapple_primary_conditioning` | 菠萝初级整理与声明门 | conditional | 声明门位于清洗、分选、修整、包装或冷却之后时纳入 | foreground | 所选门的整理后果实 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：菠萝建植与生产管理（`pineapple_crop_production`）
 
@@ -329,7 +330,7 @@ translation_status: aligned
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：按批次记录净合格果实质量并保留质量基准和门
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：声明门每 1,000 kg 合格新鲜菠萝产出.
@@ -432,7 +433,7 @@ translation_status: aligned
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：整理后的合格产出实测质量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：声明门每 1,000 kg 合格新鲜菠萝产出.
@@ -483,6 +484,64 @@ translation_status: aligned
 
 ##### 基本流
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：声明门的完整新鲜菠萝＼
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：声明门的完整新鲜菠萝＼
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -512,6 +571,7 @@ translation_status: aligned
 | `cp_conditioning_and_gate_records` | `pineapple_primary_conditioning` | fruit, outputs, and gate | conditioning batch record | input; water; electricity; culls; wastewater; output; quality; gate | batch sheet, meters, scale, treatment record；原始汇总与分配：reconcile input, output, culls, wastewater, and loss | kg, m3, kWh, quality | per batch | conditioning period | conditioning site | 每声明的参考流 | calibration, batch and treatment records |
 | `cp_conditioning_water_records` | `pineapple_primary_conditioning` | conditioning water | meter or batch record | source; meter; batch; volume; date; lot | calibrated meter or batch sheet；原始汇总与分配：sum by source and batch | m3 | per batch or period | conditioning period | conditioning site | 每声明的参考流 | calibration, batch record |
 | `cp_conditioning_energy_records` | `pineapple_primary_conditioning` | conditioning energy | meter or equipment record | equipment; operation; electricity; period; lot; mass | meter, equipment log, or invoice；原始汇总与分配：allocate by lot mass and operation | kWh or MJ | per batch or period | conditioning period | conditioning site | 每声明的参考流 | meter, log, invoice |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -571,3 +631,7 @@ translation_status: aligned
 | `iso-14044` | standard | ISO 14044, Environmental management — LCA requirements and guidelines | 分配层级、共产品处理和校验 |
 | `iso-14067` | standard | ISO 14067, Greenhouse gases — Carbon footprint of products | 产品边界披露和质量报告 |
 | `mass-balance-identity` | method_factor | Conservation of mass applied as a PCR calculation identity | 采收和整理产出核对 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

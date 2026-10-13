@@ -41,16 +41,14 @@ sync_with: pcr.en-US.md
 | How much | 1 kg |
 | How well | 命名茶类；声明水分和等级；仅由 *Camellia sinensis* 叶、芽和嫩梢制成 |
 | How long or cycle | 覆盖茶园管理、采摘、加工、分级和门内储存的完整生产周期及报告期 |
-| reference_flow_link | tea_primary_grade_output; tea_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 ### 参考流对象
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Tea `d16090ca-ddbe-4fd4-a498-fe4cab8bb525` |
+| Reference product flow | Tea |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -58,7 +56,9 @@ sync_with: pcr.en-US.md
 
 平台 `Tea` 流没有工艺路线或门点元数据。因此本 PCR 的门点定义为初级加工、干燥和分级完成后的包装前干茶交接。鲜叶、萎凋叶、氧化叶和加工残余保留为路线特定的前景状态，不因属于同一产品家族就使用成品茶 UUID。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 测量和单位规则
 
@@ -108,6 +108,7 @@ sync_with: pcr.en-US.md
 | `tea_green_leaf_handling` | 鲜叶接收和初级调制 | `required` | 包括接收、临时存放、冷却或通风以及首次原料到准备状态交接。 | 初级调制 | 接收鲜叶 kg 和调制叶 kg |
 | `tea_route_processing` | 路线特定的制茶和干燥 | `required` | 选择绿、红、乌龙、白、黄或黑茶中的一个命名路线。 | 物料处理和稳定化 | 干茶产出 kg |
 | `tea_grading_storage_gate` | 分级、储存和初级加工门 | `required` | 包括到声明干茶门的分级和储存；排除包装展示。 | 分级、储存和交接 | 1 kg 干茶参考流 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 路线替代
 
@@ -868,7 +869,7 @@ alternative-production-route 模块只作为经营性生物生产的路线拓扑
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：称量合格主等级产出
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 原始活动或阶段基准：每 1 kg 干茶参考流.
@@ -943,7 +944,7 @@ alternative-production-route 模块只作为经营性生物生产的路线拓扑
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：跨越声明门点的合格干茶，归一到 1 kg
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
 原始活动或阶段基准：每 1 kg 干茶参考流.
@@ -1015,6 +1016,64 @@ alternative-production-route 模块只作为经营性生物生产的路线拓扑
   - Basis kind: Storage duration (`storage_duration`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Tea
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Tea
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配和联产品处理
 
 | rule_id | applies_to | source_ids | rule |
@@ -1042,6 +1101,7 @@ alternative-production-route 模块只作为经营性生物生产的路线拓扑
 | `cp_quality_and_storage_records` | `tea_grading_storage_gate` | 合格等级；次等级；回收茶产品；拒收；储存；门点产出 | 分级日志、筛分记录、称重、仓储日志和质量记录 | grade; destination; accepted_mass; secondary_mass; recovered_mass; reject_mass; storage_start; storage_end; condition; loss; gate_date | 列出各等级和去向，再核对储存时长、损失和门点交接；原始汇总与分配：列出预期产出和拒收；按批次汇总时长和质量；排除下游物流 | kg；等级；日；温度；湿度；日期 | 每个分级或储存批次 | 干燥后分级至声明门点 | 门点前纳入的全部产出去向和储存 | 每声明的参考流 | 校准秤；筛分或分级记录；仓储日志；门点放行记录 |
 | `cp_residue_destination_records` | `tea_plantation_management`; `tea_plucking_collection`; `tea_green_leaf_handling`; `tea_route_processing`; `tea_grading_storage_gate` | 修剪残余；采摘损失；加工残余；拒收；返工；回收；处置 | 残余日志、废物转移记录、回收发票和返工日志 | residue_state; amount; destination; recovery; rework; compost; disposal; producing_process; lot_id | 将每项残余或拒收链接到产生过程和最终去向；原始汇总与分配：保留产生过程和最终处置；不重复计算返回或回收物 | kg；去向；批次标识 | 每批、作业或处置事件 | 作物周期、采摘批次、路线批次、分级和储存期间 | 门内所有残余、拒收、返工和回收分量去向 | 每声明的参考流 | 残余台账；转移单；回收发票；返工记录；去向证据 |
 | `cp_emission_records` | `tea_plantation_management`; `tea_green_leaf_handling`; `tea_route_processing`; `tea_grading_storage_gate` | 向空气、水或土壤的具体排放；储存粉尘；处理产物 | 测量记录、因子计算、处理日志和排放记录 | substance; medium; source; factor; measurement; treatment; reporting_period; lot_id | 报告带有具体物质、介质、来源和方法的实测或计算排放；原始汇总与分配：按物质、介质、来源、批次和期间汇总；不用宽泛未指定类别 | kg 物质 | 每个事件或报告期计算 | 田间作业、加工、干燥、分级和纳入的储存 | 声明边界内全部田间和加工排放源 | 每声明的参考流 | 测量记录；因子来源；处理日志；模型版本；质量审查 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### Calculation rules
 
@@ -1105,3 +1165,7 @@ alternative-production-route 模块只作为经营性生物生产的路线拓扑
 | `ipcc-2019-refinement-afolu` | 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, AFOLU | `method_factor` | https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/index.html | 多年生生产阶段、直接排放和归属背景 |
 | `iso-14044-2006` | ISO 14044:2006 Environmental management — Life cycle assessment — Requirements and guidelines | `standard` | https://committee.iso.org/standard/38498.html | 边界、分配、数据质量和验证规则 |
 | `mass-balance-identity` | Conservation-of-mass identity for lot reconciliation | `method_factor` | Method identity: incoming mass = intended outputs + residues + rejects + declared losses | 质量平衡计算和验证 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

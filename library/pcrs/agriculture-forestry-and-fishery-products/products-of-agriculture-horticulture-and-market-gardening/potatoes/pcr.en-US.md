@@ -226,7 +226,7 @@ Raw activity or stage basis: PCR reference flow.
 
 Record off-grade or small tubers as a separate product output only when they have a documented beneficial destination or sale. Preserve grade, destination, and as-received mass; do not silently include them in the reference amount.
 
-- Selected flow: Potatoes; fresh, unprocessed produce; production mix, at farm gate `65443696-51af-4ba8-8f73-06d434a36605`
+- Selected flow: Potatoes; fresh, unprocessed produce; production mix, at farm gate
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: measured as-received mass by documented beneficial destination
 - Value mode: Foreground record (`foreground_record`)
@@ -238,6 +238,8 @@ Raw activity or stage basis: per declared crop cycle and per 1,000 kg accepted p
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_field_and_harvest_records`
 - Sources:
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 
@@ -266,7 +268,7 @@ Calculate direct and applicable indirect nitrous oxide emissions from collected 
 
 - Selected flow: Nitrous oxide emission to ambient air
 - Flow property / unit: Mass / kg N2O
-- Amount rule: apply `calc_managed_soil_n2o`
+- Amount rule: apply the selected IPCC tier or geographically applicable method to fertilizer N, organic N, returned-residue N, volatilization, and leaching pathways
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per declared crop cycle and per 1,000 kg accepted potatoes.
@@ -276,6 +278,8 @@ Raw activity or stage basis: per declared crop cycle and per 1,000 kg accepted p
 - Evidence kind: Method formula (`method_formula`)
 - Collection protocol: `cp_soil_emission_activity`
 - Sources: `ipcc-2019-managed-soils`
+
+Calculation method corresponds to Section 8 rules: `calc_managed_soil_n2o`.
 
 ###### Carbon dioxide emitted from urea or liming (`soil_carbon_dioxide_output`)
 

@@ -33,14 +33,12 @@ sync_with: pcr.en-US.md
 | How much | 净质量 1 kg |
 | How well | 符合所报告验收规格的完整球果，不含叶、茎、糠屑和不合格球果 |
 | How long or cycle | 在按有证据的生产寿命分摊建园和共享资产的模型内，一个声明的收获期 |
-| reference_flow_link | accepted_wet_cones; accepted_dried_cones |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1 |
-| 参考产品流 | Hop cones `17e491b0-4419-4898-8a8b-c67b0e035470` |
+| 参考产品流 | Hop cones |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
@@ -49,7 +47,9 @@ sync_with: pcr.en-US.md
 
 所有限定信息均为必填。参考流是声明状态下的合格球果质量，不是田间作物、整蔓、收获机混合物、糠屑、不合格物或干物质。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -94,6 +94,7 @@ sync_with: pcr.en-US.md
 | `harvest_capture` | 收获与捕集 | required | 所有路线 | 移出球果或含球果整蔓并形成按批次索引的收集状态 | 各批次或收获期的收获投入与收集混合物 |
 | `grading_handoff` | 球果分离、清理、分级和湿鲜交付 | required | 所有路线 | 分离球果并分类合格、降级、返工、不合格和糠屑状态 | 批次质量平衡 |
 | `conditional_drying` | 完整球果干燥与稳定化 | conditional | 仅干燥完整球果交付 | 稳定合格湿鲜球果并交付干燥完整球果 | 批次湿料、能源、移除水分和干燥产出 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：啤酒花建园与多年生生产（`yard_production`）
 
@@ -450,7 +451,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始产出计量与核对要求：分级后称量合格湿鲜球果净质量；湿鲜路线以此为参考产出，干燥路线以此为干燥投入。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1 kg 合格湿鲜啤酒花球果.
@@ -460,13 +461,13 @@ sync_with: pcr.en-US.md
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grading_batch`
 - 来源：`penn-state-hop-production`
-- 数量范围：参考产出恒等
-  - 范围角色：允许范围（`allowed_range`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限：1
   - 上限：1
-  - 单位：kg/kg accepted wet hop cones
-  - 基准：仅湿鲜参考路线
-  - 基准类型：参考流（`reference_flow`）
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`mass-balance-identity`
 
@@ -598,7 +599,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始产出计量与核对要求：在声明水分下称量干燥与最终分级后的合格完整球果；仅在干燥路线中作为参考产出。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1 kg 合格干燥完整啤酒花球果.
@@ -608,13 +609,13 @@ sync_with: pcr.en-US.md
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_drying_batch`
 - 来源：`cornell-hop-yard-2017`
-- 数量范围：参考产出恒等
-  - 范围角色：允许范围（`allowed_range`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限：1
   - 上限：1
-  - 单位：kg/kg accepted dried whole cones
-  - 基准：仅干燥参考路线
-  - 基准类型：参考流（`reference_flow`）
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`mass-balance-identity`
 
@@ -672,6 +673,64 @@ sync_with: pcr.en-US.md
   - 证据类型：方法公式（`method_formula`）
   - 来源：`mass-balance-identity`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Hop cones
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Hop cones
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -700,6 +759,7 @@ sync_with: pcr.en-US.md
 | `cp_harvest_operations` | `harvest_capture` | 能源、清洗和换型 | 燃料、仪表和机器日志 | lot_id; route; machine; carrier_uuid; quantity; runtime; event | 关联运行的仪表或载体领用记录；原始汇总与分配：共享事件仅归属一次 | L; kWh; MJ; h | 每次运行和事件 | 每次收获 | 机器和批次 | 每声明的参考流 | 仪表和运行日志 |
 | `cp_grading_batch` | `grading_handoff` | 所有等级状态和能源 | 批次、称重、分级和仪表记录 | lot_id; input_mass; accepted_mass; downgraded_mass; rework_mass; reject_mass; chaff_mass; destination; moisture; carrier_uuid; energy | 校准称重、去向编码和仪表记录；原始汇总与分配：核对所有唯一状态，不重复计算返回 | kg; %; MJ | 每批次和返工 | 每次收获 | 批次和设备 | 每声明的参考流 | 校准、分级单和收据 |
 | `cp_drying_batch` | `conditional_drying` | 湿料、水分、能源、干燥产出和水 | 批次单、称、含水测试和仪表 | batch_id; lot_id; wet_mass; initial_moisture; test_method; carrier_uuid; energy; temperature; duration; dried_mass; final_moisture; reject_mass | 按批次称量、取样水分和计量能源；原始汇总与分配：闭合干物质和总质量，能源仅归属一次 | kg; %; MJ; °C; h | 每批次 | 每次干燥路线收获 | 批次和干燥机 | 每声明的参考流 | 校准和经验证水分记录 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -758,3 +818,7 @@ sync_with: pcr.en-US.md
 | `cornell-hop-yard-2017` | extension_guidance | Cornell Hops, Weldon, Gent and Gadoury, *Five considerations before ever planting your first hop*, November 2017, https://hops.cals.cornell.edu/grower-resources/five-considerations-before-ever-planting-your-first-hop/ | 永久园地、建园、共享设备、初始干物质及干燥终点背景 |
 | `cordella-hop-lca-2026` | literature | Cordella et al., *Uncovering the environmental burden of hops: a spatially resolved agricultural LCA for modern beer supply chains*, International Journal of Life Cycle Assessment (2026), https://doi.org/10.1007/s11367-026-02651-y | 农场门过程覆盖、建园、棚架、田间作业、干燥和多年期归属 |
 | `mass-balance-identity` | method_factor | 应用于批次记录的质量守恒恒等式 | 收获、分级与干燥核算及水分计算 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

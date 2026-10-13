@@ -38,7 +38,7 @@ It excludes cut flowers, bulbs and other vegetative propagules, edible or oilsee
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Flower seed for sowing; UUID unresolved for the full category |
+| Reference product flow | Flower seed for sowing; UUID unresolved |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

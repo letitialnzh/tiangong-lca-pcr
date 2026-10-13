@@ -35,14 +35,12 @@ translation_status: aligned
 | How much | 1 kg 净接收种子 |
 | How well | 小米种类或品种；种子或认证等级；水分基准；物理纯度；发芽率或活力；处理状态；包装状态；地理范围；作物周期；声明门 |
 | How long or cycle | 一个声明的小米种子生产作物周期；当储存位于门内时另行声明储存时间 |
-| reference_flow_link | accepted_millet_seed_for_sowing; delivered_accepted_millet_seed |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Millet, seed `8a2d72cb-ab4f-4c21-a783-c62f81599895` |
+| Reference product flow | Millet, seed |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -50,7 +48,9 @@ translation_status: aligned
 
 构建数据包时，`Required qualifiers` 中的限定信息必须写入数据集元数据、过程说明、参考流注释、产品描述或等效字段。参考流以质量为基准。种子数量只有在提供实测千粒重或其他透明数量到质量换算时才可使用。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用于 | 必需属性 | 必需单位 | 规则 |
@@ -95,6 +95,7 @@ translation_status: aligned
 | `millet_seed_multiplication` | Millet Seed Multiplication | required |  | foreground | 处理前收获的小米种子作物 |
 | `millet_seed_conditioning_and_treatment` | Millet Seed Conditioning and Treatment | required |  | foreground | 已接收、清选并可选处理的小米播种种子 |
 | `millet_seed_storage_and_delivery` | Millet Seed Storage and Delivery | conditional | 当储存或交付属于声明门，或实质改变交付参考流时纳入 | foreground | 交付的接收小米种子 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：小米种子繁育（`millet_seed_multiplication`）
 
@@ -457,7 +458,7 @@ translation_status: aligned
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：记录放行批次质量以及水分、纯度、发芽率或活力、处理、包装和门属性
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：PCR 参考输出.
@@ -466,13 +467,13 @@ translation_status: aligned
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_accepted_seed_mass`
-- 数量范围：接收种子参考输出身份
-  - 范围角色：QA 校验（`qa_guardrail`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限：1
   - 上限：1
-  - 单位：kg/kg PCR 参考输出
-  - 基准：接收的小米种子参考输出
-  - 基准类型：参考流（`reference_flow`）
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
   - 证据类型：方法公式（`method_formula`）
   - 来源：`mass-balance-identity`
 
@@ -612,7 +613,7 @@ translation_status: aligned
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：记录具有门和水分属性的交付批次质量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：路线特定（`route_specific`）
 原始活动或阶段基准：交付参考输出.
@@ -658,6 +659,64 @@ translation_status: aligned
 - 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_delivery_transport_records`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Millet, seed
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Millet, seed
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配和联产品处理
 
 | rule_id | 适用于 | 规则 | source_ids |
@@ -698,6 +757,7 @@ translation_status: aligned
 | `cp_delivery_transport_records` | `millet_seed_storage_and_delivery` | 交付运输 | 运输记录 | 路线；距离；车辆；燃料或 tonne-km；质量 | 承运商发票、发运记录、燃料日志；原始汇总与分配：汇总服务并归一化 | kg 燃料或 tonne-km | 每次发运 | 交付期间 | 路线 | 每声明的参考流 | 发票、发运、日志 |
 | `cp_storage_loss_records` | `millet_seed_storage_and_delivery` | 储存损失 | 损失记录 | 批次；损失质量；类别；去向；期间 | 库存核对和秤；原始汇总与分配：按去向汇总 | kg | 每批次或期间 | 储存时间 | 储存地点 | 每声明的参考流 | 库存、处置记录 |
 | `cp_delivered_seed_mass` | `millet_seed_storage_and_delivery` | 交付种子 | 交付记录 | 批次；质量；日期；门；接收方；水分 | 发运记录和校准秤；原始汇总与分配：汇总且不得重复计数 | kg 和水分分数 | 每次发运 | 交付期间 | 声明门 | 每声明的参考流 | 发运、秤 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -768,3 +828,7 @@ translation_status: aligned
 | `ipcc-2019-managed-soils-n2o` | method_factor | IPCC 2019 Refinement, Volume 4, Chapter 11, <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf> | 管理土壤氮排放和因子选择 |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | 分配层级、数据质量和敏感性要求 |
 | `mass-balance-identity` | method_factor | 将质量守恒作为田间、处理、包装、储存、拒收物、损失和参考流核对的 PCR 计算身份。 | 输出核对、归一化和 QA 校验范围 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

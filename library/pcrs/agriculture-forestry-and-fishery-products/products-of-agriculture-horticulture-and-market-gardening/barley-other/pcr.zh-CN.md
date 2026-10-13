@@ -37,14 +37,12 @@ translation_status: aligned
 | How much | 1 kg |
 | How well | 声明的用途；在具有实质性影响时记录大麦类型或品种；含水率基准；等级或质量描述；清理和干燥状态；地理范围；作物年度；以及声明门 |
 | How long or cycle | 一个声明的作物周期和收获年度；若门在储存之后，另行声明储存时长 |
-| reference_flow_link | barley_at_handoff; conditioned_barley_grain; declared_gate_barley_grain |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Barley, other `7054f7a2-d70f-4b45-8fd9-7e6f314aa5a9` |
+| Reference product flow | Barley, other |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -52,7 +50,9 @@ translation_status: aligned
 
 构建前景数据包时，`Required qualifiers` 中的项目必须出现在数据集元数据、过程说明、参考流注释、产品描述或等效数据包字段中。固定参考 UUID 仅适用于已核实的农场门、收获谷物、未加工状态。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需属性 | 必需单位 | 规则 |
@@ -95,6 +95,7 @@ translation_status: aligned
 | `barley_harvest_and_delivery` | 大麦收获和田间交付 | required |  | foreground | 农场门或初级处理交接点的收获谷物 |
 | `barley_primary_conditioning` | 初级干燥、清理和分级 | conditional | 声明门位于初级干燥、清理、分级或短期储存之后时纳入 | foreground | 声明门的处理后大麦谷物 |
 | `barley_storage_and_dispatch` | 储存和声明门发运 | conditional | 储存或发运实质性改变声明参考流时纳入 | foreground | 选定门的声明大麦谷物 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：大麦作物生产（`barley_crop_production`）
 
@@ -334,7 +335,7 @@ translation_status: aligned
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：收获或处理交接点的实测谷物质量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 原始活动或阶段基准：定量过程输出.
@@ -456,7 +457,7 @@ translation_status: aligned
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：带含水率基准和质量描述的接收谷物实测输出
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 原始活动或阶段基准：定量参考输出.
@@ -585,7 +586,7 @@ translation_status: aligned
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：声明门的实测谷物质量，并记录含水率、质量描述以及散装或包装状态
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 原始活动或阶段基准：定量参考输出.
@@ -619,6 +620,64 @@ translation_status: aligned
 
 ##### 基本流
 仅根据已确认的能量记录和声明因子计算能量相关排放。
+
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Barley, other
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Barley, other
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
 
 ## 7. 分配与副产品处理
 
@@ -655,6 +714,7 @@ translation_status: aligned
 | `cp_storage_and_handoff_records` | `barley_storage_and_dispatch` | 储存能量和损失 | 储存库存记录 | 批次；期初质量；期末质量；含水率；时长；能量；损失；去向 | 库存核对、计量器、公用事业账单或储存日志；原始汇总与分配：按批次和时长核对质量并分配能量 | kg、percent、days、MJ 或 kWh | 每批或储存期间 | 声明储存时长 | 储存地点 | 每声明的参考流 | 库存记录、计量器、账单 |
 | `cp_packaging_records` | `barley_storage_and_dispatch` | 运输包装 | 包装领用或发运记录 | 包装类型；件数；质量；容量；批次；门；日期 | 包装库存、包装日志或供应商记录；原始汇总与分配：汇总包装质量，或用记录的容量和质量换算件数 | 件和 kg | 每个包装批次 | 声明门期间 | 声明门或包装地点 | 每声明的参考流 | 库存记录、包装日志、供应商记录 |
 | `cp_declared_gate_output_records` | `barley_storage_and_dispatch` | 声明门输出 | 发运或门记录 | 批次；门；日期；质量；含水率；质量；包装或散装状态 | 地磅、秤、发运或接收记录；原始汇总与分配：汇总输出批次并保留门身份 | kg 和 percent | 每次发运或门事件 | 声明门期间 | 声明门 | 每声明的参考流 | 秤票、发运记录、质量记录 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -716,3 +776,7 @@ translation_status: aligned
 | `usda-barley-grain-standards` | official_guidance | USDA Agricultural Marketing Service，*Barley Standards*，<https://www.ams.usda.gov/grades-standards/barley-grades-and-standards> | 大麦谷物质量和等级描述，以及与种子范围的区分 |
 | `iso-14044-2006` | standard | ISO 14044:2006，*Environmental management — Life cycle assessment — Requirements and guidelines*，<https://www.iso.org/standard/38498.html> | 分配层级、LCA 范围、清单、报告和数据质量披露 |
 | `mass-balance-identity` | method_factor | 作为 PCR 计算恒等式使用的质量守恒。 | 收获、处理、储存和输出核对 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

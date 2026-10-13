@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1 kg actual accepted whole-seed mass"
   how_well: "Declare oilseed, confection/non-oil or bird-food class, grade/acceptance rule, measured moisture and foreign matter; no inferred cleaning or storage grade"
   how_long_or_cycle: "Identified crop year, field and lot; every included conditioning run is traceable"
-  reference_flow_link: "bulk_seed; clean_seed; accepted_seed; dry_seed"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: b_field
@@ -50,8 +48,8 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1"
   product_flow_ref:
-    name: "Sunflower seed ; production mix “in the farm”"
-    uuid: "a62436d6-249c-4ac3-b5f4-653d0f277519"
+    name: "Sunflower seed; production mix “in the farm”"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -125,6 +123,12 @@ process_map:
     inclusion_condition: "Drying or active storage occurs before hand-off"
     role: "Usable wet seed to stable measured-moisture state"
     quantitative_reference: "Moisture, mass and energy by run"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: sunflower_cultivation
     label: "Field crop management"
@@ -427,7 +431,7 @@ process_inventory:
           property_unit: "Mass / kg."
           description: "Collected bulk seed leaves harvest before any unverified cleaning or grading. Raw output measurement and reconciliation: Weigh by field and lot; test moisture and foreign material. Raw activity or stage basis: Per harvest lot.."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -549,7 +553,7 @@ process_inventory:
           property_unit: "Mass / kg."
           description: "Prepared whole seed leaves the first cleaner for its documented next use. Raw output measurement and reconciliation: Weigh cleaned mass and record moisture and foreign matter. Raw activity or stage basis: Per cleaning run.."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -672,7 +676,7 @@ process_inventory:
           property_unit: "Mass / kg."
           description: "An accepted whole-seed grade leaves at the actual declared in-farm commodity hand-off. Raw output measurement and reconciliation: Weigh accepted oilseed, confection or bird-food class by actual grade, lot and moisture. Raw activity or stage basis: Per accepted output kg.."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -847,7 +851,7 @@ process_inventory:
           property_unit: "Mass / kg."
           description: "Stabilized whole seed leaves with its measured moisture and declared hand-off. Raw output measurement and reconciliation: Weigh output, test moisture and retain class/grade; do not infer a universal target moisture. Raw activity or stage basis: Per drying lot.."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -923,6 +927,74 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Sunflower seed; production mix “in the farm”"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Sunflower seed; production mix “in the farm”"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
 allocation_rules:
   - rule_id: a_field
     applies_to: "Cultivation and harvest"
@@ -1006,6 +1078,18 @@ dataset_production:
       site_scope: "Farm bin or dryer"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "Scale, moisture test and meter log"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: c_norm
       applies_to: "All inventory"
@@ -1116,20 +1200,24 @@ data_sources:
     type: "extension_guidance"
     reference: "North Dakota State University Extension, “NDSU offers advice on harvesting and drying sunflower in North Dakota” (2022), https://www.ag.ndsu.edu/news/newsreleases/2022/september/ndsu-offers-advice-on-harvesting-and-drying-sunflower-in-north-dakota/"
     used_for: "Conditional drying and moisture evidence"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:d881a91c068dde1d7b7e92a9c0dc75ce1af1085b777aea50ce8466d6a5ba5837"
+  source_sha256: "sha256:da230503662c95061d3e199664af76a63dc09f62a496c80041defef495217274"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5188"
+    - unit_id: "normative_5288"
       family: "system_boundary"
       span:
         start:
-          offset: 5188
+          offset: 5288
           line: 63
           column: 1
         end:
-          offset: 7261
+          offset: 7361
           line: 85
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Pre-sowing field in a stated rotation and documented opening soil condition; identify purchased inputs and field operations from preparation through harvest |\n| starting_condition_role | Crop establishment is the foreground start; purchased seed, fertilizer, crop protection, fuel and electricity carry upstream datasets |\n| product_classification_scope | Whole commodity seed in the narrower CPC 01445 route, with oilseed and non-oil classes separated |\n| recursive_input_rule | Purchased sunflower sowing seed is an upstream input; never recursively assign this output dataset to itself |\n| upstream_dataset_requirement | Identify upstream supply datasets for sowing seed, nutrients, crop protection, fuel, electricity and services; disclose gaps |\n| disclosure | Field and crop year, market class, actual in-farm hand-off, treatment and storage coverage, water route, residue fate |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `b_field` | `sunflower_cultivation` | Include seedbed preparation, planting, nutrient/protection management, irrigated water and pumping when practiced, and machinery up to mature heads ready for harvest. | ndsu-sunflower-guide-2020 |\n| `b_harvest` | `sunflower_harvest` | Separate head/seed capture and threshing from standing crop production; record collected bulk seed, uncollected loss and incidental stalk/head material distinctly. | ndsu-sunflower-guide-2020 |\n| `b_treatment` | `sunflower_cleaning`, `sunflower_grading`, `sunflower_drying` | Include first cleaning, sorting and stabilization only if actually performed before hand-off; log accepted, downgraded, reject, moisture-loss and storage states. | ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022 |\n| `b_exit` | Final output | End at the declared in-farm whole-seed transfer. Exclude off-farm movement and oil/food processing; do not reinterpret “in the farm” as “at farm gate”. | ndsu-sunflower-guide-2020 |\n\n"
@@ -1149,11 +1237,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5188
+              offset: 5288
               line: 63
               column: 1
             end:
-              offset: 5209
+              offset: 5309
               line: 63
               column: 22
           text: "## 5. System Boundary"
@@ -1169,16 +1257,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_41673"
+    - unit_id: "normative_45698"
       family: "allocation"
       span:
         start:
-          offset: 41673
-          line: 904
+          offset: 45698
+          line: 963
           column: 1
         end:
-          offset: 42856
-          line: 913
+          offset: 46881
+          line: 972
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `a_field` | Cultivation and harvest | Attribute joint field/harvest burdens to collected seed when residues remain in the field. A physically removed and marketed stalk/head output needs measured mass and a disclosed allocation basis; do not automatically give it zero burden. | ndsu-sunflower-guide-2020 |\n| `a_grade` | Cleaning and grading | Reconcile accepted, downgraded, reworked and waste mass. Directly assign metered separable work to its output run; disclose a consistent measured driver for truly shared burdens when more than one saleable output exists. | ndsu-sunflower-guide-2020 |\n| `a_rework` | Reject return | Link reject/re-cleaning loops to their original and follow-on run; charge added work once and count the material as accepted only after successful recovery. | ndsu-sunflower-guide-2020 |\n| `a_mode` | Field, batch and continuous runs | Attribute shared machinery, cleaning and changeover to logged field/lot/period by recorded time, throughput or other causal driver; no duplicate charge across sequential runs. | ndsu-sunflower-guide-2020 |\n\n"
       headings:
@@ -1197,12 +1285,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 41673
-              line: 904
+              offset: 45698
+              line: 963
               column: 1
             end:
-              offset: 41713
-              line: 904
+              offset: 45738
+              line: 963
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1217,16 +1305,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_48507"
+    - unit_id: "normative_53178"
       family: "validation"
       span:
         start:
-          offset: 48507
-          line: 948
+          offset: 53178
+          line: 1008
           column: 1
         end:
-          offset: 49881
-          line: 959
+          offset: 54552
+          line: 1019
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_identity` | Reference output | Reject missing class, measured moisture, grade or actual hand-off, and reject sowing seed bound to `a62436d6-249c-4ac3-b5f4-653d0f277519`. | ndsu-sunflower-guide-2020 |\n| `v_boundary` | Inventory | Verify cultivation, harvest and each actual on-farm cleaning, grading, drying and storage step up to hand-off; do not infer farm-gate grade from the platform label. | ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022 |\n| `v_route` | Alternative routes | Require metered irrigation and pump records for irrigated fields and metered fan/fuel records for drying; link sequential technologies. | ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022 |\n| `v_balance` | Lots and rejects | Reconcile accepted, downgraded, rejected, returned and lost mass with moisture; a reject becomes accepted only after a linked successful run. | ndsu-sunflower-guide-2020 |\n| `v_emissions` | Field elementary flows | Do not accept an anonymous field-emission row or unverified generic factor; require each calculated exchange to name species, method and factor source. | ndsu-sunflower-guide-2020 |\n| `v_once` | Shared runs | Check field and period attribution, cleaning changeovers and returned lots to prevent double counting. | ndsu-sunflower-guide-2020 |\n\n"
       headings:
@@ -1245,12 +1333,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 48507
-              line: 948
+              offset: 53178
+              line: 1008
               column: 1
             end:
-              offset: 48529
-              line: 948
+              offset: 53200
+              line: 1008
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1269,233 +1357,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "b_field"
       identity_kind: "explicit"
-      unit_id: "normative_5188"
+      unit_id: "normative_5288"
       source_span:
         start:
-          offset: 6279
+          offset: 6379
           line: 80
           column: 1
         end:
-          offset: 6515
+          offset: 6615
           line: 80
           column: 237
     - pointer: "/system_boundary/rules/1"
       rule_id: "b_harvest"
       identity_kind: "explicit"
-      unit_id: "normative_5188"
+      unit_id: "normative_5288"
       source_span:
         start:
-          offset: 6516
+          offset: 6616
           line: 81
           column: 1
         end:
-          offset: 6747
+          offset: 6847
           line: 81
           column: 232
     - pointer: "/system_boundary/rules/2"
       rule_id: "b_treatment"
       identity_kind: "explicit"
-      unit_id: "normative_5188"
+      unit_id: "normative_5288"
       source_span:
         start:
-          offset: 6748
+          offset: 6848
           line: 82
           column: 1
         end:
-          offset: 7049
+          offset: 7149
           line: 82
           column: 302
     - pointer: "/system_boundary/rules/3"
       rule_id: "b_exit"
       identity_kind: "explicit"
-      unit_id: "normative_5188"
+      unit_id: "normative_5288"
       source_span:
         start:
-          offset: 7050
+          offset: 7150
           line: 83
           column: 1
         end:
-          offset: 7259
+          offset: 7359
           line: 83
           column: 210
     - pointer: "/allocation_rules/0"
       rule_id: "a_field"
       identity_kind: "explicit"
-      unit_id: "normative_41673"
+      unit_id: "normative_45698"
       source_span:
         start:
-          offset: 41786
-          line: 908
+          offset: 45811
+          line: 967
           column: 1
         end:
-          offset: 42094
-          line: 908
+          offset: 46119
+          line: 967
           column: 309
     - pointer: "/allocation_rules/1"
       rule_id: "a_grade"
       identity_kind: "explicit"
-      unit_id: "normative_41673"
+      unit_id: "normative_45698"
       source_span:
         start:
-          offset: 42095
-          line: 909
+          offset: 46120
+          line: 968
           column: 1
         end:
-          offset: 42382
-          line: 909
+          offset: 46407
+          line: 968
           column: 288
     - pointer: "/allocation_rules/2"
       rule_id: "a_rework"
       identity_kind: "explicit"
-      unit_id: "normative_41673"
+      unit_id: "normative_45698"
       source_span:
         start:
-          offset: 42383
-          line: 910
+          offset: 46408
+          line: 969
           column: 1
         end:
-          offset: 42600
-          line: 910
+          offset: 46625
+          line: 969
           column: 218
     - pointer: "/allocation_rules/3"
       rule_id: "a_mode"
       identity_kind: "explicit"
-      unit_id: "normative_41673"
+      unit_id: "normative_45698"
       source_span:
         start:
-          offset: 42601
-          line: 911
+          offset: 46626
+          line: 970
           column: 1
         end:
-          offset: 42854
-          line: 911
+          offset: 46879
+          line: 970
           column: 254
     - pointer: "/validation_rules/0"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_48507"
+      unit_id: "normative_53178"
       source_span:
         start:
-          offset: 48602
-          line: 952
+          offset: 53273
+          line: 1012
           column: 1
         end:
-          offset: 48806
-          line: 952
+          offset: 53477
+          line: 1012
           column: 205
     - pointer: "/validation_rules/1"
       rule_id: "v_boundary"
       identity_kind: "explicit"
-      unit_id: "normative_48507"
+      unit_id: "normative_53178"
       source_span:
         start:
-          offset: 48807
-          line: 953
+          offset: 53478
+          line: 1013
           column: 1
         end:
-          offset: 49058
-          line: 953
+          offset: 53729
+          line: 1013
           column: 252
     - pointer: "/validation_rules/2"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_48507"
+      unit_id: "normative_53178"
       source_span:
         start:
-          offset: 49059
-          line: 954
+          offset: 53730
+          line: 1014
           column: 1
         end:
-          offset: 49287
-          line: 954
+          offset: 53958
+          line: 1014
           column: 229
     - pointer: "/validation_rules/3"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_48507"
+      unit_id: "normative_53178"
       source_span:
         start:
-          offset: 49288
-          line: 955
+          offset: 53959
+          line: 1015
           column: 1
         end:
-          offset: 49494
-          line: 955
+          offset: 54165
+          line: 1015
           column: 207
     - pointer: "/validation_rules/4"
       rule_id: "v_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_48507"
+      unit_id: "normative_53178"
       source_span:
         start:
-          offset: 49495
-          line: 956
+          offset: 54166
+          line: 1016
           column: 1
         end:
-          offset: 49719
-          line: 956
+          offset: 54390
+          line: 1016
           column: 225
     - pointer: "/validation_rules/5"
       rule_id: "v_once"
       identity_kind: "explicit"
-      unit_id: "normative_48507"
+      unit_id: "normative_53178"
       source_span:
         start:
-          offset: 49720
-          line: 957
+          offset: 54391
+          line: 1017
           column: 1
         end:
-          offset: 49879
-          line: 957
+          offset: 54550
+          line: 1017
           column: 160
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5188"
+      unit_id: "normative_5288"
       source_span:
         start:
-          offset: 5188
+          offset: 5288
           line: 63
           column: 1
         end:
-          offset: 5209
+          offset: 5309
           line: 63
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5188"
+      unit_id: "normative_5288"
       source_span:
         start:
-          offset: 5237
+          offset: 5337
           line: 67
           column: 1
         end:
-          offset: 6186
+          offset: 6286
           line: 74
           column: 135
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_41673"
+      unit_id: "normative_45698"
       source_span:
         start:
-          offset: 41673
-          line: 904
+          offset: 45698
+          line: 963
           column: 1
         end:
-          offset: 41713
-          line: 904
+          offset: 45738
+          line: 963
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_48507"
+      unit_id: "normative_53178"
       source_span:
         start:
-          offset: 48507
-          line: 948
+          offset: 53178
+          line: 1008
           column: 1
         end:
-          offset: 48529
-          line: 948
+          offset: 53200
+          line: 1008
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1504,5 +1592,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:d881a91c068dde1d7b7e92a9c0dc75ce1af1085b777aea50ce8466d6a5ba5837"
-  generated_content_sha256: "sha256:53aad823d079c4f7156a757ad6e6dd5ded94e3eddd6ead2b0d294017477b9aef"
+    sha256: "sha256:da230503662c95061d3e199664af76a63dc09f62a496c80041defef495217274"
+  generated_content_sha256: "sha256:65a69ee617fa56ef2107014c85edf46db0e7feac2230a35edcffc686d1a1b023"

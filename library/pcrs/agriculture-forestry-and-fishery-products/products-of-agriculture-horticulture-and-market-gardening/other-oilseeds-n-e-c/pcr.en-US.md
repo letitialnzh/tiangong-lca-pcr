@@ -362,7 +362,7 @@ None.
 
 This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active.
 
-- Selected flow: Other oilseeds, n.e.c. `b547a596-eefe-42d3-82b9-78cbbb445eb6`
+- Selected flow: Other oilseeds, n.e.c.
 - Flow property / unit: kg
 - Amount rule: Measured raw grain after species-specific extraction and before conditioning.
 - Value mode: Foreground record (`foreground_record`)
@@ -381,6 +381,8 @@ Raw activity or stage basis: gross raw seed at measured moisture.
   - Basis: gross raw seed at measured moisture
   - Basis kind: `process_output`
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 
@@ -528,7 +530,7 @@ None.
 
 This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active.
 
-- Selected flow: Other oilseeds, n.e.c. `b547a596-eefe-42d3-82b9-78cbbb445eb6`
+- Selected flow: Other oilseeds, n.e.c.
 - Flow property / unit: kg
 - Amount rule: Measured conditioned seed at declared moisture and purity.
 - Value mode: Foreground record (`foreground_record`)
@@ -547,6 +549,8 @@ Raw activity or stage basis: conditioned lot output.
   - Basis: conditioned lot output
   - Basis kind: `process_output`
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 
@@ -718,7 +722,7 @@ Raw activity or stage basis: reference flow.
 
 This card records the real physical flow for this process role; model it by the declared batch or crop cycle only when the route is active.
 
-- Selected flow: Other oilseeds, n.e.c. `b547a596-eefe-42d3-82b9-78cbbb445eb6`
+- Selected flow: Other oilseeds, n.e.c.
 - Flow property / unit: kg
 - Amount rule: Measure separately when a lower grade remains a saleable oilseed output.
 - Value mode: Foreground record (`foreground_record`)
@@ -737,6 +741,8 @@ Raw activity or stage basis: per grading lot.
   - Basis: per grading lot
   - Basis kind: `process_output`
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Verify this intermediate state or co-product grade independently; the reference-output UUID is not evidence for this row.
 
 ##### Waste flows
 

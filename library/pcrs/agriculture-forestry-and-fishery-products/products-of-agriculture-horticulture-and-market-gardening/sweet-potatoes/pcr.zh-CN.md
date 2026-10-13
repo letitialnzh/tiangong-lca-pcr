@@ -32,20 +32,20 @@ sync_with: pcr.en-US.md
 | How much | 收到态 1,000 kg |
 | How well | 声明的合格等级、未熟化/熟化、损伤和去土状态 |
 | How long or cycle | 一个作物周期及其初级整理；适用时加熟化/储藏时长 |
-| reference_flow_link | fresh_reference_product; cured_reference_product |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Sweet potatoes `03d4145f-cc49-4e7b-8c45-d6ce90a90057` |
+| Reference product flow | Sweet potatoes |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | species = *Ipomoea batatas*；储藏根；未熟化或熟化；损伤等级；去土状态；水分或收到态基准；农场或初级整理交接；作物周期；适用时储藏时长 |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -90,6 +90,7 @@ sync_with: pcr.en-US.md
 | `harvest_capture` | 收获与收集 | required | Every package / 每个数据包 | Removes roots and hands them to conditioning / 移出储藏根并交接初级整理 | kg accepted roots / kg 合格根 |
 | `primary_conditioning` | 去土、分级与初级交接 | required | Every package / 每个数据包 | Creates accepted, downgraded, rejected, soil, solid, and wastewater states / 形成合格、降级、剔除、土壤、固体和废水状态 | kg accepted roots / kg 合格根 |
 | `curing_storage` | 熟化与储藏 | conditional | Only cured or stored hand-off / 仅熟化或储藏后交接 | Preserves roots and creates cured hand-off / 保存储藏根并形成熟化交接 | kg accepted roots / kg 合格根 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 各作物周期、收获事件、整理批次和熟化/储藏批次必须独立编号。手工/机械、雨养/灌溉、干法/湿法去土、渐进/一次收获是路线差异，须保存其拓扑、清单、计算和验证证据。
 
@@ -569,7 +570,7 @@ Sweet potatoes `03d4145f-cc49-4e7b-8c45-d6ce90a90057`仅在声明条件下跨越
 - 身份状态：fixed: detail-confirmed CPC 01530 Product flow with Mass at farm gate
 原始产出计量与核对要求：与声明的过程事件和去向关联的测量值或计算值
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：fixed_value（`fixed_value`）
 - 适用范围：product_specific（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 合格参考根或声明的关联事件.
@@ -747,7 +748,7 @@ Sweet potatoes `03d4145f-cc49-4e7b-8c45-d6ce90a90057`仅在声明条件下跨越
 - 身份状态：fixed: detail-confirmed CPC 01530 Product flow with Mass at farm gate
 原始产出计量与核对要求：与声明的过程事件和去向关联的测量值或计算值
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：fixed_value（`fixed_value`）
 - 适用范围：product_specific（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 合格参考根或声明的关联事件.
@@ -825,6 +826,64 @@ Sweet potatoes `03d4145f-cc49-4e7b-8c45-d6ce90a90057`仅在声明条件下跨越
   - 证据类型：推理估算（`reasoned_estimate`）
 
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Sweet potatoes
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Sweet potatoes
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与联产品处理
 
 | rule_id | Applies to | Rule | source_ids |
@@ -846,6 +905,7 @@ Sweet potatoes `03d4145f-cc49-4e7b-8c45-d6ce90a90057`仅在声明条件下跨越
 | `cp_harvest_event_records` | `harvest_capture` | 全部收获卡片 | 称量、设备、路线、损失调查 | 周期、事件、模式、质量、损伤、能源、距离、载荷、去向 | 每事件记录；原始汇总与分配：求和且禁止运输/机械重复 | 声明单位 | 每次收获 | 全部关联收获 | 田块和事件 | 每声明的参考流 | 称量、设备、交接 |
 | `cp_conditioning_run_records` | `primary_conditioning` | 全部整理卡片 | 批次、称量、仪表、等级、去向票据 | 进料、去土、用水、用电、等级、残余物、废水和处理 | 每批质量平衡；原始汇总与分配：状态和去向总和核对 | 声明单位 | 每批 | 全部参考产品批次 | 场址和生产线 | 每声明的参考流 | 校准、等级协议、票据 |
 | `cp_curing_storage_records` | `curing_storage` | 全部熟化/储藏卡片 | 批次、温湿度、仪表、检查 | 进料、条件、时长、能源、出料、剔除和水分 | 从装入到交接追踪；原始汇总与分配：核对进料、合格、剔除和水损失 | 声明单位 | 每批和周期读数 | 完整时长 | 储藏场址和批次 | 每声明的参考流 | 传感器、仪表、追溯 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -896,3 +956,7 @@ Sweet potatoes `03d4145f-cc49-4e7b-8c45-d6ce90a90057`仅在声明条件下跨越
 | --- | --- | --- | --- |
 | `fao-sweet-potato-postharvest` | official_guidance | FAO, *Prevention of post-harvest food losses: Sweet potato crop profile*, https://www.fao.org/4/t0073e/T0073E08.htm | 谨慎收获、去土、损伤分级、熟化/储藏和边界 |
 | `mass-balance-identity` | method_factor | 与进料、产出、残余物、样品和测得水分记录关联的质量守恒恒等式 | 归一化、节点核对、干质量转换和固定参考量 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

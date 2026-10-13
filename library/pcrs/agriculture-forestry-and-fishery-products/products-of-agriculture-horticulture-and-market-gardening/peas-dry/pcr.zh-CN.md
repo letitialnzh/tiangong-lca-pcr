@@ -35,21 +35,21 @@ sync_with: pcr.en-US.md
 | 数量 | 1 kg 净验收合格籽粒 |
 | 质量要求 | Declared market class, moisture, 等级/去向, foreign-material and damaged fractions, harvest and conditioning routes |
 | 时间或周期 | 一个单一期间作物周期及其全部关联采后批次 |
-| reference_flow_link | accepted_pea_grain; stabilized_pea_grain |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1 |
-| 参考产品流 | 干豌豆 `e64a5cdb-c922-45d9-90ab-c9dd573032f7` |
+| 参考产品流 | 干豌豆 |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | 物种与市场类别; 整粒干粮状态; 地理; 作物年度; 水分及其基准; 等级/去向; 收获路线; 干燥/通风状态; 受损及杂质比例 |
 | 绑定模式 | 固定 (`fixed`) |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -93,6 +93,7 @@ sync_with: pcr.en-US.md
 | `harvest_threshing` | 收获、联合收割与脱粒 | required | 按批次选择直接收获或割晒，作为替代技术路线 | 独立收获与脱粒 | 成熟作物投入与原粮输出 |
 | `grading_cleaning` | Farm cleaning and grading | required | 始终 | 初级调理与去向分级 | Raw grain input and accepted lot output |
 | `drying_aeration` | Conditional drying and aeration | conditional | 农场门交付前使用主动通风或加热时 | 保存与稳定化 | Incoming wet grain and stabilized output |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：干豌豆田间管理生产 (`field_production`)
 
@@ -545,7 +546,7 @@ Record gross delivered water, source and conveyance; zero requires a documented 
 - 流属性/单位： 质量 / kg
 原始产出计量与核对要求：Net accepted mass after excluding foreign matter, rejects, downgrades and rework
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： 前景记录 (`foreground_record`)
 - 适用范围： 产品特定 (`product_specific`)
 原始活动或阶段基准：每个清理批次.
@@ -709,7 +710,7 @@ Record gross delivered water, source and conveyance; zero requires a documented 
 - 流属性/单位： 质量 / kg
 原始产出计量与核对要求：Net accepted output at measured final moisture, excluding damage and rejects
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： 前景记录 (`foreground_record`)
 - 适用范围： 产品特定 (`product_specific`)
 原始活动或阶段基准：每个稳定化批次.
@@ -783,6 +784,64 @@ Record gross delivered water, source and conveyance; zero requires a documented 
   - 证据类型： 方法公式 (`method_formula`)
   - 来源： `mass-balance-identity`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：干豌豆
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：干豌豆
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -809,6 +868,7 @@ Record gross delivered water, source and conveyance; zero requires a documented 
 | `cp_harvest_batch` | `harvest_threshing` | Route, energy, outputs and losses | batch log | batch; field; route; area; fuel; masses; moisture; destinations | Weigh outputs; meter/calculate energy; loss check；原始汇总与分配：Reconcile all outputs and loss | kg; L; kWh; ha; % | Batch | Harvest window | Field/route | 每声明的参考流 | Scale, moisture, route log |
 | `cp_cleaning_lot` | `grading_cleaning` | Inputs, grades, rejects, rework, energy | lot/campaign log | lot; campaign; masses; moisture; energy; grade; pass; destination | Weigh all hand-offs and meter/calculate energy；原始汇总与分配：Count final destination once | kg; %; kWh | Lot/pass | Campaign | Lot | 每声明的参考流 | Scale, grade test, energy record |
 | `cp_drying_batch` | `drying_aeration` | Stabilization | bin/dryer log | batch; route; input/output mass, moisture and temperature; energy; duration; rejects | Weigh/test input/output; meter energy；原始汇总与分配：Dry-matter balance and water removal | kg; %; °C; kWh; MJ; h | Batch | Full intervention | Bin/batch | 每声明的参考流 | Calibrated scale, meters, logs |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -869,3 +929,7 @@ Record gross delivered water, source and conveyance; zero requires a documented 
 | `fao-cropland-nutrient-balance-2025` | dataset | FAOSTAT Cropland Nutrient Balance metadata, December 2025, https://files-faostat.fao.org/production/ESB/ESB_e.pdf | Dry-pea dry matter and harvest index context |
 | `ipcc-2019-managed-soils` | method_factor | IPCC 2019 Refinement, Volume 4 Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | Direct soil N2O formula and EF1 uncertainty |
 | `mass-balance-identity` | method_factor | Conservation-of-mass identity applied to moisture-corrected field and batch records | Balance, conversion, allocation and QA |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

@@ -41,9 +41,7 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 | How much | 1 kg 净可销售水果。 |
 | How well | 水果物种或植物学组；品种或品种组；成熟度；等级或目的地；相关时的含水率或干物质基准；完整、新鲜、未加工状态。 |
 | How long or cycle | 一个完整的一年生作物周期，或多年生作物的一个声明生产阶段；在适用时包括分摊的建植阶段及该门输出包含的全部收获批次。 |
-| reference_flow_link | marketable_fresh_fruit_output; stabilized_fruit_output; packed_fresh_fruit_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
@@ -57,7 +55,9 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 构建前景数据包时，`Required qualifiers` 中每一项都必须在数据集元数据、过程说明、参考流备注、产品说明或等效
 数据包字段中声明。缺少限定信息时，参考流定义不完整。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | Required property | Required unit | Rule |
@@ -108,6 +108,7 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 | `fruit_cold_storage_and_stabilization` | 水果冷藏和稳定化 | conditional | 门前发生预冷、制冷、受控储存或其他稳定化处理 | 保鲜和储存 | per 1 kg stored fruit and storage day |
 | `fruit_packaging_and_gate_handoff` | 水果包装和门交接 | conditional | 门前在边界内完成包装或展示 | 受保护产品交接 | per 1 kg packed gate output |
 | `fruit_reject_rework_and_residue_routing` | 水果拒收、返工和残余 routing | conditional | 拒收、降级、回收或残余材料在离开边界前获得声明路线 | 不合格品和残余路线 | per 1 kg marketable gate output |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 生产模式为季节性和活动批次模式。每个一年生作物周期、多年生阶段、收获活动、处理批次、储存批次和包装运行
 均应建立索引。连续运行的包装场仍必须将共享公用事业和换线事件链接到水果活动或批次，不得没有记录的归属
@@ -581,7 +582,7 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 - 流属性 / 单位：质量 / kg
 原始产出计量与核对要求：按等级和目的地称量分选后接收的输出
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：1,000 kg reference flow.
@@ -705,7 +706,7 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 - 流属性 / 单位：质量 / kg
 原始产出计量与核对要求：按声明稳定化期间后的发出量称量
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：per 1,000 kg dispatched gate output.
@@ -829,7 +830,7 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 - 流属性 / 单位：净水果质量 / kg
 原始产出计量与核对要求：称量声明门的净水果输出
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：1,000 kg reference flow.
@@ -965,6 +966,64 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 - 采集协议：`cp_reject_rework_residue_records`
 - 来源：`mass-balance-identity`; `fao-quality-safety-fresh-fruits-2004`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：声明物种或植物学组的可销售完整新鲜水果 [unmapped；UUID intentionally blank]
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：声明物种或植物学组的可销售完整新鲜水果 [unmapped；UUID intentionally blank]
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | Rule | source_ids |
@@ -1001,6 +1060,7 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 | `cp_storage_records` | `fruit_cold_storage_and_stabilization` | 储存输入、输出、时长、能源、材料和损失 | 冷库日志、记录器、库存和发运记录 | lot; mode; temperature; start; end; input; output; loss; reject; energy; material | 记录器和库存核对；原始汇总与分配：reconcile opening stock, receipts, dispatch and loss | kg; kWh; day; °C | each lot and day | declared storage period | cold room and gate | 每声明的参考流 | logger, inventory and dispatch ticket |
 | `cp_packaging_records` | `fruit_packaging_and_gate_handoff` | 产品、包装、能源和废物 | 包装规格、领用记录、资产登记和发运票据 | lot; format; material; tare; item; capacity; reuse; return; loss; energy; net fruit; date | 包装领用和净输出核对；原始汇总与分配：allocate reusable assets over service life and reconcile used, returned and waste | kg; item; kWh; date | lot, campaign or dispatch | all included packaging | line, site and lot | 每声明的参考流 | package specification and issue record |
 | `cp_reject_rework_residue_records` | `fruit_reject_rework_and_residue_routing` | 拒收、降级、回收、返工和残余材料 | 拒收日志、返工票据、接收方、处理和处置记录 | source; lot; state; wet/dry mass; moisture; destination; recipient; function; treatment; date; return link | 称重和目的地审查并进行图关系核对；原始汇总与分配：one declared route per source stream; prevent double counting | kg; m3; date | each event and period close | all included routing | source node, site and recipient | 每声明的参考流 | scale, ticket, receipt or treatment record |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### Calculation Rules
 
@@ -1061,3 +1121,7 @@ CPC 叶是分类参考，不是产品身份替代物。若数据包合并不同�
 | `ipcc-2019-refinement-afolu` | method_factor | IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4 AFOLU, <https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/index.html> | 管理土壤氮、残余物和燃料相关基本流方法 |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, <https://www.iso.org/standard/38498.html> | 系统边界、分配、共产品功能、数据质量和归属披露 |
 | `mass-balance-identity` | method_factor | Declared crop-cycle, lot, water, output, reject, residue and packaging mass-balance reconciliation method | 归一化、损失、共产品、拒收物、废水、包装和重复计算检查 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

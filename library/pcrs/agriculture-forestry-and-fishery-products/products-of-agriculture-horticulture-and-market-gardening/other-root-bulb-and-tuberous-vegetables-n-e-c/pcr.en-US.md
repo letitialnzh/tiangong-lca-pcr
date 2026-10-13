@@ -40,7 +40,7 @@ The broad category is resolved by the product identity and edible organ, not by 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Marketable fresh other root, bulb, rhizome, corm, or tuber vegetable, n.e.c. |
+| Reference product flow | Marketable fresh other root, bulb, rhizome, corm, or tuber vegetable at the declared farm gate |
 | Reference flow property | Mass (`93a60a56-a3c8-11da-a746-0800200b9a66`) |
 | Reference unit group | Mass units (`93a60a57-a4c8-11da-a746-0800200c9a66`) |
 | Reference unit | kg |

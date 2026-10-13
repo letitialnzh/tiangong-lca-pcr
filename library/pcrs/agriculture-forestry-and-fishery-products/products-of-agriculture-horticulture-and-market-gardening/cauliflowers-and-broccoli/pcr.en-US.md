@@ -33,14 +33,12 @@ The category is shared by cauliflower and broccoli because both are annual brass
 | How much | 1,000 kg |
 | How well | Product is fresh, unprocessed, and saleable under the declared crop identity, maturity, head or floret grade, trimming, defect tolerance, and moisture state |
 | How long or cycle | One declared annual crop cycle and harvest year, normalized after reconciling field output, rejects, and trimming |
-| reference_flow_link | marketable_farm_gate_output; cooled_or_packed_farm_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Fresh cauliflower or broccoli, farm-gate output `58bab506-1b56-4206-97c8-d0d0f6391442` |
+| Reference product flow | Fresh cauliflower or broccoli, farm-gate output |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -48,7 +46,9 @@ The category is shared by cauliflower and broccoli because both are annual brass
 
 When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. Missing required qualifiers make the reference flow definition incomplete for that data package.
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -92,6 +92,7 @@ Each foreground dataset must explicitly select one actual route, declared gate, 
 | `crop_establishment_and_field_management` | Crop establishment and field management | required | every represented field and crop year | foreground managed biological production | field area, crop cycle, and marketable crop output |
 | `harvest_and_farm_gate_preparation` | Harvest and farm-gate preparation | required | every represented harvest lot | foreground harvesting, trimming, sorting, and hand-off | 1,000 kg marketable fresh product |
 | `on_farm_cooling_and_packaging` | On-farm cooling and primary packaging | conditional | when cooling, washing, or packaging occurs before farm-gate transfer | foreground primary conditioning | packed or cooled output at the declared hand-off |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Crop establishment and field management (`crop_establishment_and_field_management`)
 
@@ -424,7 +425,7 @@ This output is the declared reference product after all in-scope harvest, trimmi
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Use calibrated farm-gate or dispatch scale mass after quality and grade acceptance.
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: 1,000 kg reference product.
@@ -708,7 +709,7 @@ This conditional output is the same reference product after any in-scope washing
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Use the final accepted dispatch or farm-gate scale mass after conditioning and packaging.
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: 1,000 kg reference product.
@@ -730,6 +731,64 @@ Raw activity or stage basis: 1,000 kg reference product.
 ##### Waste flows
 
 ##### Elementary flows
+
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Fresh cauliflower or broccoli, farm-gate output
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Fresh cauliflower or broccoli, farm-gate output
+- Flow property / unit: Mass / kg
+- Amount rule: 1000 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
 
 ## 7. Allocation and Co-product Handling
 
@@ -758,6 +817,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cp_residue_and_reject_fate_records` | `harvest_and_farm_gate_preparation` | field residues, trims, rejects, and losses | lot, field, waste, feed, compost, or transfer record | field_or_lot; stream; mass; moisture; reason; fate; destination; date | retain scale ticket, field log, transfer, sales, treatment, or disposal evidence; Raw aggregation and attribution: sum by stream and fate; do not merge with accepted product | kg; percent | per event or campaign | crop cycle and harvest | every field and handling line | per declared reference flow | scale tickets, disposition records, receipts, treatment records |
 | `cp_conditioning_and_packaging_records` | `on_farm_cooling_and_packaging` | water, electricity, packaging, wastewater, and conditioning output | batch, meter, packaging, and waste record | batch_id; input_mass; water; electricity; cooling_time; packaging_type; packaging_mass; output_mass; reject_mass; wastewater; destination | link batch records to lot and reconcile input, utilities, packaging, wastes, and output; Raw aggregation and attribution: aggregate only after batch-level reconciliation | kg; m3; kWh; h | per batch or shift | complete in-scope conditioning period | each line and cold room | per declared reference flow | calibrated scales, meters, packaging issue records, waste receipts |
 | `cp_farm_gate_output_records` | `harvest_and_farm_gate_preparation` | marketable reference output | dispatch, scale, and quality record | lot_id; product_identity; source_field; date; mass; grade; maturity; trim_state; wash_state; cooling_state; packaging_state; destination | use calibrated dispatch scale and product acceptance record; Raw aggregation and attribution: sum accepted lots and preserve product-specific qualifiers | kg; percent | per lot or dispatch | complete harvest and hand-off period | farm and declared gate | per declared reference flow | scale calibration, grade sheet, dispatch ticket |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -815,3 +875,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `usda-ams-broccoli-standard` | official_guidance | USDA Agricultural Marketing Service, United States Standards for Grades of Broccoli, https://www.ams.usda.gov/grades-standards/broccoli-grades-and-standards | broccoli grade, maturity, defects, and marketable-output qualifiers |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | allocation hierarchy, co-product treatment, and aggregation discipline |
 | `mass-balance-identity` | method_factor | Conservation-of-mass identity for declared process hand-offs and waste reconciliation | harvest, grading, conditioning, and product-specific aggregation calculations |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

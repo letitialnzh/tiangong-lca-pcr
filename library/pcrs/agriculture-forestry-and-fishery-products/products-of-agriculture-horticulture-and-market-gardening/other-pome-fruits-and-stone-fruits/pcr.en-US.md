@@ -38,7 +38,7 @@ Each dataset shall declare species or cultivar, production site and system, harv
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Fresh other pome or stone fruit at declared hand-off (unmapped) |
+| Reference product flow | Fresh other pome or stone fruit at farm-gate or first commercial hand-off (unmapped) |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

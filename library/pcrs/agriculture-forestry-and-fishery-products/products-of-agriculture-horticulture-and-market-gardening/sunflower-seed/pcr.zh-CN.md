@@ -35,14 +35,12 @@ sync_with: pcr.en-US.md
 | How much | 实际合格整粒籽 1 kg |
 | How well | 声明油用、食用/非油用或鸟食类别、等级/验收规则、实测水分及杂质；不推定已初清或达到贮藏等级 |
 | How long or cycle | 可追溯田块、批次及作物年度，纳入的调理运行均可追溯 |
-| reference_flow_link | bulk_seed; clean_seed; accepted_seed; dry_seed |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1 |
-| 参考产品流 | Sunflower seed `a62436d6-249c-4ac3-b5f4-653d0f277519`；平台限定 “Production mix, in the farm” |
+| 参考产品流 | Sunflower seed；平台限定 “Production mix, in the farm” |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
@@ -51,7 +49,9 @@ sync_with: pcr.en-US.md
 
 计量基准补充：实际质量 1 kg；干物质或标准水分换算另行声明
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -93,6 +93,7 @@ sync_with: pcr.en-US.md
 | `sunflower_cleaning` | 初次清洁 | conditional | 交接前确有清洁 | 散籽转准备态籽 | 进出 kg |
 | `sunflower_grading` | 市场类别分选 | conditional | 分为两个以上质量/去向状态 | 合格、降级、剔除交接 | 各等级/去向 kg |
 | `sunflower_drying` | 农场内稳定化 | conditional | 交接前干燥或主动贮藏 | 可用湿籽转实测水分稳定态 | 各运行水分、质量和能耗 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 收获从生长作物中分离花盘/籽粒，故与种植独立；不预设初清。油用、食用、鸟食去向须有批次记录。连续清洁/干燥按运行时段记录，田间收获与分选按批次/运行编号记录。切换、返清、顺序干燥各自关联运行，投入产出各计算一次。[ndsu-sunflower-guide-2020; ndsu-sunflower-drying-2022]
 
@@ -397,7 +398,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：按田块、批次称重，测定含水率及杂质。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每收获批次。.
@@ -526,7 +527,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：称量初清质量，记录水分和杂质。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每清洁运行。.
@@ -653,7 +654,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：按油用、食用或鸟食实际等级、批次和水分称重。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每 kg 合格产出。.
@@ -830,7 +831,7 @@ sync_with: pcr.en-US.md
 
 原始产出计量与核对要求：称量出料、测试水分并保留类别/等级；不预设统一目标水分。
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每干燥批次。.
@@ -903,6 +904,64 @@ sync_with: pcr.en-US.md
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Sunflower seed；平台限定 “Production mix, in the farm”
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Sunflower seed；平台限定 “Production mix, in the farm”
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -928,6 +987,7 @@ sync_with: pcr.en-US.md
 | `cp_clean` | `sunflower_cleaning` | 清洁籽和筛下物 | 清洁机日志 | lot_id, run_id, inlet_kg, outlet_kg, reject_kg, moisture_pct, kWh, reject_fate | 称重进出、计量能源；原始汇总与分配：核对质量及返工 | kg, %, kWh | 每运行 | 边界内所有运行 | 农场清洁机 | 每声明的参考流 | 称重、仪表日志 |
 | `cp_grade` | `sunflower_grading` | 等级/去向 | 分选和销售记录 | lot_id, run_id, class, grade, accepted_kg, downgraded_kg, reject_kg, destination, return_link | 各状态和去向称重；原始汇总与分配：平衡各状态，不重复计返工 | kg | 每运行 | 边界内所有运行 | 农场分选线 | 每声明的参考流 | 等级单、销售和剔除票 |
 | `cp_dry` | `sunflower_drying` | 稳定化及脱水 | 仓/干燥机和仪表日志 | lot_id, run_id, method, inlet_kg, inlet_moisture, outlet_kg, outlet_moisture, reject_kg, fan_kWh, fuel_L, days | 前后称重测水，计量能源；原始汇总与分配：核对干固体，顺序阶段各计一次 | kg, %, kWh, L, day | 每运行 | 交接前农场内处理 | 农场仓/干燥机 | 每声明的参考流 | 称重、水分和仪表日志 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -977,3 +1037,7 @@ sync_with: pcr.en-US.md
 | `unsd-cpc-3-2025` | official_guidance | 联合国统计司，CPC 3.0 说明 (2025)，https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf | 分类范围 |
 | `ndsu-sunflower-guide-2020` | extension_guidance | 北达科他州立大学推广部，Sunflower Production Guide A1995，https://www.ndsu.edu/agriculture/sites/default/files/2023-12/a1995.pdf | 市场类别、田间、收获、分级和调理 |
 | `ndsu-sunflower-drying-2022` | extension_guidance | 北达科他州立大学推广部，NDSU offers advice on harvesting and drying sunflower in North Dakota (2022)，https://www.ag.ndsu.edu/news/newsreleases/2022/september/ndsu-offers-advice-on-harvesting-and-drying-sunflower-in-north-dakota/ | 条件性干燥及水分依据 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

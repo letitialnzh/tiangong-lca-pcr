@@ -37,14 +37,12 @@ This PCR applies to conventional, organic, rain-fed, irrigated, mixed-crop, and 
 | How much | 1,000 kg net accepted chestnuts in shell |
 | How well | Cultivar or cultivar group; production country, region, and climate; tree age and productive status; crop year; fresh or conditioned state; husk status; shell integrity; maturity; size or grade; accepted, downgraded, rejected, and loss mass; husk fate; and gate |
 | How long or cycle | One declared crop year within the perennial tree productive life; establishment, immature years, replacement, and removal are allocated over the declared tree-life and accepted-output basis |
-| reference_flow_link | chestnut_conditioned_accepted_output; chestnut_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Chestnut `3351a3d2-3367-4a2f-8cdb-9b025fdd9989` |
+| Reference product flow | Chestnut |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -52,7 +50,9 @@ This PCR applies to conventional, organic, rain-fed, irrigated, mixed-crop, and 
 
 The required qualifiers must be declared in dataset metadata, process notes, the reference-flow comment, product description, or an equivalent data-package field. Net product mass excludes container tare. The platform identity is the fresh agricultural-field gate product flow; dehusking, grading, drying, or storage is an extended gate and must retain that qualifier rather than being represented as a new product category. A shelled or split chestnut must not be used as the reference product for this PCR.
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -106,6 +106,7 @@ The foreground route is batch-based at harvest, dehusking, grading, and storage,
 | `chestnut_harvest_and_collection` | Chestnut harvest and collection | required |  | foreground | collected whole fruit before optional dehusking |
 | `chestnut_primary_conditioning_and_grading` | Chestnut dehusking, material treatment, primary conditioning, and grading | conditional | include when dehusking, cleaning, grading, or an extended gate is part of the foreground package | primary conditioning and stabilization | received lot and grade outputs |
 | `chestnut_storage_and_gate_handoff` | Chestnut storage and gate hand-off | conditional | include when storage or a post-harvest gate is part of the declared foreground boundary | storage and delivery hand-off | 1,000 kg declared gate output |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Chestnut Tree Establishment and Management (`chestnut_orchard_establishment_and_management`)
 
@@ -355,7 +356,7 @@ Raw activity or stage basis: per 1,000 kg accepted chestnuts in shell.
 
 ### Process: Chestnut Dehusking, Primary Conditioning, and Grading (`chestnut_primary_conditioning_and_grading`)
 
-This process is conditional. Dehusking removes the fibrous husk while leaving the hard shell intact; shell removal, splitting, and kernel or chestnut-water recovery are outside this PCR.
+This process is conditional. Dehusking removes the outer husk while leaving the hard shell intact; shell removal, splitting, and kernel recovery are outside this PCR.
 The dehusking and primary conditioning step is the material treatment node; its treated output and all residual destinations are recorded separately.
 
 #### Inputs
@@ -450,7 +451,7 @@ The accepted chestnut lot is the intended output of this conditioning process.
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 Raw output measurement and reconciliation: measured net accepted lot output excluding tare
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per 1,000 kg declared conditioning-gate output.
@@ -666,7 +667,7 @@ Record net dispatched product with the declared whole-fruit or dehusked-with-she
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 Raw output measurement and reconciliation: measured net dispatch mass excluding tare
 
-- Amount rule: 1000 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per 1,000 kg declared gate output.
@@ -711,6 +712,64 @@ Raw activity or stage basis: per 1,000 kg declared gate output.
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Chestnut
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Chestnut
+- Flow property / unit: Mass / kg
+- Amount rule: 1000 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
+
 ## 7. Allocation and Co-product Handling
 
 | rule_id | applies_to | Rule | source_ids |
@@ -733,7 +792,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_chestnut_orchard_lifecycle_records` | `chestnut_orchard_establishment_and_management` | tree asset, land, planting, replacement, intercropping, residue | tree block and asset register | block area; planting year; cultivar; tree count; replacement; removal; frond residue; tree phase; accepted output | block register, field log, and annual reconciliation; Raw aggregation and attribution: link block records to crop year and accepted output | ha, item, kg, tree-year | event and annual | full declared tree life or documented representative period | every contributing tree block | per declared reference flow | signed field register, GIS or survey area, replacement evidence |
+| `cp_chestnut_orchard_lifecycle_records` | `chestnut_orchard_establishment_and_management` | tree asset, land, planting, replacement, intercropping, residue | tree block and asset register | block area; planting year; cultivar; tree count; replacement; removal; pruning residue; tree phase; accepted output | block register, field log, and annual reconciliation; Raw aggregation and attribution: link block records to crop year and accepted output | ha, item, kg, tree-year | event and annual | full declared tree life or documented representative period | every contributing tree block | per declared reference flow | signed field register, GIS or survey area, replacement evidence |
 | `cp_chestnut_orchard_input_records` | `chestnut_orchard_establishment_and_management` | nutrient, amendment, crop protection | input application record | product name; formulation; nutrient content; active ingredient; amount; date; block; purpose; method | invoice, application log, and supplier record; Raw aggregation and attribution: aggregate by product, nutrient, block, and crop year | kg product, kg nutrient, kg active ingredient | every application | crop year | every contributing block | per declared reference flow | invoice, product label, application log |
 | `cp_chestnut_irrigation_records` | `chestnut_orchard_establishment_and_management` | irrigation and water | irrigation meter or water ledger | source; volume; block; date; meter; water quality; withdrawal and return | meter, pump record, or transparent water balance; Raw aggregation and attribution: reconcile delivery, withdrawal, and declared consumption | m3 or kg | event and monthly | crop year | every irrigated block | per declared reference flow | meter calibration, pump log, water ledger |
 | `cp_chestnut_energy_records` | all field, harvest, conditioning, and storage processes | energy and carrier | fuel, electricity, and equipment record | carrier; amount; equipment; operation; lot or block; date; duration; conversion factor | invoice, meter, fuel log, or equipment record; Raw aggregation and attribution: aggregate by carrier, operation, lot, and period | L, kg, MJ, or kWh | event and monthly | crop year and declared post-harvest period | each operation and facility | per declared reference flow | invoice, meter, fuel log, equipment specification |
@@ -743,6 +802,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cp_chestnut_husk_destination_records` | `chestnut_primary_conditioning_and_grading` | husk co-product, residue, or waste | destination and transfer record | husk mass; dry matter or moisture; destination; recipient; price or use; fate; transfer date | scale, transfer record, and destination confirmation; Raw aggregation and attribution: separate intended output from residue and waste | kg and declared fraction | every transfer | conditioning period | each husk destination | per declared reference flow | receipt, transfer note, destination evidence |
 | `cp_chestnut_grade_reject_records` | `chestnut_primary_conditioning_and_grading` | grade, downgrade, reject, foreign material | inspection and grade record | lot; maturity; husk status; shell condition; mold; insects; foreign material; accepted mass; rework; fate | inspection, sampling, and scale record; Raw aggregation and attribution: mutually exclusive grade and reject states | kg, %, grade code | every lot | declared post-harvest period | each grading point | per declared reference flow | inspection sheet, sample plan, scale calibration |
 | `cp_chestnut_storage_records` | `chestnut_storage_and_gate_handoff` | storage input, loss, packaging, gate output | stock and dispatch ledger | opening stock; receipts; lot; product state; moisture or freshness; storage duration; packaging; energy; damage; closing stock; dispatch mass; gate | stock ledger, dispatch ticket, and storage log; Raw aggregation and attribution: opening + receipts = dispatch + closing + loss | kg, %, days, kWh, item | receipt, inspection, and dispatch | declared storage period | each storage facility | per declared reference flow | stock reconciliation, dispatch ticket, freshness or moisture and pest record |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -759,7 +819,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
-| `quality_01` | flow identity | Use the verified `Chestnuts, in shell` UUID with Mass and kg. Preserve the fresh agricultural-field gate or explicitly extended-gate qualifier and do not substitute shelled, split, kernel, or water identities. | platform identity record; dataset metadata |
+| `quality_01` | flow identity | Use the verified `Chestnuts, in shell` UUID with Mass and kg. Preserve the fresh agricultural-field gate or explicitly extended-gate qualifier and do not substitute shelled, split, or kernel identities. | platform identity record; dataset metadata |
 | `quality_02` | tree and harvest quantities | Use calibrated scales, meters, or transparent documented estimates. Record a justified zero when a route does not use irrigation, wet cleaning, packaging, or storage. | calibration record; field and lot logs |
 | `quality_03` | husk and product state | Measure or document whole-fruit, dehusked-with-shell, and conditioned states separately. Retain husk moisture or dry-matter basis where allocation or conversion uses it. | batch record; scale; moisture or freshness test |
 | `quality_04` | completeness | Reconcile tree inputs, harvest outputs, husk destination, conditioning outputs, rejects, residues, water loss, storage loss, and gate dispatches. | mass-balance workbook; stock ledger |
@@ -805,3 +865,7 @@ The crop sources below support qualitative identity and handling context within 
 | `mass-balance-identity` | method_factor | Conservation-of-mass method identity for lot reconciliation | harvest, dehusking, grading, storage, reject, residue, and water-loss reconciliation |
 | `ucdavis-chestnut-postharvest` | official_guidance | UC Davis Postharvest Research and Extension Center, Chestnut, https://postharvest.ucdavis.edu/produce-facts-sheets/chestnut | crop identity, harvest or primary handling and storage context only; not quantitative inventory coefficients |
 | `codex-tree-nuts-hygiene-cxc-6-1972` | standard | Codex Alimentarius, Code of Hygienic Practice for Tree Nuts, CXC 6-1972, https://www.fao.org/fao-who-codexalimentarius/sh-proxy/zh/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FStandards%252FCXC%2B6-1972%252FCXC_006e.pdf | hygiene, product-state and handling context; not default LCA quantities or crop-specific yield factors |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

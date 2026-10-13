@@ -37,14 +37,12 @@ translation_status: aligned
 | How much | 1,000 kg 净带壳腰果 |
 | How well | 品种或品种组；生产国家、地区和气候；果园年龄和结果状态；作物年度；鲜品或干燥状态；水分基准；壳和仁质量；尺寸或等级；合格、降级和拒收质量；腰果苹果去向；交接点 |
 | How long or cycle | 多年生果园结果寿命内声明的一个作物年度；建立、未结果年份、补植和清除按果园寿命和合格产出基准分配 |
-| reference_flow_link | cashew_premium_grade_output; cashew_standard_grade_output; cashew_gate_output |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Cashew nuts, in shell `755b25eb-7579-4041-a5b1-69d12e4a3246` |
+| 参考产品流 | Cashew nuts, in shell |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
@@ -52,7 +50,9 @@ translation_status: aligned
 
 `必需限定信息` 必须在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中声明。净产品质量不包括容器皮重。平台身份是鲜品农场门产品流；干燥或储存批次是延伸交接状态，必须保留该限定信息，不能伪装成新的产品类别。不得用去壳腰果仁作为本 PCR 的参考产品。
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -105,6 +105,7 @@ translation_status: aligned
 | `cashew_harvest_and_collection` | 腰果采收、腰果苹果分离和收集 | required |  | foreground | 可选调制前的采收腰果 |
 | `cashew_primary_drying_cleaning_and_grading` | 腰果初级干燥、清理和带壳分级 | conditional | 声明交接点超出鲜品农场门，或前景数据包包含这些作业时纳入 | primary conditioning and stabilization | 接收批次和等级输出 |
 | `cashew_storage_and_gate_handoff` | 腰果储存和交接 | conditional | 声明前景边界包含储存或后处理交接点时纳入 | storage and delivery hand-off | 1,000 kg 声明交接输出 |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：腰果园建立和管理（`cashew_orchard_establishment_and_management`）
 
@@ -542,7 +543,7 @@ translation_status: aligned
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始产出计量与核对要求：按批次、水分和交接点实测高等级合格质量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 鲜品农场门参考产品.
@@ -568,7 +569,7 @@ translation_status: aligned
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始产出计量与核对要求：按批次、水分和交接点实测标准等级合格质量
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 鲜品农场门参考产品.
@@ -803,7 +804,7 @@ translation_status: aligned
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 原始产出计量与核对要求：按净发货质量实测并排除皮重
 
-- 数量规则：当选为参考输出时为 1000 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 声明交接输出.
@@ -849,6 +850,64 @@ translation_status: aligned
   - 基准类型：储存时间（`storage_duration`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Cashew nuts, in shell
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Cashew nuts, in shell
+- 流属性 / 单位：质量 / kg
+- 数量规则：1000 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配和副产品处理
 
 | rule_id | applies_to | 规则 | source_ids |
@@ -881,6 +940,7 @@ translation_status: aligned
 | `cp_cashew_drying_conditioning_records` | `cashew_primary_drying_cleaning_and_grading` | 干燥、清理、用水、能源、水分 | 调制批次记录 | 输入质量；输入水分；方法；时长；能源；用水；输出水分；输出质量；清理损失；废水 | 批次日志、计量、水分检测和水量平衡；原始汇总与分配：将所有投入和输出连接至一个批次和交接点 | kg、%、小时、L、kWh | 每批次 | 声明后处理期 | 每个调制设施或农场单元 | 每声明的参考流 | 校准秤、水分检测、批次单 |
 | `cp_cashew_grade_and_reject_records` | `cashew_primary_drying_cleaning_and_grading` | 等级、降级、拒收、异物 | 检验和分级记录 | 批次；等级；壳状况；仁缺陷；空壳；霉变；虫害；异物；合格质量；返工；去向 | 检验、抽样和称量记录；原始汇总与分配：等级和拒收状态互斥 | kg、%、等级代码 | 每批次 | 声明后处理期 | 每个分级点 | 每声明的参考流 | 检验单、抽样方案、秤校准 |
 | `cp_cashew_storage_records` | `cashew_storage_and_gate_handoff` | 储存输入、损失、包装、交接输出 | 库存和发货台账 | 期初库存；收货；批次；水分；储存时间；包装；能源；损伤；期末库存；发货质量；交接点 | 库存台账、发货单和储存日志；原始汇总与分配：期初 + 收货 = 发货 + 期末 + 损失 | kg、%、天、kWh、item | 收货、检查和发货 | 声明储存期 | 每个储存设施 | 每声明的参考流 | 库存核对、发货单、水分和虫害记录 |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -943,3 +1003,7 @@ translation_status: aligned
 | `ipcc-2019-afolu` | method_factor | IPCC 2019 Refinement to the 2006 IPCC Guidelines, AFOLU, https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/index.html | 管理土壤和农业排放计算方法背景 |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://committee.iso.org/standard/38498.html | 分配层级、数据质量、边界和披露规则 |
 | `mass-balance-identity` | method_factor | 用于批次核对的质量守恒方法身份 | 采收、调制、储存、拒收、残余和水分损失核对 |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

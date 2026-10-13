@@ -33,20 +33,20 @@ Route alternatives are mutually exclusive at the reference-flow level. Separate 
 | How much | 1 kg on the declared dry-rubber or as-received mass basis |
 | How well | Route, form, grade, dry-rubber content or moisture, preservative/coagulant state, accepted-lot status and gate are declared |
 | How long or cycle | Declared reporting period covering plantation attribution, tapping rounds and the processing batch or campaign producing the reference amount |
-| reference_flow_link | latex_concentrate_reference; sheet_rss_reference; crepe_reference; tsr_block_reference |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Natural Rubber `f9f06554-cdcb-422f-b7be-598fdd6cda53` |
+| Reference product flow | Natural Rubber |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | natural-rubber species or clone where known; terminal form and route; commercial grade; liquid/dry state; dry-rubber-content or moisture basis; preservation or coagulation chemistry; batch/campaign; geography; hand-off gate |
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -95,6 +95,7 @@ Each foreground dataset must explicitly select one actual route, declared gate, 
 | `sheet_rss_processing` | Sheet forming, drying or smoking and grading | `conditional` | Batch mode; only for RSS or another declared sheet reference form | Coagulation, forming, preservation and grading | 1 kg accepted sheet/RSS |
 | `crepe_processing` | Crepe preparation, milling, drying and grading | `conditional` | Batch mode; only for crepe reference form | Treatment, forming and grading | 1 kg accepted crepe rubber |
 | `tsr_block_processing` | TSR/block preparation, drying, baling and grading | `conditional` | Batch mode; only for TSR/block/granular reference form | Treatment, forming and grading | 1 kg accepted TSR/block rubber |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Managed perennial rubber-tree production (`plantation_management`)
 
@@ -464,7 +465,7 @@ Record this item when the foreground process actually uses, produces or transfer
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Exactly 1 kg accepted concentrate on the declared dry-rubber or as-received basis
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: `fixed_value`
 - Specificity: `product_specific`
 Raw activity or stage basis: reference flow.
@@ -473,14 +474,14 @@ Raw activity or stage basis: reference flow.
 - Basis kind: `reference_flow`
 - Evidence kind: `method_formula`
 - Sources: `reference-normalization-definition`
-- Range: Exact reference amount
-  - Range role: `allowed_range`
+- Range: Same-stage output measurement reconciliation
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg
-  - Basis: declared latex-concentrate reference basis
-  - Basis kind: `reference_flow`
-  - Evidence kind: `method_formula`
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
   - Sources: `reference-normalization-definition`
 
 ##### Waste flows
@@ -613,7 +614,7 @@ Record this item when the foreground process actually uses, produces or transfer
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Exactly 1 kg accepted sheet of the declared grade and moisture basis
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: `fixed_value`
 - Specificity: `product_specific`
 Raw activity or stage basis: reference flow.
@@ -622,14 +623,14 @@ Raw activity or stage basis: reference flow.
 - Basis kind: `reference_flow`
 - Evidence kind: `method_formula`
 - Sources: `reference-normalization-definition`
-- Range: Exact reference amount
-  - Range role: `allowed_range`
+- Range: Same-stage output measurement reconciliation
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg
-  - Basis: declared sheet/RSS form and grade
-  - Basis kind: `reference_flow`
-  - Evidence kind: `method_formula`
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
   - Sources: `reference-normalization-definition`
 
 ##### Waste flows
@@ -738,7 +739,7 @@ Record this item when the foreground process actually uses, produces or transfer
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Exactly 1 kg accepted crepe rubber of declared grade and moisture basis
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: `fixed_value`
 - Specificity: `product_specific`
 Raw activity or stage basis: reference flow.
@@ -747,14 +748,14 @@ Raw activity or stage basis: reference flow.
 - Basis kind: `reference_flow`
 - Evidence kind: `method_formula`
 - Sources: `reference-normalization-definition`
-- Range: Exact reference amount
-  - Range role: `allowed_range`
+- Range: Same-stage output measurement reconciliation
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg
-  - Basis: declared crepe form and grade
-  - Basis kind: `reference_flow`
-  - Evidence kind: `method_formula`
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
   - Sources: `reference-normalization-definition`
 
 ##### Waste flows
@@ -887,7 +888,7 @@ Record this item when the foreground process actually uses, produces or transfer
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Exactly 1 kg accepted TSR/block/granular rubber of declared grade and moisture basis
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: `fixed_value`
 - Specificity: `product_specific`
 Raw activity or stage basis: reference flow.
@@ -896,14 +897,14 @@ Raw activity or stage basis: reference flow.
 - Basis kind: `reference_flow`
 - Evidence kind: `method_formula`
 - Sources: `reference-normalization-definition`
-- Range: Exact reference amount
-  - Range role: `allowed_range`
+- Range: Same-stage output measurement reconciliation
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg
-  - Basis: declared TSR/block form and grade
-  - Basis kind: `reference_flow`
-  - Evidence kind: `method_formula`
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
   - Sources: `reference-normalization-definition`
 
 ##### Waste flows
@@ -913,6 +914,64 @@ No generic waste output is prescribed.
 ##### Elementary flows
 
 No generic elementary output is prescribed.
+
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Natural Rubber
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Natural Rubber
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
 
 ## 7. Allocation and Co-product Handling
 
@@ -935,6 +994,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cp_plantation_period` | `plantation_management` | perennial inputs and accepted latex output | farm log, invoice, asset and yield record | stand area; clone/species; phase; establishment inputs; nutrient products; supplied water; energy; replacements; dry-rubber output | reconcile farm records and calibrated meters/scales; Raw aggregation and attribution: attribute period burdens once to dry-rubber output | native units and kg dry rubber | monthly and annual | complete declared productive period | each plantation and route | per declared reference flow | record completeness, calibration and period reconciliation |
 | `cp_latex_batches` | `latex_tapping_collection` | tapping, preservation, collection and latex transfer | tapping-round and batch log | date; plot; wet latex mass; dry-rubber test; preservative product/concentration; coagulum; loss; distance and mode | batch weighing, sampling and route log; Raw aggregation and attribution: aggregate dry-rubber mass without losing batch identity | kg, fraction, km, tkm | every tapping round/batch | all rounds supplying reported output | plot and collection route | per declared reference flow | scale/test calibration and signed transfer record |
 | `cp_processing_batch` | conditional terminal route | feedstock, chemicals, water, energy, outputs and rejects | batch sheet, meter, invoice and laboratory certificate | route; feedstock state; wet/dry mass; DRC/moisture; chemicals/concentrations; water; energy; grade; accepted/rework/reject mass; packaging | direct measurement and batch mass balance; Raw aggregation and attribution: aggregate only identical terminal form, grade and basis | native units and kg | every batch/campaign | all batches producing reference output | each processing facility and technology | per declared reference flow | meter calibration, laboratory method and closed batch balance |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -989,3 +1049,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `fao-rubber-products-classification` | `official_guidance` | Food and Agriculture Organization of the United Nations, rubber-products classification material, https://www.fao.org/4/x2613e/x2613e2w.htm | Category boundary including natural latex, sheets/crepes and technically specified primary forms; exclusion of downstream rubber products |
 | `rubber-board-natural-rubber-forms` | `official_guidance` | Rubber Board, natural-rubber grades and forms guidance, https://www.rubberboard.gov.in/rbfilereader?fileid=1013 | Distinct latex concentrate, RSS, TSR and related market forms; route and grade declaration |
 | `reference-normalization-definition` | `method_factor` | This PCR's 1 kg declared-form normalization, DRC conversion and rubber-mass balance | Reference amount, exact-output ranges and calculation formulas |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

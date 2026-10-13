@@ -311,7 +311,7 @@ Raw activity or stage basis: per productive hectare-year.
 This card records the declared flow and its quantity at this process boundary.
 
 - Selected flow: Nitrous oxide to air
-- Amount rule: calculate from collected N inputs and applicable IPCC tier by `calc_soil_n2o`
+- Amount rule: apply selected IPCC tier to collected synthetic, organic and residue N; convert N2O-N to N2O once using 44/28
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per kg N included in the direct managed-soil equation.
@@ -329,6 +329,8 @@ Raw activity or stage basis: per kg N included in the direct managed-soil equati
   - Basis: per kg N in the applicable direct-emission equation
   - Basis kind: N input (`n_input`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+Calculation method corresponds to Section 8 rules: `calc_soil_n2o`.
 
 ### Process: Harvest and route-specific separation (`harvest_separation`)
 
@@ -578,7 +580,7 @@ Raw activity or stage basis: per 1,000 kg raw spice entering conditioning.
 This card records the declared flow and its quantity at this process boundary.
 
 - Selected flow: Water to air
-- Amount rule: calculate by `calc_conditioning_balance` after rejects and samples
+- Amount rule: wet input = conditioned output + rejects + samples + moisture loss, all on consistent basis
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per 1,000 kg raw spice entering conditioning.
@@ -596,6 +598,8 @@ Raw activity or stage basis: per 1,000 kg raw spice entering conditioning.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `iisir-cardamom-2022`; `fao-nutmeg-handling`
+
+Calculation method corresponds to Section 8 rules: `calc_conditioning_balance`.
 
 ### Process: Grading and dispatch (`grading_dispatch`)
 

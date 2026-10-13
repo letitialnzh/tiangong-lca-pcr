@@ -36,7 +36,7 @@ sync_with: pcr.en-US.md
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 经初级干燥的整粒黑胡椒；UUID 待核 |
+| Reference product flow | 整粒未加工胡椒；干燥状态 UUID 待核 |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -138,7 +138,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：排入空气的氧化亚氮；受纳空气子介质待核验
 - 流属性/单位：质量 / kg N2O
-- 数量规则：将 `calc_soil_gases` 应用于氮投入和声明的 N₂O 因子
+- 数量规则：用 IPCC 土壤直接/间接 N₂O 及适用的石灰/尿素 CO₂ 方程、地块-年份活动量和已声明因子计算。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：地块-年份，再归一到合格胡椒产出.
@@ -149,13 +149,15 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_cultivation`
 - 来源：`ipcc-2019-afolu11`
 
+计算方法对应第 8 节规则：`calc_soil_gases`。
+
 ###### 石灰或尿素投入产生的二氧化碳（`soil_amendment_carbon_dioxide_emission`）
 
 仅在石灰或尿素使用情况及选定方法支持直接 CO₂ 计算时纳入。与 N₂O 分开计量，并在绑定 UUID 前核验受纳空气子介质。
 
 - 选定流：石灰或尿素产生的二氧化碳排入空气；受纳空气子介质待核验
 - 流属性/单位：质量 / kg CO2
-- 数量规则：将 `calc_soil_gases` 应用于记录的石灰或尿素投入及声明的 CO₂ 因子
+- 数量规则：用 IPCC 土壤直接/间接 N₂O 及适用的石灰/尿素 CO₂ 方程、地块-年份活动量和已声明因子计算。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：地块-年份，再归一到合格胡椒产出.
@@ -165,6 +167,8 @@ sync_with: pcr.en-US.md
 - 证据类型：由采集数据计算（`calculated_from_collection`）
 - 采集协议：`cp_cultivation`
 - 来源：`ipcc-2019-afolu11`
+
+计算方法对应第 8 节规则：`calc_soil_gases`。
 
 ### Process: 果实采收（`pepper_harvest`）
 

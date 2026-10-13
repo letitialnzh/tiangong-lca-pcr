@@ -33,20 +33,20 @@ sync_with: pcr.en-US.md
 | How much | 1 kg net accepted product |
 | How well | Meets declared grade and moisture specification; excludes detached stems, opened flowers, spoiled buds, foreign matter, and unresolved rejects |
 | How long or cycle | One reporting year of a productive perennial stand, with establishment, immature years, productive years, replacements, and termination indexed across the declared productive life |
-| reference_flow_link | accepted_fresh_cloves; accepted_dried_cloves |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Cloves (whole stems), raw `53a5a137-db87-42e1-a85d-4b187eb5281a` |
+| Reference product flow | Cloves (whole stems), raw |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | species; unopened-bud maturity criterion; fresh or farm-dried state; moisture content and basis; attached-stem condition; accepted grade; production system; stand age; reporting year; drying technology if used; farm-gate location |
 
-每个前景数据集必须明确选择一个实际路线、声明门、产品状态和输出行。仅将所选终端输出归一化为参考数量；若继续进入后续过程，前序输出仍采用实测内部转移数量。原始称量、质量平衡和批次追踪要求继续适用。
+每份前景数据包须声明实际路线、终端产品状态和交接门，保留原始称量、质量平衡及批次追溯记录。以该门的唯一交接参考输出归一化，前序工序采用实测转移数量。
+
+唯一参考输出为 `reference_product_at_declared_handoff`，由下列实际路线在声明交接门的产品承接。原路线输出编号用于追溯实际来源和物理状态，不再分别固定为参考数量。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -89,6 +89,7 @@ sync_with: pcr.en-US.md
 | `annual_tree_management` | Productive-year tree management | required | Every productive year | Manage trees and generate harvestable buds | Annual harvested cluster mass |
 | `harvest_grade` | Harvest, separation, and grading | required | Every harvest lot | Pick clusters, separate buds/stems, classify accepted/downgraded/rejected states | Accepted fresh bud mass |
 | `conditional_drying` | Farm-gate drying and stabilization | conditional | Declared farm-gate product is dried | Stabilize accepted buds by sun, solar, or assisted drying | Accepted dried mass |
+| declared_reference_handoff | 声明交接门的产品计量 | required |  | foreground | reference_product_at_declared_handoff |
 
 ### 过程：树体建园与未结果期（`stand_establishment`）
 
@@ -417,7 +418,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位： Mass / kg
 原始产出计量与核对要求：Net accepted fresh output equals 1 kg for fresh hand-off; for a dried route it is measured input to drying and is not also counted as reference output
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： 计算值（`calculated_value`）
 - 适用范围： 路线特定（`route_specific`）
 原始活动或阶段基准：per 1 kg accepted farm-gate product.
@@ -426,14 +427,14 @@ sync_with: pcr.en-US.md
 - 基准类型： 参考流（`reference_flow`）
 - 证据类型： 由采集数据计算（`calculated_from_collection`）
 - 采集协议： `cp_harvest_grade_records`
-- 数量范围： 参考产出归一化校验
-  - 范围角色： 允许范围（`allowed_range`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限： 1
   - 上限： 1
-  - 单位： kg/kg reference flow
-  - 基准： accepted fresh output when fresh hand-off is selected
-  - 基准类型： 参考流（`reference_flow`）
-  - 证据类型： 方法公式（`method_formula`）
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
   - 来源： `iso-14044-2006`
 
 ###### 降级整丁香 (`downgraded_cloves`)
@@ -564,7 +565,7 @@ sync_with: pcr.en-US.md
 - 流属性/单位： Mass / kg
 原始产出计量与核对要求：Net accepted dried output equals 1 kg when dried hand-off is selected; record final moisture and method
 
-- 数量规则：当选为参考输出时为 1 千克；否则采用实测内部转移数量
+- 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
 - 数值来源模式： 计算值（`calculated_value`）
 - 适用范围： 路线特定（`route_specific`）
 原始活动或阶段基准：per 1 kg accepted farm-gate product.
@@ -574,14 +575,14 @@ sync_with: pcr.en-US.md
 - 证据类型： 由采集数据计算（`calculated_from_collection`）
 - 采集协议： `cp_drying_records`
 - 来源： `kau-clove-harvesting`; `unido-spice-postharvest-2015`
-- 数量范围： 参考产出归一化校验
-  - 范围角色： 允许范围（`allowed_range`）
+- 范围：同阶段产出计量对账
+  - 范围角色：质量检查边界（`qa_guardrail`）
   - 下限： 1
   - 上限： 1
-  - 单位： kg/kg reference flow
-  - 基准： accepted dried output when dried hand-off is selected
-  - 基准类型： 参考流（`reference_flow`）
-  - 证据类型： 方法公式（`method_formula`）
+  - 单位：kg/kg 同阶段净验收产出
+  - 基准：同阶段称重分子与分母的计量一致性；不是阶段产率或相对最终参考输出的固定比值
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
   - 来源： `iso-14044-2006`
 
 ##### 废物流
@@ -640,6 +641,64 @@ sync_with: pcr.en-US.md
   - 证据类型： 外部来源（`external_source`）
   - 来源： `kau-clove-harvesting`; `unido-spice-postharvest-2015`
 
+
+### 过程：声明边界的产品交接计量（`declared_reference_handoff`）
+该节点记录既有系统边界上的实际交接数量，用于对账和参考数量归一化。它不代表新增物理工序，不自动引入干燥、冷却、储存、包装或运输。每份数据包须声明一条实际路线、一个终端产品状态、含水率或干物质基准及交接门。仅将该路线在此交接门的合格产品传入本节点；其他路线不得作为额外投入，联产品另行记录并按第 7 节处理。前序工序的投入、损失和排放只计一次。以实际交接净质量作为归一化分母；计量对账节点不改变质量、产率或分配结果。
+#### 输入
+##### 产品流
+###### 实际路线的交接产品（`actual_route_product_for_handoff`）
+记录实际终端路线交付的合格产品；与交接门称重和批次记录对账。
+- 选定流：Cloves (whole stems), raw
+- 流属性 / 单位：质量 / kg
+- 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+该计量节点不产生新的废物投入。
+##### 基本流
+该计量节点不产生新的资源投入。
+#### 输出
+##### 产品流
+###### 声明交接门的参考产品（`reference_product_at_declared_handoff`）
+- 选定流：Cloves (whole stems), raw
+- 流属性 / 单位：质量 / kg
+- 数量规则：1 kg
+- 数值模式：前景记录（`foreground_record`）
+- 特异性：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：过程输出（`process_output`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_declared_reference_handoff`
+实际状态的产品 UUID 须独立核实；当前未确认时保持待核实，不继承前序或其他路线的 UUID。
+- 数量范围：交接数量归一化恒等式
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 同状态交接净质量
+  - 基准：同一交接状态的实测净质量归一化；不表示物理工序的产率
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：方法公式（`method_formula`）
+  - 来源：`declared-handoff-measurement-definition`
+
+##### 废物流
+实际损失已在发生工序记录；不得在此重复记录。
+##### 基本流
+实际排放已在发生工序记录；不得在此重复记录。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
@@ -667,6 +726,7 @@ sync_with: pcr.en-US.md
 | `cp_harvest_grade_records` | `annual_tree_management`; `harvest_grade` | clusters, buds, stems, grades, losses and rejects | lot mass-balance sheet | stand; date; maturity; batch; cluster input; bud/stem condition; accepted fresh or drying input; downgraded/reject states and destinations; moisture | Weigh and inspect every state in the same lot；原始汇总与分配：Input = accepted + downgraded + all residues ± documented difference; one accepted hand-off route | kg, moisture fraction | each lot | all harvests in year | each block/station | 每声明的参考流 | calibrated scales, inspection, moisture test, destination receipt |
 | `cp_residue_records` | `annual_tree_management` | field biomass | weighing/sampling and destination log | residue type; wet/dry mass; moisture; origin; destination; recovery | Weigh or representative sampling；原始汇总与分配：Normalize dry matter to harvested clusters; preserve destination rows | kg wet/dry | each event/campaign | full year | each stand/destination | 每声明的参考流 | scales, sampling plan, moisture and receipts |
 | `cp_drying_records` | `conditional_drying` | fresh input, energy, dried output, water loss, rejects | batch sheet, meter, moisture test | input/output/reject mass; input/final moisture and basis; method; dates; duration; carrier; temperature; weather/dryer state | Weigh and moisture-test each batch; meter energy；原始汇总与分配：Fresh input = dried output + rejects + water/other loss; keep sun/solar/assisted routes separate | kg, fraction, MJ, kWh, h, °C | each batch | all dried lots | each dryer/mat/station | 每声明的参考流 | scale/meter calibration, moisture method, batch and weather/dryer log |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | 交接计量与验收记录 | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | 采用校准衡器或可追溯称重记录，将实际终端工序交接批次与验收净质量、产品状态及含水率对账；剔除包装皮重，不汇总前序阶段数量。 | kg | 每交接批次 | 声明报告期 | 声明交接门 | 每声明的参考流 | 校准或称重凭证、验收和批次追溯 |
 
 ### 计算规则
 
@@ -728,3 +788,7 @@ sync_with: pcr.en-US.md
 | `ipcc-2019-managed-soils` | method_factor | IPCC, 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | Managed-soil direct/indirect N2O method |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | Functional-unit normalization, subdivision and allocation hierarchy |
 | `mass-balance-identity` | method_factor | Conservation-of-mass identity for a bounded process batch | Harvest/grading/drying reconciliation and QA ranges |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |

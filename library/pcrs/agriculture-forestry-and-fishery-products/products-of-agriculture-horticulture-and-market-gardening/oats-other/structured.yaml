@@ -14,9 +14,7 @@ functional_unit:
   how_much: "1 kg"
   how_well: "declared end use (food, feed, or industrial), oats class or variety where material, moisture basis, grade or quality descriptors, cleaning status, geography, crop year, and gate"
   how_long_or_cycle: "one declared crop cycle and harvest year; storage duration is declared separately when the gate is after storage"
-  reference_flow_link: "grain_at_handoff; conditioned_oats_grain; declared_gate_oats_grain"
-  reference_flow_selection: "exactly_one_declared_terminal_output"
-  reference_selection_required: "actual_route; declared_gate; product_state; output_row_id"
+  reference_flow_link: "reference_product_at_declared_handoff"
 system_boundary:
   rules:
     - rule_id: boundary_crop_production
@@ -147,6 +145,12 @@ process_map:
     inclusion_condition: "include when storage or a delivery hand-off materially changes the declared reference flow"
     role: "foreground"
     quantitative_reference: "declared oats grain at selected gate"
+  - id: declared_reference_handoff
+    name: "Product Measurement at Declared Handoff"
+    inclusion: "required"
+    inclusion_condition: ""
+    role: "foreground"
+    quantitative_reference: "reference_product_at_declared_handoff"
 process_inventory:
   - id: oats_crop_production
     label: "Oats Crop Production"
@@ -476,7 +480,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "The hand-off output is the measured grain mass transferred to the selected gate route, with moisture basis and lot identity retained. Raw output measurement and reconciliation: measured grain mass at the harvest or conditioning hand-off Raw activity or stage basis: quantitative process output."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -545,7 +549,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "Conditioned oats grain is the accepted reference output when the declared gate is after primary conditioning. Raw output measurement and reconciliation: measured accepted grain output with moisture basis and quality descriptors Raw activity or stage basis: quantitative reference output."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -561,9 +565,9 @@ process_inventory:
               - role: qa_guardrail
                 lower: "1"
                 upper: "1"
-                unit: "kg/kg reference output"
-                basis: "quantitative reference output"
-                basis_kind: "reference_flow"
+                unit: "kg/kg net accepted output of this stage"
+                basis: "same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output"
+                basis_kind: "process_output"
                 evidence_kind: "method_formula"
                 source_ids:
                   - mass-balance-identity
@@ -659,7 +663,7 @@ process_inventory:
           property_unit: "Mass / kg"
           description: "The declared-gate output is the reference product when the selected gate includes storage or a downstream hand-off. Raw output measurement and reconciliation: measured grain mass at the declared gate, with moisture basis and quality descriptors Raw activity or stage basis: quantitative reference output."
           amount:
-            expression: "1 kg when selected as reference output; otherwise use measured internal-transfer quantity"
+            expression: "measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff"
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -670,6 +674,74 @@ process_inventory:
               collection_protocol_id: cp_declared_gate_output_records
               source_ids: []
             ranges: []
+      waste:
+        []
+      elementary:
+        []
+  - id: declared_reference_handoff
+    label: "Product Measurement at Declared Handoff"
+    inputs:
+      product:
+        - row_id: actual_route_product_for_handoff
+          role: "Actual route product at handoff"
+          name: "Non-seed oats grain at the selected declared gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records."
+          amount:
+            expression: "measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: reference_product_at_declared_handoff
+          role: "Reference product at declared handoff"
+          name: "Non-seed oats grain at the selected declared gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "process_output"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_declared_reference_handoff
+              source_ids: []
+            ranges:
+              - role: qa_guardrail
+                lower: "1"
+                upper: "1"
+                unit: "kg/kg net handoff mass of the same state"
+                basis: "normalization of the measured net mass of the same handoff state; not a physical-operation yield"
+                basis_kind: "process_output"
+                evidence_kind: "method_formula"
+                source_ids:
+                  - declared-handoff-measurement-definition
       waste:
         []
       elementary:
@@ -879,6 +951,18 @@ dataset_production:
       site_scope: "declared gate"
       aggregation_rule: "per declared reference flow"
       quality_evidence: "scale ticket, dispatch record, quality record"
+    - protocol_id: cp_declared_reference_handoff
+      process_id: "declared_reference_handoff"
+      flow_role: "reference_product_at_declared_handoff"
+      record_type: "handoff weighing and acceptance records"
+      raw_fields: "route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare"
+      collection_method: "Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities."
+      unit: "kg"
+      frequency: "each handoff lot"
+      temporal_coverage: "declared reporting period"
+      site_scope: "declared handoff gate"
+      aggregation_rule: "per declared reference flow"
+      quality_evidence: "calibration or weighing tickets, acceptance and lot traceability"
   calculation_rules:
     - id: normalize_to_declared_gate
       applies_to: "all foreground flows"
@@ -1054,20 +1138,24 @@ data_sources:
     type: "method_factor"
     reference: "Conservation of mass applied as a PCR calculation identity."
     used_for: "harvest, conditioning, storage, and output reconciliation"
+  - id: "declared-handoff-measurement-definition"
+    type: "method_factor"
+    reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
+    used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:056b578686f0c4d5497acb5821b9789c69d32841afb5c545fdc2b3469ec35a00"
+  source_sha256: "sha256:22e684837934b8788bc474cd059d74e9a6ec348c67721f96ab92ca98f5aae5cd"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_6378"
+    - unit_id: "normative_6497"
       family: "system_boundary"
       span:
         start:
-          offset: 6378
+          offset: 6497
           line: 57
           column: 1
         end:
-          offset: 9152
+          offset: 9271
           line: 74
           column: 1
       markdown: "## 5. System Boundary\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_production` | field production | Include declared seed-for-sowing input, land occupation, soil preparation, sowing, fertilization, irrigation where applicable, crop protection, field operations, and direct field emissions through harvest. | `ipcc-2019-managed-soils-n2o`; `fao-crop-evapotranspiration-56` |\n| `boundary_harvest` | harvest and field hand-off | Include harvesting, threshing or combining, field-side collection, and transport to the declared farm or primary-conditioning hand-off when these activities are in the foreground data package. | `fao-grain-postharvest-systems-1998`; `fao-oats-postharvest-operations-1999` |\n| `boundary_primary_conditioning` | post-harvest route | Include primary drying, cleaning, grading, dust or screenings handling, and short-term storage only when the declared gate is after those operations. | `fao-oats-postharvest-operations-1999`; `fao-grain-postharvest-systems-1998` |\n| `boundary_downstream_exclusion` | downstream processing | Exclude milling, malting, starch or ethanol conversion, food or feed formulation, retail, and consumer use; represent these as downstream datasets. | `fao-oats-postharvest-operations-1999`; `usda-oats-standards-2020` |\n| `boundary_input_completeness` | all foreground routes | Address fertilizer, irrigation, crop protection, field energy, electricity, land, harvest energy, drying energy, cleaning losses, residues, and direct emissions with a value, justified zero, or documented exclusion. | `ipcc-2019-managed-soils-n2o`; `fao-oats-postharvest-operations-1999` |\n### Boundary Abstraction\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | seed_for_sowing_input_and_declared_crop_cycle |\n| starting_condition_role | crop_establishment_condition |\n| product_classification_scope | non-seed oats grain corresponding to CPC 3.0 `01172`, `Oats, other`; oats seed for sowing is an upstream input and is not the reference product |\n| recursive_input_rule | a same-category oats flow used as a crop-establishment input is recorded as seed-for-sowing input with source, lot, amount, and upstream seed-dataset disclosure; it must not be silently traced as the non-seed reference product |\n| upstream_dataset_requirement | seed-for-sowing, fertilizer, crop-protection products, energy, water supply, transport, drying, waste treatment, and other upstream inputs use identified datasets or declared supplier records |\n| disclosure | declare end use, oats class or variety where material, crop cycle, geography, crop year, seed-for-sowing source, irrigation status, moisture basis, harvest and conditioning route, gate, quality descriptors, and every non-reference output fate |\n"
@@ -1087,11 +1175,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 6378
+              offset: 6497
               line: 57
               column: 1
             end:
-              offset: 6399
+              offset: 6518
               line: 57
               column: 22
           text: "## 5. System Boundary"
@@ -1107,16 +1195,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_35238"
+    - unit_id: "normative_39366"
       family: "allocation"
       span:
         start:
-          offset: 35238
-          line: 515
+          offset: 39366
+          line: 574
           column: 1
         end:
-          offset: 36613
-          line: 522
+          offset: 40741
+          line: 581
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_avoidance` | crop, harvest, and conditioning processes | First avoid allocation by subdividing crop operations, harvest, drying, cleaning, grading, storage, and waste-handling responsibilities wherever records support separate process nodes. | `iso-14044-2006` |\n| `allocation_grain_and_residue` | oats grain and removed straw or residue | Treat residue left in the field according to its declared fate. When straw or another residue is removed or sold and subdivision is not possible, use an explicitly declared physical or economic allocation method and disclose sensitivity. | `iso-14044-2006`; `fao-oats-postharvest-operations-1999` |\n| `allocation_screenings_and_rejects` | screenings, damaged grain, and off-grade material | Record accepted grain, screenings, rejects, and losses as separate outputs with fates. Do not assign rejected material to the reference product without an explicit rework or allocation decision. | `fao-oats-postharvest-operations-1999`; `usda-oats-standards-2020` |\n| `allocation_substitution` | residue or by-product use | Use substitution only when the displaced product, route, market, and evidence are declared; do not infer a displacement credit from a product label or generic residue name. | `iso-14044-2006` |\n"
       headings:
@@ -1135,12 +1223,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 35238
-              line: 515
+              offset: 39366
+              line: 574
               column: 1
             end:
-              offset: 35278
-              line: 515
+              offset: 39406
+              line: 574
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1155,16 +1243,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_49248"
+    - unit_id: "normative_54022"
       family: "validation"
       span:
         start:
-          offset: 49248
-          line: 564
+          offset: 54022
+          line: 624
           column: 1
         end:
-          offset: 51589
-          line: 575
+          offset: 56363
+          line: 635
           column: 1
       markdown: "## 9. Validation Rules\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_non_seed_boundary` | product identity | Confirm that the reference product is non-seed oats grain and that seed for sowing, flour, malt, starch, ethanol, and downstream products are excluded or separately modelled. | `usda-oats-standards-2020`; `fao-oats-postharvest-operations-1999` |\n| `validation_reference_flow` | reference flow | Confirm exactly one selected output provides 1 kg of non-seed oats grain at the actual declared gate, using the mass property and kg unit. Record end use, moisture, quality, geography and crop year. Verify its UUID against that physical state before finalization; an unresolved identity is not a verified product, and tempering is not required unless actually performed. | `usda-oats-standards-2020` |\n| `validation_process_completeness` | process map and inventory | Confirm crop production, harvest, and the applicable primary-conditioning or storage processes are present or explicitly excluded by the declared gate. | `fao-grain-postharvest-systems-1998`; `fao-oats-postharvest-operations-1999` |\n| `validation_nitrogen` | fertilizer and emissions | Confirm product mass differs from kg N, factor selection is declared, N2O-N conversion is transparent, and other nitrogen pathways are addressed or justified. | `ipcc-2019-managed-soils-n2o` |\n| `validation_water` | irrigation | Confirm withdrawal, delivered irrigation, consumption, and water-footprint results are distinguished and not double counted. | `fao-crop-evapotranspiration-56` |\n| `validation_moisture_and_mass_balance` | harvest and conditioning | Confirm mass reconciliation uses a common moisture basis and that accepted grain, residues, screenings, rejects, and losses have declared fates. | `fao-oats-postharvest-operations-1999`; `mass-balance-identity` |\n| `validation_allocation` | co-products and residues | Confirm subdivision was considered first, any allocation method is declared, substitution has an evidenced displaced product, and sensitivity is reported when material. | `iso-14044-2006` |\n| `validation_uuid_review` | identity references | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n"
       headings:
@@ -1183,12 +1271,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 49248
-              line: 564
+              offset: 54022
+              line: 624
               column: 1
             end:
-              offset: 49270
-              line: 564
+              offset: 54044
+              line: 624
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1207,272 +1295,272 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_crop_production"
       identity_kind: "explicit"
-      unit_id: "normative_6378"
+      unit_id: "normative_6497"
       source_span:
         start:
-          offset: 6471
+          offset: 6590
           line: 60
           column: 1
         end:
-          offset: 6794
+          offset: 6913
           line: 60
           column: 324
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_harvest"
       identity_kind: "explicit"
-      unit_id: "normative_6378"
+      unit_id: "normative_6497"
       source_span:
         start:
-          offset: 6795
+          offset: 6914
           line: 61
           column: 1
         end:
-          offset: 7120
+          offset: 7239
           line: 61
           column: 326
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_primary_conditioning"
       identity_kind: "explicit"
-      unit_id: "normative_6378"
+      unit_id: "normative_6497"
       source_span:
         start:
-          offset: 7121
+          offset: 7240
           line: 62
           column: 1
         end:
-          offset: 7408
+          offset: 7527
           line: 62
           column: 288
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_downstream_exclusion"
       identity_kind: "explicit"
-      unit_id: "normative_6378"
+      unit_id: "normative_6497"
       source_span:
         start:
-          offset: 7409
+          offset: 7528
           line: 63
           column: 1
         end:
-          offset: 7687
+          offset: 7806
           line: 63
           column: 279
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_input_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_6378"
+      unit_id: "normative_6497"
       source_span:
         start:
-          offset: 7688
+          offset: 7807
           line: 64
           column: 1
         end:
-          offset: 8035
+          offset: 8154
           line: 64
           column: 348
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_avoidance"
       identity_kind: "explicit"
-      unit_id: "normative_35238"
+      unit_id: "normative_39366"
       source_span:
         start:
-          offset: 35350
-          line: 518
+          offset: 39478
+          line: 577
           column: 1
         end:
-          offset: 35626
-          line: 518
+          offset: 39754
+          line: 577
           column: 277
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_grain_and_residue"
       identity_kind: "explicit"
-      unit_id: "normative_35238"
+      unit_id: "normative_39366"
       source_span:
         start:
-          offset: 35627
-          line: 519
+          offset: 39755
+          line: 578
           column: 1
         end:
-          offset: 36002
-          line: 519
+          offset: 40130
+          line: 578
           column: 376
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_screenings_and_rejects"
       identity_kind: "explicit"
-      unit_id: "normative_35238"
+      unit_id: "normative_39366"
       source_span:
         start:
-          offset: 36003
-          line: 520
+          offset: 40131
+          line: 579
           column: 1
         end:
-          offset: 36360
-          line: 520
+          offset: 40488
+          line: 579
           column: 358
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_substitution"
       identity_kind: "explicit"
-      unit_id: "normative_35238"
+      unit_id: "normative_39366"
       source_span:
         start:
-          offset: 36361
-          line: 521
+          offset: 40489
+          line: 580
           column: 1
         end:
-          offset: 36612
-          line: 521
+          offset: 40740
+          line: 580
           column: 252
     - pointer: "/validation_rules/0"
       rule_id: "validation_non_seed_boundary"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 49342
-          line: 567
+          offset: 54116
+          line: 627
           column: 1
         end:
-          offset: 49641
-          line: 567
+          offset: 54415
+          line: 627
           column: 300
     - pointer: "/validation_rules/1"
       rule_id: "validation_reference_flow"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 49642
-          line: 568
+          offset: 54416
+          line: 628
           column: 1
         end:
-          offset: 50092
-          line: 568
+          offset: 54866
+          line: 628
           column: 451
     - pointer: "/validation_rules/2"
       rule_id: "validation_process_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 50093
-          line: 569
+          offset: 54867
+          line: 629
           column: 1
         end:
-          offset: 50391
-          line: 569
+          offset: 55165
+          line: 629
           column: 299
     - pointer: "/validation_rules/3"
       rule_id: "validation_nitrogen"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 50392
-          line: 570
+          offset: 55166
+          line: 630
           column: 1
         end:
-          offset: 50637
-          line: 570
+          offset: 55411
+          line: 630
           column: 246
     - pointer: "/validation_rules/4"
       rule_id: "validation_water"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 50638
-          line: 571
+          offset: 55412
+          line: 631
           column: 1
         end:
-          offset: 50835
-          line: 571
+          offset: 55609
+          line: 631
           column: 198
     - pointer: "/validation_rules/5"
       rule_id: "validation_moisture_and_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 50836
-          line: 572
+          offset: 55610
+          line: 632
           column: 1
         end:
-          offset: 51118
-          line: 572
+          offset: 55892
+          line: 632
           column: 283
     - pointer: "/validation_rules/6"
       rule_id: "validation_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 51119
-          line: 573
+          offset: 55893
+          line: 633
           column: 1
         end:
-          offset: 51363
-          line: 573
+          offset: 56137
+          line: 633
           column: 245
     - pointer: "/validation_rules/7"
       rule_id: "validation_uuid_review"
       identity_kind: "explicit"
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 51364
-          line: 574
+          offset: 56138
+          line: 634
           column: 1
         end:
-          offset: 51588
-          line: 574
+          offset: 56362
+          line: 634
           column: 225
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_6378"
+      unit_id: "normative_6497"
       source_span:
         start:
-          offset: 6378
+          offset: 6497
           line: 57
           column: 1
         end:
-          offset: 6399
+          offset: 6518
           line: 57
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_6378"
+      unit_id: "normative_6497"
       source_span:
         start:
-          offset: 8061
+          offset: 8180
           line: 66
           column: 1
         end:
-          offset: 9151
+          offset: 9270
           line: 73
           column: 260
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_35238"
+      unit_id: "normative_39366"
       source_span:
         start:
-          offset: 35238
-          line: 515
+          offset: 39366
+          line: 574
           column: 1
         end:
-          offset: 35278
-          line: 515
+          offset: 39406
+          line: 574
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_49248"
+      unit_id: "normative_54022"
       source_span:
         start:
-          offset: 49248
-          line: 564
+          offset: 54022
+          line: 624
           column: 1
         end:
-          offset: 49270
-          line: 564
+          offset: 54044
+          line: 624
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1481,5 +1569,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:056b578686f0c4d5497acb5821b9789c69d32841afb5c545fdc2b3469ec35a00"
-  generated_content_sha256: "sha256:014ce6a7c3877b46e03d4b92e4d76ea76dad0c5e429864995f0a2c6beaea2575"
+    sha256: "sha256:22e684837934b8788bc474cd059d74e9a6ec348c67721f96ab92ca98f5aae5cd"
+  generated_content_sha256: "sha256:0c130a04184d17fd95a039665173f5ff5e7ff3e9e0cbd9a0add121432a7ba1c9"

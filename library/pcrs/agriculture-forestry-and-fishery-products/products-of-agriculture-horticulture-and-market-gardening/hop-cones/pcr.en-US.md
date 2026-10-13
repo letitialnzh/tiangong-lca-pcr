@@ -33,14 +33,12 @@ The managed object is female *Humulus lupulus* trained on a support system. Manu
 | How much | 1 kg net mass |
 | How well | Whole cones meeting the reported acceptance specification, excluding leaves, stems, chaff and rejected cones |
 | How long or cycle | One declared harvest within a model that attributes establishment and shared assets over the evidenced productive life |
-| reference_flow_link | accepted_wet_cones; accepted_dried_cones |
-| reference_flow_selection | exactly_one_declared_terminal_output |
-| reference_selection_required | actual_route; declared_gate; product_state; output_row_id |
+| reference_flow_link | reference_product_at_declared_handoff |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Hop cones `17e491b0-4419-4898-8a8b-c67b0e035470` |
+| Reference product flow | Hop cones |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Mass units `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -48,7 +46,9 @@ The managed object is female *Humulus lupulus* trained on a support system. Manu
 
 All qualifiers are mandatory. The reference is accepted cone mass in the declared state, not standing crop, whole bines, harvester mixture, chaff, rejects or dry matter.
 
-Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Normalize only the selected terminal output to the reference quantity; earlier outputs remain measured internal transfers when later processes are included. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+Each foreground dataset must explicitly select one actual route, declared gate, product state and output row. Reconcile the selected terminal route with `reference_product_at_declared_handoff`; normalize that handoff output to the reference quantity and retain preceding-stage outputs as measured transfers. Raw weighing, mass reconciliation and lot traceability requirements continue to apply.
+
+The sole reference output is `reference_product_at_declared_handoff`, receiving the selected actual route product at the declared gate. Existing route-output ids identify the source and physical state; they are no longer individually fixed to the reference quantity.
 
 ## 4. Measurement and Unit Rules
 
@@ -94,6 +94,7 @@ Each foreground dataset must explicitly select one actual route, declared gate, 
 | `harvest_capture` | Harvest and capture | required | All routes | Remove cones or cone-bearing bines and create a lot-indexed collected state | Harvest input and collected mixture by lot or campaign |
 | `grading_handoff` | Cone separation, cleaning, grading and wet hand-off | required | All routes | Separate cones and classify accepted, downgraded, rework, reject and chaff states | Lot mass balance |
 | `conditional_drying` | Whole-cone drying and stabilization | conditional | Dried whole-cone hand-off only | Stabilize accepted wet cones and hand off dried whole cones | Batch wet input, energy, water removed and dry outputs |
+| declared_reference_handoff | Product Measurement at Declared Handoff | required |  | foreground | reference_product_at_declared_handoff |
 
 ### Process: Hop-yard establishment and perennial production (`yard_production`)
 
@@ -456,7 +457,7 @@ This card records the named flow where it crosses the stated process boundary an
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 Raw output measurement and reconciliation: Weigh net accepted wet cones after grading; this is the reference output for the wet route and input to drying for the dried route.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: Per 1 kg accepted wet hop cones.
@@ -466,13 +467,13 @@ Raw activity or stage basis: Per 1 kg accepted wet hop cones.
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading_batch`
 - Sources: `penn-state-hop-production`
-- Range: Reference-output identity
-  - Range role: Allowed range (`allowed_range`)
+- Range: Same-stage output measurement reconciliation
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg accepted wet hop cones
-  - Basis: wet reference route only
-  - Basis kind: Reference flow (`reference_flow`)
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `mass-balance-identity`
 
@@ -606,7 +607,7 @@ This card records the named flow where it crosses the stated process boundary an
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 Raw output measurement and reconciliation: Weigh accepted whole cones after drying and final grading at declared moisture; this is the reference output only for the dried route.
 
-- Amount rule: 1 kg when selected as reference output; otherwise use measured internal-transfer quantity
+- Amount rule: measured net transfer mass, retaining lot, actual product state and moisture basis; reconcile to the final reference output at the declared handoff
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: Per 1 kg accepted dried whole hop cones.
@@ -616,13 +617,13 @@ Raw activity or stage basis: Per 1 kg accepted dried whole hop cones.
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_drying_batch`
 - Sources: `cornell-hop-yard-2017`
-- Range: Reference-output identity
-  - Range role: Allowed range (`allowed_range`)
+- Range: Same-stage output measurement reconciliation
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg accepted dried whole cones
-  - Basis: dried reference route only
-  - Basis kind: Reference flow (`reference_flow`)
+  - Unit: kg/kg net accepted output of this stage
+  - Basis: same-stage numerator and denominator measurement consistency; not a stage yield or fixed ratio to the final reference output
+  - Basis kind: Process output (`process_output`)
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `mass-balance-identity`
 
@@ -680,6 +681,64 @@ Raw activity or stage basis: Per kg wet cones entering drying.
   - Evidence kind: Method formula (`method_formula`)
   - Sources: `mass-balance-identity`
 
+
+### Process: Product Measurement at the Declared Handoff (`declared_reference_handoff`)
+This node records the actual product handoff at the existing system boundary for reconciliation and reference-quantity normalization. It adds no physical processing and does not presume drying, cooling, storage, packaging or transport. Each data package declares one actual route, one terminal product state, moisture or dry-matter basis, and gate. Feed only the accepted product delivered by that route at that gate into this node; do not add other routes as extra inputs. Record co-products separately and apply Section 7. Count preceding inputs, losses and emissions once. Normalize using the measured accepted net mass at the handoff; this measurement node changes neither mass, yield nor allocation.
+#### Inputs
+##### Product flows
+###### Actual route product at handoff (`actual_route_product_for_handoff`)
+Record the accepted product delivered by the actual terminal route and reconcile it with handoff weighing and lot records.
+- Selected flow: Hop cones
+- Flow property / unit: Mass / kg
+- Amount rule: measured accepted net product mass at the actual handoff, normalized to the reference quantity; do not sum preceding-stage quantities, other routes or co-products
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+This measurement node adds no waste inputs.
+##### Elementary flows
+This measurement node adds no resource inputs.
+#### Outputs
+##### Product flows
+###### Reference product at declared handoff (`reference_product_at_declared_handoff`)
+- Selected flow: Hop cones
+- Flow property / unit: Mass / kg
+- Amount rule: 1 kg
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_declared_reference_handoff`
+Confirm the product UUID independently for the actual state. Until confirmed, retain unresolved identity instead of inheriting a UUID from a preceding stage or another route.
+- Range: Handoff quantity normalization identity
+  - Range role: QA guardrail (`qa_guardrail`)
+  - Lower: 1
+  - Upper: 1
+  - Unit: kg/kg net handoff mass of the same state
+  - Basis: normalization of the measured net mass of the same handoff state; not a physical-operation yield
+  - Basis kind: Process output (`process_output`)
+  - Evidence kind: Method formula (`method_formula`)
+  - Sources: `declared-handoff-measurement-definition`
+
+##### Waste flows
+Record actual losses at the operation where they occur; do not duplicate them here.
+##### Elementary flows
+Record actual emissions at the operation where they occur; do not duplicate them here.
+
 ## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
@@ -708,6 +767,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cp_harvest_operations` | `harvest_capture` | energy, cleaning and changeover | fuel, meter and machine logs | lot_id; route; machine; carrier_uuid; quantity; runtime; event | Meter or carrier issue linked to run; Raw aggregation and attribution: Assign shared event once | L; kWh; MJ; h | Every run and event | Every harvest | Machine and lot | per declared reference flow | Meter and run logs |
 | `cp_grading_batch` | `grading_handoff` | all grade states and energy | lot, scale, grade and meter records | lot_id; input_mass; accepted_mass; downgraded_mass; rework_mass; reject_mass; chaff_mass; destination; moisture; carrier_uuid; energy | Calibrated weighing, destination coding and meter record; Raw aggregation and attribution: Reconcile all unique states; do not double-count returns | kg; %; MJ | Every lot and rework pass | Every harvest | Lot and equipment | per declared reference flow | Calibration, grade sheet and receipts |
 | `cp_drying_batch` | `conditional_drying` | wet input, moisture, energy, dried outputs and water | batch sheet, scales, moisture tests and meters | batch_id; lot_id; wet_mass; initial_moisture; test_method; carrier_uuid; energy; temperature; duration; dried_mass; final_moisture; reject_mass | Weigh, sample moisture and meter energy by batch; Raw aggregation and attribution: Close dry-matter and total-mass balance; assign shared energy once | kg; %; MJ; °C; h | Every batch | Every dried-route harvest | Batch and dryer | per declared reference flow | Calibrations and validated moisture records |
+| `cp_declared_reference_handoff` | declared_reference_handoff | reference_product_at_declared_handoff | handoff weighing and acceptance records | route, terminal_output_row_id, product_state, gate, lot, net_mass_kg, moisture_basis, acceptance, tare | Use calibrated scales or traceable weighing records; reconcile the actual terminal-operation handoff lot, accepted net mass, product state and moisture; exclude packaging tare and do not sum preceding-stage quantities. | kg | each handoff lot | declared reporting period | declared handoff gate | per declared reference flow | calibration or weighing tickets, acceptance and lot traceability |
 
 ### Calculation Rules
 
@@ -766,3 +826,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `cornell-hop-yard-2017` | extension_guidance | Cornell Hops, Weldon, Gent and Gadoury, *Five considerations before ever planting your first hop*, November 2017, https://hops.cals.cornell.edu/grower-resources/five-considerations-before-ever-planting-your-first-hop/ | Permanent yard, establishment, shared equipment, initial dry matter and drying endpoint context |
 | `cordella-hop-lca-2026` | literature | Cordella et al., *Uncovering the environmental burden of hops: a spatially resolved agricultural LCA for modern beer supply chains*, International Journal of Life Cycle Assessment (2026), https://doi.org/10.1007/s11367-026-02651-y | Farm-gate process coverage, establishment, trellis, field operations, drying and multi-year attribution |
 | `mass-balance-identity` | method_factor | Conservation-of-mass identity applied to lot and batch records | Harvest, grading and drying reconciliation and water calculation |
+
+| source_id | type | reference | used_for |
+| --- | --- | --- | --- |
+| `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |

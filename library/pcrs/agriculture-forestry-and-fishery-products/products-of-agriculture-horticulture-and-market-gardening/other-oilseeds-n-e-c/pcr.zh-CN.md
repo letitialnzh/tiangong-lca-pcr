@@ -357,7 +357,7 @@ sync_with: pcr.en-US.md
 
 本卡记录该过程角色的真实物理流；仅在路线启用时按声明批次或作物周期建模。
 
-- 选定流: 其他未另分类油籽 `b547a596-eefe-42d3-82b9-78cbbb445eb6`
+- 选定流: 其他未另分类油籽
 - 流属性 / 单位: kg
 - 数量规则: 按前景记录测量或计算；不得以筛选区间代替实际值。
 - 数值来源模式: 前景记录（`foreground_record`）
@@ -376,6 +376,8 @@ sync_with: pcr.en-US.md
   - 基础: gross raw seed at measured moisture
   - 基准类型: `process_output`
   - 证据类型: Reasoned estimate（`reasoned_estimate`）
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 
@@ -521,7 +523,7 @@ sync_with: pcr.en-US.md
 
 本卡记录该过程角色的真实物理流；仅在路线启用时按声明批次或作物周期建模。
 
-- 选定流: 其他未另分类油籽 `b547a596-eefe-42d3-82b9-78cbbb445eb6`
+- 选定流: 其他未另分类油籽
 - 流属性 / 单位: kg
 - 数量规则: 按前景记录测量或计算；不得以筛选区间代替实际值。
 - 数值来源模式: 前景记录（`foreground_record`）
@@ -540,6 +542,8 @@ sync_with: pcr.en-US.md
   - 基础: conditioned lot output
   - 基准类型: `process_output`
   - 证据类型: Reasoned estimate（`reasoned_estimate`）
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 
@@ -709,7 +713,7 @@ sync_with: pcr.en-US.md
 
 本卡记录该过程角色的真实物理流；仅在路线启用时按声明批次或作物周期建模。
 
-- 选定流: 其他未另分类油籽 `b547a596-eefe-42d3-82b9-78cbbb445eb6`
+- 选定流: 其他未另分类油籽
 - 流属性 / 单位: kg
 - 数量规则: 按前景记录测量或计算；不得以筛选区间代替实际值。
 - 数值来源模式: 前景记录（`foreground_record`）
@@ -728,6 +732,8 @@ sync_with: pcr.en-US.md
   - 基础: per grading lot
   - 基准类型: `process_output`
   - 证据类型: Reasoned estimate（`reasoned_estimate`）
+
+该行的实际中间状态或联产品等级须独立核实 UUID，不使用参考输出 UUID 代替。
 
 ##### 废物流
 
