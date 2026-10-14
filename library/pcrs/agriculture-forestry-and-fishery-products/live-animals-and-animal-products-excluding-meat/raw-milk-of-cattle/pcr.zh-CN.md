@@ -38,14 +38,14 @@ sync_with: pcr.en-US.md
 | 字段 | 值 |
 | --- | --- |
 | What | 提供可离开奶牛场的牛生乳 |
-| How much | 1 kg 脂肪和蛋白校正乳（FPCM），校正至 4.0% 脂肪和 3.3% 真蛋白 |
+| How much | 农场门 1 kg 实际可销售牛生乳，注明实测脂肪和真蛋白含量 |
 | How well | 符合所声明农场门规格的牛全脂生乳，具有实测物理质量、脂肪含量、真蛋白含量、温度和可销售状态 |
 | How long or cycle | 一个具有代表性的报告年度，或覆盖季节变化和稳定牛群生产周期的其他声明期间 |
 | reference_flow_link | `raw_cattle_milk` |
 
 | 字段 | 值 |
 | --- | --- |
-| 参考数量 | 1 kg FPCM |
+| 参考数量 | 1 |
 | 参考产品流 | 鲜牛奶 `aa8aebbb-724a-417b-8372-2dccd499ce71` |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
@@ -55,13 +55,13 @@ sync_with: pcr.en-US.md
 构建前景数据包时，`必需限定信息` 中列出的内容必须在数据集元数据、过程说明、参考流备注、产品说明
 或等效字段中声明。缺少必需限定信息时，参考流定义不完整。
 
-物理生乳质量与 FPCM 不可等同。最终产品卡按同批次实测脂肪和真蛋白含量计算对应 1 kg FPCM 的物理生乳质量，不能强行填写 1 kg 生乳。
+参考流和全部清单量均以农场门 1 kg 实际可销售牛生乳为基准。脂肪和蛋白校正乳（FPCM，校正至 4.0% 脂肪和 3.3% 真蛋白）作为单独报告的比较基准。保留实测物理质量和成分，通过 `calc_fpcm_reporting` 在两种基准间换算同一分配后结果；不得假定 1 kg 实际生乳等于 1 kg FPCM。本 PCR 采用物理质量清单基准供下游材料投入使用，并保留 IDF FPCM 基准用于比较报告；这一选择不表示已符合 IDF 的全部报告要求。
 
 ## 4. 计量与单位规则
 
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
 | --- | --- | --- | --- | --- |
-| `reference_mass` | 参考生乳流和 FPCM 结果 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | 以 kg 记录物理生乳质量，并归一化为 1 kg FPCM；只有体积记录时，必须采用适用于所代表乳和温度的实测密度。 |
+| `reference_mass` | 参考实际生乳流 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | 以 kg 记录实际可销售生乳质量，并按 1 kg 实际生乳归一化；只有体积记录时，须采用适用于所代表乳和温度的实测密度。使用实测成分单独报告 FPCM。 |
 | `milk_composition` | 乳脂肪和真蛋白 | 质量分数 | 质量百分比 | 对同一乳质量和报告期采用有代表性的实测脂肪和真蛋白百分比；没有披露且有依据的换算时，不得用粗蛋白替代真蛋白。 |
 | `dry_matter_basis` | 饲料摄入和垫料 | Mass | kg 干物质 | 原始记录中保留饲喂态质量和干物质比例，再计算 kg 干物质；无法换算的饲料数量必须披露。 |
 | `liveweight_basis` | 离开农场的动物 | Mass | kg 活重 | 使用动物离场时的活重或有文件依据的换算；没有换算依据时，不得把胴体质量当作活重。 |
@@ -95,10 +95,10 @@ sync_with: pcr.en-US.md
 
 | process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
 | --- | --- | --- | --- | --- | --- |
-| `herd_and_feed_management` | 牛群、饲喂、牛舍和动物管理 | required | 始终纳入 | 前景牛群运行与肠道排放基础 | 每 1 kg 农场门 FPCM |
-| `manure_management` | 粪污收集、储存、处理和输出 | required | 始终纳入 | 前景粪污路线与直接排放基础 | 每 1 kg 农场门 FPCM |
-| `on_farm_feed_production` | 直接管理的饲料作物和牧草生产 | conditional | 报告农场边界内管理饲料作物或牧草时纳入，否则把饲料连接到上游 | 前景饲料和管理土壤清单 | 每 1 kg 农场门 FPCM |
-| `milking_cooling_storage` | 挤奶、清洗、冷却和场内储存 | required | 始终纳入 | 可销售生乳的前景交付 | 每 1 kg 农场门 FPCM |
+| `herd_and_feed_management` | 牛群、饲喂、牛舍和动物管理 | required | 始终纳入 | 前景牛群运行与肠道排放基础 | 每 1 kg 农场门实际可销售生乳 |
+| `manure_management` | 粪污收集、储存、处理和输出 | required | 始终纳入 | 前景粪污路线与直接排放基础 | 每 1 kg 农场门实际可销售生乳 |
+| `on_farm_feed_production` | 直接管理的饲料作物和牧草生产 | conditional | 报告农场边界内管理饲料作物或牧草时纳入，否则把饲料连接到上游 | 前景饲料和管理土壤清单 | 每 1 kg 农场门实际可销售生乳 |
+| `milking_cooling_storage` | 挤奶、清洗、冷却和场内储存 | required | 始终纳入 | 可销售生乳的前景交付 | 每 1 kg 农场门实际可销售生乳 |
 
 ### 过程：牛群、饲喂、牛舍和动物管理（`herd_and_feed_management`）
 
@@ -118,7 +118,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_feed_records`
@@ -135,7 +135,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_feed_records`
@@ -152,7 +152,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_herd_resource_records`
@@ -169,7 +169,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_herd_resource_records`
@@ -186,7 +186,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_herd_resource_records`
@@ -200,7 +200,7 @@ sync_with: pcr.en-US.md
 - 数量规则：根据动物流动和体重记录计算进入牛群的活重。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd_records`
@@ -222,7 +222,7 @@ sync_with: pcr.en-US.md
 - 数量规则：根据动物流动和体重记录计算离场活重总量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd_records`
@@ -236,16 +236,16 @@ sync_with: pcr.en-US.md
 - 数量规则：按路线根据排泄、垫料和采集的稀释水记录计算。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_records`
-- 数量范围：暂定内部粪污质量平衡 QA 筛查范围
+- 数量范围：暂定内部粪污质量平衡 QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：100
-  - 单位：kg/kg FPCM
-  - 基准：每 1 kg FPCM 内部转移的粪污
+  - 上限：100 * k_period
+  - 单位：kg/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
@@ -257,19 +257,19 @@ sync_with: pcr.en-US.md
 
 - 选定流：路线特定的动物死亡废物
 - 流属性/单位：Mass / kg
-- 数量规则：汇总记录的死亡质量并按 FPCM 归一化。
+- 数量规则：汇总记录的死亡质量并按农场门实际可销售乳质量归一化。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_herd_records`
-- 数量范围：死亡质量平衡 QA 筛查范围
+- 数量范围：死亡质量平衡 QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：1
-  - 单位：kg/kg FPCM
-  - 基准：每 1 kg FPCM 的死亡质量
+  - 上限：1 * k_period
+  - 单位：kg/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
@@ -277,24 +277,26 @@ sync_with: pcr.en-US.md
 
 ###### 排放到空气的肠道甲烷（`enteric_methane`）
 
+适用计算方法见 `calc_enteric_ch4`；保留其活动数据、因子来源和计算记录。
+
 采用一致的活动、生产力、日粮和地区特定方法参数，计算每个被代表牛类别的肠道发酵 CH4。
 
 - 选定流：Methane to air
 - 流属性/单位：Mass / kg CH4
-- 数量规则：应用 `calc_enteric_ch4`，并按农场门 FPCM 归一化报告期结果。
+- 数量规则：按动物活动数据及适用肠道排放方法和因子计算报告期 CH4；将分配后的物质质量除以同期间农场门实际可销售乳质量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_herd_records`
 - 来源：`ipcc-2019-livestock-manure`
-- 数量范围：暂定肠道 CH4 QA 筛查范围
+- 数量范围：暂定肠道 CH4 QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：1
-  - 单位：kg CH4/kg FPCM
-  - 基准：每 1 kg FPCM 的肠道甲烷
+  - 上限：1 * k_period
+  - 单位：kg CH4/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
@@ -313,7 +315,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按路线拆分后等于 `manure_internal`；内部转移在汇总产品系统中抵消。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_records`
@@ -336,16 +338,16 @@ sync_with: pcr.en-US.md
 - 数量规则：按产品和去向采用实测发运数量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_manure_records`
-- 数量范围：暂定输出粪污 QA 筛查范围
+- 数量范围：暂定输出粪污 QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：100
-  - 单位：kg/kg FPCM
-  - 基准：每 1 kg FPCM 输出的粪污或回收产品
+  - 上限：100 * k_period
+  - 单位：kg/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
@@ -360,16 +362,16 @@ sync_with: pcr.en-US.md
 - 数量规则：按去向采用实测或质量平衡所得废物数量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_records`
-- 数量范围：粪污路线质量平衡 QA 筛查范围
+- 数量范围：粪污路线质量平衡 QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：100
-  - 单位：kg/kg FPCM
-  - 基准：每 1 kg FPCM 的粪污废物
+  - 上限：100 * k_period
+  - 单位：kg/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
@@ -377,47 +379,51 @@ sync_with: pcr.en-US.md
 
 ###### 排放到空气的粪污管理甲烷（`manure_methane`）
 
+适用计算方法见 `calc_manure_ch4`；保留其活动数据、因子来源和计算记录。
+
 按动物类别、挥发性固体、管理系统、气候和甲烷转换计算粪污 CH4。
 
 - 选定流：Methane to air
 - 流属性/单位：Mass / kg CH4
-- 数量规则：应用 `calc_manure_ch4` 并按农场门 FPCM 归一化。
+- 数量规则：按挥发性固体、产甲烷潜力、路线比例、转换因子及适用回收或氧化计算报告期粪污 CH4；将分配后的物质质量除以同期间农场门实际可销售乳质量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_records`
 - 来源：`ipcc-2019-livestock-manure`
-- 数量范围：暂定粪污 CH4 QA 筛查范围
+- 数量范围：暂定粪污 CH4 QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：1
-  - 单位：kg CH4/kg FPCM
-  - 基准：每 1 kg FPCM 的粪污甲烷
+  - 上限：1 * k_period
+  - 单位：kg CH4/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
 ###### 排放到空气的粪污管理氧化亚氮（`manure_nitrous_oxide`）
 
+适用计算方法见 `calc_manure_n2o`；保留其活动数据、因子来源和计算记录。
+
 计算直接和适用的间接 N2O，避免与田间施用排放重复计算。
 
 - 选定流：Nitrous oxide to air
 - 流属性/单位：Mass / kg N2O
-- 数量规则：应用 `calc_manure_n2o` 并按农场门 FPCM 归一化。
+- 数量规则：按氮排泄、路线比例和适用排放因子计算报告期粪污直接及间接 N2O；需要时将 N2O-N 按 44/28 换算为 N2O，再将分配后的 N2O 质量除以同期间农场门实际可销售乳质量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_records`
 - 来源：`ipcc-2019-livestock-manure`
-- 数量范围：暂定粪污 N2O QA 筛查范围
+- 数量范围：暂定粪污 N2O QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：0.2
-  - 单位：kg N2O/kg FPCM
-  - 基准：每 1 kg FPCM 的粪污氧化亚氮
+  - 上限：0.2 * k_period
+  - 单位：kg N2O/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
@@ -430,17 +436,17 @@ sync_with: pcr.en-US.md
 - 数量规则：对采集的粪污氮和管理系统记录应用所声明的地区方法。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_manure_records`
 - 来源：`fao-leap-nutrient-flows-2018`
-- 数量范围：暂定氨 QA 筛查范围
+- 数量范围：暂定氨 QA 筛查范围（由 FPCM 筛查范围换算）
   - 范围角色：QA 校验（`qa_guardrail`）
   - 下限：0
-  - 上限：1
-  - 单位：kg NH3/kg FPCM
-  - 基准：每 1 kg FPCM 的氨损失
+  - 上限：1 * k_period
+  - 单位：kg NH3/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
@@ -462,7 +468,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -479,7 +485,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -496,7 +502,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -513,7 +519,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -537,7 +543,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -553,7 +559,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -574,7 +580,7 @@ sync_with: pcr.en-US.md
 - 数量规则：仅核算本卡物质：依据相容活动量、适用方法和接收隔室计算，按需要将氮基准换算为本物质质量；再按同期间产出和原分配规则归一化。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -592,7 +598,7 @@ sync_with: pcr.en-US.md
 - 数量规则：仅核算本卡物质：依据相容活动量、适用方法和接收隔室计算，按需要将氮基准换算为本物质质量；再按同期间产出和原分配规则归一化。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -610,7 +616,7 @@ sync_with: pcr.en-US.md
 - 数量规则：仅核算本卡物质：依据相容活动量、适用方法和接收隔室计算，按需要将氮基准换算为本物质质量；再按同期间产出和原分配规则归一化。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_on_farm_feed_records`
@@ -633,7 +639,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_milking_records`
@@ -649,7 +655,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_milking_records`
@@ -665,7 +671,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_milking_records`
@@ -682,7 +688,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_milking_records`
@@ -697,27 +703,26 @@ sync_with: pcr.en-US.md
 
 ###### 农场门牛生乳（`raw_cattle_milk`）
 
-最终产品是可离开场内储奶设施的可销售牛全脂生乳。除 FPCM 归一化结果外，还保留物理质量和实测
-成分。
+最终产品是可离开场内储奶设施的可销售牛全脂生乳。保留物理质量和实测成分，清单按实际乳质量归一化，并单独报告 FPCM 换算结果。
 
 - 选定流：鲜牛奶 `aa8aebbb-724a-417b-8372-2dccd499ce71`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- 数量规则：通过 `calc_fpcm` 计算与 1 kg FPCM 对应的物理生乳质量。
+- 数量规则：1 千克
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：产品特定（`product_specific`）
-- 归一化基准：农场门 1 kg FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_milk_output_records`
 - 来源：`idf-dairy-carbon-footprint-2022`
-- 数量范围：暂定物理乳换算 QA 筛查范围
+- 数量范围：参考物理乳产出一致性
   - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0.5
-  - 上限：2
-  - 单位：kg 生乳/kg FPCM
-  - 基准：与 1 kg FPCM 对应的物理生乳质量
+  - 下限：1
+  - 上限：1
+  - 单位：kg/kg 实际可销售生乳
+  - 基准：每 1 kg 参考流
   - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+  - 证据类型：采集后计算（`calculated_from_collection`）
 
 ##### 废物流
 
@@ -732,7 +737,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_milk_output_records`
@@ -748,7 +753,7 @@ sync_with: pcr.en-US.md
 - 数量规则：按原采集协议分别计量本卡身份的实际用量或产生量，保留原始组成、状态和单位，按同期间产出和原分配规则归一化；不得重复分摊原集合总量。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_milk_output_records`
@@ -766,7 +771,7 @@ sync_with: pcr.en-US.md
 - 数量规则：仅核算本卡物质：依据相容活动量、适用方法和接收隔室计算，按需要将氮基准换算为本物质质量；再按同期间产出和原分配规则归一化。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 农场门 FPCM
+- 归一化基准：每 1 kg 参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：基于采集计算（`calculated_from_collection`）
 - 采集协议：`cp_milking_records`
@@ -786,25 +791,26 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd_records` | `herd_and_feed_management` | 牛群结构、流动、活重、死亡和肠道参数 | 动物登记和牛群生产记录 | animal_class; head_count; entry_date; exit_date; exit_reason; live_weight; body_weight; milk_yield; feed_digestibility; gross_energy_intake | 农场登记、校准秤或有文件依据的体重估算及牛群系统导出 | 头；kg 活重；kg 乳；MJ/头/日 | 连续记录事件，按月汇总 | 至少一个有代表性的 12 个月期间；不稳定时采用更长平均期 | 所有支撑报告乳产出的牛 | 核对期初存栏 + 出生 + 购入 - 销售 - 转出 - 死亡 = 期末存栏；汇总动物日 | 登记核对、秤校准或方法、事件缺失日志和系统导出 |
-| `cp_feed_records` | `herd_and_feed_management` | 日粮和垫料 | 采购、混料、库存、放牧和实验室记录 | material_id; origin; animal_class; as_fed_mass; dry_matter_fraction; opening_stock; closing_stock; feed_waste; bedding_mass | 地磅、发票、混料日志、饲料分析、放牧估算和库存核对 | kg 饲喂态；kg 干物质；干物质百分比 | 按批或每日，按月汇总 | 与乳和牛群相同的代表期 | 被代表牛群使用的全部饲料和垫料 | 投入 + 期初库存 - 期末库存 - 损失；换算为干物质并按 FPCM 归一化 | 校准、发票、实验室证书和核对差异 |
-| `cp_herd_resource_records` | `herd_and_feed_management` | 牛群用水和牛舍能源 | 计量、发票和设备运行记录 | meter_id; carrier; opening_reading; closing_reading; invoice_quantity; equipment_hours; allocation_driver | 优先分表；否则以物理分配核对场址总量 | kg 水；kWh；MJ；kg 或 L 燃料 | 每月 | 与乳相同的代表期 | 牛群牛舍和服务区域，不含单独计量的挤奶负荷 | 核对仪表和发票；保留不同载体 | 仪表校准、发票、换算因子和分配工作表 |
-| `cp_manure_records` | `manure_management` | 粪污数量、组成、路线、处理、输出和排放 | 粪污管理和养分平衡记录 | animal_class; volatile_solids; nitrogen_excretion; bedding; dilution_water; management_system; climate; storage_duration; treatment; exported_mass; destination | 记录、工程平衡、粪污分析、储存测量和方法计算 | kg 粪污；kg 挥发性固体；kg N；日；kg 产品 | 按事件或批次，按月汇总 | 与牛群和乳相同期间 | 所有被代表牛群类别的每条粪污路线 | 核对产生、储存、处理、施用、输出和处置量；按路线计算 | 采样、实验室结果、储存尺寸、收据、平衡闭合和因子溯源 |
-| `cp_on_farm_feed_records` | `on_farm_feed_production` | 管理作物和牧草的投入、产出、土地和养分损失 | 田间作业、收获、放牧和土地记录 | field_id; crop_or_pasture; area; seed; fertilizer; nutrient_content; manure_applied; crop_protection; fuel; electricity; irrigation; yield; dry_matter; residue; grazing_days; previous_land_use | 田间日志、发票、校准施用记录、产量测量、放牧记录和空间证据 | ha；kg；kg 养分；MJ；kWh；kg 水；kg 干物质 | 每次作业和收获 | 向乳报告期供应饲料的作物年度 | 全部直接管理饲料土地和已纳入外包作业 | 将田间投入分配至收获或采食干物质；保留作物、田块和年份 | 完整性、校准、发票、干物质检测、产量核对和土地证据 |
-| `cp_milking_records` | `milking_cooling_storage` | 挤奶、清洗、冷却、储存、水、能源、化学品和制冷剂 | 计量、加药、维修和清洗周期记录 | electricity; fuel; water; cleaning_agent; dose; cleaning_cycles; refrigerant_type; refrigerant_added; tank_temperature | 分表、发票、加药日志、控制器、维修记录和水平衡 | kWh；MJ；kg 水；kg 化学品；kg 制冷剂；°C | 每日或按批，按月核对 | 与乳产出相同期间 | 所有挤奶厅、乳房、冷却和场内储存 | 把实测挤奶/冷却负荷直接归属于乳，并与场址总量核对 | 校准、发票、加药检查、维修证书、温度日志和平衡闭合 |
-| `cp_milk_output_records` | `milking_cooling_storage` | 物理乳、成分、内部使用、拒收乳、废水和可销售产出 | 储奶罐、处理商收据、实验室、去向和水平衡记录 | milk_mass; milk_volume; density; fat_percent; true_protein_percent; temperature; saleable_mass; calf_feed_mass; rejected_mass; wastewater; destination; timestamp | 校准储奶罐或称重记录，并连接实验室成分、处理商收据和水平衡 | kg；L；kg/L；质量百分比；°C | 每次取乳或批次；代表性成分检测 | 与牛群和资源记录相同期间并覆盖季节性 | 全部产乳、每个去向及相关废水 | 核对产乳 = 可销售 + 内部使用 + 拒收 + 库存变化；按批或期间计算 FPCM | 储奶罐校准、实验室 QA、收据、密度方法和质量平衡闭合 |
+| `cp_herd_records` | `herd_and_feed_management` | 牛群结构、流动、活重、死亡和肠道参数 | 动物登记和牛群生产记录 | animal_class; head_count; entry_date; exit_date; exit_reason; live_weight; body_weight; milk_yield; feed_digestibility; gross_energy_intake | 农场登记、校准秤或有文件依据的体重估算及牛群系统导出；原始记录核对：核对期初存栏 + 出生 + 购入 - 销售 - 转出 - 死亡 = 期末存栏；汇总动物日。再按 calc_inventory_normalization 归一化可归属的报告期数量；保留未归一化原始记录。 | 头；kg 活重；kg 乳；MJ/头/日 | 连续记录事件，按月汇总 | 至少一个有代表性的 12 个月期间；不稳定时采用更长平均期 | 所有支撑报告乳产出的牛 | 每 1 kg 参考流 | 登记核对、秤校准或方法、事件缺失日志和系统导出 |
+| `cp_feed_records` | `herd_and_feed_management` | 日粮和垫料 | 采购、混料、库存、放牧和实验室记录 | material_id; origin; animal_class; as_fed_mass; dry_matter_fraction; opening_stock; closing_stock; feed_waste; bedding_mass | 地磅、发票、混料日志、饲料分析、放牧估算和库存核对；原始记录核对：投入 + 期初库存 - 期末库存 - 损失；换算为干物质并按农场门实际可销售乳质量归一化。再按 calc_inventory_normalization 归一化可归属的报告期数量；保留未归一化原始记录。 | kg 饲喂态；kg 干物质；干物质百分比 | 按批或每日，按月汇总 | 与乳和牛群相同的代表期 | 被代表牛群使用的全部饲料和垫料 | 每 1 kg 参考流 | 校准、发票、实验室证书和核对差异 |
+| `cp_herd_resource_records` | `herd_and_feed_management` | 牛群用水和牛舍能源 | 计量、发票和设备运行记录 | meter_id; carrier; opening_reading; closing_reading; invoice_quantity; equipment_hours; allocation_driver | 优先分表；否则以物理分配核对场址总量；原始记录核对：核对仪表和发票；保留不同载体。再按 calc_inventory_normalization 归一化可归属的报告期数量；保留未归一化原始记录。 | kg 水；kWh；MJ；kg 或 L 燃料 | 每月 | 与乳相同的代表期 | 牛群牛舍和服务区域，不含单独计量的挤奶负荷 | 每 1 kg 参考流 | 仪表校准、发票、换算因子和分配工作表 |
+| `cp_manure_records` | `manure_management` | 粪污数量、组成、路线、处理、输出和排放 | 粪污管理和养分平衡记录 | animal_class; volatile_solids; nitrogen_excretion; bedding; dilution_water; management_system; climate; storage_duration; treatment; exported_mass; destination | 记录、工程平衡、粪污分析、储存测量和方法计算；原始记录核对：核对产生、储存、处理、施用、输出和处置量；按路线计算。再按 calc_inventory_normalization 归一化可归属的报告期数量；保留未归一化原始记录。 | kg 粪污；kg 挥发性固体；kg N；日；kg 产品 | 按事件或批次，按月汇总 | 与牛群和乳相同期间 | 所有被代表牛群类别的每条粪污路线 | 每 1 kg 参考流 | 采样、实验室结果、储存尺寸、收据、平衡闭合和因子溯源 |
+| `cp_on_farm_feed_records` | `on_farm_feed_production` | 管理作物和牧草的投入、产出、土地和养分损失 | 田间作业、收获、放牧和土地记录 | field_id; crop_or_pasture; area; seed; fertilizer; nutrient_content; manure_applied; crop_protection; fuel; electricity; irrigation; yield; dry_matter; residue; grazing_days; previous_land_use | 田间日志、发票、校准施用记录、产量测量、放牧记录和空间证据；原始记录核对：将田间投入分配至收获或采食干物质；保留作物、田块和年份。再按 calc_inventory_normalization 归一化可归属的报告期数量；保留未归一化原始记录。 | ha；kg；kg 养分；MJ；kWh；kg 水；kg 干物质 | 每次作业和收获 | 向乳报告期供应饲料的作物年度 | 全部直接管理饲料土地和已纳入外包作业 | 每 1 kg 参考流 | 完整性、校准、发票、干物质检测、产量核对和土地证据 |
+| `cp_milking_records` | `milking_cooling_storage` | 挤奶、清洗、冷却、储存、水、能源、化学品和制冷剂 | 计量、加药、维修和清洗周期记录 | electricity; fuel; water; cleaning_agent; dose; cleaning_cycles; refrigerant_type; refrigerant_added; tank_temperature | 分表、发票、加药日志、控制器、维修记录和水平衡；原始记录核对：把实测挤奶/冷却负荷直接归属于乳，并与场址总量核对。再按 calc_inventory_normalization 归一化可归属的报告期数量；保留未归一化原始记录。 | kWh；MJ；kg 水；kg 化学品；kg 制冷剂；°C | 每日或按批，按月核对 | 与乳产出相同期间 | 所有挤奶厅、乳房、冷却和场内储存 | 每 1 kg 参考流 | 校准、发票、加药检查、维修证书、温度日志和平衡闭合 |
+| `cp_milk_output_records` | `milking_cooling_storage` | 物理乳、成分、内部使用、拒收乳、废水和可销售产出 | 储奶罐、处理商收据、实验室、去向和水平衡记录 | milk_mass; milk_volume; density; fat_percent; true_protein_percent; temperature; saleable_mass; calf_feed_mass; rejected_mass; wastewater; destination; timestamp | 校准储奶罐或称重记录，并连接实验室成分、处理商收据和水平衡；原始记录核对：核对产乳 = 可销售 + 内部使用 + 拒收 + 库存变化；按批或期间计算 FPCM。再按 calc_inventory_normalization 归一化可归属的报告期数量；保留未归一化原始记录。 | kg；L；kg/L；质量百分比；°C | 每次取乳或批次；代表性成分检测 | 与牛群和资源记录相同期间并覆盖季节性 | 全部产乳、每个去向及相关废水 | 每 1 kg 参考流 | 储奶罐校准、实验室 QA、收据、密度方法和质量平衡闭合 |
 
 ### 计算规则
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `calc_fpcm` | 物理牛生乳 | `FPCM (kg) = milk mass (kg) × [0.1226 × fat% + 0.0776 × true protein% + 0.2534]`；成分值以百分比代入，在最有代表性的批次或期间粒度计算并求和后再归一化。 | milk_mass; fat_percent; true_protein_percent | kg FPCM | `idf-dairy-carbon-footprint-2022` |
+| `calc_fpcm` | 物理牛生乳 | `FPCM (kg) = milk mass (kg) × [0.1226 × fat% + 0.0776 × true protein% + 0.2534]`；成分值以百分比代入，在最有代表性的批次或期间粒度计算并求和后再归一化。百分数应代入 4.0 这类数值，而非 0.04 这类小数。比较结果仅汇总与实际可销售乳分母对应的可销售批次；内部使用和拒收乳须单独保留。 | milk_mass; fat_percent; true_protein_percent | kg FPCM | `idf-dairy-carbon-footprint-2022` |
 | `calc_saleable_milk_balance` | 乳的各去向 | `total physical milk produced = saleable farm-gate milk + internal milk use + rejected milk + closing inventory - opening inventory`；调查无法解释的差额，只对可销售产出归一化。 | total_milk; saleable_milk; internal_use; rejected_milk; opening_inventory; closing_inventory | 核对后的 kg 物理乳和 kg FPCM | `mass-balance-identity`; `idf-dairy-carbon-footprint-2022` |
 | `calc_milk_allocation` | 奶牛群共享负荷 | `AF_milk = (NE_L × M_FPCM) / ((NE_L × M_FPCM) + Σ(NE_G,i × M_liveweight,i))`；`AF_live_animals = 1 - AF_milk`。采用 IDF 动物类别特定净能值或有依据的数值，并先直接归属可分离活动。 | M_FPCM; animal_class; M_liveweight_i; NE_L; NE_G_i; directly_attributable_burdens | 已披露的分配因子和分配后共享清单 | `idf-dairy-carbon-footprint-2022` |
-| `calc_enteric_ch4` | 所有被代表牛类别 | 采用适当的 IPCC 2019 Refinement 层级。具备总能摄入、甲烷转换、动物类别、生产力和日粮数据时优先 Tier 2；否则采用许可且最具代表性的因子并披露局限。 | animal_days; animal_class; gross_energy_intake or emission_factor; methane_conversion_factor; productivity; diet | 肠道发酵 kg CH4 | `ipcc-2019-livestock-manure` |
-| `calc_manure_ch4` | 每条粪污路线 | 根据动物数量、挥发性固体排泄、最大产甲烷能力、管理系统比例、甲烷转换及适用的回收或氧化项计算粪污 CH4。 | animal_days; volatile_solids; manure_system_fraction; B0; MCF; recovery; oxidation | 粪污管理 kg CH4 | `ipcc-2019-livestock-manure` |
-| `calc_manure_n2o` | 每条粪污路线 | 根据氮排泄和管理系统比例计算直接和间接 N2O；使挥发和淋失氮与 NH3、硝酸盐及管理土壤计算一致。 | nitrogen_excretion; manure_system_fraction; direct_EF; volatilization_fraction; leaching_fraction; indirect_EF | 粪污管理 kg N2O | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
-| `calc_inventory_normalization` | 所有清单行 | 在内部流抵消和分配后，以可销售农场门 FPCM 除报告期数量；保留总量、期间和分配因子供审计。 | reporting_period_amount; saleable_FPCM; internal_flow_flag; allocation_factor | 每 1 kg FPCM 的清单量 | `mass-balance-identity`; `idf-dairy-carbon-footprint-2022` |
+| `calc_enteric_ch4` | enteric_methane | 采用适当的 IPCC 2019 Refinement 层级。具备总能摄入、甲烷转换、动物类别、生产力和日粮数据时优先 Tier 2；否则采用许可且最具代表性的因子并披露局限。 | animal_days; animal_class; gross_energy_intake or emission_factor; methane_conversion_factor; productivity; diet | 肠道发酵 kg CH4 | `ipcc-2019-livestock-manure` |
+| `calc_manure_ch4` | manure_methane | 根据动物数量、挥发性固体排泄、最大产甲烷能力、管理系统比例、甲烷转换及适用的回收或氧化项计算粪污 CH4。 | animal_days; volatile_solids; manure_system_fraction; B0; MCF; recovery; oxidation | 粪污管理 kg CH4 | `ipcc-2019-livestock-manure` |
+| `calc_manure_n2o` | manure_nitrous_oxide | 根据氮排泄和管理系统比例计算直接和间接 N2O；使挥发和淋失氮与 NH3、硝酸盐及管理土壤计算一致。 | nitrogen_excretion; manure_system_fraction; direct_EF; volatilization_fraction; leaching_fraction; indirect_EF | 粪污管理 kg N2O | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
+| `calc_inventory_normalization` | 所有清单行 | 按已声明分配规则归属报告期数量并核对内部转移后，以实测农场门实际可销售乳质量为分母归一化。内部转移行保留用于单元过程平衡，仅在系统汇总时抵消；保留总量、期间和分配因子。分母必须大于零，并排除内部使用和拒收乳。 | reporting_period_amount; saleable_physical_milk_mass; internal_flow_flag; allocation_factor | 每 1 kg 实际可销售生乳的清单量 | `mass-balance-identity`; `idf-dairy-carbon-footprint-2022` |
+| `calc_fpcm_reporting` | 单独的比较结果及暂定 QA 筛查范围 | `k_period = saleable_FPCM / saleable_physical_milk_mass`；`result_per_kg_FPCM = result_per_kg_physical_milk / k_period`。两种结果须采用相同可销售批次、期间、系统边界和分配后分子。saleable_FPCM 按各批质量乘以其成分校正系数后求和，或使用等价的质量加权成分计算；不得使用批次百分数的简单平均。两种质量和 k_period 必须大于零。原每 FPCM 的 QA 区间 [L, U] 换算为实际乳质量基准时，采用 [L × k_period, U × k_period]；其仍是暂定筛查范围，不能作为默认清单值。报告换算不得再次分配。 | saleable_FPCM; saleable_physical_milk_mass; result_per_kg_physical_milk | k_period; result_per_kg_FPCM; 实际乳质量 QA 界限 | `idf-dairy-carbon-footprint-2022`; `mass-balance-identity` |
 
 ### 数据质量要求
 
@@ -822,7 +828,8 @@ sync_with: pcr.en-US.md
 | rule_id | 适用对象 | 规则 | source_ids |
 | --- | --- | --- | --- |
 | `validate_identity_scope` | 产品身份 | 当参考产品不是牛乳、加工超过场内冷却/储存的生乳状态、缺少所声明农场门或未采用已确认参考流身份时，校验失败。 | `idf-dairy-carbon-footprint-2022` |
-| `validate_reference_flow` | 功能单位和参考流 | 当物理乳质量、脂肪百分比、真蛋白百分比、FPCM 计算、可销售状态或恰好归一化为 1 kg FPCM 任一缺失或不一致时，校验失败。 | `idf-dairy-carbon-footprint-2022` |
+| `validate_reference_flow` | 功能单位和参考流 | 当实际乳质量、脂肪百分比、真蛋白百分比、可销售状态或恰好归一化为 1 kg 实际可销售生乳任一缺失或不一致时，校验失败。关联的最终产品输出必须恰好为 1 kg 实际生乳。 | `idf-dairy-carbon-footprint-2022` |
+| `validate_fpcm_reporting` | 成分校正比较和 QA | 当成分或可销售批次与实际乳分母不匹配、把百分数作为小数代入、k_period 缺失或非正数、把实际乳质量结果乘以而非除以 k_period、重复分配，或把实际乳与 FPCM 结果当作可互换结果时，校验失败。须在参考质量一致性检查之外单独核对这些公式及其证据。 | `idf-dairy-carbon-footprint-2022`; `mass-balance-identity` |
 | `validate_period_herd` | 时间和牛群覆盖 | 当牛群类别、动物流动、乳产出、饲料、粪污和资源记录未采用同一代表期，或期初与期末牛群库存无法核对时，校验失败。 | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
 | `validate_boundary` | 边界完整性 | 当重要饲料供应、直接管理的饲料生产、肠道排放、粪污路线、管理土壤排放、挤奶、冷却、水、能源或乳损失被遗漏且没有适用性理由和数据缺口披露时，校验失败。 | `idf-dairy-carbon-footprint-2022`; `fao-leap-large-ruminants-2016` |
 | `validate_emissions` | 直接排放 | 当肠道或粪污方法缺少所选方法所需的地区、牛类别、生产力、日粮或饲料能量基础、粪污系统、气候、因子来源或计算层级时，校验失败。 | `ipcc-2019-livestock-manure` |
@@ -834,7 +841,7 @@ sync_with: pcr.en-US.md
 
 | 字段 | 值 |
 | --- | --- |
-| dataset_role | 归一化为农场门 1 kg FPCM 的牛生乳前景生产数据包 |
+| dataset_role | 归一化为农场门 1 kg 实际可销售生乳的牛生乳前景生产数据包；单独报告 FPCM 比较结果 |
 | downstream_use | 当范围和质量兼容时，可发布为用于乳品加工、食品、农业及比较供应链模型的 `secondary_dataset` 或 `background_dataset` |
 | allowed_use | 归因型农场门清单、所声明农场系统内热点分析、下游模型中的供应商特定或代表性生乳投入，以及采用相同功能单位和分配方法的情景比较 |
 | excluded_use | 直接消费者或营养声明；加工乳表征；非牛乳；后果型市场变化声明；边界、分配、地理、期间或数据质量不兼容的跨研究排名；把暂定 QA 范围作为默认清单使用 |
@@ -846,7 +853,7 @@ sync_with: pcr.en-US.md
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `idf-dairy-carbon-footprint-2022` | standard | International Dairy Federation (2022), *The IDF global Carbon Footprint standard for the dairy sector*, Bulletin 520/2022, DOI: 10.56169/FKRK7166, https://shop.fil-idf.org/products/the-idf-global-carbon-footprint-standard-for-the-dairy-sector（访问日期 2026-07-24） | FPCM 功能单位和公式、从摇篮到农场门清单、数据质量、乳/活动物分配、粪污处理、直接归属和报告 |
+| `idf-dairy-carbon-footprint-2022` | standard | International Dairy Federation (2022), *The IDF global Carbon Footprint standard for the dairy sector*, Bulletin 520/2022, DOI: 10.56169/FKRK7166, https://shop.fil-idf.org/products/the-idf-global-carbon-footprint-standard-for-the-dairy-sector（访问日期 2026-07-24） | FPCM 比较报告基准和公式、从摇篮到农场门清单、数据质量、乳/活动物分配、粪污处理、直接归属和报告 |
 | `fao-leap-large-ruminants-2016` | official_guidance | FAO LEAP Partnership (2016), *Environmental performance of large ruminant supply chains: Guidelines for assessment*, ISBN 978-92-5-109523-2, https://openknowledge.fao.org/handle/20.500.14283/i6494en（访问日期 2026-07-24） | 大型反刍动物过程边界、全牛群覆盖、饲料和粪污处理及分配层级 |
 | `fao-leap-animal-feed-2016` | official_guidance | FAO LEAP Partnership (2016), *Environmental performance of animal feeds supply chains: Guidelines for assessment*, https://www.fao.org/partnerships/leap/resources/publications/en（访问日期 2026-07-24） | 饲料来源、上游饲料数据集、直接管理饲料生产和土地相关清单 |
 | `fao-leap-nutrient-flows-2018` | official_guidance | FAO LEAP Partnership (2018), *Nutrient flows and associated environmental impacts in livestock supply chains: Guidelines for quantitative assessment*, https://openknowledge.fao.org/handle/20.500.14283/ca1328en（访问日期 2026-07-24） | 粪污和管理土地氮平衡、氨、硝酸盐及养分流一致性 |
