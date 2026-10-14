@@ -11,14 +11,16 @@ sync_with: pcr.zh-CN.md
 
 This PCR governs foreground data packages for unprocessed buffalo milk at the producing dairy farm gate, whether handed over warm or chilled by that farm. Declare buffalo species, farm, herd/lactation period, raw state, temperature, fat/protein or solids, and accepted/rejected mass. Exclude milk from cattle or goats, pasteurization, standardization, consumer packaging, independent cooling centres and post-handover transport. Live buffalo are a separate product.
 
+For the accepted exact mapping to CPC 3.0 02212, the final reference product must be unskimmed and not partly skimmed, with a measured milk-fat mass fraction of at least 3.5% (35 g/kg milk). Milk below this classification boundary is outside this PCR's declared CPC-linked product scope, including when its low fat content is natural. This is a classification eligibility condition, not a general milk-quality pass limit, an emission factor, or an instruction to standardize the milk. Retain the actual composition and state; do not replace measured net milk mass with fat-corrected milk. Source: `un-cpc-3-02212`.
+
 ## 2. Product Category Identity
 
 | Field | Value |
 | --- | --- |
 | canonical_pcr_id | `pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-milk-of-buffalo` |
 | classification_refs | CPC 3.0 `02212`, Raw milk of buffalo |
-| covered_products | unprocessed buffalo milk, warm or farm-chilled, at producing farm gate |
-| excluded_products | other species' milk, processed milk, milk from independent cooling centre |
+| covered_products | unprocessed buffalo milk, warm or farm-chilled, at producing farm gate; unskimmed/not partly skimmed, measured milk-fat mass fraction at least 3.5% (35 g/kg milk) |
+| excluded_products | other species' milk, processed milk, milk from independent cooling centre; milk with fat content below 3.5%, skimmed or partly skimmed milk |
 | representative_product | accepted raw buffalo milk at its declared final farm-gate state |
 | production_route | managed buffalo dairy herd → milking capture → first conditioning → optional farm cooling |
 | market_state | warm or farm-chilled raw milk, with temperature and composition declared |
@@ -42,7 +44,7 @@ Pasture and housed routes are deltas of the managed biological herd parent. They
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
-| Required qualifiers | buffalo species; raw state; farm gate; warm or chilled; handover temperature; fat/protein or solids; accepted and rejected mass; herd and lactation period |
+| Required qualifiers | buffalo species; raw state; farm gate; warm or chilled; handover temperature; fat/protein or solids; accepted and rejected mass; herd and lactation period; unskimmed/not partly skimmed; measured milk-fat mass fraction at least 3.5% (35 g/kg milk), with lot-matched assay method and sampling date |
 
 Instantiate one foreground reference from the actual handed-over lot, with all required qualifiers. The category may cover alternative states and producer gates, but each package has one declared species/state/gate/grade stratum and one measured accepted reference-output denominator. Do not pool incompatible states or claim equal service from equal mass. Route-specific source rows and reference_handover describe the same physical boundary event; their linked internal transfer is not another sale or another physical operation.
 
@@ -52,6 +54,7 @@ The confirmed chilled-only UUID is confined to the explicitly chilled output car
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
+| `cpc_milk_scope` | final reference milk | Milk-fat mass fraction, wet-milk basis | % or g/kg milk | Verify at least 3.5% (35 g/kg) on a sample matched to the actual handover lot, with method, sampling date and skimmed/not-skimmed state. Below-threshold or skimmed/partly skimmed milk is outside the declared CPC-linked scope. Missing or incomparable composition evidence prevents a classification claim; never assume eligibility from species, breed or a default fat content. This condition does not change net-mass normalization. |
 | `m_reference` | accepted final milk | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Normalize one final warm or chilled handover to 1 kg net accepted milk; do not double count an internal warm transfer. |
 | `m_composition` | milk quality | fat/protein or solids mass fraction | % or g/kg | Retain sampling time, analytical basis and wet-mass denominator; do not assume standardization. |
 | `m_feed` | feed | mass and dry matter | kg | Keep as-fed and dry-matter amounts distinct with measured moisture conversion. |
@@ -109,11 +112,11 @@ Record purchased feed and grazed forage by buffalo class and period; distinguish
 
 Denominator and scope requirements：per kg accepted final milk with herd-period or batch strata retained
 
-Raw quantity and calculation requirements: Measured feed issue and estimated pasture intake by documented method Original collection denominator kind: process_output.
+Raw quantity and calculation requirements: Use separate feed-supply, intake and loss ledgers under calc_feed_supply_and_intake. The quantity carrying feed-production burden includes in-boundary refusals, spoilage and uneaten feed; it is not reduced to animal intake. Retain source, species/cohort, phase and original mass/moisture basis. Calculate the final contribution with inventory_reference_normalization and stage_throughput_linkage exactly once. Original collection denominator kind: process_output.
 
 - Selected flow: Buffalo feed and forage
 - Flow property / unit: Mass / kg dry matter
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per reference flow
@@ -289,7 +292,6 @@ Raw quantity and calculation requirements: Buffalo activity multiplied by compat
 
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg CH4
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -317,7 +319,6 @@ Raw quantity and calculation requirements: Pathway-specific manure volatile soli
 
 - Selected flow: Methane, biogenic, to air `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg CH4
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -339,13 +340,14 @@ Raw quantity and calculation requirements: Pathway-specific manure volatile soli
 
 Track manure nitrogen and management pathway; coordinate with managed-soil reporting.
 
+Coverage of this single N2O card: use calc_manure_n2o_coverage to calculate direct and applicable indirect components separately for the represented node, then report only their non-overlapping molecular-N2O sum assigned to this card. Keep storage and managed-soil calculations distinct. Exclude components explicitly covered by a linked process, retain the coverage evidence, and do not duplicate them as both aggregate and component exchanges. Missing indirect-pathway evidence is not zero.
+
 Denominator and scope requirements：per kg accepted final milk with herd-period or batch strata retained
 
 Raw quantity and calculation requirements: Pathway-specific direct and applicable indirect N2O Original collection denominator kind: process_output.
 
 - Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -373,7 +375,6 @@ Raw quantity and calculation requirements: Calculated NH3 from pathway-specific 
 
 - Selected flow: Ammonia to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg NH3
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -629,7 +630,6 @@ Producer-handover linkage: Only when selected as the actual terminal source for 
 
 - Selected flow: Raw milk of buffalo, chilled, at farm gate `790fcd48-b398-4049-898a-f9535f08f97b`
 - Flow property / unit: Mass / kg
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -694,7 +694,7 @@ The actual route/state/gate is selected from foreground handover evidence; retai
 
 Selected source/interface rows: `warm_milk`, `chilled_milk`
 
-Required product-instance qualifiers: buffalo species; raw state; farm gate; warm or chilled; handover temperature; fat/protein or solids; accepted and rejected mass; herd and lactation period
+Required product-instance qualifiers: buffalo species; raw state; farm gate; warm or chilled; handover temperature; fat/protein or solids; accepted and rejected mass; herd and lactation period; unskimmed/not partly skimmed; measured milk-fat mass fraction at least 3.5% (35 g/kg milk), with lot-matched assay method and sampling date
 
 - Selected flow: Raw milk of buffalo, warm or farm-chilled, producing farm gate for actual producer-handover linkage
 - Flow property / unit: Mass / kg
@@ -731,7 +731,7 @@ The actual route/state/gate is selected from foreground handover evidence; retai
 
 Selected source/interface rows: `warm_milk`, `chilled_milk`
 
-Required product-instance qualifiers: buffalo species; raw state; farm gate; warm or chilled; handover temperature; fat/protein or solids; accepted and rejected mass; herd and lactation period
+Required product-instance qualifiers: buffalo species; raw state; farm gate; warm or chilled; handover temperature; fat/protein or solids; accepted and rejected mass; herd and lactation period; unskimmed/not partly skimmed; measured milk-fat mass fraction at least 3.5% (35 g/kg milk), with lot-matched assay method and sampling date
 
 - Selected flow: Raw milk of buffalo, warm or farm-chilled, producing farm gate
 - Flow property / unit: Mass / kg
@@ -771,22 +771,27 @@ Required product-instance qualifiers: buffalo species; raw state; farm gate; war
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_herd` | `herd` | feed, live transfers and enteric CH4 | herd/feed ledger | class, head-days, feed and moisture, grazing estimate, births, replacements, culls, origins | farm records and scales; Raw aggregation requirements: stratify by class and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head-day, kg | event and daily | full reporting period | producing farm | per reference flow | herd roll-forward and weigh tickets; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_herd` | `herd` | feed, live transfers and enteric CH4 | herd/feed ledger | class, head-days, feed and moisture, grazing estimate, births, replacements, culls, origins | farm records and scales; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output. | head-day, kg | event and daily | full reporting period | producing farm | per reference flow | herd roll-forward and weigh tickets; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_manure` | `herd` | manure outputs, CH4, N2O and NH3 | manure ledger | excreted N, volatile solids, pathway fractions, mass, N quality, transfers | inventory, sampling and pathway model; Raw aggregation requirements: reconcile pathways without duplicate soil burden. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, kg N, kg VS | event and monthly | full reporting period | producing farm | per reference flow | storage and transfer records; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_utilities` | `herd`; `milking`; `conditioning`; `cooling` | water and energy | meter/invoice | source, carrier, quantity, asset, node, service time, period | meter and allocation log; Raw aggregation requirements: attribute shared meters exactly once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | m3, kWh, MJ, L, kg | monthly and batch | full reporting period | producing farm | per reference flow | calibration and invoices; traceable numerator, accepted reference-output denominator and normalization worksheet |
-| `cp_milk` | `milking`; `conditioning`; `cooling` | milk outputs and rejects | batch ledger | gross/accepted/rejected/lost mass, state, temperature, composition, gate | calibrated tank and sample; Raw aggregation requirements: sum mutually exclusive final warm/chilled handovers. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, °C, % | batch | full reporting period | producing farm | per reference flow | milk balance and acceptance tickets; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_milk` | `milking`; `conditioning`; `cooling` | milk outputs and rejects | batch ledger | lot and route id; gross/accepted/rejected/lost mass; warm-to-cooling transfer; opening/closing stocks; final state, temperature, composition and gate; state-specific burden attribution | Use calibrated tank records and samples. Reconcile each batch and its actual terminal warm or chilled handover, retaining stock changes and internal transfers. Aggregate accepted final mass only within the same declared state/gate/grade stratum. Direct warm plus chilled totals are for site mass reconciliation only, never a pooled reference denominator. Attribute herd and shared burdens to the selected output stratum under the allocation rules; assign cooling burdens only to the lots actually cooled. Normalize each stratum once by its own measured accepted final output under c_milk_state_normalization. | kg, °C, % | batch | full reporting period, with state-specific strata | producing farm | per reference flow | batch and state ledger; milk balance; acceptance tickets; traceable attribution and state-specific denominator worksheet |
 | `cp_reference_handover` | `reference_handover` | accepted product and matched internal source transfer | producer handover ledger | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed. | kg; native source quantities | each actual handover | matched source and handover periods | declared producer gate only | per reference flow | traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet |
+| `cp_feed_supply_and_intake` | `herd` | Feed supply, intake and loss | stock, receipt, issue and loss ledger | feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output | Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output. | kg as-fed; kg DM | each issue and period close | complete represented cohort/period | actual operated feeding nodes | per reference flow | stock and supplier records; moisture evidence; loss and no-duplication reconciliation |
+| `cp_manure_n2o_coverage` | `herd` | Direct and indirect manure/soil N2O coverage | pathway N ledger and method worksheet | species/class; period; excreted N; stage stocks/transfers; system shares; volatilised NH3-N/NOx-N; leached/runoff N; application/grazing N; factor source, unit and applicability; direct/indirect components; receiving medium; linked process and assigned card; accepted final output | Retain raw stage N and component calculations under calc_manure_n2o_coverage, matched to actual operation and existing manure protocols. Document unsupported or inapplicable paths and coverage boundaries; normalize attributable N2O once. | kg N; kg N2O | each reporting period and management change | complete represented management period | actual operated and explicitly linked nodes | per reference flow | N balance, factor unit/applicability, component-to-card and no-duplication worksheet |
 
 ### Calculation Rules
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `c_milk_balance` | milk stages | gross captured = accepted warm + conditioning rejection/loss; warm into cooling = chilled accepted + cooling rejection/loss; final reference = direct warm + chilled once | batch masses | net accepted kg | |
+| `c_milk_balance` | milk stages | For matched batch/period records: gross captured + opening conditioning stock = conditioned warm + conditioning rejection/loss + closing conditioning stock; conditioned warm + opening warm stock = direct warm handover + warm into cooling + other documented warm losses + closing warm stock; warm into cooling + opening cooling stock = chilled accepted handover + cooling rejection/loss + closing cooling stock. Sum direct warm and chilled handovers only for whole-site mass reconciliation, not as a package reference denominator. Each actual terminal lot is counted once; an internal warm-to-cooling transfer is not a final handover. | batch masses; stock and transfer ledger; cp_milk | reconciled stage and state masses in kg | |
+| `c_milk_state_normalization` | final milk and its attributable inventory | Select the actual warm or chilled output stratum with one declared gate and grade. Its denominator is measured accepted final mass in that stratum only. Final contribution = attributable raw exchange for that stratum * declared reference quantity / its measured accepted final output. Retain rejected mass and losses in the production responsibility, not in accepted output. Attribute shared herd/conditioning burdens using the documented allocation rules; assign cooling burdens to cooled lots only. Apply normalization once. Never divide chilled-route burdens by a warm-plus-chilled total. | cp_milk; cp_reference_handover; state-specific attribution and accepted mass | exchange per kg accepted milk in the selected final state | |
 | `c_feed` | herd feed | dry matter = as-fed mass × sampled dry-matter fraction; document pasture estimation separately | feed and moisture | kg dry matter | `fao-large-ruminants-2016` |
 | `c_enteric` | CH4 | buffalo class-period activity × compatible tier factor; keep enteric and manure pathways apart | head-days, intake, factor | kg CH4 | `ipcc-livestock-2019` |
 | `c_manure_ch4` | manure CH4 | volatile solids × management pathway share × compatible methane conversion and potential factors | VS and pathway ledger | kg biogenic CH4 | `ipcc-livestock-2019` |
 | `c_manure` | N2O and NH3 | excreted N × pathway fraction × species-specific factor, with managed-soil interface reconciliation | N/pathway ledger | kg N2O and NH3 separately | `ipcc-livestock-2019` |
 | `c_shared` | shared assets | measured total × documented service fraction for node-period; fractions sum to one | meter and service log | attributed utility/burden | `fao-large-ruminants-2016` |
+| `calc_feed_supply_and_intake` | `feed` | Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden. | `cp_feed_supply_and_intake` | separate feed supply, intake and loss quantities, in matched as-fed/DM units | `fao-feed-loss-accounting-2018` |
+| `calc_manure_n2o_coverage` | `manure_n2o` | For each actual manure stage, calculate direct N2O, volatilisation/deposition-derived indirect N2O, and applicable leaching/runoff-derived indirect N2O separately with documented species/system activity and factor basis. Convert N2O-N to molecular N2O by 44/28 once; do not reconvert molecular masses. Retain component worksheets. Where an existing N2O card covers both direct and indirect emissions, report their non-overlapping sum; where separate direct/indirect cards exist, assign each component once to its matching card and never also report the sum. Pasture deposition and land application use the managed-soil method, not a manure-storage factor. Assign foreground versus linked treatment/pasture coverage explicitly; a manure export does not erase earlier emissions, and already covered downstream emissions are not repeated. Account for stock, transfers and previous N losses in the nitrogen cascade; indirect N2O is a downstream transformation of its precursor, not a second source-stage N loss. Normalize attributed molecular masses once to the accepted reference output. Document inapplicability; absent pathway data are not zero. | `cp_manure_n2o_coverage` | kg molecular N2O by pathway and assigned existing card | `ipcc-livestock-2019`; `ipcc-managed-soils-2019` |
 
 ### Data Quality Requirements
 
@@ -801,13 +806,18 @@ Required product-instance qualifiers: buffalo species; raw state; farm gate; war
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
+| `v_cpc_milk_scope` | final reference product and classification | Check the lot-matched measured milk-fat fraction is at least 3.5% (35 g/kg milk) and that the milk is neither skimmed nor partly skimmed. Reject use of this exact CPC-linked scope for lower-fat or separated milk; missing evidence leaves classification eligibility undetermined, not assumed. Do not reinterpret this as a quality acceptance limit or change the actual composition. | `un-cpc-3-02212` |
 | `v_reference` | final milk | One final handover state per batch; normalize 1 kg accepted mass. Chilled-only UUID cannot stand for broad warm-or-chilled reference. | |
+| `v_state_denominator` | milk balance and final-package normalization | Require agreement among the selected handover state, attributable numerator and accepted-output denominator under c_milk_state_normalization. Whole-site warm-plus-chilled totals are reconciliation evidence only. Reject pooled-state normalization, duplicated warm transfers and cooling burdens attributed to never-cooled warm lots. | |
 | `v_route` | pasture/housed route | Require feed, manure, energy and animal-period evidence for each route delta; a route label alone is insufficient. | `fao-large-ruminants-2016` |
 | `v_outputs` | milk, live animals, manure | Require explicit independent handover and attribution for each co-product; neither residue nor internal transfer is credited twice. | `fao-large-ruminants-2016` |
 | `v_period` | herd phases | Opening and replacement burdens, birth, milk and cull events have one class-period attribution. | |
 | `v_shared` | shared infrastructure | Housing, pump, parlour, tank and meter fractions sum to one across herd, milking, conditioning and cooling in each service period. | |
 | `v_balance` | milk/manure | Gross, accepted and rejected milk and manure pathway balances reconcile; direct warm and chilled outputs do not overlap. | |
 | `v_uuid` | identity | Fixed UUID requires exact type, property, state, gate and medium; unresolved identity stays blank. | |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
+| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |
+| `v_manure_n2o_coverage` | Applicable manure and managed-soil N pathways | Require explicit direct and indirect pathway coverage, stage N balances and molecular-mass conversion. Map each component to an existing N2O card or an explicitly covering linked process once under calc_manure_n2o_coverage. Missing indirect-pathway evidence prevents a completeness claim; no default zero or duplicate aggregate-plus-components. | `ipcc-livestock-2019`; `ipcc-managed-soils-2019` |
 
 ## 10. Published Dataset Profile
 
@@ -825,5 +835,8 @@ Required product-instance qualifiers: buffalo species; raw state; farm gate; war
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
+| `un-cpc-3-02212` | official_guidance | [UN Statistics Division, CPC 3.0 02212: explanatory note](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/02212) | Species-specific classification scope and low-fat/skimmed/partly skimmed exclusion; not a general quality or emission threshold |
 | `fao-large-ruminants-2016` | official_guidance | FAO LEAP, Environmental performance of large ruminant supply chains, 2016, https://openknowledge.fao.org/handle/20.500.14283/i6494en | herd phases, boundary, feed, outputs and allocation |
 | `ipcc-livestock-2019` | method_factor | IPCC, 2019 Refinement, Volume 4 Chapter 10, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf | buffalo emission and manure pathways |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred. |
+| `ipcc-managed-soils-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 11](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf) | Direct/indirect nitrogen pathways and coordination of manure storage with managed-soil emissions; select applicable species and management evidence. |

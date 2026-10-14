@@ -165,9 +165,9 @@ process_inventory:
           name: "Feed supply (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Record actual species-specific feed crossing the managed boundary. Denominator and scope requirements：per kg Managed species-specific rearing output Raw quantity and calculation requirements: Record actual species-specific feed crossing the managed boundary. Original collection denominator kind: process_output."
+          description: "Record actual species-specific feed crossing the managed boundary. Denominator and scope requirements：per kg Managed species-specific rearing output Raw quantity and calculation requirements: Use separate feed-supply, intake and loss ledgers under calc_feed_supply_and_intake. The quantity carrying feed-production burden includes in-boundary refusals, spoilage and uneaten feed; it is not reduced to animal intake. Retain source, species/cohort, phase and original mass/moisture basis. Calculate the final contribution with inventory_reference_normalization and stage_throughput_linkage exactly once. Original collection denominator kind: process_output."
           amount:
-            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -772,7 +772,7 @@ dataset_production:
       flow_role: "all listed flows"
       record_type: "lot/meter/provenance ledger"
       raw_fields: "species, stage, time, source, calibrated mass, count, input, death, output, destination"
-      collection_method: "Weigh and count each lot; reconcile permits, invoices and meters.; Raw aggregation requirements: sum by species, stage, node and nonoverlapping period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      collection_method: "Weigh and count each lot; reconcile permits, invoices and meters.; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output."
       unit: "kg;count;kWh"
       frequency: "each lot and period"
       temporal_coverage: "complete cohort or capture and service period"
@@ -815,6 +815,18 @@ dataset_production:
       site_scope: "actual site"
       aggregation_rule: "per reference flow"
       quality_evidence: "calibration, provenance, permit, ledger and destination evidence; traceable numerator, accepted reference-output denominator and normalization worksheet"
+    - protocol_id: cp_feed_supply_and_intake
+      process_id: "rear"
+      flow_role: "Feed supply, intake and loss"
+      record_type: "stock, receipt, issue and loss ledger"
+      raw_fields: "feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output"
+      collection_method: "Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output."
+      unit: "kg as-fed; kg DM"
+      frequency: "each issue and period close"
+      temporal_coverage: "complete represented cohort/period"
+      site_scope: "actual operated feeding nodes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "stock and supplier records; moisture evidence; loss and no-duplication reconciliation"
   calculation_rules:
     - id: c_net
       applies_to: "reference lot"
@@ -846,6 +858,14 @@ dataset_production:
       output: "kg;kWh"
       source_ids:
         - mass-balance-identity
+    - id: calc_feed_supply_and_intake
+      applies_to: "feed"
+      rule: "Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden."
+      inputs:
+        - cp_feed_supply_and_intake
+      output: "separate feed supply, intake and loss quantities, in matched as-fed/DM units"
+      source_ids:
+        - fao-feed-loss-accounting-2018
   data_quality_requirements:
     - id: q_core
       applies_to: "each lot"
@@ -876,6 +896,15 @@ validation_rules:
     rule: "Unpermitted wild collection is not a legal source; no fictitious breeding for wild route or zero upstream burden for purchased stock."
     source_ids:
       - un-cpc-2025
+  - rule_id: v_foreground_emission_responsibility
+    applies_to: "Actual operated nodes and linked services"
+    rule: "Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting."
+    source_ids: []
+  - rule_id: v_feed_supply_intake_separation
+    applies_to: "All feed inputs"
+    rule: "Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits."
+    source_ids:
+      - fao-feed-loss-accounting-2018
 published_dataset_profile:
   dataset_role: "Species- and route-specific live-animal foreground package"
   downstream_use: "secondary_dataset; background_dataset"
@@ -897,9 +926,13 @@ data_sources:
     type: "method_factor"
     reference: "Mass conservation and non-overlapping inventory accounting identity"
     used_for: "mass, period and shared-service checks"
+  - id: "fao-feed-loss-accounting-2018"
+    type: "official_guidance"
+    reference: "[FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf)"
+    used_for: "Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:763fa52e5a003a5a3fc62ca38c057f9929ab2894bf034647075ef0b7b84ce183"
+  source_sha256: "sha256:62c4c7ae0941b73964f3c9b05683d4db95ffbd3e487c01dcaf74053643a18750"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6044"
@@ -950,15 +983,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_37482"
+    - unit_id: "normative_37891"
       family: "allocation"
       span:
         start:
-          offset: 37482
+          offset: 37891
           line: 734
           column: 1
         end:
-          offset: 38362
+          offset: 38771
           line: 743
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n### Allocation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_output | co-products and residues | Identify every independently sold output and its handover; do not turn death, spent substrate or unsold eggs into co-products. Prefer documented physical causality for shared inputs; otherwise allocate by measured net economic value for the node and period with price basis and sensitivity disclosed. Meter shared rooms, tanks, lighting and equipment where possible, else use animal-days or area-time, assigning each service once to consuming nodes and nonoverlapping periods. | mass-balance-identity |\n| a_period | periods | Record each cohort stage and asset service period; assign establishment, deaths and replacement once, without repeating stock or burden across periods. | mass-balance-identity |\n\n"
@@ -978,11 +1011,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 37482
+              offset: 37891
               line: 734
               column: 1
             end:
-              offset: 37522
+              offset: 37931
               line: 734
               column: 41
           text: "## 7. Allocation and Co-product Handling"
@@ -998,18 +1031,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_43378"
+    - unit_id: "normative_45528"
       family: "validation"
       span:
         start:
-          offset: 43378
-          line: 769
+          offset: 45528
+          line: 771
           column: 1
         end:
-          offset: 44198
-          line: 778
+          offset: 47396
+          line: 782
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_identity | reference | Verify species, stage, legality, living state, count, net mass and gate; do not claim fixed UUID without detail and support-row verification. | un-cpc-2025 |\n| v_balance | nodes and periods | Reconcile inputs, sales, deaths, waste and closing stock by stage; do not count one animal or loss at two handovers. | mass-balance-identity |\n| v_alloc | outputs and shared services | Check each intended product and own handover, allocation basis, period and shared service shares summing to 1. | mass-balance-identity |\n| v_route | conditional routes | Unpermitted wild collection is not a legal source; no fictitious breeding for wild route or zero upstream burden for purchased stock. | un-cpc-2025 |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_identity | reference | Verify species, stage, legality, living state, count, net mass and gate; do not claim fixed UUID without detail and support-row verification. | un-cpc-2025 |\n| v_balance | nodes and periods | Reconcile inputs, sales, deaths, waste and closing stock by stage; do not count one animal or loss at two handovers. | mass-balance-identity |\n| v_alloc | outputs and shared services | Check each intended product and own handover, allocation basis, period and shared service shares summing to 1. | mass-balance-identity |\n| v_route | conditional routes | Unpermitted wild collection is not a legal source; no fictitious breeding for wild route or zero upstream burden for purchased stock. | un-cpc-2025 |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1026,12 +1059,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 43378
-              line: 769
+              offset: 45528
+              line: 771
               column: 1
             end:
-              offset: 43400
-              line: 769
+              offset: 45550
+              line: 771
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1102,81 +1135,107 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "a_output"
       identity_kind: "explicit"
-      unit_id: "normative_37482"
+      unit_id: "normative_37891"
       source_span:
         start:
-          offset: 37617
+          offset: 38026
           line: 740
           column: 1
         end:
-          offset: 38159
+          offset: 38568
           line: 740
           column: 543
     - pointer: "/allocation_rules/1"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_37482"
+      unit_id: "normative_37891"
       source_span:
         start:
-          offset: 38160
+          offset: 38569
           line: 741
           column: 1
         end:
-          offset: 38360
+          offset: 38769
           line: 741
           column: 201
     - pointer: "/validation_rules/0"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_43378"
+      unit_id: "normative_45528"
       source_span:
         start:
-          offset: 43473
-          line: 773
+          offset: 45623
+          line: 775
           column: 1
         end:
-          offset: 43657
-          line: 773
+          offset: 45807
+          line: 775
           column: 185
     - pointer: "/validation_rules/1"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_43378"
+      unit_id: "normative_45528"
       source_span:
         start:
-          offset: 43658
-          line: 774
+          offset: 45808
+          line: 776
           column: 1
         end:
-          offset: 43834
-          line: 774
+          offset: 45984
+          line: 776
           column: 177
     - pointer: "/validation_rules/2"
       rule_id: "v_alloc"
       identity_kind: "explicit"
-      unit_id: "normative_43378"
+      unit_id: "normative_45528"
       source_span:
         start:
-          offset: 43835
-          line: 775
+          offset: 45985
+          line: 777
           column: 1
         end:
-          offset: 44013
-          line: 775
+          offset: 46163
+          line: 777
           column: 179
     - pointer: "/validation_rules/3"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_43378"
+      unit_id: "normative_45528"
       source_span:
         start:
-          offset: 44014
-          line: 776
+          offset: 46164
+          line: 778
           column: 1
         end:
-          offset: 44196
-          line: 776
+          offset: 46346
+          line: 778
           column: 183
+    - pointer: "/validation_rules/4"
+      rule_id: "v_foreground_emission_responsibility"
+      identity_kind: "explicit"
+      unit_id: "normative_45528"
+      source_span:
+        start:
+          offset: 46347
+          line: 779
+          column: 1
+        end:
+          offset: 46947
+          line: 779
+          column: 601
+    - pointer: "/validation_rules/5"
+      rule_id: "v_feed_supply_intake_separation"
+      identity_kind: "explicit"
+      unit_id: "normative_45528"
+      source_span:
+        start:
+          offset: 46948
+          line: 780
+          column: 1
+        end:
+          offset: 47394
+          line: 780
+          column: 447
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -1204,27 +1263,27 @@ normative_context:
           column: 149
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_37482"
+      unit_id: "normative_37891"
       source_span:
         start:
-          offset: 37482
+          offset: 37891
           line: 734
           column: 1
         end:
-          offset: 37522
+          offset: 37931
           line: 734
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_43378"
+      unit_id: "normative_45528"
       source_span:
         start:
-          offset: 43378
-          line: 769
+          offset: 45528
+          line: 771
           column: 1
         end:
-          offset: 43400
-          line: 769
+          offset: 45550
+          line: 771
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1233,5 +1292,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:763fa52e5a003a5a3fc62ca38c057f9929ab2894bf034647075ef0b7b84ce183"
-  generated_content_sha256: "sha256:6df8bc4a4d1c49a882649fc6965a106e2d1f67742d31634bf4daf5e410062cb8"
+    sha256: "sha256:62c4c7ae0941b73964f3c9b05683d4db95ffbd3e487c01dcaf74053643a18750"
+  generated_content_sha256: "sha256:3d9b0ae5b4a29ddfdbbf10480b8c9e261f5715415a921d2852ae8432181d2f07"

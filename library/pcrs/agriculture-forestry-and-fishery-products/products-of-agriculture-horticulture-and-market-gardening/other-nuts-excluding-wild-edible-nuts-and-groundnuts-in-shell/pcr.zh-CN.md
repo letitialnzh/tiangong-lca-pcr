@@ -122,7 +122,7 @@ sync_with: pcr.en-US.md
 
 ###### 农业养分与肥料投入 (`agricultural_nutrient_inputs`)
 
-所有矿质肥料、有机肥料和含养分改良剂合并在此卡中，并保留产品、含量、施用事件和养分基准。
+各矿质肥料、有机肥料和含养分改良剂按具体产品分别列卡，并保留产品、含量、施用事件和养分基准。
 
 - 选定流: Agricultural nutrient and fertilizer supply
 - 流属性/单位: Product and nutrient quantity / kg product, m3 product, kg N, kg P2O5, kg K2O

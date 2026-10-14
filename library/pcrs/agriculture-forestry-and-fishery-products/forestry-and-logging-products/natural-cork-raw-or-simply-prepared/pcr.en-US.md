@@ -56,7 +56,7 @@ Each foreground package must disclose these qualifiers. One actual lot state sup
 | --- | --- | --- | --- | --- |
 | `reference_mass` | reference product | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Use calibrated net weighing at the accepted handover; exclude packaging and other grades. Every inventory amount uses per 1 kg reference flow and the matched accepted-lot denominator from cp_handover. |
 | `state_mass` | cork inputs and intermediate outputs | Mass | kg | Record moisture on a stated wet/dry basis and match source lot, date and back inclusion before reconciling wet mass, dry cork matter and water; no universal density, expansion or dry-to-wet factor. |
-| `energy_carriers` | energy umbrella cards | Energy | MJ | Preserve fuel amount/heating-value basis, metered electricity and supplied heat separately; document conversions and never convert human labour or native service units into energy. |
+| `energy_carriers` | energy collection requirements | Energy | MJ | Preserve fuel amount/heating-value basis, metered electricity and supplied heat separately; document conversions and never convert human labour or native service units into energy. |
 | `service_units` | service and transport exchanges | actual service property | actual service unit | Hours on service cards cover only measured hour-denominated services; actual tonne-km, area or asset purchases retain their own concrete exchanges and verified support, not invented hour equivalents. |
 | `water_balance` | simple boiling and rest | Mass | kg | Distinguish supplied/direct abstraction, circulation, retained cork water, liquid exits, actual vapour and dissolved/suspended cork matter; wet-mass change alone is not evaporation. |
 
@@ -636,7 +636,6 @@ Actual spoilage, contaminated material or handling loss transferred as waste; re
 Only measured or balance-derived water released as water vapour to air unspecified. Rain uptake, drained liquid, dry cork loss and unknown volatiles cannot be relabelled as evaporation; specific known air compartments need their own identity.
 
 - Selected flow: Water vapour from cork rest to air unspecified `fe0acd60-3ddc-11dd-ac04-0050c2490048`
-- Binding: `fixed`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` (unit group `93a60a57-a4c8-11da-a746-0800200c9a66`) / kg
 - Amount rule: measured actual attributable exchange
 - Value mode: foreground_record
@@ -879,7 +878,6 @@ Actual separated dirt, unusable cork and bath residues crossing waste boundary; 
 Actual water vapour only, separated from liquid blowdown, dissolved extractive removal and retained cork moisture. Use air unspecified only when that actual compartment is declared; no guessed total wet-mass loss.
 
 - Selected flow: Water vapour from boiling and stabilization to air unspecified `fe0acd60-3ddc-11dd-ac04-0050c2490048`
-- Binding: `fixed`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` (unit group `93a60a57-a4c8-11da-a746-0800200c9a66`) / kg
 - Amount rule: measured actual attributable exchange
 - Value mode: foreground_record

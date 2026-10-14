@@ -31,7 +31,7 @@ This PCR covers usable semen from cattle and buffalo donors at the collection-ce
 | How much | 1 accepted dose; report measured volume or mass and sperm count. |
 | How well | Declared donor species/breed, health status, acceptance grade, motility, viability, sperm count, extender and preservation state. |
 | How long or cycle | One collection-to-dispatch batch with upkeep allocated across its observed donor period. |
-| reference_flow_link | usable_dose |
+| reference_flow_link | `usable_dose` |
 
 | Field | Value |
 | --- | --- |
@@ -106,23 +106,25 @@ Measure feed dry matter by donor species and service period.
 
 Denominator and scope requirements：per accepted dose
 
-Raw quantity and calculation requirements: Recorded intake allocated across documented donor-days and accepted doses. Original collection denominator kind: reference_flow.
+Raw quantity and calculation requirements: Use separate feed-supply, intake and loss ledgers under calc_feed_supply_and_intake. The quantity carrying feed-production burden includes in-boundary refusals, spoilage and uneaten feed; it is not reduced to animal intake. Retain source, species/cohort, phase and original mass/moisture basis. Calculate the final contribution with inventory_reference_normalization and stage_throughput_linkage exactly once. Original collection denominator kind: reference_flow.
 
 - Selected flow: Donor feed and forage (UUID unresolved)
 - Flow property / unit: Mass / kg dry matter
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_donor`
+QA scope for this card: the intake range below screens only separately recorded biological intake on its stated unit and denominator, reconstructed under calc_feed_supply_and_intake. It does not bound or substitute for the supplied-feed exchange, which retains in-boundary uneaten losses and their production burden. Do not compare feed supply with intake bounds or subtract losses merely to fit a range. A supply-specific range requires separate evidence; missing intake/loss records leave this intake QA unassessed, not passing.
+
 - Range: Provisional screen, not a factor
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: kg dry matter per dose
-  - Basis: donor-period intake divided by linked accepted doses
+  - Basis: donor-period intake divided by linked accepted doses; QA variable is recorded biological intake only, not the supplied-feed inventory amount
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
@@ -226,7 +228,6 @@ Raw quantity and calculation requirements: Apply a disclosed species-appropriate
 
 - Selected flow: Methane, biogenic `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - Flow property / unit: Mass / kg CH4
-- Binding: `fixed`
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -244,26 +245,11 @@ Raw quantity and calculation requirements: Apply a disclosed species-appropriate
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Manure biogenic methane to air (`manure_ch4_air`)
-
-Apply to CH4 from actual manure-management paths inside the declared foreground boundary, including applicable storage, treatment, digestion and digestate storage. Record separately from enteric methane; missing records do not establish zero emissions. If treatment is wholly outsourced across an independent boundary, document manure handover, foreground storage and treatment-service coverage to prevent omissions or double counting. A not-applicable or zero result requires pathway and method evidence.
-
-Raw quantity and calculation requirements: Under c_manure_ch4, determine CH4 by animal category, actual management system, climate and period; retain volatile solids, applicable emission parameters, recovery and combustion/use records. Count CH4 actually released to air only; do not deduct recovery or mitigation already included in the chosen method a second time. Apply existing attribution rules to raw totals, then normalize once under inventory_reference_normalization and stage_throughput_linkage.
-
-- Selected flow: Biogenic methane from manure management, to air
-- Flow property / unit: Mass / kg CH4
-- Amount rule: Calculate the final-package exchange under inventory_reference_normalization and stage_throughput_linkage using matched pathway records and the raw-emission requirements above.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_manure_ch4`
-- Sources: `ipcc-livestock-2019`
-
 ###### Manure nitrous oxide to air (`manure_n2o_air`)
 
 Apply a documented manure-system method to donor-specific excretion and management rather than borrowing a universal factor.
+
+Coverage of this single N2O card: use calc_manure_n2o_coverage to calculate direct and applicable indirect components separately for the represented node, then report only their non-overlapping molecular-N2O sum assigned to this card. Keep storage and managed-soil calculations distinct. Exclude components explicitly covered by a linked process, retain the coverage evidence, and do not duplicate them as both aggregate and component exchanges. Missing indirect-pathway evidence is not zero.
 
 Denominator and scope requirements：per accepted dose
 
@@ -271,7 +257,6 @@ Raw quantity and calculation requirements: Calculate manure-system N2O for actua
 
 - Selected flow: Nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
-- Binding: `fixed`
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -289,6 +274,8 @@ Raw quantity and calculation requirements: Calculate manure-system N2O for actua
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
+Coverage of this existing N2O card: retain separate direct-management and applicable indirect volatilisation/leaching calculations in cp_pathway_emissions, and sum only non-overlapping N2O releases assigned to this node. Do not hide an absent indirect-pathway estimate in a direct-only value. Convert raw N2O-N to kg N2O by 44/28 once.
+
 ###### Manure ammonia to air (`manure_nh3_air`)
 
 Calculate reported ammonia from actual housing and manure-management pathway with method and nitrogen basis declared.
@@ -299,7 +286,6 @@ Raw quantity and calculation requirements: Calculate reported NH3 from recorded 
 
 - Selected flow: Ammonia `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg NH3
-- Binding: `fixed`
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -316,6 +302,21 @@ Raw quantity and calculation requirements: Calculate reported NH3 from recorded 
   - Basis: reported manure ammonia over linked accepted doses
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Manure biogenic methane to air (`review_donor_management_manure_ch4`)
+
+Calculate actual atmospheric release by manure system, climate, residence time and volatile-solids activity. Reconcile captured, destroyed or oxidised methane; produced methane is not automatically emitted methane. Applies only to the operated `donor_management` node; preserve its existing route and period conditions. A dataset must resolve actual activity, method applicability and an evidence-based range or physical bound for this pathway before treating the inventory as complete. Missing evidence is not zero or not_applicable. A verified substance/origin/compartment UUID is still required for a final bound exchange.
+
+- Selected flow: Methane, biogenic, to air (UUID unresolved)
+- Flow property / unit: Mass / kg CH4
+- Amount rule: Calculate the pathway total for this node and period, apply the existing allocation and stage_throughput_linkage, then inventory_reference_normalization exactly once to the measured final accepted reference output.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_pathway_emissions`
+- Sources: `ipcc-livestock-2019`
 
 ### Process: Semen collection (`semen_collection`)
 
@@ -1132,10 +1133,11 @@ Raw quantity and calculation requirements: Reconcile released and rejected unit 
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `subdivide` | all nodes | Partition by donor species, donor, batch and route before allocation; count only observed service for released doses. | `woah-hygiene-2024` |
+| `subdivide` | all nodes | Partition independently measured activity by donor species, donor, batch and route before allocation. Retain the complete observed donor and collection service period, including failed collections and rejected material, and attribute it over the actual accepted outputs. | `review-fao-pig-lca-2018` |
 | `output_status` | culls and downgraded grades | Independent culls or saleable downgraded semen need actual destination and handoff; rejects and manure to treatment are waste. | `un-cpc-3`; `woah-bovine-2024` |
-| `residual` | inseparable burdens | Prefer causal donor-days, batch use or storage occupancy; disclose any residual physical/economic split and sensitivity, never hypothetical avoided-product credit. | `woah-hygiene-2024` |
-| `period_asset` | donor and shared assets | Link feed, health, donor replacement/cull, laboratory and tank service to actual periods and consuming nodes once; prevent duplicate tank or room burden. | `woah-hygiene-2024` |
+| `residual` | inseparable burdens | Prefer causal donor-days, batch use or storage occupancy; disclose any residual physical/economic split and sensitivity, never hypothetical avoided-product credit. | `review-fao-pig-lca-2018` |
+| `period_asset` | donor and shared assets | Link feed, health, donor replacement/cull, laboratory and tank service to actual periods and consuming nodes once; prevent duplicate tank or room burden. | `review-fao-pig-lca-2018` |
+| `allocation_method_basis` | Residual joint burdens and shared service | Apply the general LCA hierarchy: examine subdivision or an appropriately justified system expansion before residual allocation; then prefer a supported physical causal relationship, and justify an economic basis when physical attribution is not established. The donor-day, occupancy or throughput driver is a PCR modelling choice requiring case-specific evidence and sensitivity, not a requirement of sanitary guidance. Include failed attempts and losses in the service period; do not select only successful outputs or introduce hypothetical substitution credits. | `review-fao-pig-lca-2018` |
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -1143,7 +1145,7 @@ Raw quantity and calculation requirements: Reconcile released and rejected unit 
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_donor` | `donor_management` | feed, water, cull, manure, assets | donor ledger | donor_id, species, breed, donor_days, feed_DM, water, health, cull_mass, manure, asset_service | weigh, meter, husbandry log; Raw aggregation requirements: sum by donor-period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, day | daily/event | complete donor service | all supplying donors | per reference flow | dated donor and purchase logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_donor` | `donor_management` | feed, water, cull, manure, assets | donor ledger | donor_id, species, breed, donor_days, feed_DM, water, health, cull_mass, manure, asset_service | weigh, meter, husbandry log; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output. | kg, day | daily/event | complete donor service | all supplying donors | per reference flow | dated donor and purchase logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_collection` | `semen_collection` | raw ejaculate and supplies | collection log | donor_id, event_id, volume, consumables, failed_event | volume and material issue record; Raw aggregation requirements: sum by event. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL, kg | event | all eligible events | centre collection room | per reference flow | calibrated collection record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_quality` | `quality_grading` | accepted, downgraded, reject | laboratory assay | event_id, sperm_count, concentration, motility, grade, sample_volume, destination | grade assay; Raw aggregation requirements: reconcile each destination. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL, count | event | all collections | centre laboratory | per reference flow | signed test and grade record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_preparation` | `first_preparation` | prepared and rejected | batch log | batch_id, incoming_volume, prepared_volume, removed_volume | calibrated balance; Raw aggregation requirements: input-output balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL | batch | all preparation batches | centre laboratory | per reference flow | batch trace; traceable numerator, accepted reference-output denominator and normalization worksheet |
@@ -1151,7 +1153,9 @@ Raw quantity and calculation requirements: Reconcile released and rejected unit 
 | `cp_dosing` | `dosing` | bulk, straw, filled, reject | fill-run ledger | run_id, bulk_volume, straw_issued, straw_returned, filled_count, reject_count, dose_volume, sperm_per_dose | counter and fill balance; Raw aggregation requirements: count and volume balance. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | mL, dose | run | all fill runs | fill line | per reference flow | machine calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_preservation` | `preservation` | energy, nitrogen, accepted, reject | cold-chain log | batch_id, route, temperature, hold_days, kWh, nitrogen_mass, vessel_service, accepted_count, reject_count | meter, logger, vessel balance; Raw aggregation requirements: route-period denominator. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kWh, kg, dose | batch/day | all stored lots | cold room and tanks | per reference flow | logger and purchase logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_dispatch` | `centre_dispatch` | package, release, reject | release ledger | lot_id, donor, species, route, grade, package_mass, vessel_cycle, released_count, reject_count, gate_time | release count and issue log; Raw aggregation requirements: count released once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | dose, kg | lot | all dispatches | centre gate | per reference flow | QA release and receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
-| `cp_manure_ch4` | `donor_management` | manure CH4 | animal-category and manure-pathway ledger | animal_category; animal_days; VS_mass_and_basis; system_share; storage_duration; climate_temperature; B0_or_selected_tier_factor; MCF_if_used; factor_version; methane_recovery; combustion_or_use; digestate_storage; handover; period | Reconcile animal events, manure routing, storage/digester and gas-meter records; retain parameters, units, sources and recovery conventions required by the selected IPCC tier. Calculate raw emissions by category, path and period, then apply existing attribution and final normalization once; never multiply annual VS by 365 again. | kg VS; kg CH4; animal-day; native factor units | each event and monthly | same period as animal activity and accepted reference output | declared foreground manure-management boundary | per reference flow | pathway-share reconciliation, meter calibration, parameter sources and versions, gas balance and normalization worksheet |
+| `cp_pathway_emissions` | `donor_management` | pathway-specific gases and manure N/C | herd, feed, manure, field and method ledger | species/class; animal-days; intake/DM/digestibility; volatile solids; manure N/TAN; system shares; climate; storage time; fertiliser N; grazing; volatilisation/leaching; methane recovery; factor source/unit; final accepted output ; collected manure wet mass; dry matter; destination| collect primary activity by node and period, document parameter applicability, retain each pathway worksheet and any linked treatment/pasture dataset  Retain raw totals and normalize attributed quantities once to the measured accepted final reference output.| animal-day; kg DM; kg VS; kg N; kg CH4; kg N2O; kg NH3 | each operating period and management change | complete represented cohort and service period | actual operated nodes only | per reference flow | meter/analysis records, nitrogen cascade, method and factor evidence, no-duplication ledger |
+| `cp_feed_supply_and_intake` | `donor_management` | Feed supply, intake and loss | stock, receipt, issue and loss ledger | feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output | Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output. | kg as-fed; kg DM | each issue and period close | complete represented cohort/period | actual operated feeding nodes | per reference flow | stock and supplier records; moisture evidence; loss and no-duplication reconciliation |
+| `cp_manure_n2o_coverage` | `donor_management` | Direct and indirect manure/soil N2O coverage | pathway N ledger and method worksheet | species/class; period; excreted N; stage stocks/transfers; system shares; volatilised NH3-N/NOx-N; leached/runoff N; application/grazing N; factor source, unit and applicability; direct/indirect components; receiving medium; linked process and assigned card; accepted final output | Retain raw stage N and component calculations under calc_manure_n2o_coverage, matched to actual operation and existing manure protocols. Document unsupported or inapplicable paths and coverage boundaries; normalize attributable N2O once. | kg N; kg N2O | each reporting period and management change | complete represented management period | actual operated and explicitly linked nodes | per reference flow | N balance, factor unit/applicability, component-to-card and no-duplication worksheet |
 
 ### Calculation Rules
 
@@ -1161,7 +1165,9 @@ Raw quantity and calculation requirements: Reconcile released and rejected unit 
 | `donor_intensity` | donor upkeep | Same-period donor burden divided by linked accepted doses after independent output attribution. | `cp_donor`, `cp_dispatch` | burden per dose | `woah-hygiene-2024` |
 | `route_intensity` | preservation | State-specific energy, nitrogen, losses and storage occupancy divided by state-specific accepted doses. | `cp_preservation`, `cp_dispatch` | burden per route dose | `fao-cryoconservation-2021` |
 | `shared_asset` | infrastructure | Allocate measured service/occupancy over the full service period to consuming nodes once. | `cp_donor`, `cp_preservation`, `cp_dispatch` | unique attributed asset burden | `woah-hygiene-2024` |
-| `c_manure_ch4` | `manure_ch4_air` | Apply the selected IPCC Section 10.4 tier to the same animal categories, actual system shares, climate and period. Retain applicable VS, methane-production and conversion parameters and reconcile capture, use/combustion, leakage and subsequent storage conventions; do not deduct recovery twice. Keep enteric CH4 separate; exclude treatment beyond the handover boundary only with evidence of its coverage. Attribute burdens under existing allocation rules, then normalize once. | `cp_manure_ch4`; matched animal and output records; tier and parameter sources | kg CH4, then contribution per reference flow | `ipcc-livestock-2019` |
+| `calc_pathway_emissions` | `donor_management` | Use species- and management-compatible methods and retain disaggregated pathway totals. Convert N2O-N to N2O by 44/28 and NH3-N to NH3 by 17/14 exactly once; already molecular masses are not reconverted. Check methane against the documented available-carbon/methane-potential balance and nitrogen losses against each stage's available N. Indirect formation from previously volatilised N is a downstream transformation, not a second source-stage N loss. Attribute and normalize once; do not duplicate linked treatment or fate-model emissions.  Use matched raw-period quantities before allocation for physical screens: CH4 mass × 12/16 must not exceed the carbon available to the represented pathway; source-stage NH3 mass × 14/17 plus direct N2O mass × 28/44 and other source N losses must not exceed that stage's available N, after accounting for stocks and transfers. Bound each indirect N2O-N calculation by its documented volatilised or leached N precursor, not by subtracting that downstream transformation again from the source ledger. These are conservation checks, not emission factors or an empirical per-product range.| `cp_pathway_emissions` | kg named compound per final reference flow | `ipcc-livestock-2019`; `review-eea-manure-2023`; `review-ipcc-soils-2019` |
+| `calc_feed_supply_and_intake` | `donor_feed` | Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden. | `cp_feed_supply_and_intake` | separate feed supply, intake and loss quantities, in matched as-fed/DM units | `review-fao-pig-lca-2018` |
+| `calc_manure_n2o_coverage` | `manure_n2o_air` | For each actual manure stage, calculate direct N2O, volatilisation/deposition-derived indirect N2O, and applicable leaching/runoff-derived indirect N2O separately with documented species/system activity and factor basis. Convert N2O-N to molecular N2O by 44/28 once; do not reconvert molecular masses. Retain component worksheets. Where an existing N2O card covers both direct and indirect emissions, report their non-overlapping sum; where separate direct/indirect cards exist, assign each component once to its matching card and never also report the sum. Pasture deposition and land application use the managed-soil method, not a manure-storage factor. Assign foreground versus linked treatment/pasture coverage explicitly; a manure export does not erase earlier emissions, and already covered downstream emissions are not repeated. Account for stock, transfers and previous N losses in the nitrogen cascade; indirect N2O is a downstream transformation of its precursor, not a second source-stage N loss. Normalize attributed molecular masses once to the accepted reference output. Document inapplicability; absent pathway data are not zero. | `cp_manure_n2o_coverage` | kg molecular N2O by pathway and assigned existing card | `ipcc-livestock-2019`; `review-ipcc-soils-2019` |
 
 ### Data Quality Requirements
 
@@ -1181,7 +1187,10 @@ Raw quantity and calculation requirements: Reconcile released and rejected unit 
 | `balance` | all material interfaces | Reconcile semen, components, grade destinations, filled count, waste and packaging with actual records. | `fao-cryoconservation-2021` |
 | `attribution` | outputs, periods, assets | Verify cull/downgrade handoffs, donor period, causal split and unique shared-asset ownership. | `woah-hygiene-2024` |
 | `identity_review` | flow UUIDs | Contradictory platform bovine-semen candidate remains unbound pending source correction and new detail review. | `un-cpc-3` |
-| `v_manure_ch4` | `manure_ch4_air` | Check actual pathways, animal categories, VS time basis, system shares, climate and period; reconcile recovery and treatment boundaries without omissions or duplication. Zero/not-applicable requires evidence, not missing data; retain distinct enteric and manure CH4 exchanges. | `ipcc-livestock-2019` |
+| `v_pathway_emission_coverage` | `donor_management` | Require a pathway coverage ledger for enteric CH4 where biologically applicable, manure CH4, direct/indirect N2O, NH3 and relevant field emissions. Every pathway needs a measured/calculated value, a named linked process with matching coverage, or supported inapplicability; absent data cannot become zero. Keep wild life before capture outside managed husbandry, assess actual managed holding separately, and retain species-specific evidence. | `ipcc-livestock-2019`; `review-ipcc-soils-2019`; `review-eea-manure-2023` |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
+| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `review-fao-pig-lca-2018` |
+| `v_manure_n2o_coverage` | Applicable manure and managed-soil N pathways | Require explicit direct and indirect pathway coverage, stage N balances and molecular-mass conversion. Map each component to an existing N2O card or an explicitly covering linked process once under calc_manure_n2o_coverage. Missing indirect-pathway evidence prevents a completeness claim; no default zero or duplicate aggregate-plus-components. | `ipcc-livestock-2019`; `review-ipcc-soils-2019` |
 
 ## 10. Published Dataset Profile
 
@@ -1204,3 +1213,6 @@ Raw quantity and calculation requirements: Reconcile released and rejected unit 
 | `woah-bovine-2024` | standard | https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2024/en_chapitre_coll_semen.htm | Semen collection, processing and traceability |
 | `fao-cryoconservation-2021` | official_guidance | https://www.fao.org/fileadmin/user_upload/animal_genetics/docs/CGRFA-18-21-10_2_Inf1_forPDF.pdf | Cattle and water-buffalo semen, processing and preservation routes |
 | `ipcc-livestock-2019` | method_factor | https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf | Species- and pathway-specific livestock and manure emission calculations |
+| `review-fao-pig-lca-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains: Guidelines for assessment, section 11.2.2 and Appendix 2.13](https://www.fao.org/4/i8686en/I8686EN.pdf) | Feed-loss accounting and general LCA allocation hierarchy; extension to other taxa or reproductive products is this PCR's explicit methodological choice, not a pig parameter transfer |
+| `review-ipcc-soils-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 11: N2O Emissions from Managed Soils](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf) | Managed-soil direct and indirect nitrogen pathways and boundary reconciliation |
+| `review-eea-manure-2023` | official_guidance | [EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, 3.B Manure Management](https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023/part-b-sectoral-guidance-chapters/3-agriculture/3-b-manure-management-2023) | NH3 nitrogen-flow method; verify actual species, management and geographical applicability before adopting parameters |

@@ -249,7 +249,6 @@ Record contracted establishment, tending and road/equipment service shares only 
 Include only when the stated carbon-accounting method reports this uptake with growth, removals, residues and carbon-stock ledgers; no automatic negative emission or credit.
 
 - Selected flow: Carbon dioxide uptake from air in documented stand growth `da174fac-e567-42d3-99b5-a688913dc88e`
-- Binding: `fixed`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
 Carbon measurement method: Calculate uptake from actual growth, dry-matter and carbon-stock ledgers under carbon_and_emissions, then normalize; reference wet mass is not carbon uptake.
 
@@ -281,7 +280,6 @@ Conditional merchantable growing stock at forest site from documented managed st
 
 - Selected flow: Merchantable standing timber from managed broadleaf stands `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Binding: `fixed`
 - Amount rule: Collect non-duplicated component or same-lot transfer total Q; use the matched boundary/period final accepted reference mass M_ref (positive kg) as the sole final denominator: Q/M_ref. For a local process intensity q_i = Q/O_i, multiply by the measured O_i/M_ref; do not divide an already final-reference amount again. Preserve unallocated physical transfers and co-output ledgers; apply only still-required period/output attribution separately to environmental burdens.
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
@@ -314,7 +312,6 @@ Use only documented managed standing stock transferred from stand management or 
 
 - Selected flow: Merchantable standing timber from managed broadleaf stands `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Binding: `fixed`
 - Amount rule: Collect non-duplicated component or same-lot transfer total Q; use the matched boundary/period final accepted reference mass M_ref (positive kg) as the sole final denominator: Q/M_ref. For a local process intensity q_i = Q/O_i, multiply by the measured O_i/M_ref; do not divide an already final-reference amount again. Preserve unallocated physical transfers and co-output ledgers; apply only still-required period/output attribution separately to environmental burdens.
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
@@ -474,7 +471,7 @@ Only residues crossing the boundary for waste management; material left onsite r
 
 ###### Actual felling combustion emissions to air (`harvest_air_emissions`)
 
-Conditional umbrella: record each actual emitted substance, fossil/biogenic origin, receiving medium and estimation method separately; unspecified mixtures cannot receive one UUID.
+Conditional collection requirement: record each actual emitted substance, fossil/biogenic origin, receiving medium and estimation method separately; unspecified mixtures cannot receive one UUID.
 
 - Selected flow: Actual felling combustion emissions to air
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
@@ -934,7 +931,6 @@ Conditional unprocessed other-use roundwood, e.g. poles/posts/pitprops; exclude 
 
 - Selected flow: Roundwood of non-coniferous wood, other, at forest roadside `b8b84d78-13c2-4dab-9b6d-8e7d9dc32f3b`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Binding: `fixed`
 - Amount rule: Collect non-duplicated component or same-lot transfer total Q; use the matched boundary/period final accepted reference mass M_ref (positive kg) as the sole final denominator: Q/M_ref. For a local process intensity q_i = Q/O_i, multiply by the measured O_i/M_ref; do not divide an already final-reference amount again. Preserve unallocated physical transfers and co-output ledgers; apply only still-required period/output attribution separately to environmental burdens.
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
@@ -1015,7 +1011,7 @@ Actual rejected material transferred to waste management; downgrade sale does no
 | `mass_bridge` | Wood volume records | Net mass = measured same-lot solid volume multiplied by measured compatible as-received density; stacked conversion needs its separately measured factor | Same-lot volume/density; bark/moisture; conversion uncertainty | Compatible kg | |
 | `stock_balance` | Biological and removal ledgers | Opening stock plus actual growth/transfers minus removals/losses equals closing stock on the same area, period and property basis | Survey and harvest records; period/source mode | Stock/removal reconciliation; no duplicated resource input | |
 | `carbon_and_emissions` | Actual elementary reporting | Use explicitly declared site-appropriate method and collected activity/species/medium; reconcile dry-carbon stores, uptake/removals/residues and reported releases without assuming credits or neutrality | Actual dry matter/carbon; periods; emissions method and activity | Separate substance/compartment amounts and uncertainty | |
-| `component_reconciliation` | Umbrella cards | Expand actual zero/one/multiple exchanges, retain each concrete identity/property/unit; amounts and Range checks are component-specific | Invoices/meters/formulations/services; actual route | Concrete exchange ledger, not mixed-unit totals | |
+| `component_reconciliation` | Collection requirements | Expand actual zero/one/multiple exchanges, retain each concrete identity/property/unit; amounts and Range checks are component-specific | Invoices/meters/formulations/services; actual route | Concrete exchange ledger, not mixed-unit totals | |
 | `calculate_direct_release_ledger` | `stand`; `harvest`; `extraction`; `preparation`; `grading` | For each unique event, substance and medium, obtain raw release E from measurement or the cited applicable method using activity A and a compatible factor EF; use E = A * EF only for a genuinely simple-factor method, after checking units and abatement scope. Do not add different substances/media; retain an unallocated raw-release ledger. Divide attributed burden totals once by matched positive final reference quantity R; do not renormalize final-reference intensities or allocate a shared event twice. Unexplained material residuals are not automatically emissions and missing factors are not zero. | cp_direct_release_stand; cp_direct_release_harvest; cp_direct_release_extraction; cp_direct_release_preparation; cp_direct_release_grading; existing emission cards; supplier coverage; reference quantity | Node/substance/medium-specific raw and attributed amounts and unresolved gaps |  |
 
 ### Data Quality Requirements

@@ -516,31 +516,41 @@ Raw quantity and calculation requirements: Weigh added medium; split retained an
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Preservation energy supply (`cure_energy`)
+###### Electricity at the equipment supply point (`cure_energy_electricity`)
+
+**Collection scope and applicability for cure_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Meter actual electricity, fuel or other energy carrier for chilling/drying/curing and shared service once.
-
 Denominator and scope requirements：per kg cured skin
-
 Raw quantity and calculation requirements: Meter real carrier energy by method, lot and node. Original collection denominator kind: process_output.
 
-- Selected flow: Actual preservation energy carrier (UUID unresolved)
-- Flow property / unit: Energy / MJ
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_preserve` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
-- Range: Energy ledger QA, not prescribed factor
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100000
-  - Unit: MJ/kg
-  - Basis: per kg cured skin
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`cure_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_preserve` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_preserve`
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -711,6 +721,8 @@ Denominator and scope requirements：per reference flow
 | a_grade | sale grades and cure | Attribute each accepted or downgraded marketable grade at one real handover, with rejects and retained salt/moisture distinct; cure mass does not create extra skin. | fao-hides-skins |
 | a_period | source phases and shared assets | Index relevant husbandry/aquaculture/capture, slaughter/recovery, cold-room and cure periods. Divide actual flaying, washing, chilling and cure service among consuming nodes and periods by measured use or supported causal driver exactly once. | fao-hides-skins |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -751,6 +763,7 @@ Denominator and scope requirements：per reference flow
 | v_balance | each lot | Reconcile fresh, accepted, downgrade, reject, cure medium and net sold states to measured uncertainty; investigate unexplained residual. | fao-hides-skins |
 | v_allocation | phases and shared assets | Reject unsupported zero/whole-animal burden, duplicate product, repeated asset period or arbitrary universal co-product rule. | fao-hides-skins |
 | v_identity | concrete final exchange | A broad unresolved card is not a final UUID; verify species, part, raw state, property, actual gate and direction. Goat skin, furskin or whole fish cannot substitute. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 
 ## 10. Published Dataset Profile
 
@@ -771,3 +784,4 @@ Denominator and scope requirements：per reference flow
 | `un-cpc-3-notes` | official_guidance | [UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | raw-skin scope and exclusions |
 | `un-cpc-39110` | official_guidance | [UNSD CPC 39110](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/39110) | feather-on bird-skin classification check |
 | `fao-hides-skins` | official_guidance | [FAO Hides and Skins](https://www.fao.org/4/i0523e/i0523e.pdf) | first preparation, cure and route method |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

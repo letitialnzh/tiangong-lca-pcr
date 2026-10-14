@@ -50,6 +50,7 @@ This PCR covers living, identified reptiles, including eligible snakes, lizards,
 | `m_input_mass` | Feed, stock and waste | Mass | kg | Use measured wet/as-purchased state and disclose any dry-matter conversion separately. |
 | `m_time` | Cohorts, capture campaigns and shared facilities | Time | day or declared period | Assign inputs, mortality, output and assets to actual periods; no default lifetime is assumed. |
 | `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -68,9 +69,9 @@ This PCR covers living, identified reptiles, including eligible snakes, lizards,
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `b_legal` | Every lot | Verify species and legal source before modelling marketable live output. CITES or domestic source codes require checking; they are not blanket authorization. | `un-cpc-2025`; `woah-reptiles-2024`; `cites-guide-2022` |
-| `b_routes` | Captive or wild source | Captive production includes real breeding/rearing, stock, feed, water and environmental control; collection includes authorized live capture and actual holding but no invented captive lifetime. Stop at actual source handover. | `woah-reptiles-2024` |
-| `b_shared` | Shared rooms, thermal plant, pools, equipment | Assign measured service to consuming cohorts, capture/holding nodes and periods once. Separate buyer transport, slaughter and destination use. | `woah-reptiles-2024` |
+| `b_legal` | Every lot | Verify species and legal source before modelling marketable live output. CITES or domestic source codes require checking; they are not blanket authorization. | `un-cpc-2025`; ; `cites-guide-2022` |
+| `b_routes` | Captive or wild source | Captive production includes real breeding/rearing, stock, feed, water and environmental control; collection includes authorized live capture and actual holding but no invented captive lifetime. Stop at actual source handover. |  |
+| `b_shared` | Shared rooms, thermal plant, pools, equipment | Assign measured service to consuming cohorts, capture/holding nodes and periods once. Separate buyer transport, slaughter and destination use. |  |
 
 ## 6. Process Inventory Structure
 
@@ -122,7 +123,7 @@ Denominator and scope requirements：per kg accepted live output
 
 - Selected flow: Actual feed or prey supplied to named cohort
 - Flow property / unit: Mass / kg
-- Amount rule: measured supplies net of closing inventory and separately recorded loss
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Product-specific (`product_specific`)
 - Normalization basis: per reference flow
@@ -162,29 +163,25 @@ Denominator and scope requirements：per kg accepted live output
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Environmental-control energy (`captive_energy`)
+###### Electricity at the equipment supply point (`captive_energy_electricity`)
+
+**Collection scope and applicability for captive_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record actual carrier for heating, lighting, filtration or humidity control where required by selected species and site.
-
 Denominator and scope requirements：per kg accepted live output
 
-- Selected flow: Energy carrier supplied to reptile facility
-- Flow property / unit: Energy / MJ
-- Amount rule: metered carrier energy attributed to cohort and service period
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_resources` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_resources`
-- Range: Provisional non-negative facility-energy screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000000
-  - Unit: MJ/kg live output
-  - Basis: per kg accepted live output; no generic reptile default
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -689,9 +686,11 @@ No generic direct emission is assumed at handover.
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `a_output` | Captive node | List all intended independent live and non-live outputs and their actual gates. First partition physically separable activities; if joint burdens remain, use evidenced mass or another documented causal driver and disclose sensitivity. Unsold eggs/shed and dead animals are residue/waste. | `mass-balance-identity`; `woah-reptiles-2024` |
+| `a_output` | Captive node | List all intended independent live and non-live outputs and their actual gates. First partition physically separable activities; if joint burdens remain, use evidenced mass or another documented causal driver and disclose sensitivity. Unsold eggs/shed and dead animals are residue/waste. | `mass-balance-identity` |
 | `a_period` | Captive cohort or capture campaign | Link stock, facilities, feed, losses and live animals to actual periods. Allocate opening stock and shared assets once across realized outputs and service periods; no default reptile lifetime or double counting at internal transfers. | `mass-balance-identity` |
 | `a_shared` | Heated rooms, pools, cages and handling services | Record every consuming node/cohort and period; allocate by measured service time, metered energy/water or justified capacity driver, not again at final handover. | `mass-balance-identity` |
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -700,10 +699,11 @@ No generic direct emission is assumed at handover.
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_stock` | `captive` | opening/purchased reptiles | animal inventory and provenance | species, source, permit, count, mass, class, date, supplier, carried burden | reconcile intake and opening ledger; Raw aggregation requirements: attribute stock once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head | receipt and period opening | full cohort | breeder site | per reference flow | permits, supplier and scale records; traceable numerator, accepted reference-output denominator and normalization worksheet |
-| `cp_resources` | `captive`, `capture`, `handover` | feed, water, energy, consumables, shared cages | meter, invoice, issue/service logs | input identity, amount, unit, node, cohort, period, reuse, water discharge | meter or reconcile invoices and stock; Raw aggregation requirements: attribute actual consumption once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, MJ, day | each issue and monthly | full cohort/campaign | foreground nodes | per reference flow | logs, invoices, meters, allocation worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_resources` | `captive`, `capture`, `handover` | feed, water, energy, consumables, shared cages | meter, invoice, issue/service logs | input identity, amount, unit, node, cohort, period, reuse, water discharge | meter or reconcile invoices and stock; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output. | kg, MJ, day | each issue and monthly | full cohort/campaign | foreground nodes | per reference flow | logs, invoices, meters, allocation worksheet; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_live` | `captive`, `capture`, `handover` | live transfers and accepted output | count, weighing, acceptance | species, source, authorization, animal ID, count, size, mass, health, date, gate | weigh and inspect living animals; Raw aggregation requirements: normalize accepted mass to 1 kg. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head | each handover | all cohorts/campaigns | source site | per reference flow | scale, identity and health records; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_outputs` | `captive`, `capture`, `handover` | co-product, mortality and rejects | sale, incident and disposal | species, event, mass, count, fate, date, gate | measure or reconcile event logs; Raw aggregation requirements: distinguish product, waste, internal return. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg, head | each event | all periods | site/campaign | per reference flow | receipts and incident logs; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_emission` | `captive` | direct releases | monitoring or method | named substance, receiving medium, mass, period, method | direct monitoring or source-backed calculation; Raw aggregation requirements: normalize by output. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | monitored interval | full cohort | facility | per reference flow | test report and calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed_supply_and_intake` | `captive` | Feed supply, intake and loss | stock, receipt, issue and loss ledger | feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output | Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output. | kg as-fed; kg DM | each issue and period close | complete represented cohort/period | actual operated feeding nodes | per reference flow | stock and supplier records; moisture evidence; loss and no-duplication reconciliation |
 
 ### Calculation Rules
 
@@ -712,6 +712,7 @@ No generic direct emission is assumed at handover.
 | `c_reference` | accepted live output | Sum measured mass of accepted living animals of one species; normalize allocated inventory to 1 kg. Reconcile count, source transfer and rejected/dead disposition. | `cp_live`, `cp_outputs` | kg accepted live species | `mass-balance-identity` |
 | `c_water` | captive wastewater | Supplied water minus measured retained, evaporated and separately discharged quantities; direct measurement takes precedence. | `cp_resources` | kg wastewater | `mass-balance-identity` |
 | `c_period` | stock and shared service | Assign consumption to cohort/campaign and period, divide joint service by metered use or documented time and sum shares once. | `cp_stock`, `cp_resources`, `cp_outputs` | allocated input/kg accepted output | `mass-balance-identity` |
+| `calc_feed_supply_and_intake` | `captive_feed` | Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden. | `cp_feed_supply_and_intake` | separate feed supply, intake and loss quantities, in matched as-fed/DM units | `fao-feed-loss-accounting-2018` |
 
 ### Data Quality Requirements
 
@@ -726,11 +727,13 @@ No generic direct emission is assumed at handover.
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `v_legal` | live output | Fail if species, authorized origin, condition or actual source gate is absent; classification does not prove legality. | `un-cpc-2025`; `woah-reptiles-2024`; `cites-guide-2022` |
-| `v_routes` | source process | Exactly one evidenced source route supplies each lot. Captive needs stock/cohort records; capture needs permits/campaign and cannot inherit imagined breeding inputs. | `woah-reptiles-2024` |
+| `v_legal` | live output | Fail if species, authorized origin, condition or actual source gate is absent; classification does not prove legality. | `un-cpc-2025`; ; `cites-guide-2022` |
+| `v_routes` | source process | Exactly one evidenced source route supplies each lot. Captive needs stock/cohort records; capture needs permits/campaign and cannot inherit imagined breeding inputs. |  |
 | `v_balance` | mass and outputs | Reconcile opening/purchased or captured mass, stock changes, accepted live animals, mortality and real co-products; internal transfers and same-gate live returns only once. A later production activity requires its own responsibility and records. | `mass-balance-identity` |
 | `v_shared` | multi-period/shared assets | Each input, asset, output and loss has node/period attribution; shares sum to observed service without double charge at two gates. | `mass-balance-identity` |
 | `v_identity` | all cards | conditional flow cards need concrete selection; final exchanges need verified species/state/direction/property/unit and gate before publication. | `un-cpc-2025` |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
+| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |
 
 ## 10. Published Dataset Profile
 
@@ -749,6 +752,8 @@ No generic direct emission is assumed at handover.
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
 | `un-cpc-2025` | official_guidance | [UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | living-reptile classification boundary |
-| `woah-reptiles-2024` | official_guidance | [WOAH Terrestrial Code chapter 7.14](https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2024/en_chapitre_aw_reptiles.htm) | species-specific handling, welfare and source documentation |
+| `woah-reptiles-2024` | official_guidance | [WOAH Terrestrial Code chapter 7.14](https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/2024/en_chapitre_aw_reptiles.htm) | WOAH 2024 Chapter 7.14 covers welfare during killing for skins/meat/products. Use only explicitly transferable handling context; it does not establish lawful live capture, breeding methods or LCA allocation. |
 | `cites-guide-2022` | official_guidance | [CITES Trade Database guide](https://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf) | distinguish reported wild, captive and ranched source codes; not permit evidence alone |
 | `mass-balance-identity` | method_factor | Mass conservation and measured foreground input/output reconciliation | normalization, stock, water and shared-service reconciliation |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred. |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

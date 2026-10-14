@@ -36,7 +36,7 @@ This PCR covers fresh, unprocessed banana production from plantation establishme
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Fresh bananas at the declared farm-gate or pack-house gate `7c496507-1583-4181-9a3a-2cf56d54b99c` |
+| Reference product flow | Bananas `7c496507-1583-4181-9a3a-2cf56d54b99c` |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -45,6 +45,8 @@ This PCR covers fresh, unprocessed banana production from plantation establishme
 
 When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. Missing required qualifiers make the reference flow definition incomplete for that data package.
 
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
+
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -52,7 +54,7 @@ When constructing a foreground data package, the items listed in `Required quali
 | `reference_banana_mass` | marketable bananas and harvest records | Mass | kg | Keep gross bunch or lot harvest, marketable fresh bananas, unmarketable fruit, trimming, field residue, and documented handling loss as separate measured or calculated quantities. |
 | `plantation_cycle_normalization` | plantation, field, and crop-cycle records | Area, time, and mass | ha, year, and kg | Record inputs and harvests by plantation unit, field, or production lot and normalize them to the marketable output attributed to the same declared production year or crop cycle. |
 | `planting_material_basis` | suckers, corms, tissue-culture plants, and other establishment material | Count or mass | plant, sucker, corm, or kg | Preserve the material type and purchased lot quantity; convert counts to mass only when a documented supplier or site conversion is available. |
-| `nutrient_product_basis` | fertilizer, manure, compost, mulch, and soil-amendment inputs | Product mass and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | Preserve purchased product mass and convert to nutrient basis only from the documented label, supplier specification, nutrient plan, or laboratory result. |
+| `nutrient_product_basis` | fertilizer, manure, compost, mulch, and soil-amendment inputs | Product mass and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `water_energy_basis` | irrigation, washing, cooling, electricity, and fuel | Volume, energy, or fuel | m3, kWh, MJ, or L | Record irrigation and conditioning water separately; record purchased electricity and fuel in their measured units and disclose any conversion factor used. |
 
 ## 5. System Boundary
@@ -145,22 +147,100 @@ Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to
 
 ##### Product flows
 
-###### Agricultural nutrient and fertilizer inputs (`managed_banana_crop_cycle_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`managed_banana_crop_cycle_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for managed_banana_crop_cycle_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to the same crop cycle or production year.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_nutrient_records`
-- Sources: `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`
+- Sources: `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`; `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`managed_banana_crop_cycle_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`managed_banana_crop_cycle_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`managed_banana_crop_cycle_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`managed_banana_crop_cycle_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`managed_banana_crop_cycle_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`; `fao-organic-nutrients`
 
 ###### Flow: Banana crop-protection product (`crop_protection_input`)
 
@@ -196,22 +276,40 @@ Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to
 - Collection protocol: `cp_irrigation_records`
 - Sources: `fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6`
 
-###### Flow: Plantation energy or fuel input (`plantation_energy_input`)
+###### Electricity at the equipment supply point (`plantation_energy_input_electricity`)
+
+**Collection scope and applicability for plantation_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record electricity and fuel used for pumping, field machinery, crop operations, and other managed crop-cycle activities inside the declared boundary.
-
-- Selected flow: Plantation electricity or fuel
-- Flow property / unit: Energy or fuel / kWh, MJ, or L
-- Amount rule: Record purchased electricity and fuel by equipment, operation, and plantation unit; disclose conversions and allocation for shared equipment.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to the same crop cycle or production year.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_field_energy_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_field_energy_records`
-- Sources: `fao-banana-production-guide-2015`
+- Sources: `fao-banana-production-guide-2015`; `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`plantation_energy_input_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_field_energy_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_field_energy_records`
+- Sources: `fao-banana-production-guide-2015`; `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -282,22 +380,40 @@ Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to
 
 ##### Product flows
 
-###### Flow: Harvest and conditioning energy (`harvest_energy_input`)
+###### Electricity at the equipment supply point (`harvest_energy_input_electricity`)
+
+**Collection scope and applicability for harvest_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record electricity and fuel used for bunch handling, dehanding, grading, washing, cooling, and primary packing before the declared gate.
-
-- Selected flow: Harvest and conditioning electricity or fuel
-- Flow property / unit: Energy or fuel / kWh, MJ, or L
-- Amount rule: Use meter, fuel, run-time, or throughput records and allocate shared utilities to banana batches by documented throughput or run time.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declared gate.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_postharvest_energy_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_postharvest_energy_records`
-- Sources: `fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6`
+- Sources: `fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6`; `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`harvest_energy_input_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_postharvest_energy_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_postharvest_energy_records`
+- Sources: `fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6`; `fao-agricultural-energy`
 
 ###### Flow: Conditioning or wash water (`conditioning_water_input`)
 
@@ -345,7 +461,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declar
 
 Record the fresh banana lots that meet the declared maturity, size, grade, cleanliness, trimming, packaging, and gate-state qualifiers.
 
-- Selected flow: Fresh bananas at the declared farm-gate or pack-house gate
+- Selected flow: Bananas `7c496507-1583-4181-9a3a-2cf56d54b99c`
 - Flow property/unit: Mass / kg
 
 Original reference-state unit annotation: Mass / kg wet fresh bananas
@@ -487,22 +603,40 @@ Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declar
 
 ##### Elementary flows
 
-###### Flow: Emissions from included residue or wastewater treatment (`routing_treatment_emissions`)
+###### Methane to air (`routing_treatment_emissions_ch4`)
+
+**Collection scope and applicability for routing_treatment_emissions.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record or calculate emissions from an included treatment route only when the route, method, and measured or documented inputs support the emission pathway.
-
-- Selected flow: Emissions from included banana residue or wastewater treatment
-- Flow property / unit: Mass / kg substance
-- Amount rule: Apply the declared treatment method and documented factor or measurement; do not infer treatment emissions when the route is transferred to a separate downstream dataset.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Technology-specific (`technology_specific`)
 Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declared gate.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Calculate from the actual pathway, substance-mass basis and receiving compartment; convert N- or C-based factors to this substance mass. Include only the foreground contribution and avoid duplicating linked upstream or treatment-service emissions.
+
+- Selected flow: Methane to air
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_residue_and_reject_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_residue_and_reject_records`
-- Sources: `ipcc-2019-refinement-afolu`
+- Sources: `ipcc-biological-waste-2006`
+
+###### Nitrous oxide to air (`routing_treatment_emissions_n2o`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Calculate from the actual pathway, substance-mass basis and receiving compartment; convert N- or C-based factors to this substance mass. Include only the foreground contribution and avoid duplicating linked upstream or treatment-service emissions.
+
+- Selected flow: Nitrous oxide to air
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_residue_and_reject_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_residue_and_reject_records`
+- Sources: `ipcc-biological-waste-2006`
 
 ## 7. Allocation and Co-product Handling
 
@@ -512,6 +646,8 @@ Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declar
 | `allocation_plantation_establishment` | establishment, replanting, ratoon renewal, and shared plantation burdens | Disclose plantation age and cycle number, then assign establishment or shared plantation burdens across the declared productive cycles using a documented attribution rule; do not silently assign all establishment burdens to one harvest year. | `fao-banana-production-guide-2015`; `iso-14044-2006` |
 | `allocation_residue_reject_fate` | field residue, harvest rejects, trim, recovered material, and wastewater | Do not assign a co-product credit to residue or rejects unless a documented recipient, quantity, quality basis, and intended use exist; otherwise retain the burden with banana production and report the fate. | `fao-banana-production-guide-2015`; `iso-14044-2006` |
 | `allocation_shared_conditioning` | shared harvest, conditioning, packing, and utilities | Allocate shared conditioning inputs by measured banana throughput, run time, or another documented physical relationship; disclose the allocation basis and reconcile it to gate output. | `globalgap-ifa-fruit-vegetables-v6`; `iso-14044-2006` |
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -590,6 +726,13 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `globalgap-ifa-fruit-vegetables-v6` | official_guidance | GLOBALG.A.P., *Integrated Farm Assurance guideline for Fruit and Vegetables v6*, https://documents.globalgap.org/documents/230414_IFA_guideline_FV_v6_0_Apr23_en.pdf | production records, fertilizer and crop-protection records, traceability, harvest, and post-harvest quality evidence |
 | `globalgap-tr4-banana-biosecurity` | official_guidance | GLOBALG.A.P., *TR4 Biosecurity Add-on for Bananas*, https://globalgap.org/what-we-offer/solutions/tr4-biosecurity-add-on/ | banana planting-material traceability, plantation hygiene, and biosecurity disclosure |
 | `iso-14044-2006` | standard | ISO 14044:2006, *Environmental management — Life cycle assessment — Requirements and guidelines* | allocation hierarchy, co-product handling, and documented attribution rules |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |
+| `eea-emission-methods` | official_guidance | EMEP/EEA air pollutant emission inventory guidebook 2023, https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023 | conditional concrete identities and method context; does not establish site use or quantities |
+| `ipcc-soils-n2o-2019` | official_guidance | IPCC 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | conditional concrete identities and method context; does not establish site use or quantities |
+| `ipcc-biological-waste-2006` | method_factor | IPCC 2006 Guidelines, Volume 5, Chapter 4: Biological Treatment of Solid Waste, https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/5_Volume5/V5_4_Ch4_Bio_Treat.pdf | Only the declared actual pathway; retain activity data and applicable factors separately |
+
 
 ###### Flow: Nitrogen and nutrient loss to water or soil (`nutrient_loss_emission`)
 

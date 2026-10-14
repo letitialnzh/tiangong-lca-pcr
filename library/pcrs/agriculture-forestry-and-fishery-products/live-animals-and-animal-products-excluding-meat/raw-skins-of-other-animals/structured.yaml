@@ -555,32 +555,44 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: cure_energy
-          role: "Preservation energy supply"
-          name: "Actual preservation energy carrier (UUID unresolved)"
+        - row_id: cure_energy_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy / MJ"
-          description: "Meter actual electricity, fuel or other energy carrier for chilling/drying/curing and shared service once. Denominator and scope requirements：per kg cured skin Raw quantity and calculation requirements: Meter real carrier energy by method, lot and node. Original collection denominator kind: process_output."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for cure_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Meter actual electricity, fuel or other energy carrier for chilling/drying/curing and shared service once. Denominator and scope requirements：per kg cured skin Raw quantity and calculation requirements: Meter real carrier energy by method, lot and node. Original collection denominator kind: process_output. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
-            value_mode: "calculated_value"
+            expression: "Collect raw quantities for this identity under cp_preserve and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per reference flow"
+              text: "per declared reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
+              kind: "collected_record"
               collection_protocol_id: cp_preserve
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "100000"
-                unit: "MJ/kg"
-                basis: "per kg cured skin"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+              source_ids:
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: cure_energy_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_preserve and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_preserve
+              source_ids:
+                - fao-agricultural-energy
+            ranges: []
       waste:
         []
       elementary:
@@ -755,6 +767,10 @@ allocation_rules:
     rule: "Index relevant husbandry/aquaculture/capture, slaughter/recovery, cold-room and cure periods. Divide actual flaying, washing, chilling and cure service among consuming nodes and periods by measured use or supported causal driver exactly once."
     source_ids:
       - fao-hides-skins
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_remove
@@ -914,6 +930,10 @@ validation_rules:
     applies_to: "concrete final exchange"
     rule: "A broad unresolved card is not a final UUID; verify species, part, raw state, property, actual gate and direction. Goat skin, furskin or whole fish cannot substitute."
     source_ids: []
+  - rule_id: v_foreground_emission_responsibility
+    applies_to: "Actual operated nodes and linked services"
+    rule: "Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Species-, route-, part-, grade-, state- and gate-qualified raw-other-animal-skin foreground dataset."
   downstream_use: "Candidate secondary_dataset or background_dataset only after concrete identities, review and publication."
@@ -935,9 +955,13 @@ data_sources:
     type: "official_guidance"
     reference: "[FAO Hides and Skins](https://www.fao.org/4/i0523e/i0523e.pdf)"
     used_for: "first preparation, cure and route method"
+  - id: "fao-agricultural-energy"
+    type: "official_guidance"
+    reference: "FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:62f373ca8fe861b38dd0a2e7637b1225300d6ccf73b626a8f861745691cf413a"
+  source_sha256: "sha256:3f39890660f1db51fee3bf39653fae106fbcaf9ff7cef32e43964100ff422343"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6618"
@@ -988,18 +1012,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_35356"
+    - unit_id: "normative_36898"
       family: "allocation"
       span:
         start:
-          offset: 35356
-          line: 705
+          offset: 36898
+          line: 715
           column: 1
         end:
-          offset: 36605
-          line: 714
+          offset: 38535
+          line: 726
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual upstream output set | Enumerate only real separate meat, fish-body, breeding, eggs, fibre or other saleable products for the declared species and phase. Prefer defensible causal physical allocation; otherwise document economic allocation with period prices and sensitivity. Never give skin automatic zero or all animal burden. | fao-hides-skins |\n| a_recovery | lawful recovery | Document pre-existing source burden, legal recovery and actual terminal-treatment alternative; justify burden and separately report any avoided-treatment credit without fictional meat. | fao-hides-skins |\n| a_grade | sale grades and cure | Attribute each accepted or downgraded marketable grade at one real handover, with rejects and retained salt/moisture distinct; cure mass does not create extra skin. | fao-hides-skins |\n| a_period | source phases and shared assets | Index relevant husbandry/aquaculture/capture, slaughter/recovery, cold-room and cure periods. Divide actual flaying, washing, chilling and cure service among consuming nodes and periods by measured use or supported causal driver exactly once. | fao-hides-skins |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual upstream output set | Enumerate only real separate meat, fish-body, breeding, eggs, fibre or other saleable products for the declared species and phase. Prefer defensible causal physical allocation; otherwise document economic allocation with period prices and sensitivity. Never give skin automatic zero or all animal burden. | fao-hides-skins |\n| a_recovery | lawful recovery | Document pre-existing source burden, legal recovery and actual terminal-treatment alternative; justify burden and separately report any avoided-treatment credit without fictional meat. | fao-hides-skins |\n| a_grade | sale grades and cure | Attribute each accepted or downgraded marketable grade at one real handover, with rejects and retained salt/moisture distinct; cure mass does not create extra skin. | fao-hides-skins |\n| a_period | source phases and shared assets | Index relevant husbandry/aquaculture/capture, slaughter/recovery, cold-room and cure periods. Divide actual flaying, washing, chilling and cure service among consuming nodes and periods by measured use or supported causal driver exactly once. | fao-hides-skins |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1016,12 +1040,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 35356
-              line: 705
+              offset: 36898
+              line: 715
               column: 1
             end:
-              offset: 35396
-              line: 705
+              offset: 36938
+              line: 715
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1036,18 +1060,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_42850"
+    - unit_id: "normative_44780"
       family: "validation"
       span:
         start:
-          offset: 42850
-          line: 745
+          offset: 44780
+          line: 757
           column: 1
         end:
-          offset: 43956
-          line: 755
+          offset: 46487
+          line: 768
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject species/use assigned to 02951–02955, tannage/further preparation, whole animals, and unsupported feather-on bird-skin 02959 claims. | un-cpc-3-notes;un-cpc-39110 |\n| v_route | source/removal | Require lawful species-specific source and removal distinct from source production/capture and first preparation; no invented farm for wild animal or meat for recovered animal. | fao-hides-skins |\n| v_balance | each lot | Reconcile fresh, accepted, downgrade, reject, cure medium and net sold states to measured uncertainty; investigate unexplained residual. | fao-hides-skins |\n| v_allocation | phases and shared assets | Reject unsupported zero/whole-animal burden, duplicate product, repeated asset period or arbitrary universal co-product rule. | fao-hides-skins |\n| v_identity | concrete final exchange | A broad unresolved card is not a final UUID; verify species, part, raw state, property, actual gate and direction. Goat skin, furskin or whole fish cannot substitute. |  |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject species/use assigned to 02951–02955, tannage/further preparation, whole animals, and unsupported feather-on bird-skin 02959 claims. | un-cpc-3-notes;un-cpc-39110 |\n| v_route | source/removal | Require lawful species-specific source and removal distinct from source production/capture and first preparation; no invented farm for wild animal or meat for recovered animal. | fao-hides-skins |\n| v_balance | each lot | Reconcile fresh, accepted, downgrade, reject, cure medium and net sold states to measured uncertainty; investigate unexplained residual. | fao-hides-skins |\n| v_allocation | phases and shared assets | Reject unsupported zero/whole-animal burden, duplicate product, repeated asset period or arbitrary universal co-product rule. | fao-hides-skins |\n| v_identity | concrete final exchange | A broad unresolved card is not a final UUID; verify species, part, raw state, property, actual gate and direction. Goat skin, furskin or whole fish cannot substitute. |  |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1064,12 +1088,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 42850
-              line: 745
+              offset: 44780
+              line: 757
               column: 1
             end:
-              offset: 42872
-              line: 745
+              offset: 44802
+              line: 757
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1153,120 +1177,146 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "a_source"
       identity_kind: "explicit"
-      unit_id: "normative_35356"
+      unit_id: "normative_36898"
       source_span:
         start:
-          offset: 35469
-          line: 709
+          offset: 37011
+          line: 719
           column: 1
         end:
-          offset: 35835
-          line: 709
+          offset: 37377
+          line: 719
           column: 367
     - pointer: "/allocation_rules/1"
       rule_id: "a_recovery"
       identity_kind: "explicit"
-      unit_id: "normative_35356"
+      unit_id: "normative_36898"
       source_span:
         start:
-          offset: 35836
-          line: 710
+          offset: 37378
+          line: 720
           column: 1
         end:
-          offset: 36073
-          line: 710
+          offset: 37615
+          line: 720
           column: 238
     - pointer: "/allocation_rules/2"
       rule_id: "a_grade"
       identity_kind: "explicit"
-      unit_id: "normative_35356"
+      unit_id: "normative_36898"
       source_span:
         start:
-          offset: 36074
-          line: 711
+          offset: 37616
+          line: 721
           column: 1
         end:
-          offset: 36293
-          line: 711
+          offset: 37835
+          line: 721
           column: 220
     - pointer: "/allocation_rules/3"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_35356"
+      unit_id: "normative_36898"
       source_span:
         start:
-          offset: 36294
-          line: 712
+          offset: 37836
+          line: 722
           column: 1
         end:
-          offset: 36603
-          line: 712
+          offset: 38145
+          line: 722
           column: 310
+    - pointer: "/allocation_rules/4"
+      rule_id: "allocation_rule_5"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_36898"
+      source_span:
+        start:
+          offset: 38147
+          line: 724
+          column: 1
+        end:
+          offset: 38533
+          line: 724
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_42850"
+      unit_id: "normative_44780"
       source_span:
         start:
-          offset: 42945
-          line: 749
+          offset: 44875
+          line: 761
           column: 1
         end:
-          offset: 43143
-          line: 749
+          offset: 45073
+          line: 761
           column: 199
     - pointer: "/validation_rules/1"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_42850"
+      unit_id: "normative_44780"
       source_span:
         start:
-          offset: 43144
-          line: 750
+          offset: 45074
+          line: 762
           column: 1
         end:
-          offset: 43369
-          line: 750
+          offset: 45299
+          line: 762
           column: 226
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_42850"
+      unit_id: "normative_44780"
       source_span:
         start:
-          offset: 43370
-          line: 751
+          offset: 45300
+          line: 763
           column: 1
         end:
-          offset: 43551
-          line: 751
+          offset: 45481
+          line: 763
           column: 182
     - pointer: "/validation_rules/3"
       rule_id: "v_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_42850"
+      unit_id: "normative_44780"
       source_span:
         start:
-          offset: 43552
-          line: 752
+          offset: 45482
+          line: 764
           column: 1
         end:
-          offset: 43741
-          line: 752
+          offset: 45671
+          line: 764
           column: 190
     - pointer: "/validation_rules/4"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_42850"
+      unit_id: "normative_44780"
       source_span:
         start:
-          offset: 43742
-          line: 753
+          offset: 45672
+          line: 765
           column: 1
         end:
-          offset: 43954
-          line: 753
+          offset: 45884
+          line: 765
           column: 213
+    - pointer: "/validation_rules/5"
+      rule_id: "v_foreground_emission_responsibility"
+      identity_kind: "explicit"
+      unit_id: "normative_44780"
+      source_span:
+        start:
+          offset: 45885
+          line: 766
+          column: 1
+        end:
+          offset: 46485
+          line: 766
+          column: 601
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -1294,27 +1344,27 @@ normative_context:
           column: 139
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_35356"
+      unit_id: "normative_36898"
       source_span:
         start:
-          offset: 35356
-          line: 705
+          offset: 36898
+          line: 715
           column: 1
         end:
-          offset: 35396
-          line: 705
+          offset: 36938
+          line: 715
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_42850"
+      unit_id: "normative_44780"
       source_span:
         start:
-          offset: 42850
-          line: 745
+          offset: 44780
+          line: 757
           column: 1
         end:
-          offset: 42872
-          line: 745
+          offset: 44802
+          line: 757
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1323,5 +1373,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:62f373ca8fe861b38dd0a2e7637b1225300d6ccf73b626a8f861745691cf413a"
-  generated_content_sha256: "sha256:fbea2f997d506eee5b676e52b018b6cbe97f2601695d64118c5fe6b3d3a9bfc2"
+    sha256: "sha256:3f39890660f1db51fee3bf39653fae106fbcaf9ff7cef32e43964100ff422343"
+  generated_content_sha256: "sha256:6d13f3cabe1dacba0c48801d8ef3da09f37762b955fd572cf4b6a4baa7445ca6"

@@ -21,7 +21,7 @@ system_boundary:
       applies_to: "establishment and field management"
       rule: "Include bed preparation, sowing or transplanting, crop management, and crop-cycle inputs that produce the declared spinach output; disclose prior land use and exclude unrelated infrastructure construction."
       source_ids:
-        - ucanr-spinach-production-1996
+        - ucanr-spinach-production-2011
         - govnl-spinach-production-guide-2025
     - rule_id: boundary_gate_preparation
       applies_to: "harvest and packing"
@@ -38,7 +38,7 @@ system_boundary:
       applies_to: "field residue, rejects, and trim"
       rule: "Record field return, composting, feed use, treatment, or disposal separately; a material with no demonstrated productive use remains a residue or waste flow."
       source_ids:
-        - ucanr-spinach-production-1996
+        - ucanr-spinach-production-2011
         - usda-ams-bunched-spinach-standard
 boundary_abstraction:
   declared_starting_condition: "Prepared production bed or protected-cultivation unit receiving spinach seed or transplant material, with prior land use and excluded infrastructure work disclosed"
@@ -94,7 +94,7 @@ measurement_rules:
       name: "Mass of product and declared nutrient"
       uuid: ""
     required_unit: "kg product, kg N, kg P2O5, or kg K2O"
-    rule: "Preserve purchased product mass and convert to nutrient basis only from the documented label, supplier specification, or laboratory result."
+    rule: "Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity."
   - id: water_volume_basis
     applies_to: "irrigation and washing water"
     required_property_ref:
@@ -162,51 +162,132 @@ process_inventory:
                 source_ids:
                   - govnl-spinach-production-guide-2025
                   - ufifas-leafy-vegetable-guide-2024
-        - row_id: crop_establishment_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: crop_establishment_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh spinach from the same crop cycle."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for crop_establishment_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh spinach from the same crop cycle. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_establishment_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_establishment_records
               source_ids:
-                - ucanr-spinach-production-1996
+                - ucanr-spinach-production-2011
                 - govnl-spinach-production-guide-2025
-            ranges:
-              - role: typical_range
-                lower: "22"
-                upper: "34"
-                unit: "kg N/ha"
-                basis: "preplant or planting application to a fresh-market spinach crop"
-                basis_kind: "crop_cycle"
-                evidence_kind: "external_source"
-                source_ids:
-                  - ucanr-spinach-production-1996
-              - role: default_estimate
-                lower: "0"
-                upper: "100"
-                unit: "kg P2O5/ha"
-                basis: "establishment application pending soil-test and nutrient-plan records"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-              - role: default_estimate
-                lower: "0"
-                upper: "200"
-                unit: "kg K2O/ha"
-                basis: "establishment application pending soil-test and nutrient-plan records"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_establishment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_establishment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_establishment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_establishment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_establishment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_establishment_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-organic-nutrients
+            ranges: []
         - row_id: establishment_irrigation_water
           role: "Irrigation water for establishment"
           name: "Irrigation water"
@@ -224,7 +305,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_irrigation_records
               source_ids:
-                - ucanr-spinach-production-1996
+                - ucanr-spinach-production-2011
                 - fao-spinach-irrigation-schedule
             ranges:
               - role: typical_range
@@ -233,10 +314,8 @@ process_inventory:
                 unit: "m3/ha"
                 basis: "delivered irrigation between seeding and emergence or transplant establishment"
                 basis_kind: "crop_cycle"
-                evidence_kind: "external_source"
-                source_ids:
-                  - ucanr-spinach-production-1996
-                  - fao-spinach-irrigation-schedule
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
         - row_id: establishment_machinery_fuel
           role: "Mobile machinery fuel for bed preparation"
           name: "Mobile machinery fuel"
@@ -254,7 +333,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_field_energy_records
               source_ids:
-                - ucanr-spinach-production-1996
+                - ucanr-spinach-production-2011
             ranges:
               - role: qa_guardrail
                 lower: "50"
@@ -305,51 +384,132 @@ process_inventory:
     label: "Spinach crop management"
     inputs:
       product:
-        - row_id: crop_management_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: crop_management_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh spinach."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for crop_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh spinach. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_nutrient_records
               source_ids:
-                - ucanr-spinach-production-1996
+                - ucanr-spinach-production-2011
                 - govnl-spinach-production-guide-2025
-            ranges:
-              - role: typical_range
-                lower: "22"
-                upper: "56"
-                unit: "kg N/ha"
-                basis: "preplant plus supplemental nitrogen for fresh-market spinach"
-                basis_kind: "crop_cycle"
-                evidence_kind: "external_source"
-                source_ids:
-                  - ucanr-spinach-production-1996
-              - role: default_estimate
-                lower: "0"
-                upper: "100"
-                unit: "kg P2O5/ha"
-                basis: "in-season application pending soil-test and nutrient-plan records"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-              - role: default_estimate
-                lower: "0"
-                upper: "200"
-                unit: "kg K2O/ha"
-                basis: "in-season application pending soil-test and nutrient-plan records"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ucanr-spinach-production-2011
+                - govnl-spinach-production-guide-2025
+                - fao-organic-nutrients
+            ranges: []
         - row_id: crop_protection_input
           role: "Crop-protection product"
           name: "Crop-protection product"
@@ -394,18 +554,18 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_irrigation_records
               source_ids:
-                - ucanr-spinach-production-1996
+                - ucanr-spinach-production-2011
                 - fao-spinach-irrigation-schedule
             ranges:
               - role: typical_range
-                lower: "413"
-                upper: "1240"
+                lower: "1016"
+                upper: "3048"
                 unit: "m3/ha"
-                basis: "total applied irrigation between seeding and harvest for fresh-market spinach"
+                basis: "California seeding-to-harvest clipped crop 4–8 acre-inches/acre (1016–2032 m3/ha), bunch crop 6–12 (1524–3048); 1 inch depth = 254 m3/ha. Excludes processed routes and pre-tillage water; use actual field water balance."
                 basis_kind: "crop_cycle"
                 evidence_kind: "external_source"
                 source_ids:
-                  - ucanr-spinach-production-1996
+                  - ucanr-spinach-production-2011
         - row_id: crop_machinery_fuel
           role: "Mobile machinery fuel during crop management"
           name: "Mobile machinery fuel"
@@ -423,7 +583,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_field_energy_records
               source_ids:
-                - ucanr-spinach-production-1996
+                - ucanr-spinach-production-2011
             ranges:
               - role: qa_guardrail
                 lower: "100"
@@ -453,7 +613,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_harvest_reconciliation
               source_ids:
-                - ucanr-spinach-production-1996
+                - ucanr-spinach-production-2011
             ranges:
               - role: qa_guardrail
                 lower: "0"
@@ -546,9 +706,8 @@ process_inventory:
                 unit: "kg N2O/ha"
                 basis: "managed-soil nitrogen emissions for the represented crop cycle"
                 basis_kind: "n_input"
-                evidence_kind: "external_source"
-                source_ids:
-                  - ipcc-2019-refinement-nitrogen
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
         - row_id: nitrate_freshwater_output
           role: "Nitrate to freshwater from field losses"
           name: "Nitrate, emissions to freshwater"
@@ -812,7 +971,7 @@ allocation_rules:
     applies_to: "shared field, bed, or protected unit"
     rule: "Attribute crop-cycle inputs to spinach using the recorded bed or unit area and the crop-cycle output; do not allocate to a second crop without its own records."
     source_ids:
-      - ucanr-spinach-production-1996
+      - ucanr-spinach-production-2011
   - rule_id: allocation_multi_cut_spinach
     applies_to: "repeated cuts from one sowing"
     rule: "Treat successive cuts as outputs of the same declared crop cycle and reconcile each cut before normalizing to total marketable spinach."
@@ -823,6 +982,10 @@ allocation_rules:
     rule: "Do not assign a co-product credit to residues unless a documented recipient, quantity, and intended use exists; otherwise retain the burden with spinach production and report the residue fate."
     source_ids:
       - usda-ams-bunched-spinach-standard
+  - rule_id: allocation_rule_4
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_establishment_records
@@ -1051,7 +1214,7 @@ validation_rules:
     applies_to: "fertilizer inputs and emissions"
     rule: "Product mass, nutrient concentration, nutrient basis, and emission calculation method must be present and internally consistent; avoid counting both product mass and nutrient mass as the same exchange."
     source_ids:
-      - ucanr-spinach-production-1996
+      - ucanr-spinach-production-2011
       - ipcc-2019-refinement-nitrogen
   - rule_id: validate_mass_balance
     applies_to: "harvest and gate preparation"
@@ -1077,9 +1240,9 @@ published_dataset_profile:
   required_quality_disclosure: "temporal coverage, site scope, measurement versus calculated values, allocation rules, mass-balance result, platform identity resolution status, and all provisional estimates requiring replacement by foreground records"
   update_trigger: "change in crop route, irrigation method, nutrient program, harvest form, wash or cooling line, packaging format, gate definition, or evidence that changes material quantities or boundary rules"
 data_sources:
-  - id: "ucanr-spinach-production-1996"
+  - id: "ucanr-spinach-production-2011"
     type: "literature"
-    reference: "University of California Agriculture and Natural Resources, *Spinach Production in California*, ANR Publication 7212, https://anrcatalog.ucanr.edu/pdf/7212.pdf"
+    reference: "University of California Agriculture and Natural Resources, *Spinach Production in California*, ANR Publication 7212 (2011), https://escholarship.org/content/qt67w2p91c/qt67w2p91c.pdf"
     used_for: "production route, irrigation, nutrient application, crop management, and boundary context"
   - id: "govnl-spinach-production-guide-2025"
     type: "official_guidance"
@@ -1105,23 +1268,31 @@ data_sources:
     type: "method_factor"
     reference: "IPCC, *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, https://www.ipcc.ch/report/2019-refinement-to-the-2006-ipcc-guidelines-for-national-greenhouse-gas-inventories/"
     used_for: "managed-soil nitrogen-emission method and calculation rule"
+  - id: "fao-fertilizer-identities"
+    type: "official_guidance"
+    reference: "FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-organic-nutrients"
+    type: "official_guidance"
+    reference: "FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:fa474e9c88f0d40a2efabf8204665e6f931879e050d8512c2c856d424c63c3c9"
+  source_sha256: "sha256:f9be067ed9ea3400491f9fbac97077f32c9a9ab12fa06addac912c77927d1120"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_4762"
+    - unit_id: "normative_4925"
       family: "system_boundary"
       span:
         start:
-          offset: 4762
+          offset: 4925
           line: 57
           column: 1
         end:
-          offset: 7311
+          offset: 7474
           line: 79
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Prepared production bed or protected-cultivation unit receiving spinach seed or transplant material, with prior land use and excluded infrastructure work disclosed |\n| starting_condition_role | Start of the declared spinach crop cycle and input accounting |\n| product_classification_scope | Fresh spinach under CPC 3.0:01215 through the declared farm-gate or pack-house gate |\n| recursive_input_rule | Purchased spinach seed or transplant material is an upstream product input linked once; its own production is outside this PCR unless a separate upstream dataset is supplied. |\n| upstream_dataset_requirement | Require upstream datasets for seed or transplants, fertilizers, amendments, crop-protection products, irrigation water, energy, packaging, and purchased transport or treatment services when used. |\n| disclosure | Declare production geography, field or protected route, crop cycle, sowing density, irrigation source and meter basis, nutrient basis, crop-protection program, harvest form, yield and reject reconciliation, washing and cooling, packaging, residue fate, and gate location. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_cycle` | establishment and field management | Include bed preparation, sowing or transplanting, crop management, and crop-cycle inputs that produce the declared spinach output; disclose prior land use and exclude unrelated infrastructure construction. | `ucanr-spinach-production-1996`; `govnl-spinach-production-guide-2025` |\n| `boundary_gate_preparation` | harvest and packing | End the foreground system at the declared farm-gate or pack-house gate and include cutting, grading, trimming, washing, cooling, and primary packaging when they occur before that gate. | `usda-ams-bunched-spinach-standard`; `psu-spinach-harvest-guidance-2025` |\n| `boundary_soil_emissions` | fertilizer, crop residues, and managed soil | Estimate applicable direct and indirect nitrogen emissions using one declared method and the recorded nutrient inputs and residue fate; avoid double counting a nitrogen pathway. | `ipcc-2019-refinement-nitrogen` |\n| `boundary_residue_fate` | field residue, rejects, and trim | Record field return, composting, feed use, treatment, or disposal separately; a material with no demonstrated productive use remains a residue or waste flow. | `ucanr-spinach-production-1996`; `usda-ams-bunched-spinach-standard` |\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Prepared production bed or protected-cultivation unit receiving spinach seed or transplant material, with prior land use and excluded infrastructure work disclosed |\n| starting_condition_role | Start of the declared spinach crop cycle and input accounting |\n| product_classification_scope | Fresh spinach under CPC 3.0:01215 through the declared farm-gate or pack-house gate |\n| recursive_input_rule | Purchased spinach seed or transplant material is an upstream product input linked once; its own production is outside this PCR unless a separate upstream dataset is supplied. |\n| upstream_dataset_requirement | Require upstream datasets for seed or transplants, fertilizers, amendments, crop-protection products, irrigation water, energy, packaging, and purchased transport or treatment services when used. |\n| disclosure | Declare production geography, field or protected route, crop cycle, sowing density, irrigation source and meter basis, nutrient basis, crop-protection program, harvest form, yield and reject reconciliation, washing and cooling, packaging, residue fate, and gate location. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_cycle` | establishment and field management | Include bed preparation, sowing or transplanting, crop management, and crop-cycle inputs that produce the declared spinach output; disclose prior land use and exclude unrelated infrastructure construction. | `ucanr-spinach-production-2011`; `govnl-spinach-production-guide-2025` |\n| `boundary_gate_preparation` | harvest and packing | End the foreground system at the declared farm-gate or pack-house gate and include cutting, grading, trimming, washing, cooling, and primary packaging when they occur before that gate. | `usda-ams-bunched-spinach-standard`; `psu-spinach-harvest-guidance-2025` |\n| `boundary_soil_emissions` | fertilizer, crop residues, and managed soil | Estimate applicable direct and indirect nitrogen emissions using one declared method and the recorded nutrient inputs and residue fate; avoid double counting a nitrogen pathway. | `ipcc-2019-refinement-nitrogen` |\n| `boundary_residue_fate` | field residue, rejects, and trim | Record field return, composting, feed use, treatment, or disposal separately; a material with no demonstrated productive use remains a residue or waste flow. | `ucanr-spinach-production-2011`; `usda-ams-bunched-spinach-standard` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1138,11 +1309,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 4762
+              offset: 4925
               line: 57
               column: 1
             end:
-              offset: 4783
+              offset: 4946
               line: 57
               column: 22
           text: "## 5. System Boundary"
@@ -1158,18 +1329,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_36959"
+    - unit_id: "normative_48645"
       family: "allocation"
       span:
         start:
-          offset: 36959
-          line: 742
+          offset: 48645
+          line: 842
           column: 1
         end:
-          offset: 37885
-          line: 750
+          offset: 49959
+          line: 852
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_crop_cycle` | shared field, bed, or protected unit | Attribute crop-cycle inputs to spinach using the recorded bed or unit area and the crop-cycle output; do not allocate to a second crop without its own records. | `ucanr-spinach-production-1996` |\n| `allocation_multi_cut_spinach` | repeated cuts from one sowing | Treat successive cuts as outputs of the same declared crop cycle and reconcile each cut before normalizing to total marketable spinach. | `psu-spinach-harvest-guidance-2025` |\n| `allocation_residue_fate` | field residues, rejects, and trim | Do not assign a co-product credit to residues unless a documented recipient, quantity, and intended use exists; otherwise retain the burden with spinach production and report the residue fate. | `usda-ams-bunched-spinach-standard` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_crop_cycle` | shared field, bed, or protected unit | Attribute crop-cycle inputs to spinach using the recorded bed or unit area and the crop-cycle output; do not allocate to a second crop without its own records. | `ucanr-spinach-production-2011` |\n| `allocation_multi_cut_spinach` | repeated cuts from one sowing | Treat successive cuts as outputs of the same declared crop cycle and reconcile each cut before normalizing to total marketable spinach. | `psu-spinach-harvest-guidance-2025` |\n| `allocation_residue_fate` | field residues, rejects, and trim | Do not assign a co-product credit to residues unless a documented recipient, quantity, and intended use exists; otherwise retain the burden with spinach production and report the residue fate. | `usda-ams-bunched-spinach-standard` |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1186,12 +1357,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 36959
-              line: 742
+              offset: 48645
+              line: 842
               column: 1
             end:
-              offset: 36999
-              line: 742
+              offset: 48685
+              line: 842
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1206,18 +1377,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_48149"
+    - unit_id: "normative_60223"
       family: "validation"
       span:
         start:
-          offset: 48149
-          line: 792
+          offset: 60223
+          line: 894
           column: 1
         end:
-          offset: 49874
-          line: 803
+          offset: 61948
+          line: 905
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_output` | reference flow | The declared reference output must be marketable fresh spinach at the declared gate and must use mass in kg; a frozen, canned, cooked, or retail product is outside this PCR. | `usda-ams-bunched-spinach-standard` |\n| `validate_crop_cycle_dates` | crop establishment and management | Sowing or transplanting, applications, irrigation, harvest cuts, and gate output must fall within the declared crop cycle or be explicitly attributed to it. | `govnl-spinach-production-guide-2025` |\n| `validate_nutrient_basis` | fertilizer inputs and emissions | Product mass, nutrient concentration, nutrient basis, and emission calculation method must be present and internally consistent; avoid counting both product mass and nutrient mass as the same exchange. | `ucanr-spinach-production-1996`; `ipcc-2019-refinement-nitrogen` |\n| `validate_mass_balance` | harvest and gate preparation | Gross harvest and received mass must reconcile with marketable output, rejects, residues, and losses within the declared measurement uncertainty. | `usda-ams-bunched-spinach-standard` |\n| `validate_flow_identity_resolution` | parameterized rows | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n| `validate_qualifiers` | reference flow and dataset metadata | Required qualifiers must be present in the dataset package, including crop form, cut, gate, washing, cooling, packaging, and production route. | `usda-ams-bunched-spinach-standard`; `psu-spinach-harvest-guidance-2025` |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_output` | reference flow | The declared reference output must be marketable fresh spinach at the declared gate and must use mass in kg; a frozen, canned, cooked, or retail product is outside this PCR. | `usda-ams-bunched-spinach-standard` |\n| `validate_crop_cycle_dates` | crop establishment and management | Sowing or transplanting, applications, irrigation, harvest cuts, and gate output must fall within the declared crop cycle or be explicitly attributed to it. | `govnl-spinach-production-guide-2025` |\n| `validate_nutrient_basis` | fertilizer inputs and emissions | Product mass, nutrient concentration, nutrient basis, and emission calculation method must be present and internally consistent; avoid counting both product mass and nutrient mass as the same exchange. | `ucanr-spinach-production-2011`; `ipcc-2019-refinement-nitrogen` |\n| `validate_mass_balance` | harvest and gate preparation | Gross harvest and received mass must reconcile with marketable output, rejects, residues, and losses within the declared measurement uncertainty. | `usda-ams-bunched-spinach-standard` |\n| `validate_flow_identity_resolution` | parameterized rows | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n| `validate_qualifiers` | reference flow and dataset metadata | Required qualifiers must be present in the dataset package, including crop form, cut, gate, washing, cooling, packaging, and production route. | `usda-ams-bunched-spinach-standard`; `psu-spinach-harvest-guidance-2025` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1234,12 +1405,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 48149
-              line: 792
+              offset: 60223
+              line: 894
               column: 1
             end:
-              offset: 48171
-              line: 792
+              offset: 60245
+              line: 894
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1258,220 +1429,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_crop_cycle"
       identity_kind: "explicit"
-      unit_id: "normative_4762"
+      unit_id: "normative_4925"
       source_span:
         start:
-          offset: 6066
+          offset: 6229
           line: 74
           column: 1
         end:
-          offset: 6409
+          offset: 6572
           line: 74
           column: 344
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_gate_preparation"
       identity_kind: "explicit"
-      unit_id: "normative_4762"
+      unit_id: "normative_4925"
       source_span:
         start:
-          offset: 6410
+          offset: 6573
           line: 75
           column: 1
         end:
-          offset: 6725
+          offset: 6888
           line: 75
           column: 316
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_soil_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_4762"
+      unit_id: "normative_4925"
       source_span:
         start:
-          offset: 6726
+          offset: 6889
           line: 76
           column: 1
         end:
-          offset: 7015
+          offset: 7178
           line: 76
           column: 290
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_residue_fate"
       identity_kind: "explicit"
-      unit_id: "normative_4762"
+      unit_id: "normative_4925"
       source_span:
         start:
-          offset: 7016
+          offset: 7179
           line: 77
           column: 1
         end:
-          offset: 7309
+          offset: 7472
           line: 77
           column: 294
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_single_crop_cycle"
       identity_kind: "explicit"
-      unit_id: "normative_36959"
+      unit_id: "normative_48645"
       source_span:
         start:
-          offset: 37072
-          line: 746
+          offset: 48758
+          line: 846
           column: 1
         end:
-          offset: 37341
-          line: 746
+          offset: 49027
+          line: 846
           column: 270
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_multi_cut_spinach"
       identity_kind: "explicit"
-      unit_id: "normative_36959"
+      unit_id: "normative_48645"
       source_span:
         start:
-          offset: 37342
-          line: 747
+          offset: 49028
+          line: 847
           column: 1
         end:
-          offset: 37584
-          line: 747
+          offset: 49270
+          line: 847
           column: 243
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_residue_fate"
       identity_kind: "explicit"
-      unit_id: "normative_36959"
+      unit_id: "normative_48645"
       source_span:
         start:
-          offset: 37585
-          line: 748
+          offset: 49271
+          line: 848
           column: 1
         end:
-          offset: 37883
-          line: 748
+          offset: 49569
+          line: 848
           column: 299
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_rule_4"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_48645"
+      source_span:
+        start:
+          offset: 49571
+          line: 850
+          column: 1
+        end:
+          offset: 49957
+          line: 850
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference_output"
       identity_kind: "explicit"
-      unit_id: "normative_48149"
+      unit_id: "normative_60223"
       source_span:
         start:
-          offset: 48244
-          line: 796
+          offset: 60318
+          line: 898
           column: 1
         end:
-          offset: 48506
-          line: 796
+          offset: 60580
+          line: 898
           column: 263
     - pointer: "/validation_rules/1"
       rule_id: "validate_crop_cycle_dates"
       identity_kind: "explicit"
-      unit_id: "normative_48149"
+      unit_id: "normative_60223"
       source_span:
         start:
-          offset: 48507
-          line: 797
+          offset: 60581
+          line: 899
           column: 1
         end:
-          offset: 48773
-          line: 797
+          offset: 60847
+          line: 899
           column: 267
     - pointer: "/validation_rules/2"
       rule_id: "validate_nutrient_basis"
       identity_kind: "explicit"
-      unit_id: "normative_48149"
+      unit_id: "normative_60223"
       source_span:
         start:
-          offset: 48774
-          line: 798
+          offset: 60848
+          line: 900
           column: 1
         end:
-          offset: 49108
-          line: 798
+          offset: 61182
+          line: 900
           column: 335
     - pointer: "/validation_rules/3"
       rule_id: "validate_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_48149"
+      unit_id: "normative_60223"
       source_span:
         start:
-          offset: 49109
-          line: 799
+          offset: 61183
+          line: 901
           column: 1
         end:
-          offset: 49353
-          line: 799
+          offset: 61427
+          line: 901
           column: 245
     - pointer: "/validation_rules/4"
       rule_id: "validate_flow_identity_resolution"
       identity_kind: "explicit"
-      unit_id: "normative_48149"
+      unit_id: "normative_60223"
       source_span:
         start:
-          offset: 49354
-          line: 800
+          offset: 61428
+          line: 902
           column: 1
         end:
-          offset: 49588
-          line: 800
+          offset: 61662
+          line: 902
           column: 235
     - pointer: "/validation_rules/5"
       rule_id: "validate_qualifiers"
       identity_kind: "explicit"
-      unit_id: "normative_48149"
+      unit_id: "normative_60223"
       source_span:
         start:
-          offset: 49589
-          line: 801
+          offset: 61663
+          line: 903
           column: 1
         end:
-          offset: 49872
-          line: 801
+          offset: 61946
+          line: 903
           column: 284
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_4762"
+      unit_id: "normative_4925"
       source_span:
         start:
-          offset: 4762
+          offset: 4925
           line: 57
           column: 1
         end:
-          offset: 4783
+          offset: 4946
           line: 57
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_4762"
+      unit_id: "normative_4925"
       source_span:
         start:
-          offset: 4811
+          offset: 4974
           line: 61
           column: 1
         end:
-          offset: 5973
+          offset: 6136
           line: 68
           column: 289
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_36959"
+      unit_id: "normative_48645"
       source_span:
         start:
-          offset: 36959
-          line: 742
+          offset: 48645
+          line: 842
           column: 1
         end:
-          offset: 36999
-          line: 742
+          offset: 48685
+          line: 842
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_48149"
+      unit_id: "normative_60223"
       source_span:
         start:
-          offset: 48149
-          line: 792
+          offset: 60223
+          line: 894
           column: 1
         end:
-          offset: 48171
-          line: 792
+          offset: 60245
+          line: 894
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1480,5 +1664,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:fa474e9c88f0d40a2efabf8204665e6f931879e050d8512c2c856d424c63c3c9"
-  generated_content_sha256: "sha256:d68c7816463c6ffe9fe4a0f667c274e7ed9d732cfbaa55cddcf3da9c4584bcaa"
+    sha256: "sha256:f9be067ed9ea3400491f9fbac97077f32c9a9ab12fa06addac912c77927d1120"
+  generated_content_sha256: "sha256:6468cd241ab4ab4284769675b921578ce974cd6b7e83e92e061e9e5114a4b7a9"

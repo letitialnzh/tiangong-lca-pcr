@@ -50,7 +50,7 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1000"
   product_flow_ref:
-    name: "Fresh bananas at the declared farm-gate or pack-house gate"
+    name: "Bananas"
     uuid: "7c496507-1583-4181-9a3a-2cf56d54b99c"
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
@@ -109,7 +109,7 @@ measurement_rules:
       name: "Product mass and declared nutrient"
       uuid: ""
     required_unit: "kg product, kg N, kg P2O5, or kg K2O"
-    rule: "Preserve purchased product mass and convert to nutrient basis only from the documented label, supplier specification, nutrient plan, or laboratory result."
+    rule: "Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity."
   - id: water_energy_basis
     applies_to: "irrigation, washing, cooling, electricity, and fuel"
     required_property_ref:
@@ -200,25 +200,131 @@ process_inventory:
     label: "Managed banana crop cycle"
     inputs:
       product:
-        - row_id: managed_banana_crop_cycle_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: managed_banana_crop_cycle_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to the same crop cycle or production year."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for managed_banana_crop_cycle_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to the same crop cycle or production year. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_nutrient_records
               source_ids:
                 - fao-banana-production-guide-2015
                 - ipcc-2019-refinement-afolu
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: managed_banana_crop_cycle_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-banana-production-guide-2015
+                - ipcc-2019-refinement-afolu
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: managed_banana_crop_cycle_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-banana-production-guide-2015
+                - ipcc-2019-refinement-afolu
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: managed_banana_crop_cycle_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-banana-production-guide-2015
+                - ipcc-2019-refinement-afolu
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: managed_banana_crop_cycle_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-banana-production-guide-2015
+                - ipcc-2019-refinement-afolu
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: managed_banana_crop_cycle_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-banana-production-guide-2015
+                - ipcc-2019-refinement-afolu
+                - fao-organic-nutrients
             ranges: []
         - row_id: crop_protection_input
           role: "Banana crop-protection product"
@@ -260,24 +366,45 @@ process_inventory:
                 - fao-banana-production-guide-2015
                 - globalgap-ifa-fruit-vegetables-v6
             ranges: []
-        - row_id: plantation_energy_input
-          role: "Plantation energy or fuel input"
-          name: "Plantation electricity or fuel"
+        - row_id: plantation_energy_input_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy or fuel / kWh, MJ, or L"
-          description: "Record electricity and fuel used for pumping, field machinery, crop operations, and other managed crop-cycle activities inside the declared boundary. Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to the same crop cycle or production year."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for plantation_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record electricity and fuel used for pumping, field machinery, crop operations, and other managed crop-cycle activities inside the declared boundary. Raw activity or stage basis: per 1,000 kg marketable fresh bananas attributed to the same crop cycle or production year. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Record purchased electricity and fuel by equipment, operation, and plantation unit; disclose conversions and allocation for shared equipment."
+            expression: "Collect raw quantities for this identity under cp_field_energy_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_field_energy_records
               source_ids:
                 - fao-banana-production-guide-2015
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: plantation_energy_input_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_field_energy_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_energy_records
+              source_ids:
+                - fao-banana-production-guide-2015
+                - fao-agricultural-energy
             ranges: []
       waste:
         []
@@ -349,14 +476,14 @@ process_inventory:
     label: "Banana harvest and gate conditioning"
     inputs:
       product:
-        - row_id: harvest_energy_input
-          role: "Harvest and conditioning energy"
-          name: "Harvest and conditioning electricity or fuel"
+        - row_id: harvest_energy_input_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy or fuel / kWh, MJ, or L"
-          description: "Record electricity and fuel used for bunch handling, dehanding, grading, washing, cooling, and primary packing before the declared gate. Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declared gate."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for harvest_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record electricity and fuel used for bunch handling, dehanding, grading, washing, cooling, and primary packing before the declared gate. Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declared gate. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Use meter, fuel, run-time, or throughput records and allocate shared utilities to banana batches by documented throughput or run time."
+            expression: "Collect raw quantities for this identity under cp_postharvest_energy_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -368,6 +495,28 @@ process_inventory:
               source_ids:
                 - fao-banana-production-guide-2015
                 - globalgap-ifa-fruit-vegetables-v6
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: harvest_energy_input_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_postharvest_energy_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_postharvest_energy_records
+              source_ids:
+                - fao-banana-production-guide-2015
+                - globalgap-ifa-fruit-vegetables-v6
+                - fao-agricultural-energy
             ranges: []
         - row_id: conditioning_water_input
           role: "Conditioning or wash water"
@@ -415,8 +564,10 @@ process_inventory:
       product:
         - row_id: marketable_banana_output
           role: "Marketable fresh bananas at the declared gate"
-          name: "Fresh bananas at the declared farm-gate or pack-house gate"
+          name: "Bananas"
           flow_type: "product"
+          flow_ref:
+            uuid: "7c496507-1583-4181-9a3a-2cf56d54b99c"
           property_unit: "Mass / kg"
           description: "Record the fresh banana lots that meet the declared maturity, size, grade, cleanliness, trimming, packaging, and gate-state qualifiers. Original reference-state unit annotation: Mass / kg wet fresh bananas Raw output measurement and reconciliation: Use final scale and dispatch records; normalize all foreground inputs and losses to 1,000 kg of this gate output. Raw activity or stage basis: 1,000 kg marketable fresh bananas at the declared gate."
           amount:
@@ -564,16 +715,16 @@ process_inventory:
                 - fao-banana-production-guide-2015
             ranges: []
       elementary:
-        - row_id: routing_treatment_emissions
-          role: "Emissions from included residue or wastewater treatment"
-          name: "Emissions from included banana residue or wastewater treatment"
+        - row_id: routing_treatment_emissions_ch4
+          role: "Methane to air"
+          name: "Methane to air"
           flow_type: "elementary"
-          property_unit: "Mass / kg substance"
-          description: "Record or calculate emissions from an included treatment route only when the route, method, and measured or documented inputs support the emission pathway. Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declared gate."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for routing_treatment_emissions.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record or calculate emissions from an included treatment route only when the route, method, and measured or documented inputs support the emission pathway. Raw activity or stage basis: per 1,000 kg marketable fresh bananas at the declared gate. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Calculate from the actual pathway, substance-mass basis and receiving compartment; convert N- or C-based factors to this substance mass. Include only the foreground contribution and avoid duplicating linked upstream or treatment-service emissions."
           amount:
-            expression: "Apply the declared treatment method and documented factor or measurement; do not infer treatment emissions when the route is transferred to a separate downstream dataset."
+            expression: "Collect raw quantities for this identity under cp_residue_and_reject_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "calculated_value"
-            specificity: "technology_specific"
+            specificity: "site_specific"
             basis:
               text: "per declared reference flow"
               kind: "reference_flow"
@@ -581,7 +732,26 @@ process_inventory:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_residue_and_reject_records
               source_ids:
-                - ipcc-2019-refinement-afolu
+                - ipcc-biological-waste-2006
+            ranges: []
+        - row_id: routing_treatment_emissions_n2o
+          role: "Nitrous oxide to air"
+          name: "Nitrous oxide to air"
+          flow_type: "elementary"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Calculate from the actual pathway, substance-mass basis and receiving compartment; convert N- or C-based factors to this substance mass. Include only the foreground contribution and avoid duplicating linked upstream or treatment-service emissions."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_residue_and_reject_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_residue_and_reject_records
+              source_ids:
+                - ipcc-biological-waste-2006
             ranges: []
 allocation_rules:
   - rule_id: allocation_single_banana_cycle
@@ -608,6 +778,10 @@ allocation_rules:
     source_ids:
       - globalgap-ifa-fruit-vegetables-v6
       - iso-14044-2006
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_establishment_records
@@ -916,21 +1090,45 @@ data_sources:
     type: "standard"
     reference: "ISO 14044:2006, *Environmental management — Life cycle assessment — Requirements and guidelines*"
     used_for: "allocation hierarchy, co-product handling, and documented attribution rules"
+  - id: "fao-fertilizer-identities"
+    type: "official_guidance"
+    reference: "FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-organic-nutrients"
+    type: "official_guidance"
+    reference: "FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-agricultural-energy"
+    type: "official_guidance"
+    reference: "FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "eea-emission-methods"
+    type: "official_guidance"
+    reference: "EMEP/EEA air pollutant emission inventory guidebook 2023, https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "ipcc-soils-n2o-2019"
+    type: "official_guidance"
+    reference: "IPCC 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "ipcc-biological-waste-2006"
+    type: "method_factor"
+    reference: "IPCC 2006 Guidelines, Volume 5, Chapter 4: Biological Treatment of Solid Waste, https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/5_Volume5/V5_4_Ch4_Bio_Treat.pdf"
+    used_for: "Only the declared actual pathway; retain activity data and applicable factors separately"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:91e92e776dc6fa9a01392f7f1d7edea0a618d375e5fea17a2299a59e979ae766"
+  source_sha256: "sha256:494c9cf0697a004fc4c82fc38119e189a3f63e600241916f29650b30b9f7670f"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_6087"
+    - unit_id: "normative_6598"
       family: "system_boundary"
       span:
         start:
-          offset: 6087
-          line: 58
+          offset: 6598
+          line: 60
           column: 1
         end:
-          offset: 9292
-          line: 80
+          offset: 9803
+          line: 82
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Prepared plantation unit or field receiving banana planting material or entering a declared ratoon cycle, with prior land use and excluded infrastructure work disclosed |\n| starting_condition_role | Start of the declared establishment, annual production year, or ratoon crop cycle accounting |\n| product_classification_scope | Fresh bananas under CPC 3.0:01312 through the declared farm-gate or pack-house gate |\n| recursive_input_rule | Purchased banana planting material is an upstream product input linked once; its own nursery, tissue-culture, sucker, or corm production is outside this PCR unless a separate upstream dataset is supplied. A banana product used as an input to another banana production unit is not recursively expanded without explicit upstream evidence. |\n| upstream_dataset_requirement | Require upstream datasets for planting material, fertilizers and amendments, crop-protection products, irrigation water, electricity, fuel, packaging, and purchased transport or treatment services when used. |\n| disclosure | Declare geography, plantation or smallholder route, cultivar or variety group, establishment or ratoon status, stand age or cycle number, crop dates, irrigation source and method, nutrient and crop-protection program, harvest lots, declared gate, yield and reject reconciliation, washing and cooling, packaging, residue and wastewater fate, and any shared plantation allocation. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_banana_cycle` | establishment, ratoon renewal, and managed crop cycle | Include plantation establishment or declared ratoon-cycle renewal, crop management, irrigation, nutrient and crop-protection applications, harvest preparation, and the crop-cycle inputs that produce the declared fresh banana output; disclose prior land use and exclude unrelated infrastructure construction. | `fao-banana-production-guide-2015`; `fao-banana-production-manual` |\n| `boundary_gate_conditioning` | harvest, grading, and primary conditioning | End the foreground system at the declared farm-gate or pack-house gate and include cutting, bunch handling, dehanding, grading, optional washing, cooling, and primary packing when they occur before that gate. | `fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6` |\n| `boundary_managed_soil_and_residue` | nutrients, managed soil, field residue, and reject fate | Estimate applicable direct and indirect soil or residue emissions using one declared method and the recorded nutrient inputs and residue fate; do not double count a nitrogen pathway or treat unsubstantiated residue use as a co-product credit. | `ipcc-2019-refinement-afolu`; `fao-banana-production-guide-2015` |\n| `boundary_biosecurity_records` | planting material, field operations, and plantation hygiene | Record the source and status of planting material and relevant plantation hygiene or biosecurity controls when they affect the represented crop cycle; keep treatment records within the same declared site scope. | `globalgap-tr4-banana-biosecurity` |\n\n"
       headings:
@@ -949,12 +1147,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 6087
-              line: 58
+              offset: 6598
+              line: 60
               column: 1
             end:
-              offset: 6108
-              line: 58
+              offset: 6619
+              line: 60
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -969,18 +1167,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_31335"
+    - unit_id: "normative_44238"
       family: "allocation"
       span:
         start:
-          offset: 31335
-          line: 507
+          offset: 44238
+          line: 641
           column: 1
         end:
-          offset: 32952
-          line: 516
+          offset: 46243
+          line: 652
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_banana_cycle` | shared plantation, field, irrigation, machinery, and utility records | Attribute inputs and emissions to bananas using the recorded plantation unit, area, dates, crop cycle or production year, and marketable output; do not allocate to another crop or year without its own records. | `fao-banana-production-guide-2015`; `iso-14044-2006` |\n| `allocation_plantation_establishment` | establishment, replanting, ratoon renewal, and shared plantation burdens | Disclose plantation age and cycle number, then assign establishment or shared plantation burdens across the declared productive cycles using a documented attribution rule; do not silently assign all establishment burdens to one harvest year. | `fao-banana-production-guide-2015`; `iso-14044-2006` |\n| `allocation_residue_reject_fate` | field residue, harvest rejects, trim, recovered material, and wastewater | Do not assign a co-product credit to residue or rejects unless a documented recipient, quantity, quality basis, and intended use exist; otherwise retain the burden with banana production and report the fate. | `fao-banana-production-guide-2015`; `iso-14044-2006` |\n| `allocation_shared_conditioning` | shared harvest, conditioning, packing, and utilities | Allocate shared conditioning inputs by measured banana throughput, run time, or another documented physical relationship; disclose the allocation basis and reconcile it to gate output. | `globalgap-ifa-fruit-vegetables-v6`; `iso-14044-2006` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_banana_cycle` | shared plantation, field, irrigation, machinery, and utility records | Attribute inputs and emissions to bananas using the recorded plantation unit, area, dates, crop cycle or production year, and marketable output; do not allocate to another crop or year without its own records. | `fao-banana-production-guide-2015`; `iso-14044-2006` |\n| `allocation_plantation_establishment` | establishment, replanting, ratoon renewal, and shared plantation burdens | Disclose plantation age and cycle number, then assign establishment or shared plantation burdens across the declared productive cycles using a documented attribution rule; do not silently assign all establishment burdens to one harvest year. | `fao-banana-production-guide-2015`; `iso-14044-2006` |\n| `allocation_residue_reject_fate` | field residue, harvest rejects, trim, recovered material, and wastewater | Do not assign a co-product credit to residue or rejects unless a documented recipient, quantity, quality basis, and intended use exist; otherwise retain the burden with banana production and report the fate. | `fao-banana-production-guide-2015`; `iso-14044-2006` |\n| `allocation_shared_conditioning` | shared harvest, conditioning, packing, and utilities | Allocate shared conditioning inputs by measured banana throughput, run time, or another documented physical relationship; disclose the allocation basis and reconcile it to gate output. | `globalgap-ifa-fruit-vegetables-v6`; `iso-14044-2006` |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -997,12 +1195,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 31335
-              line: 507
+              offset: 44238
+              line: 641
               column: 1
             end:
-              offset: 31375
-              line: 507
+              offset: 44278
+              line: 641
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1017,16 +1215,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_46386"
+    - unit_id: "normative_59677"
       family: "validation"
       span:
         start:
-          offset: 46386
-          line: 560
+          offset: 59677
+          line: 696
           column: 1
         end:
-          offset: 48458
-          line: 571
+          offset: 61749
+          line: 707
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_output` | reference flow and gate output | The declared reference output must be marketable fresh, unprocessed bananas at the declared gate and use mass in kg; processed banana products, retail products, and unqualified Musa products are outside this PCR. | `fao-banana-production-guide-2015` |\n| `validate_cycle_dates` | establishment, management, harvest, routing, and gate preparation | Establishment or ratoon renewal, applications, irrigation, harvest lots, conditioning, routing, and gate output must fall within the declared crop cycle or production year or be explicitly attributed to it. | `fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6` |\n| `validate_nutrient_basis` | nutrient inputs and emissions | Product mass, nutrient concentration, nutrient basis, residue treatment, and emission calculation method must be present and internally consistent; do not count product mass and nutrient mass as the same exchange. | `fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu` |\n| `validate_mass_balance` | harvest, conditioning, and routing | Gross harvest and received mass must reconcile with marketable output, rejects, residue, wastewater-related solids, recovered product, downstream transfers, and losses within the declared measurement uncertainty. | `fao-banana-production-guide-2015` |\n| `validate_flow_identity_resolution` | parameterized rows | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n| `validate_qualifiers` | reference flow and dataset metadata | Required qualifiers must be present, including cultivar or variety group, establishment or ratoon status, stand age or cycle number, harvest lots, maturity and grade, gate, washing, cooling, packaging, and residue, reject, and wastewater fate. | `fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6` |\n\n"
       headings:
@@ -1045,12 +1243,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 46386
-              line: 560
+              offset: 59677
+              line: 696
               column: 1
             end:
-              offset: 46408
-              line: 560
+              offset: 59699
+              line: 696
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1069,233 +1267,246 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_banana_cycle"
       identity_kind: "explicit"
-      unit_id: "normative_6087"
+      unit_id: "normative_6598"
       source_span:
         start:
-          offset: 7708
-          line: 75
+          offset: 8219
+          line: 77
           column: 1
         end:
-          offset: 8170
-          line: 75
+          offset: 8681
+          line: 77
           column: 463
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_gate_conditioning"
       identity_kind: "explicit"
-      unit_id: "normative_6087"
+      unit_id: "normative_6598"
       source_span:
         start:
-          offset: 8171
-          line: 76
+          offset: 8682
+          line: 78
           column: 1
         end:
-          offset: 8533
-          line: 76
+          offset: 9044
+          line: 78
           column: 363
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_managed_soil_and_residue"
       identity_kind: "explicit"
-      unit_id: "normative_6087"
+      unit_id: "normative_6598"
       source_span:
         start:
-          offset: 8534
-          line: 77
+          offset: 9045
+          line: 79
           column: 1
         end:
-          offset: 8943
-          line: 77
+          offset: 9454
+          line: 79
           column: 410
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_biosecurity_records"
       identity_kind: "explicit"
-      unit_id: "normative_6087"
+      unit_id: "normative_6598"
       source_span:
         start:
-          offset: 8944
-          line: 78
+          offset: 9455
+          line: 80
           column: 1
         end:
-          offset: 9290
-          line: 78
+          offset: 9801
+          line: 80
           column: 347
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_single_banana_cycle"
       identity_kind: "explicit"
-      unit_id: "normative_31335"
+      unit_id: "normative_44238"
       source_span:
         start:
-          offset: 31448
-          line: 511
+          offset: 44351
+          line: 645
           column: 1
         end:
-          offset: 31822
-          line: 511
+          offset: 44725
+          line: 645
           column: 375
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_plantation_establishment"
       identity_kind: "explicit"
-      unit_id: "normative_31335"
+      unit_id: "normative_44238"
       source_span:
         start:
-          offset: 31823
-          line: 512
+          offset: 44726
+          line: 646
           column: 1
         end:
-          offset: 32238
-          line: 512
+          offset: 45141
+          line: 646
           column: 416
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_residue_reject_fate"
       identity_kind: "explicit"
-      unit_id: "normative_31335"
+      unit_id: "normative_44238"
       source_span:
         start:
-          offset: 32239
-          line: 513
+          offset: 45142
+          line: 647
           column: 1
         end:
-          offset: 32615
-          line: 513
+          offset: 45518
+          line: 647
           column: 377
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_shared_conditioning"
       identity_kind: "explicit"
-      unit_id: "normative_31335"
+      unit_id: "normative_44238"
       source_span:
         start:
-          offset: 32616
-          line: 514
+          offset: 45519
+          line: 648
           column: 1
         end:
-          offset: 32950
-          line: 514
+          offset: 45853
+          line: 648
           column: 335
+    - pointer: "/allocation_rules/4"
+      rule_id: "allocation_rule_5"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_44238"
+      source_span:
+        start:
+          offset: 45855
+          line: 650
+          column: 1
+        end:
+          offset: 46241
+          line: 650
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference_output"
       identity_kind: "explicit"
-      unit_id: "normative_46386"
+      unit_id: "normative_59677"
       source_span:
         start:
-          offset: 46481
-          line: 564
+          offset: 59772
+          line: 700
           column: 1
         end:
-          offset: 46797
-          line: 564
+          offset: 60088
+          line: 700
           column: 317
     - pointer: "/validation_rules/1"
       rule_id: "validate_cycle_dates"
       identity_kind: "explicit"
-      unit_id: "normative_46386"
+      unit_id: "normative_59677"
       source_span:
         start:
-          offset: 46798
-          line: 565
+          offset: 60089
+          line: 701
           column: 1
         end:
-          offset: 47175
-          line: 565
+          offset: 60466
+          line: 701
           column: 378
     - pointer: "/validation_rules/2"
       rule_id: "validate_nutrient_basis"
       identity_kind: "explicit"
-      unit_id: "normative_46386"
+      unit_id: "normative_59677"
       source_span:
         start:
-          offset: 47176
-          line: 566
+          offset: 60467
+          line: 702
           column: 1
         end:
-          offset: 47520
-          line: 566
+          offset: 60811
+          line: 702
           column: 345
     - pointer: "/validation_rules/3"
       rule_id: "validate_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_46386"
+      unit_id: "normative_59677"
       source_span:
         start:
-          offset: 47521
-          line: 567
+          offset: 60812
+          line: 703
           column: 1
         end:
-          offset: 47837
-          line: 567
+          offset: 61128
+          line: 703
           column: 317
     - pointer: "/validation_rules/4"
       rule_id: "validate_flow_identity_resolution"
       identity_kind: "explicit"
-      unit_id: "normative_46386"
+      unit_id: "normative_59677"
       source_span:
         start:
-          offset: 47838
-          line: 568
+          offset: 61129
+          line: 704
           column: 1
         end:
-          offset: 48072
-          line: 568
+          offset: 61363
+          line: 704
           column: 235
     - pointer: "/validation_rules/5"
       rule_id: "validate_qualifiers"
       identity_kind: "explicit"
-      unit_id: "normative_46386"
+      unit_id: "normative_59677"
       source_span:
         start:
-          offset: 48073
-          line: 569
+          offset: 61364
+          line: 705
           column: 1
         end:
-          offset: 48456
-          line: 569
+          offset: 61747
+          line: 705
           column: 384
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_6087"
+      unit_id: "normative_6598"
       source_span:
         start:
-          offset: 6087
-          line: 58
+          offset: 6598
+          line: 60
           column: 1
         end:
-          offset: 6108
-          line: 58
+          offset: 6619
+          line: 60
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_6087"
+      unit_id: "normative_6598"
       source_span:
         start:
-          offset: 6136
-          line: 62
+          offset: 6647
+          line: 64
           column: 1
         end:
-          offset: 7615
-          line: 69
+          offset: 8126
+          line: 71
           column: 396
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_31335"
+      unit_id: "normative_44238"
       source_span:
         start:
-          offset: 31335
-          line: 507
+          offset: 44238
+          line: 641
           column: 1
         end:
-          offset: 31375
-          line: 507
+          offset: 44278
+          line: 641
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_46386"
+      unit_id: "normative_59677"
       source_span:
         start:
-          offset: 46386
-          line: 560
+          offset: 59677
+          line: 696
           column: 1
         end:
-          offset: 46408
-          line: 560
+          offset: 59699
+          line: 696
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1304,5 +1515,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:91e92e776dc6fa9a01392f7f1d7edea0a618d375e5fea17a2299a59e979ae766"
-  generated_content_sha256: "sha256:2a3700aa5170ce1852a1b772db8c372608b419bff6748ec93661f6b6ec3567e4"
+    sha256: "sha256:494c9cf0697a004fc4c82fc38119e189a3f63e600241916f29650b30b9f7670f"
+  generated_content_sha256: "sha256:67bc97c9581b690d14e9f271974716d15f2c0602ebffdf9705c35c232a572365"

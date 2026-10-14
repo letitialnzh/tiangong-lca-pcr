@@ -42,7 +42,7 @@ The term “locust bean” is treated here as the whole carob pod, not as a syno
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Locust beans (carobs), production mix, at farm gate, fresh, unprocessed (`a5e8d701-0314-4eba-a5ba-37ba590d469b`) |
+| Reference product flow | Locust beans (carobs) `a5e8d701-0314-4eba-a5ba-37ba590d469b` |
 | Reference flow property | Mass (`93a60a56-a3c8-11da-a746-0800200b9a66`) |
 | Reference unit group | Units of mass (`93a60a57-a4c8-11da-a746-0800200c9a66`) |
 | Reference unit | kg |
@@ -51,6 +51,8 @@ The term “locust bean” is treated here as the whole carob pod, not as a syno
 
 When constructing a foreground data package, the required qualifiers must be declared in dataset metadata, process notes, the reference-flow comment, product description, or an equivalent data-package field. Net product mass excludes container tare. A final TIDAS exchange must retain the reviewed product flow, mass-property, and unit-group identities and verify their compatibility with the declared gate and lot evidence.
 
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
+
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -58,7 +60,7 @@ When constructing a foreground data package, the required qualifiers must be dec
 | `reference_mass` | reference product and accepted output | Mass | kg | Express the reference flow as net accepted whole carob-pod mass at the declared gate. Retain the as-received mass and moisture measurement; do not silently substitute seed-only, pulp-only, dry-matter, or processed-product mass. |
 | `moisture_basis` | harvested, dried, stored, and accepted pods | Mass and moisture fraction | kg and percent or kg water/kg product | Record lot moisture with method and sampling point. If a dry-mass conversion is made, use the measured moisture fraction and disclose whether the input and output masses are as received or on a dry basis. |
 | `orchard_life_annualization` | establishment, replacement, and immature-tree inputs | area, time, or mass activity property | ha, orchard-year, or kg product | Link each establishment or replacement event to the orchard block, productive period, and accepted pod output. Annualize only with a documented productive-period assumption and retain the original event record. |
-| `nutrient_product_and_basis` | fertilizer and soil-amendment inputs | product mass and nutrient mass | kg product and kg N, P2O5, K2O, or declared organic basis | Record only products actually used, their product mass, and the declared nutrient or amendment basis. Do not infer a fertilizer type from a nutrient total. |
+| `nutrient_product_and_basis` | fertilizer and soil-amendment inputs | product mass and nutrient mass | kg product and kg N, P2O5, K2O, or declared organic basis | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `water_energy_unit` | irrigation, direct withdrawal, orchard work, harvest, and conditioning | volume, mass, or energy | m3, kg, L, MJ, or kWh | Preserve the measured activity unit, carrier or source, equipment or operation, period, and any conversion equation. Do not add supplied water to direct withdrawal when they describe the same volume. |
 | `whole_pod_identity` | product outputs and same-category process links | declared product state | declared descriptor | Keep pulp and seeds together for this PCR. Separation into seeds, pulp, kibbles, gum, or other products is a downstream transformation and cannot be represented as the whole-pod reference output. |
 
@@ -125,22 +127,100 @@ Raw activity or stage basis: per crop year and per 1,000 kg accepted whole carob
 - Collection protocol: `cp_carob_orchard_lifecycle_records`
 - Sources: `fao-feedipedia-carob`
 
-###### Agricultural nutrient and fertilizer inputs (`carob_orchard_production_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`carob_orchard_production_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for carob_orchard_production_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per crop year and per 1,000 kg accepted whole carob pods.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_carob_orchard_lifecycle_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Crop cycle (`crop_cycle`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_carob_orchard_lifecycle_records`
-- Sources: `carob-macronutrients-water-2005`
+- Sources: `carob-macronutrients-water-2005`; `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`carob_orchard_production_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_carob_orchard_lifecycle_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_carob_orchard_lifecycle_records`
+- Sources: `carob-macronutrients-water-2005`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`carob_orchard_production_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_carob_orchard_lifecycle_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_carob_orchard_lifecycle_records`
+- Sources: `carob-macronutrients-water-2005`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`carob_orchard_production_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_carob_orchard_lifecycle_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_carob_orchard_lifecycle_records`
+- Sources: `carob-macronutrients-water-2005`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`carob_orchard_production_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_carob_orchard_lifecycle_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_carob_orchard_lifecycle_records`
+- Sources: `carob-macronutrients-water-2005`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`carob_orchard_production_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_carob_orchard_lifecycle_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_carob_orchard_lifecycle_records`
+- Sources: `carob-macronutrients-water-2005`; `fao-organic-nutrients`
 
 ###### Irrigation water supplied (`carob_irrigation_water_input`)
 
@@ -517,7 +597,7 @@ Raw activity or stage basis: per conditioning campaign and per 1,000 kg accepted
 
 Record the terminal accepted whole-pod output. The default market state is naturally dried or otherwise stabilized whole pods, but a route may declare an as-received hand-off when no conditioning is performed. No seed separation occurs in this card.
 
-- Selected flow: Accepted whole ripe carob pods with seeds retained (UUID unresolved; intentionally blank)
+- Selected flow: Locust beans (carobs) `a5e8d701-0314-4eba-a5ba-37ba590d469b`
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured net accepted mass at the declared gate, excluding container tare
 
@@ -587,6 +667,8 @@ Raw activity or stage basis: per conditioning campaign and per 1,000 kg accepted
 | `allocation_rejects_not_products` | field losses, harvest rejects, and conditioning rejects | Do not allocate burdens to a rejected or residue stream merely because it has a possible downstream use. Reclassify it as an intended co-product only when it is deliberately transferred with a declared destination and identity, then apply `allocation_quality_destination_outputs` or a separately justified method. | `iso-14044-2006` |
 | `allocation_perennial_establishment_and_replacement` | planting, establishment, replacement, and immature-tree activity | Annualize attributable events over the documented productive period and assign the annualized amount to the crop-year output basis. Retain original event mass, date, block, and assumption for audit. | `fao-feedipedia-carob`; `carob-macronutrients-water-2005`; `iso-14044-2006` |
 | `allocation_period_and_phase_linkage` | multiple crop years, bearing phases, and replacement events | Link every input, output, establishment event, replacement event, and allocation factor to a declared crop year or life-cycle phase. Never attribute one event to two reporting periods without an explicit reconciliation. | `iso-14044-2006` |
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -664,3 +746,5 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `carob-nutritional-characterization-2018` | literature | Papaefstathiou et al., “Nutritional characterization of carobs and traditional carob products”, Food Science & Nutrition 6, 2151–2161, DOI: 10.1002/fsn3.776 | pod moisture and product-state characterization supporting QA screening |
 | `ipcc-2019-refinement-vol-4` | method_factor | 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4: Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html | selection and disclosure of nutrient-, residue-, soil-, and climate-related emission calculation methods |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html | boundary, normalization, allocation, mass reconciliation, and data-quality method rules |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

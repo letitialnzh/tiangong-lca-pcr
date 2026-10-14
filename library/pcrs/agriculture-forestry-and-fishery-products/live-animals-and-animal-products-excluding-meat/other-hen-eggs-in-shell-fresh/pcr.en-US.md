@@ -55,6 +55,7 @@ The broad reference UUID remains blank. The CPC 02312 platform candidate is a co
 | `feed_dry_matter` | feed | Mass | kg as fed and kg dry matter | Retain source-specific dry-matter evidence before adding wet and dry feed. |
 | `gas_species_basis` | manure gases | Mass | kg N2O, kg NH3 or nitrogen basis | Preserve molecule and N basis and document any conversion. |
 | `inventory_reference_normalization` | all inventory rows | Actual flow property | exchange unit per reference flow | The inventory and collection aggregation fields below express final amounts per declared reference flow. Keep all raw collection records, original denominator qualifiers, route/period strata, unit conversions and allocation requirements. For each flow, first obtain its attributable amount in its own numerator unit using the existing rules; then divide by the measured accepted reference-output quantity of the same scope and multiply by the declared reference quantity. Do not mix species, states, gates or incompatible routes; count transfers and shared burdens once. A missing, zero or untraceable accepted-output denominator is a blocking data-quality issue. Keep provisional QA ranges on their explicitly stated bases; they are not conversion factors or production defaults. Compute normalized amount = attributable amount * declared reference quantity / measured accepted reference-output quantity. Apply normalization once only; never divide an already normalized value again. |
+| `stage_throughput_linkage` | stage records and final package contributions | Actual flow property and its stated raw basis | retain native numerator and stage denominator units | Keep the original lot, event, cohort, period and stage denominators with their units. Reconstruct the attributable numerator A with measured stage quantity Q_stage and documented attribution before final normalization. If a quoted amount a_B corresponds to an explicit stage basis B_stage (for example, 1000 kg), use A = a_B * Q_stage / B_stage. If r_stage is already an intensity in exchange-unit per stage-unit, instead use A = r_stage * Q_stage, with no second division by B_stage. A raw attributable total is used directly. Final contribution = A * declared reference quantity / measured accepted final output. Convert compatible units explicitly and apply each attribution/allocation share exactly once; never treat a quoted amount or intensity as a raw total. Link stage transfers, losses, rejects, stocks, shared services and allocation to the same actual route, period and final-output stratum. For a 1000 kg basis retain 1000 kg explicitly. Do not assume unit yield, equal fresh/dried mass, equal head mass, equal dose quality or interchangeable gates. Missing links, unsupported unit conversion, zero denominators and untraceable allocation block dataset production. Stage-native datasets retain their own stage reference; package contributions are a separate projection. |
 
 ## 5. System Boundary
 
@@ -130,7 +131,7 @@ Denominator and scope requirements：per kg saleable fresh shell eggs at farm ga
 
 - Selected flow: Layer feed and supplements (UUID unresolved)
 - Flow property / unit: Mass / kg as fed and kg dry matter
-- Amount rule: Sum purchased and grown feed less documented stock changes and refusals.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per reference flow
@@ -172,30 +173,55 @@ Denominator and scope requirements：per kg saleable fresh shell eggs at farm ga
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Farm energy supply (`farm_energy`)
+###### Electricity at the equipment supply point (`farm_energy_electricity`)
+
+**Collection scope and applicability for farm_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record actual electricity, fuel or heat carriers for lighting, ventilation, watering and manure handling.
-
 Denominator and scope requirements：per kg saleable fresh shell eggs at farm gate
 
-- Selected flow: Energy carriers and utilities
-- Flow property / unit: Energy or carrier-specific property / MJ, kWh or carrier unit
-- Amount rule: Record each carrier and use separately.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_water_energy` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_water_energy`
-- Sources: `fao-leap-poultry-2016`
-- Range: Provisional, replaceable screening range
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 50
-  - Unit: MJ/kg saleable eggs
-  - Basis: broad initial screen; replace with reviewed route data
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-leap-poultry-2016`; `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`farm_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_water_energy` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_water_energy`
+- Sources: `fao-leap-poultry-2016`; `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`farm_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_water_energy` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_water_energy`
+- Sources: `fao-leap-poultry-2016`; `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -321,7 +347,6 @@ Denominator and scope requirements：per kg saleable fresh shell eggs at farm ga
 
 - Selected flow: Nitrous oxide to air `08a91e70-3ddc-11dd-94c3-0050c2490048`
 - Flow property / unit: Mass / kg N2O
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate from manure nitrogen and pathway-specific method.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
@@ -347,7 +372,6 @@ Denominator and scope requirements：per kg saleable fresh shell eggs at farm ga
 
 - Selected flow: Ammonia to air `08a91e70-3ddc-11dd-a2a9-0050c2490048`
 - Flow property / unit: Mass / kg NH3
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate from recorded manure pathway and nitrogen flow.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Route-specific (`route_specific`)
@@ -364,6 +388,36 @@ Denominator and scope requirements：per kg saleable fresh shell eggs at farm ga
   - Basis: broad initial screen; replace with reviewed route data
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Manure biogenic methane to air (`review_layer_husbandry_manure_ch4`)
+
+Calculate actual atmospheric release by manure system, climate, residence time and volatile-solids activity. Reconcile captured, destroyed or oxidised methane; produced methane is not automatically emitted methane. Applies only to the operated `layer_husbandry` node; preserve its existing route and period conditions. A dataset must resolve actual activity, method applicability and an evidence-based range or physical bound for this pathway before treating the inventory as complete. Missing evidence is not zero or not_applicable. A verified substance/origin/compartment UUID is still required for a final bound exchange.
+
+- Selected flow: Methane, biogenic, to air (UUID unresolved)
+- Flow property / unit: Mass / kg CH4
+- Amount rule: Calculate the pathway total for this node and period, apply the existing allocation and stage_throughput_linkage, then inventory_reference_normalization exactly once to the measured final accepted reference output.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_pathway_emissions`
+- Sources: `ipcc-2019-livestock-manure`
+
+###### Indirect manure nitrogen-derived nitrous oxide to air (`review_layer_husbandry_indirect_n2o`)
+
+Calculate attributable indirect N2O from documented manure N volatilisation/deposition and leaching/runoff pathways where applicable. Keep separate from direct N2O and reconcile any nitrogen-fate calculation already included downstream or in the chosen background/impact model. Applies only to the operated `layer_husbandry` node; preserve its existing route and period conditions. A dataset must resolve actual activity, method applicability and an evidence-based range or physical bound for this pathway before treating the inventory as complete. Missing evidence is not zero or not_applicable. A verified substance/origin/compartment UUID is still required for a final bound exchange.
+
+- Selected flow: Nitrous oxide to air (UUID unresolved)
+- Flow property / unit: Mass / kg N2O
+- Amount rule: Calculate the pathway total for this node and period, apply the existing allocation and stage_throughput_linkage, then inventory_reference_normalization exactly once to the measured final accepted reference output.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_pathway_emissions`
+- Sources: `ipcc-2019-livestock-manure`
 
 ### Process: Farm egg collection (`egg_collection`)
 
@@ -619,30 +673,40 @@ Denominator and scope requirements：per kg saleable fresh shell eggs at farm ga
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Egg packaging materials (`egg_packaging`)
+###### Moulded wood-pulp egg tray (`egg_packaging_pulp_tray`)
+
+**Collection scope and applicability for egg_packaging.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record actual trays, cartons, films or other protection, new material, reuse turns and losses.
-
 Denominator and scope requirements：per kg saleable fresh shell eggs at farm gate
 
-- Selected flow: Packaging materials for farm-packed eggs
-- Flow property / unit: Mass / kg; item count and reuse turns
-- Amount rule: Calculate net new packaging by material and reuse cycle.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Product-specific (`product_specific`)
-- Normalization basis: per reference flow
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Moulded wood-pulp egg tray
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_grading_packing` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading_packing`
-- Sources: `fao-small-poultry-production`
-- Range: Provisional, replaceable screening range
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1
-  - Unit: kg new packaging/kg packed eggs
-  - Basis: broad initial screen; replace with reviewed route data
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-small-poultry-production`; `fao-egg-packaging`
+
+###### Corrugated fibreboard box (`egg_packaging_corrugated_box`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Corrugated fibreboard box
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_grading_packing` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_grading_packing`
+- Sources: `fao-small-poultry-production`; `fao-package-identities`
 
 ##### Waste flows
 
@@ -801,6 +865,8 @@ No prescribed flow in this coordinate; record actual site-specific exchanges whe
 | `shared_asset` | housing, collection and optional equipment | Allocate buildings and services to consuming nodes, cohorts and periods by metered use, operating time or throughput; record driver and service period; count once. | `fao-leap-poultry-2016` |
 | `grade_loss` | graded and rejected eggs | Preserve each independent grade/destination handover. Aggregate same-category saleable eggs only after grade metadata is retained; processing-bound products and waste remain separate. | `fao-small-poultry-production` |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -808,12 +874,15 @@ No prescribed flow in this coordinate; record actual site-specific exchanges whe
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_flock_events` | `layer_husbandry` | pullets and spent hens | flock and transfer log | cohort, route, entry/exit date, count, mass, purpose, destination | registers and calibrated lot scale; Raw aggregation requirements: assign events to laying service and saleable egg mass. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | head; kg | each entry/exit | full represented cohort | producing farm | per reference flow | dated log and scale calibration; traceable numerator, accepted reference-output denominator and normalization worksheet |
-| `cp_feed` | `layer_husbandry` | diets | deliveries and inventory | feed source, as-fed mass, dry matter, phase, refusal and stock | invoices, bins and feed log; Raw aggregation requirements: net feed by phase per kg saleable eggs. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg as fed; kg dry | delivery and monthly | full cohort | producing farm | per reference flow | invoice and inventory reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed` | `layer_husbandry` | diets | deliveries and inventory | feed source, as-fed mass, dry matter, phase, refusal and stock | invoices, bins and feed log; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output. | kg as fed; kg dry | delivery and monthly | full cohort | producing farm | per reference flow | invoice and inventory reconciliation; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_water_energy` | `layer_husbandry` | water and energy | meters and invoices | source, use, carrier, quantity, unit, period and shared-meter driver | meter and purchase log; Raw aggregation requirements: assign by use, retaining carriers separately. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | m3; kWh; MJ | monthly | full cohort | producing farm | per reference flow | meter and invoice; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_manure_emissions` | `layer_husbandry` | manure, mortality, gases | manure and nitrogen log | N input, manure mass/moisture, storage, handling, transfer, mortality, pathway and factor | farm log, samples and pathway method; Raw aggregation requirements: pathway calculation and transfer normalization. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg wet; kg dry; kg N; kg gas | monthly and each transfer | full cohort | producing farm | per reference flow | sample, transfer receipt and method version; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_eggs_collection` | `egg_collection` | eggs and losses | collection and handover ledger | date, cohort, count, laid/collected/saleable mass, broken eggs, storage | daily count, calibrated lot scale and handover ticket; Raw aggregation requirements: reconcile each active node and normalize to 1 kg saleable eggs. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | eggs; kg | every collection/handover | full represented period | producing farm | per reference flow | count sheets, scale and rejection log; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_farm_gate_handover` | `farm_gate_handover` | final reference eggs | farm transfer ledger | source node, cohort, lot, grade, fresh shell-on state, count, mass, packing, storage, date and recipient | calibrated lot scale and transfer ticket; Raw aggregation requirements: sum measured saleable mass by lot and reconcile to upstream active node. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | eggs; kg | each farm-gate transfer | full represented reporting period | producing farm gate | per reference flow | signed transfer record, scale and lot trace; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_grading_packing` | `farm_grading`; `farm_packing` | conditional grades and packages | lot and material ledger | incoming count/mass, grade, destination, rejects, package type/mass/count/reuse | sorting log and material issue/return; Raw aggregation requirements: reconcile each grade and package stock. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | eggs; kg; packages | each active lot | periods when nodes operate | producing farm | per reference flow | lot trace, receipts and rejects; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_pathway_emissions` | `layer_husbandry` | pathway-specific gases and manure N/C | herd, feed, manure, field and method ledger | species/class; animal-days; intake/DM/digestibility; volatile solids; manure N/TAN; system shares; climate; storage time; fertiliser N; grazing; volatilisation/leaching; methane recovery; factor source/unit; final accepted output ; collected manure wet mass; dry matter; destination| collect primary activity by node and period, document parameter applicability, retain each pathway worksheet and any linked treatment/pasture dataset  Retain raw totals and normalize attributed quantities once to the measured accepted final reference output.| animal-day; kg DM; kg VS; kg N; kg CH4; kg N2O; kg NH3 | each operating period and management change | complete represented cohort and service period | actual operated nodes only | per reference flow | meter/analysis records, nitrogen cascade, method and factor evidence, no-duplication ledger |
+| `cp_feed_supply_and_intake` | `layer_husbandry` | Feed supply, intake and loss | stock, receipt, issue and loss ledger | feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output | Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output. | kg as-fed; kg DM | each issue and period close | complete represented cohort/period | actual operated feeding nodes | per reference flow | stock and supplier records; moisture evidence; loss and no-duplication reconciliation |
+| `cp_manure_n2o_coverage` | `layer_husbandry` | Direct and indirect manure/soil N2O coverage | pathway N ledger and method worksheet | species/class; period; excreted N; stage stocks/transfers; system shares; volatilised NH3-N/NOx-N; leached/runoff N; application/grazing N; factor source, unit and applicability; direct/indirect components; receiving medium; linked process and assigned card; accepted final output | Retain raw stage N and component calculations under calc_manure_n2o_coverage, matched to actual operation and existing manure protocols. Document unsupported or inapplicable paths and coverage boundaries; normalize attributable N2O once. | kg N; kg N2O | each reporting period and management change | complete represented management period | actual operated and explicitly linked nodes | per reference flow | N balance, factor unit/applicability, component-to-card and no-duplication worksheet |
 
 ### Calculation Rules
 
@@ -823,6 +892,9 @@ No prescribed flow in this coordinate; record actual site-specific exchanges whe
 | `normalize_reference` | inventory | Divide cohort/period amounts by kg saleable shell-on eggs actually handed over at producing farm gate. | period totals and saleable mass | amount per 1 kg reference | `fao-leap-poultry-2016` |
 | `manure_gases` | manure pathways | Apply pathway-specific official method to collected manure N; preserve kg N2O versus N2O-N and kg NH3 versus NH3-N. | flock, N, pathway and factor | gas mass by substance | `ipcc-2019-livestock-manure`; `fao-leap-nutrients-2018` |
 | `period_assets` | replacement and shared assets | Allocate observed rearing and asset burdens across consuming periods/nodes with evidenced service driver; allocated total equals source total. | flock events, service periods and node use | assigned burdens | `fao-leap-poultry-2016` |
+| `calc_pathway_emissions` | `layer_husbandry` | Use species- and management-compatible methods and retain disaggregated pathway totals. Convert N2O-N to N2O by 44/28 and NH3-N to NH3 by 17/14 exactly once; already molecular masses are not reconverted. Check methane against the documented available-carbon/methane-potential balance and nitrogen losses against each stage's available N. Indirect formation from previously volatilised N is a downstream transformation, not a second source-stage N loss. Attribute and normalize once; do not duplicate linked treatment or fate-model emissions.  Use matched raw-period quantities before allocation for physical screens: CH4 mass × 12/16 must not exceed the carbon available to the represented pathway; source-stage NH3 mass × 14/17 plus direct N2O mass × 28/44 and other source N losses must not exceed that stage's available N, after accounting for stocks and transfers. Bound each indirect N2O-N calculation by its documented volatilised or leached N precursor, not by subtracting that downstream transformation again from the source ledger. These are conservation checks, not emission factors or an empirical per-product range.| `cp_pathway_emissions` | kg named compound per final reference flow | `ipcc-2019-livestock-manure`; `review-eea-manure-2023`; `review-ipcc-soils-2019` |
+| `calc_feed_supply_and_intake` | `layer_feed` | Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden. | `cp_feed_supply_and_intake` | separate feed supply, intake and loss quantities, in matched as-fed/DM units | `fao-feed-loss-accounting-2018` |
+| `calc_manure_n2o_coverage` | `manure_n2o`; `review_layer_husbandry_indirect_n2o` | For each actual manure stage, calculate direct N2O, volatilisation/deposition-derived indirect N2O, and applicable leaching/runoff-derived indirect N2O separately with documented species/system activity and factor basis. Convert N2O-N to molecular N2O by 44/28 once; do not reconvert molecular masses. Retain component worksheets. Where an existing N2O card covers both direct and indirect emissions, report their non-overlapping sum; where separate direct/indirect cards exist, assign each component once to its matching card and never also report the sum. Pasture deposition and land application use the managed-soil method, not a manure-storage factor. Assign foreground versus linked treatment/pasture coverage explicitly; a manure export does not erase earlier emissions, and already covered downstream emissions are not repeated. Account for stock, transfers and previous N losses in the nitrogen cascade; indirect N2O is a downstream transformation of its precursor, not a second source-stage N loss. Normalize attributed molecular masses once to the accepted reference output. Document inapplicability; absent pathway data are not zero. | `cp_manure_n2o_coverage` | kg molecular N2O by pathway and assigned existing card | `ipcc-2019-livestock-manure`; `review-ipcc-soils-2019` |
 
 ### Data Quality Requirements
 
@@ -842,6 +914,10 @@ No prescribed flow in this coordinate; record actual site-specific exchanges whe
 | `output_gate` | grades, spent hens and manure | Verify each intended co-product handover; reject waste as product; reconcile each active node and preserve destination. | `fao-leap-poultry-2016`; `fao-small-poultry-production` |
 | `period_gate` | replacement and shared assets | Check cohort/phase links, rearing treatment, asset consumers and conservation of burden across periods, without duplicate counting. | `fao-leap-poultry-2016` |
 | `exchange_gate` | concrete process exchanges | Require verified concrete flow UUID, property and unit before downstream TIDAS process construction; candidate PCR gaps stay explicit. | `fao-leap-poultry-2016` |
+| `v_pathway_emission_coverage` | `layer_husbandry` | Require a pathway coverage ledger for enteric CH4 where biologically applicable, manure CH4, direct/indirect N2O, NH3 and relevant field emissions. Every pathway needs a measured/calculated value, a named linked process with matching coverage, or supported inapplicability; absent data cannot become zero. Keep wild life before capture outside managed husbandry, assess actual managed holding separately, and retain species-specific evidence. | `ipcc-2019-livestock-manure`; `review-ipcc-soils-2019`; `review-eea-manure-2023` |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
+| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |
+| `v_manure_n2o_coverage` | Applicable manure and managed-soil N pathways | Require explicit direct and indirect pathway coverage, stage N balances and molecular-mass conversion. Map each component to an existing N2O card or an explicitly covering linked process once under calc_manure_n2o_coverage. Missing indirect-pathway evidence prevents a completeness claim; no default zero or duplicate aggregate-plus-components. | `ipcc-2019-livestock-manure`; `review-ipcc-soils-2019` |
 
 ## 10. Published Dataset Profile
 
@@ -864,3 +940,9 @@ No prescribed flow in this coordinate; record actual site-specific exchanges whe
 | `fao-leap-nutrients-2018` | official_guidance | FAO LEAP, Nutrient flows and associated environmental impacts in livestock supply chains (2018), https://openknowledge.fao.org/handle/20.500.14283/ca1328en | Manure and nitrogen records. |
 | `fao-leap-water-livestock-2019` | official_guidance | FAO LEAP, Water use in livestock production systems and supply chains (2019), https://www.fao.org/partnerships/leap/resources/publications/ | Supplied-water distinction. |
 | `fao-small-poultry-production` | extension_guidance | FAO, Small-scale poultry production, https://www.fao.org/4/y5169e/y5169e0a.htm | Farm collection and conditional grading/packing gate. |
+| `review-ipcc-soils-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 11: N2O Emissions from Managed Soils](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf) | Managed-soil direct and indirect nitrogen pathways and boundary reconciliation |
+| `review-eea-manure-2023` | official_guidance | [EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, 3.B Manure Management](https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023/part-b-sectoral-guidance-chapters/3-agriculture/3-b-manure-management-2023) | NH3 nitrogen-flow method; verify actual species, management and geographical applicability before adopting parameters |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred. |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-egg-packaging` | official_guidance | FAO Egg packaging, transport and storage, https://www.fao.org/4/Y4628E/y4628e05.htm | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | conditional concrete identities and method context; does not establish site use or quantities |

@@ -2,15 +2,22 @@ schema_version: 1
 id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-milk-of-cattle"
 title:
   en-US: "Raw milk of cattle"
-  zh-CN: "牛原奶"
-version: "0.1.0"
+  zh-CN: "牛生乳"
 status: "candidate"
 pcr_kind: "product_category_rule"
 content_maturity: "authored_methodology"
 domains:
   - "agriculture-forestry-and-fishery-products"
 modules:
-  core: []
+  core:
+    - "pcr-minimum-content"
+    - "unit-of-analysis"
+    - "reference-flow"
+    - "inventory-flow-taxonomy"
+    - "system-boundary"
+    - "allocation"
+    - "data-quality"
+    - "validation-rules"
 target_entities:
   - "flow"
   - "process"
@@ -30,100 +37,88 @@ classification_refs:
     title: "Raw milk of cattle"
     mapping_type: "exact"
 review_metadata:
-  unresolved_uuid_references:
-    - "conditioning_water: actual flow identity must be confirmed from foreground records before final exchange creation"
-    - "cooling_energy: actual flow identity must be confirmed from foreground records before final exchange creation"
-    - "herd_energy: actual flow identity must be confirmed from foreground records before final exchange creation"
-    - "herd_water: actual flow identity must be confirmed from foreground records before final exchange creation"
-    - "milking_energy: actual flow identity must be confirmed from foreground records before final exchange creation"
-    - "milking_water: actual flow identity must be confirmed from foreground records before final exchange creation"
-  unresolved_flow_uuids:
-    - "Broad warm-or-chilled farm-gate raw cow milk reference: chilled-only aa8aebbb-724a-417b-8372-2dccd499ce71 cannot represent warm milk."
-    - "Feed, transferred calves and cull cattle, usable manure export, residual manure, rejected milk, milking wastewater, and cooling loss require route or destination-specific identity."
-    - "Collected and conditioned warm raw milk at internal capture/conditioning/cooling interfaces, and warm farm-gate final milk, remain unbound pending state- and gate-specific identities."
+  authoring_basis: "Repository create-PCR workflow, TianGong reference-flow lookup, and cited public method evidence."
+  reference_identity:
+    status: "confirmed"
+    product_flow_uuid: "aa8aebbb-724a-417b-8372-2dccd499ce71"
+    flow_property_uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
+    unit_group_uuid: "93a60a57-a4c8-11da-a746-0800200c9a66"
+  methodology_review:
+    status: "pending"
+    note: "Candidate methodology requires maintainer review before active lifecycle status."
+  non_reference_flow_identity_alignment:
+    status: "recommended"
+    note: "Align optional inventory flow UUIDs to route-specific TianGong rows when concrete foreground packages are built."
+  provisional_range_review:
+    status: "pending"
+    note: "Broad reasoned-estimate QA ranges must be replaced or explicitly accepted before publication-critical use."
   unresolved_flow_identities:
-    - row_id: warm_saleable_milk
-      reason: Route-specific output UUID is unresolved. Verify the actual state and gate; this alternative does not establish a single fixed identity for the broad reference.
-    - row_id: reference_product_handover
-      reason: No single exact UUID has been confirmed for this route/state/gate-qualified semantic role. Resolve the actual physical product and its support identities from the foreground lot; never broaden a state/gate-specific UUID.
-    - row_id: reference_handover_input
-      reason: No single exact UUID has been confirmed for this route/state/gate-qualified semantic role. Resolve the actual physical product and its support identities from the foreground lot; never broaden a state/gate-specific UUID.
-    - row_id: feed
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in dairy_herd. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: herd_water
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in dairy_herd. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: herd_energy
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in dairy_herd. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
+    - row_id: replacement_cattle
+      reason: No detail-confirmed UUID is recorded for Live dairy cattle, route-specific in herd_and_feed_management (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: live_cattle_sales
+      reason: No detail-confirmed UUID is recorded for Live cattle, route-specific in herd_and_feed_management (outputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: manure_internal
+      reason: No detail-confirmed UUID is recorded for Cattle manure, internal transfer in herd_and_feed_management (outputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: animal_mortalities
+      reason: No detail-confirmed UUID is recorded for Animal mortality waste, route-specific in herd_and_feed_management (outputs/waste). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: enteric_methane
+      reason: No detail-confirmed UUID is recorded for Methane to air in herd_and_feed_management (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: manure_received
+      reason: No detail-confirmed UUID is recorded for Cattle manure, internal transfer in manure_management (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
     - row_id: exported_manure
-      reason: No detail-confirmed UUID is recorded for this outputs/product role in dairy_herd. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: calves_culls
-      reason: No detail-confirmed UUID is recorded for this outputs/product role in dairy_herd. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: manure_residue
-      reason: No detail-confirmed UUID is recorded for this outputs/waste role in dairy_herd. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
+      reason: No detail-confirmed UUID is recorded for Route-specific manure or recovered product in manure_management (outputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: manure_waste
+      reason: No detail-confirmed UUID is recorded for Route-specific manure waste in manure_management (outputs/waste). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
     - row_id: manure_methane
-      reason: No detail-confirmed methane-to-air UUID has been established for this new manure-management card. Confirm the elementary-flow identity, receiving medium, property and unit support before final exchange creation.
-    - row_id: milking_water
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in milk_collection. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: milking_energy
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in milk_collection. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: collected_raw_milk
-      reason: No detail-confirmed UUID is recorded for this outputs/product role in milk_collection. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: milking_wastewater
-      reason: No detail-confirmed UUID is recorded for this outputs/waste role in milk_collection. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: collected_milk_input
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in primary_conditioning. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: conditioning_water
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in primary_conditioning. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: conditioned_milk_to_cooling
-      reason: No detail-confirmed UUID is recorded for this outputs/product role in primary_conditioning. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: rejected_milk
-      reason: No detail-confirmed UUID is recorded for this outputs/waste role in primary_conditioning. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: milk_entering_cooling
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in farm_cooling. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: cooling_energy
-      reason: No detail-confirmed UUID is recorded for this inputs/product role in farm_cooling. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-    - row_id: cooling_loss
-      reason: No detail-confirmed UUID is recorded for this outputs/waste role in farm_cooling. Confirm the actual physical identity, state/gate or destination, flow type, property and unit from foreground records and Tiangong detail/support reads before final exchange creation. This registration does not establish a verified binding.
-  reference_flow_identity:
-    status: unresolved
-    unresolved_support_fields:
-      - reference_product_flow_uuid
-    reference_output_rows:
-      - reference_product_handover
-    source_interface_rows:
-      - warm_saleable_milk
-      - chilled_saleable_milk
-    association_status: actual_qualified_handover
-    resolution_rule: The output card is the actual measured producer-boundary product of one declared route/state/gate/grade stratum. Existing state/gate-specific source identities stay exact and feed a matched internal interface; they do not bind the broad reference. No physical activity or second reference sale is added.
-    support_review:
-      status: confirmed_mass_support
-      flow_property_uuid: 93a60a56-a3c8-11da-a746-0800200b9a66
-      unit_group_uuid: 93a60a57-a4c8-11da-a746-0800200c9a66
-      reference_unit: kg
-    lookup_review:
-      status: searched_unresolved
-      initial_lookups_per_new_card: 1
-      refinement_lookups_per_new_card: 0
-      searched_rows:
-        - reference_product_handover
-        - reference_handover_input
-      new_fixed_bindings: 0
-      reason: Returned milk candidates specify chilled farm-gate identities, which cannot bind the preserved warm/chilled and alternative-gate role.
-      review_requirement: Select and verify the actual qualified lot identity before final exchange creation. Candidate check success does not verify unresolved UUIDs or publication readiness.
-  measurement_remediation:
-    reference_output_row: reference_product_handover
-    raw_reference_output_records: Original raw quantity, stage denominator and aggregation instructions remain in bilingual cards and collection methods; final package projection is explicitly separate.
-    normalized_basis_scope: Final foreground-package contributions only. Stage-native process quantitative references, records, units, allocations and ranges are retained; throughput links and actual accepted final output are required.
-    review_status: candidate_review_pending
-    handover_interface: One actual measured producer-boundary handover; source rows and matched input are internal interfaces, not additional external sales.
-    automated_check:
-      command: pcr:check
-      status: pass
-      measurement_status: pass
-      measurement_complete: true
-      measurement_findings: 0
-      check_version: 1
-  unresolved_range_evidence:
-    - row_id: manure_methane
-      reason: No boundary-compatible reviewed CH4 screening range is established. Calculate from actual animal and manure-system records using the cited IPCC method; absence of a range is not a zero-emission assumption.
-updated_at_utc: "2026-10-08T09:33:35.000Z"
+      reason: No detail-confirmed UUID is recorded for Methane to air in manure_management (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: manure_nitrous_oxide
+      reason: No detail-confirmed UUID is recorded for Nitrous oxide to air in manure_management (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: manure_ammonia
+      reason: No detail-confirmed UUID is recorded for Ammonia to air in manure_management (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_ration_silage
+      reason: No detail-confirmed UUID is recorded for Maize silage in herd_and_feed_management (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_ration_hay
+      reason: No detail-confirmed UUID is recorded for Grass hay in herd_and_feed_management (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: herd_resources_water
+      reason: No detail-confirmed UUID is recorded for Process water in herd_and_feed_management (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: herd_resources_electricity
+      reason: No detail-confirmed UUID is recorded for Electricity at equipment supply in herd_and_feed_management (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: herd_resources_diesel
+      reason: No detail-confirmed UUID is recorded for Diesel fuel in herd_and_feed_management (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_crop_inputs_seed
+      reason: No detail-confirmed UUID is recorded for Maize seed in on_farm_feed_production (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_crop_inputs_urea
+      reason: No detail-confirmed UUID is recorded for Urea fertilizer in on_farm_feed_production (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_crop_inputs_diesel
+      reason: No detail-confirmed UUID is recorded for Diesel fuel in on_farm_feed_production (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_crop_inputs_water
+      reason: No detail-confirmed UUID is recorded for Process water in on_farm_feed_production (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: on_farm_feed_output_silage
+      reason: No detail-confirmed UUID is recorded for Maize silage in on_farm_feed_production (outputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: on_farm_feed_output_hay
+      reason: No detail-confirmed UUID is recorded for Grass hay in on_farm_feed_production (outputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_land_nitrogen_losses_n2o
+      reason: No detail-confirmed UUID is recorded for Nitrous oxide to air in on_farm_feed_production (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_land_nitrogen_losses_nh3
+      reason: No detail-confirmed UUID is recorded for Ammonia to air in on_farm_feed_production (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: feed_land_nitrogen_losses_nitrate
+      reason: No detail-confirmed UUID is recorded for Nitrate to water in on_farm_feed_production (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: milking_resources_electricity
+      reason: No detail-confirmed UUID is recorded for Electricity at equipment supply in milking_cooling_storage (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: milking_resources_water
+      reason: No detail-confirmed UUID is recorded for Process water in milking_cooling_storage (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: milking_resources_naoh
+      reason: No detail-confirmed UUID is recorded for Sodium hydroxide cleaning solution in milking_cooling_storage (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: milking_resources_r134a
+      reason: No detail-confirmed UUID is recorded for R134a refrigerant in milking_cooling_storage (inputs/product). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: milking_wastes_wastewater
+      reason: No detail-confirmed UUID is recorded for Dairy cleaning wastewater in milking_cooling_storage (outputs/waste). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: milking_wastes_milk_waste
+      reason: No detail-confirmed UUID is recorded for Discarded raw cattle milk in milking_cooling_storage (outputs/waste). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+    - row_id: refrigerant_leakage_r134a_air
+      reason: No detail-confirmed UUID is recorded for 1,1,1,2-tetrafluoroethane to air in milking_cooling_storage (outputs/elementary). Confirm physical identity, state, boundary, flow type, property and unit before binding; this entry does not assert verification.
+  measurement_basis:
+    reference_inventory: 1 kg physical saleable raw cattle milk at the farm gate
+    comparative_reporting: FPCM calculated from matched measured milk composition and saleable batches
+    note: Physical-mass inventory and FPCM comparative results are reported separately. Composition correction, allocation and provisional QA bounds remain subject to methodology review; a reference-mass consistency pass does not verify those formulas or site data.
+updated_at_utc: "2026-07-24T11:14:44.238Z"

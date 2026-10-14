@@ -379,32 +379,25 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: energy
-          role: "Actual preservation energy"
-          name: "Actual energy carrier (UUID unresolved)"
+        - row_id: energy_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy / MJ"
-          description: "Meter actual energy carrier for performed chilling, drying or other lawful stabilization. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Meter actual energy carrier for performed chilling, drying or other lawful stabilization. Denominator and scope requirements：per kg output of the corresponding process Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
-            value_mode: "calculated_value"
+            expression: "Collect raw quantities for this identity under cp_stabilize and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per reference flow"
+              text: "per declared reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
+              kind: "collected_record"
               collection_protocol_id: cp_stabilize
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "100000"
-                unit: "MJ/kg"
-                basis: "per kg output of corresponding process"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+              source_ids:
+                - fao-agricultural-energy
+            ranges: []
       waste:
         []
       elementary:
@@ -690,6 +683,10 @@ allocation_rules:
     applies_to: "phases and shared service"
     rule: "Index source establishment/productive/replacement/termination periods; assign observed shared-service time or throughput to consuming nodes/lots once with evidence."
     source_ids: []
+  - rule_id: allocation_rule_4
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_collect
@@ -841,6 +838,10 @@ validation_rules:
     applies_to: "final exchange"
     rule: "Verify named good, source, state, gate, direction/type and property/unit support."
     source_ids: []
+  - rule_id: v_foreground_emission_responsibility
+    applies_to: "Actual operated nodes and linked services"
+    rule: "Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "One source-, route-, state-, grade- and gate-qualified residual edible animal-product foreground dataset."
   downstream_use: "Candidate secondary_dataset or background_dataset only after concrete identity review and publication."
@@ -858,9 +859,13 @@ data_sources:
     type: "official_guidance"
     reference: "[EU animal-origin food rules and residual examples](https://eur-lex.europa.eu/legal-content/EN/TXT/?qid=1744429744827&uri=CELEX%3A02021R0632-20220818)"
     used_for: "Candidate examples and food-use checks, not universal CPC classification."
+  - id: "fao-agricultural-energy"
+    type: "official_guidance"
+    reference: "FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:3fae83f2035597ce5be00aa6e66efcac03ee69e68e83e5dfd87a240d7a289b1b"
+  source_sha256: "sha256:79b809bbfdde39e2ca2204d0cae33bfc2a17e858735b04c1bb3442c6c0b1d172"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6719"
@@ -911,18 +916,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_34622"
+    - unit_id: "normative_35180"
       family: "allocation"
       span:
         start:
-          offset: 34622
-          line: 656
+          offset: 35180
+          line: 651
           column: 1
         end:
-          offset: 35439
-          line: 664
+          offset: 36385
+          line: 661
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual source output set | Enumerate each intended product, amount and gate. Use measured causal attribution when supported; otherwise document period-specific economic allocation with sensitivity. Do not assign automatic zero or entire source burden to 02939. | eu-residual |\n| a_grade | grades and residue | Accepted and separately saleable downgraded goods have disjoint masses/destinations; non-food rejects and incidental residue are not extra edible products. | un-cpc-3 |\n| a_period | phases and shared service | Index source establishment/productive/replacement/termination periods; assign observed shared-service time or throughput to consuming nodes/lots once with evidence. |  |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_source | actual source output set | Enumerate each intended product, amount and gate. Use measured causal attribution when supported; otherwise document period-specific economic allocation with sensitivity. Do not assign automatic zero or entire source burden to 02939. | eu-residual |\n| a_grade | grades and residue | Accepted and separately saleable downgraded goods have disjoint masses/destinations; non-food rejects and incidental residue are not extra edible products. | un-cpc-3 |\n| a_period | phases and shared service | Index source establishment/productive/replacement/termination periods; assign observed shared-service time or throughput to consuming nodes/lots once with evidence. |  |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -939,12 +944,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 34622
-              line: 656
+              offset: 35180
+              line: 651
               column: 1
             end:
-              offset: 34662
-              line: 656
+              offset: 35220
+              line: 651
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -959,18 +964,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_41386"
+    - unit_id: "normative_42332"
       family: "validation"
       span:
         start:
-          offset: 41386
-          line: 695
+          offset: 42332
+          line: 692
           column: 1
         end:
-          offset: 42266
-          line: 705
+          offset: 43813
+          line: 703
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject generic other-animal averages, insects, honey, ordinary eggs, raw milk, meat, snails, non-food goods and elsewhere-classified food; require legal and food evidence. | un-cpc-3;eu-residual |\n| v_route | source | Require real source or documented purchased input; reject fictitious common biology, duplicate collection and unperformed treatment. | eu-residual |\n| v_balance | each lot | Reconcile performed states, additions/removals, grade/reject destinations and net dispatch. |  |\n| v_allocation | periods/outputs | Reject omitted real co-products, duplicate grades, zero/full automatic burden and duplicate shared service. |  |\n| v_identity | final exchange | Verify named good, source, state, gate, direction/type and property/unit support. |  |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_scope | reference lot | Reject generic other-animal averages, insects, honey, ordinary eggs, raw milk, meat, snails, non-food goods and elsewhere-classified food; require legal and food evidence. | un-cpc-3;eu-residual |\n| v_route | source | Require real source or documented purchased input; reject fictitious common biology, duplicate collection and unperformed treatment. | eu-residual |\n| v_balance | each lot | Reconcile performed states, additions/removals, grade/reject destinations and net dispatch. |  |\n| v_allocation | periods/outputs | Reject omitted real co-products, duplicate grades, zero/full automatic burden and duplicate shared service. |  |\n| v_identity | final exchange | Verify named good, source, state, gate, direction/type and property/unit support. |  |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -987,12 +992,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 41386
-              line: 695
+              offset: 42332
+              line: 692
               column: 1
             end:
-              offset: 41408
-              line: 695
+              offset: 42354
+              line: 692
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1076,107 +1081,133 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "a_source"
       identity_kind: "explicit"
-      unit_id: "normative_34622"
+      unit_id: "normative_35180"
       source_span:
         start:
-          offset: 34735
-          line: 660
+          offset: 35293
+          line: 655
           column: 1
         end:
-          offset: 35024
-          line: 660
+          offset: 35582
+          line: 655
           column: 290
     - pointer: "/allocation_rules/1"
       rule_id: "a_grade"
       identity_kind: "explicit"
-      unit_id: "normative_34622"
+      unit_id: "normative_35180"
       source_span:
         start:
-          offset: 35025
-          line: 661
+          offset: 35583
+          line: 656
           column: 1
         end:
-          offset: 35226
-          line: 661
+          offset: 35784
+          line: 656
           column: 202
     - pointer: "/allocation_rules/2"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_34622"
+      unit_id: "normative_35180"
       source_span:
         start:
-          offset: 35227
-          line: 662
+          offset: 35785
+          line: 657
           column: 1
         end:
-          offset: 35437
-          line: 662
+          offset: 35995
+          line: 657
           column: 211
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_rule_4"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_35180"
+      source_span:
+        start:
+          offset: 35997
+          line: 659
+          column: 1
+        end:
+          offset: 36383
+          line: 659
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_41386"
+      unit_id: "normative_42332"
       source_span:
         start:
-          offset: 41481
-          line: 699
+          offset: 42427
+          line: 696
           column: 1
         end:
-          offset: 41705
-          line: 699
+          offset: 42651
+          line: 696
           column: 225
     - pointer: "/validation_rules/1"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_41386"
+      unit_id: "normative_42332"
       source_span:
         start:
-          offset: 41706
-          line: 700
+          offset: 42652
+          line: 697
           column: 1
         end:
-          offset: 41875
-          line: 700
+          offset: 42821
+          line: 697
           column: 170
     - pointer: "/validation_rules/2"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_41386"
+      unit_id: "normative_42332"
       source_span:
         start:
-          offset: 41876
-          line: 701
+          offset: 42822
+          line: 698
           column: 1
         end:
-          offset: 41997
-          line: 701
+          offset: 42943
+          line: 698
           column: 122
     - pointer: "/validation_rules/3"
       rule_id: "v_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_41386"
+      unit_id: "normative_42332"
       source_span:
         start:
-          offset: 41998
-          line: 702
+          offset: 42944
+          line: 699
           column: 1
         end:
-          offset: 42145
-          line: 702
+          offset: 43091
+          line: 699
           column: 148
     - pointer: "/validation_rules/4"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_41386"
+      unit_id: "normative_42332"
       source_span:
         start:
-          offset: 42146
-          line: 703
+          offset: 43092
+          line: 700
           column: 1
         end:
-          offset: 42264
-          line: 703
+          offset: 43210
+          line: 700
           column: 119
+    - pointer: "/validation_rules/5"
+      rule_id: "v_foreground_emission_responsibility"
+      identity_kind: "explicit"
+      unit_id: "normative_42332"
+      source_span:
+        start:
+          offset: 43211
+          line: 701
+          column: 1
+        end:
+          offset: 43811
+          line: 701
+          column: 601
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -1204,27 +1235,27 @@ normative_context:
           column: 141
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_34622"
+      unit_id: "normative_35180"
       source_span:
         start:
-          offset: 34622
-          line: 656
+          offset: 35180
+          line: 651
           column: 1
         end:
-          offset: 34662
-          line: 656
+          offset: 35220
+          line: 651
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_41386"
+      unit_id: "normative_42332"
       source_span:
         start:
-          offset: 41386
-          line: 695
+          offset: 42332
+          line: 692
           column: 1
         end:
-          offset: 41408
-          line: 695
+          offset: 42354
+          line: 692
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1233,5 +1264,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:3fae83f2035597ce5be00aa6e66efcac03ee69e68e83e5dfd87a240d7a289b1b"
-  generated_content_sha256: "sha256:720354c109bfaf80358ca6837f94052cb5504c3344a59a5e26bac22b9b57c710"
+    sha256: "sha256:79b809bbfdde39e2ca2204d0cae33bfc2a17e858735b04c1bb3442c6c0b1d172"
+  generated_content_sha256: "sha256:162d8435e809f67376429debd61a108267137a95767e4e41634202784284bd2a"

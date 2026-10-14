@@ -99,39 +99,109 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_source_seed_lot_records`
 - 来源：`fao-seed-production`
-###### 农业养分与肥料投入（`field_groundnut_seed_multiplication_agricultural_nutrient_inputs`）
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+###### 尿素肥料（`field_groundnut_seed_multiplication_agricultural_nutrient_inputs_urea`）
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+**field_groundnut_seed_multiplication_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
+
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每 1,000 kg 收获种子作物.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_nutrient_input_records`
-- 来源：`ipcc-2019-managed-soils-n2o`; `ipcc-2019-cropland`
-- 数量范围：Candidate QA guardrail
-  - 范围角色：QA guardrail (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：declared flow unit
-  - 基准：declared process or reference-flow basis
-  - 基准类型：Process output (`process_output`)
-  - 证据类型：Reasoned estimate (`reasoned_estimate`)
+- 来源：`ipcc-2019-managed-soils-n2o`；`ipcc-2019-cropland`；`fao-fertilizer-identities`
 
-- 数量范围：Candidate QA guardrail
-  - 范围角色：QA guardrail (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：declared flow unit
-  - 基准：declared process or reference-flow basis
-  - 基准类型：Process output (`process_output`)
-  - 证据类型：Reasoned estimate (`reasoned_estimate`)
+###### 硫酸铵肥料（`field_groundnut_seed_multiplication_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`ipcc-2019-managed-soils-n2o`；`ipcc-2019-cropland`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`field_groundnut_seed_multiplication_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`ipcc-2019-managed-soils-n2o`；`ipcc-2019-cropland`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`field_groundnut_seed_multiplication_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`ipcc-2019-managed-soils-n2o`；`ipcc-2019-cropland`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`field_groundnut_seed_multiplication_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`ipcc-2019-managed-soils-n2o`；`ipcc-2019-cropland`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`field_groundnut_seed_multiplication_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`ipcc-2019-managed-soils-n2o`；`ipcc-2019-cropland`；`fao-organic-nutrients`
 
 ###### 灌溉水供应（`irrigation_water_supplied`）
 记录各声明来源提供到田间的灌溉水。经证据支持的雨养路线记录合理零值并保留雨养证据。
@@ -147,20 +217,50 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_irrigation_records`
 - 来源：`ipcc-2019-cropland`
-###### 田间燃烧能源（`field_combustion_energy`）
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
+###### 设备供电点的电力（`field_combustion_energy_electricity`）
+
+**field_combustion_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
+
 记录田间设备使用的燃料或直接供应的燃烧能源，包括现场燃烧的抽水能源。移动运输燃料不放入此行。
-- 选定流：田间燃料或燃烧能源载体
-- 流属性/单位：Mass, volume, or energy / kg, L, or MJ
-- 数量规则：按田间作业记录实测燃料或能源使用量
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每 1,000 kg 收获种子作物.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_field_energy_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_energy_records`
-- 来源：`ipcc-2019-cropland`
+- 来源：`ipcc-2019-cropland`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`field_combustion_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_energy_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_energy_records`
+- 来源：`ipcc-2019-cropland`；`fao-agricultural-energy`
+
 ###### 灌溉抽水电力（`irrigation_pumping_electricity`）
 记录在田间边界使用的购入电力，包括灌溉抽水和电驱动田间设备。
 - 选定流：灌溉抽水购入电力
@@ -175,6 +275,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_energy_records`
 - 来源：`ipcc-2019-cropland`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 植保产品（`crop_protection_products`）
 记录用于杂草、虫害或病害的具体制剂产品和有效成分。产品身份和有效成分含量分开。
  - 选定流：具体植保产品或有效成分
@@ -189,11 +298,21 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_crop_protection_records`
 - 来源：`fao-seed-production`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ##### 废物流
 ##### 基本流
 ###### 耕地占用（`cultivated_land_occupation`）
 记录声明制种作物周期的耕地占用。在数据包生成时核验具体基本流 UUID。
-- 选定流：按声明范围的耕地占用或转化
+- 选定流：耕地占用（UUID 未解析；仅表示占用）
+土地占用按面积乘以实际占用时间计量。纳入土地转化时，应单独记录转化前后土地状态的面积事件、日期、既有利用、核算期间和归属；不能给转化赋面积时间数量或按每个作物周期重复计算。
 - 流属性/单位：Area-time / ha·crop cycle
 - 数量规则：种植面积乘以声明的作物周期占用基准
 - 数值来源模式：计算值（`calculated_value`）
@@ -205,6 +324,15 @@ translation_status: aligned
 - 证据类型：基于采集记录计算（`calculated_from_collection`）
 - 采集协议：`cp_land_use_records`
 - 来源：`ipcc-2019-cropland`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 自然水取水（`natural_water_withdrawal`）
 自然资源取水与供应灌溉水产品投入保持区分。
 - 选定流：从声明自然水源取出的水资源
@@ -219,6 +347,15 @@ translation_status: aligned
 - 证据类型：基于采集记录计算（`calculated_from_collection`）
 - 采集协议：`cp_irrigation_records`
 - 来源：`ipcc-2019-cropland`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 #### 输出
 ##### 产品流
 ###### 进入调理的收获花生种子作物（`harvested_groundnut_seed_crop_for_conditioning`）
@@ -235,6 +372,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvested_seed_mass`
 - 来源：`fao-seed-production`; `mass-balance-identity`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ##### 废物流
 ###### 田间残余物和非种子材料（`field_residues_and_non_seed_material`）
 除非残余物作为有意销售或转移的产品跨越边界，否则将残余物、非种子植物材料、损伤种子或其他田间材料记录为废物。
@@ -250,6 +396,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_residue_records`
 - 来源：`ipcc-2019-cropland`; `mass-balance-identity`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ##### 基本流
 ###### 田间管理土壤氮排放至空气（`managed_soil_nitrogen_emissions_to_air`）
 使用选定方法层级、养分投入记录和声明的土壤与气候背景，记录管理土壤产生的物种特定排放。
@@ -265,6 +420,15 @@ translation_status: aligned
 - 证据类型：基于采集记录计算（`calculated_from_collection`）
 - 采集协议：`cp_nutrient_input_records`
 - 来源：`ipcc-2019-managed-soils-n2o`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 田间管理土壤氮排放至水体（`managed_soil_nitrogen_emissions_to_water`）
 当所选方法和数据范围要求时，记录进入声明水体环境的硝酸盐或其他氮物种。
 - 选定流：管理土壤排放至水体的氮物种
@@ -279,6 +443,15 @@ translation_status: aligned
 - 证据类型：基于采集记录计算（`calculated_from_collection`）
 - 采集协议：`cp_nutrient_input_records`
 - 来源：`ipcc-2019-managed-soils-n2o`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 田间能源产生的化石二氧化碳（`fossil_carbon_dioxide_from_field_energy`）
 根据记录的田间能源载体和声明因子计算化石燃烧排放。
 - 选定流：田间能源排放至空气的化石二氧化碳
@@ -293,6 +466,15 @@ translation_status: aligned
 - 证据类型：基于采集记录计算（`calculated_from_collection`）
 - 采集协议：`cp_field_energy_records`
 - 来源：`ipcc-2019-cropland`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ### 过程：种子调理、处理和包装（`seed_conditioning_treatment_and_packaging`）
 #### 输入
 ##### 产品流
@@ -310,6 +492,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_input_records`
 - 来源：`mass-balance-identity`; `fao-seed-conditioning`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 调理和干燥电力（`conditioning_and_drying_electricity`）
 记录干燥、脱粒、清选、分级、检测、处理和包装作业跨越调理边界的电力。
 - 选定流：种子调理和包装购入电力
@@ -324,6 +515,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_energy_records`
 - 来源：`fao-seed-conditioning`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 调理燃烧能源（`conditioning_combustion_energy`）
 记录种子干燥或其他调理作业使用的燃料或直接供应的热量。
 - 选定流：干燥燃料或供应的过程热
@@ -338,6 +538,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_energy_records`
 - 来源：`fao-seed-conditioning`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 种子处理材料（`seed_treatment_material`）
 记录应用于合格种批的处理产品和有效成分，包括剂量、处理质量和处理状态。
  - 选定流：种子处理产品或有效成分
@@ -352,20 +561,65 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_seed_treatment_records`
 - 来源：`fao-seed-production`
-###### 种子包装功能（`seed_packaging_function`）
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
+###### 木制板条箱（`seed_packaging_function_wood_crate`）
+
+**seed_packaging_function 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
+
 记录声明农场门前使用的袋、内衬、封口、标签或其他包装功能。包装与种子材料分开。
-- 选定流：一次或二次种子包装材料/功能
-- 流属性/单位：Mass, count, or declared packaging quantity / kg or item
-- 数量规则：按合格种子批次记录包装库存发放量，必要时按声明质量或容量将件数换算为质量
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1 kg 包装种子.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：木制板条箱
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_packaging_input_records`
-- 来源：`usda-seed-cleaning-handling`
+- 来源：`usda-seed-cleaning-handling`；`fao-package-identities`
+
+###### 瓦楞纸板箱（`seed_packaging_function_corrugated_box`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：瓦楞纸板箱
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_packaging_input_records`
+- 来源：`usda-seed-cleaning-handling`；`fao-package-identities`
+
+###### 聚乙烯包装薄膜（`seed_packaging_function_pe_film`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚乙烯包装薄膜
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_packaging_input_records`
+- 来源：`usda-seed-cleaning-handling`；`fao-package-identities`
+
 ##### 废物流
 ##### 基本流
 #### 输出
@@ -386,6 +640,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_accepted_seed_mass`
 - 来源：`fao-seed-production`; `mass-balance-identity`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 有意副产品或降级种子流（`intended_seed_coproduct_or_downgrade`）
 只有当筛下物、降级种子或其他分离物流以有文件支持的副产品或独立产品形式跨越边界时，才记录本产品输出。必须声明去向，且不得将其计入合格播种种子。
 - 选定流：有意转移的降级或副产品种子流
@@ -400,6 +663,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_reject_mass_records`
 - 来源：`mass-balance-identity`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ##### 废物流
 ###### 调理不合格物和筛下物（`conditioning_rejects_and_screenings`）
 按质量和去向记录不合格种子、筛下物、破碎籽粒、粉尘和等外物。
@@ -415,6 +687,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_reject_mass_records`
 - 来源：`usda-seed-cleaning-handling`; `mass-balance-identity`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 包装废弃物（`packaging_waste`）
 按材料和去向记录包装损耗和废弃包装。
 - 选定流：按材料和声明去向记录包装废弃物
@@ -429,6 +710,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_packaging_waste_records`
 - 来源：`usda-seed-cleaning-handling`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ##### 基本流
 ###### 调理粉尘和燃烧排放（`conditioning_dust_and_combustion_emissions`）
 根据声明接收环境、物种和方法记录清选和干燥产生的颗粒物或燃烧物种。
@@ -444,6 +734,15 @@ translation_status: aligned
 - 证据类型：基于采集记录计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_emission_records`
 - 来源：`fao-seed-conditioning`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ### 过程：种子储存（`seed_storage`）
 #### 输入
 ##### 产品流
@@ -461,6 +760,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_storage_lot_records`
 - 来源：`fao-seed-production`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ###### 储存电力（`storage_electricity`）
 当储存温控、搬运或监测在边界内且具有实质影响时，记录其电力。
 - 选定流：种子储存购入电力
@@ -475,6 +783,15 @@ translation_status: aligned
 - 证据类型：基于采集记录计算（`calculated_from_collection`）
 - 采集协议：`cp_storage_energy_records`
 - 来源：`fao-seed-production`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ##### 废物流
 ##### 基本流
 #### 输出
@@ -495,6 +812,15 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_delivered_seed_mass`
 - 来源：`mass-balance-identity`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
+
 ##### 废物流
 
 ###### 储存损失或损伤种子（`storage_loss_or_damaged_seed`）
@@ -511,6 +837,14 @@ translation_status: aligned
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_storage_loss_records`
 - 来源：`mass-balance-identity`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：1000
+  - 单位：声明的流单位
+  - 基准：声明的过程或参考流基准
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 基本流
 
@@ -523,7 +857,7 @@ translation_status: aligned
 - 选定流：花生种子
 - 流属性 / 单位：质量 / kg
 - 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -549,7 +883,7 @@ translation_status: aligned
 - 选定流：花生种子
 - 流属性 / 单位：质量 / kg
 - 数量规则：1 kg
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -581,6 +915,8 @@ translation_status: aligned
 | `allocation_reject_fate` | 不合格物和废物 | 区分田间残余物、调理不合格物、包装废弃物、储存损失、处理、回收和处置；没有去向和替代证据时不得给出替代产品信用。 | `mass-balance-identity` |
 
 每个拒收或等外种子状态都必须明确路由为返工、降级、回收或丢弃。返工环路或边界退出要连接到产生该状态的调理过程；在新的有文件质量放行事件前，拒收物不得计入合格输出。
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 先按各采集协议保留原始场址、批次、周期及阶段数量与分母，并完成库存、损失、含水率和共产品归属核对；随后按实际归属的验收交付产品量归一化：归一化交换量 = 归属原始交换量 × 声明参考数量 / 同一边界和计量基准的验收产品量。多年生建植和共享作业先执行各自分摊规则，不得把内部转移数量设为最终参考数量。每声明的参考流指第 3 节的数量、单位和产品状态；数据包必须声明实际路线和门。
@@ -633,7 +969,7 @@ translation_status: aligned
 | `dq_quality_release` | 合格种子输出 | 保留批次放行依据、质量检测方法、含水率、净度、发芽率或生活力、处理状态和门点。 | 质量检测、证书、放行记录 |
 | `dq_reject_and_fate` | 不合格物、残余物和废物 | 每条非参考物流都有实测或平衡质量和声明去向；不得仅依据名称推断产品状态。 | 不合格物日志、残余物记录、发运或处理记录 |
 | `dq_mass_balance` | 所有过程 | 在声明容差内平衡田间、调理和储存输出，并披露未解释比例。 | 称重记录、批次单、库存平衡 |
-| `dq_binding_coordinate` | 具体流身份核验证据 | 分别核验每种实际交换的具体流 UUID、物理状态、流属性和单位；未确认时明确保留未解析身份。 | 具体流身份核验证据 |
+| `dq_binding_coordinate` | 每个清单交换 | 核对实际物质或产品身份、状态、方向、流类型、属性、单位和适用边界；仅保留已核实匹配的 UUID，其余身份明确留空并逐行登记。 | 身份核验记录 |
 ## 9. 校验规则
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
@@ -672,3 +1008,7 @@ translation_status: aligned
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

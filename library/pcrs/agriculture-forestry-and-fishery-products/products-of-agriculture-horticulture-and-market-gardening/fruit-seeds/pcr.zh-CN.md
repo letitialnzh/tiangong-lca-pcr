@@ -147,51 +147,129 @@ sync_with: pcr.en-US.md
 - 流：实际使用的种源/亲本种子批次
 - 单位：kg 或同批次实测粒数换算质量
 - 数量规则：按投入批次净质量和批次追溯记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：供应商/批次记录 `supplier_batch_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_source_seed_lot`
 - 来源：`fao-seed-systems`, `fao-seed-production-manual`
+- 数量范围：默认估计
+  - 范围角色：默认估计（`default_estimate`）
+  - 下限：0
+  - 上限：0.5
+  - 单位：kg 种源批次/kg 合格参考种子
+  - 基准：覆盖低产种子繁育路线的宽泛初筛区间；用批次记录替代
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
-###### 农业养分与肥料投入（`fruit_seed_multiplication_agricultural_nutrient_inputs`）
+###### 尿素肥料（`fruit_seed_multiplication_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**fruit_seed_multiplication_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：1 kg 放行合格种子.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_management_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_management_inputs`
-- 来源：`ipcc-2019-cropland`; `ipcc-2019-managed-soils-n2o`
-- 数量范围：Provisional nutrient-product screening interval
-  - 范围角色：Default estimate (`default_estimate`)
-  - 下限：0
-  - 上限：10
-  - 单位：kg product/kg accepted reference seed
-  - 基准：broad first-pass interval across crop and perennial seed routes; replace with product and application records
-  - 基准类型：Reference flow (`reference_flow`)
-  - 证据类型：Reasoned estimate (`reasoned_estimate`)
+- 来源：`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`fruit_seed_multiplication_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_management_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_management_inputs`
+- 来源：`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`fruit_seed_multiplication_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_management_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_management_inputs`
+- 来源：`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`fruit_seed_multiplication_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_management_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_management_inputs`
+- 来源：`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`fruit_seed_multiplication_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_management_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_management_inputs`
+- 来源：`ipcc-2019-managed-soils-n2o`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`fruit_seed_multiplication_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_management_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_management_inputs`
+- 来源：`ipcc-2019-managed-soils-n2o`；`fao-organic-nutrients`
 
 ###### `crop_protection_products`
 - 流：实际使用的植保产品/有效成分
 - 单位：kg 产品或 kg 有效成分
 - 数量规则：按产品、有效成分、施用次数和批次记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：实际使用时填 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：施用与采购记录 `supplier_batch_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_management_inputs`
 - 来源：`ipcc-2019-cropland`
 
@@ -204,12 +282,12 @@ sync_with: pcr.en-US.md
 - 流：收获前成熟种子承载果实、荚果或果核材料
 - 单位：kg 湿物或干物，注明基准
 - 数量规则：按地块/采种园批次收获前后称重
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：田间批次记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest_lot`
 - 来源：`fao-seed-production-manual`, `fao-local-vegetable-seed-production`
 
@@ -220,12 +298,12 @@ sync_with: pcr.en-US.md
 - 流：田间残茬、修剪物和采后残体
 - 单位：kg 湿物；必要时附干物质比例
 - 数量规则：称重、面积产量法或透明估计，记录去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：现场质量记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_co_product_and_residue_fate`
 - 来源：`ipcc-2019-cropland`
 
@@ -234,12 +312,12 @@ sync_with: pcr.en-US.md
 - 流：收获前后未捕获或损失的种子承载材料
 - 单位：kg 湿物或干物
 - 数量规则：以收获前估计量减去捕获量核对
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：田间损失记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_harvest_lot`
 - 来源：`fao-seed-production-manual`
 
@@ -249,12 +327,12 @@ sync_with: pcr.en-US.md
 - 流：管理土壤直接/间接 N₂O 排放
 - 单位：kg N₂O-N 或 kg N₂O，明确换算
 - 数量规则：优先实测；否则按施氮量、气候和土壤因子估计
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：现场施氮与排放模型 `emission_measurement_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_emission_context`
 - 来源：`ipcc-2019-managed-soils-n2o`
 
@@ -262,12 +340,12 @@ sync_with: pcr.en-US.md
 - 流：田间管理导致的氨排放
 - 单位：kg NH₃
 - 数量规则：按实际施用氮和适用排放因子估计或实测
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：排放因子或监测 `emission_measurement_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_emission_context`
 - 来源：`ipcc-2019-managed-soils-n2o`
 
@@ -275,12 +353,12 @@ sync_with: pcr.en-US.md
 - 流：向水体或地下水的硝酸盐损失
 - 单位：kg NO₃⁻-N 或 kg NO₃⁻，明确换算
 - 数量规则：按水质监测、氮平衡或适用因子
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：水质/排放因子 `emission_measurement_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_emission_context`
 - 来源：`ipcc-2019-managed-soils-n2o`
 
@@ -293,12 +371,12 @@ sync_with: pcr.en-US.md
 - 流：收获工序的成熟种子承载材料输入
 - 单位：kg 湿物或干物
 - 数量规则：与 `mature_seed_bearing_material` 同批次关联，不重复采购计量
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次转移记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_harvest_lot`
 - 来源：`fao-seed-production-manual`
 
@@ -306,12 +384,12 @@ sync_with: pcr.en-US.md
 - 流：收获机械的柴油、汽油或其他燃料
 - 单位：L 或 kg；附低位热值
 - 数量规则：按加油、设备小时或燃料计量器记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：燃料计量与因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_energy`
 - 来源：`fao-seed-production-manual`
 
@@ -319,12 +397,12 @@ sync_with: pcr.en-US.md
 - 流：收获、输送和现场初分离用电
 - 单位：kWh
 - 数量规则：优先分表；否则按设备功率、运行时间和负荷估计
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：电表或能耗因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_energy`
 - 来源：`fao-seed-production-manual`
 
@@ -335,12 +413,12 @@ sync_with: pcr.en-US.md
 - 流：收获捕获的种子承载果实、荚果或果核
 - 单位：kg 湿物或干物
 - 数量规则：按收获批次入口称重
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：收获称重记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest_lot`
 - 来源：`fao-seed-production-manual`
 
@@ -348,12 +426,12 @@ sync_with: pcr.en-US.md
 - 流：可销售或另作用途的果实共产品
 - 单位：kg 湿物
 - 数量规则：以实际分离质量和实际去向记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：副产品称重/销售记录 `co_product_fate_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_co_product_and_residue_fate`
 - 来源：`fao-seed-production-manual`
 
@@ -363,25 +441,25 @@ sync_with: pcr.en-US.md
 - 流：收获和运输中的种子承载材料损失
 - 单位：kg 湿物或干物
 - 数量规则：入口、转移和出口质量平衡差额
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：质量平衡 `mass_balance_record`
-- 采集协议：`cp_harvest_lot`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
+- 采集协议：`cp_co_product_and_residue_fate`
 - 来源：`fao-seed-production-manual`
 
 ###### `harvest_removed_residue`
 - 流：收获时移除的叶、茎、果壳或其他残体
 - 单位：kg 湿物；附干物质比例
 - 数量规则：按实际清运、堆肥、还田或废弃去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：残渣去向记录 `co_product_fate_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_co_product_and_residue_fate`
 - 来源：`fao-seed-production-manual`
 
@@ -394,12 +472,12 @@ sync_with: pcr.en-US.md
 - 流：进入多汁果实取种的收获材料
 - 单位：kg 湿物
 - 数量规则：按多汁路线批次入口称重
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：取种批次记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_extraction_batch`
 - 来源：`fao-local-vegetable-seed-production`, `fao-tree-seed-handling`
 
@@ -407,27 +485,35 @@ sync_with: pcr.en-US.md
 - 流：多汁果实取种、洗涤和分离用水
 - 单位：m³
 - 数量规则：分表优先；记录新水、回用水、排放和损失
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：多汁果实路线 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：体积 `volume`
-- 证据类型：水表或工艺估计 `water_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_extraction_batch`
 - 来源：`fao-local-vegetable-seed-production`, `fao-tree-seed-handling`
+- 数量范围：默认估计
+  - 范围角色：默认估计（`default_estimate`）
+  - 下限：0
+  - 上限：20
+  - 单位：m3/kg 合格参考种子
+  - 基准：覆盖肉质果实种子提取路线的宽泛初筛区间；用批次记录替代
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### `fleshy_extraction_electricity`
 - 流：多汁果实破碎、泵送、清洗和筛分用电
 - 单位：kWh
 - 数量规则：分表或功率×时间×负荷
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：多汁果实路线 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：电表或能耗因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_extraction_batch`
 - 来源：`fao-local-vegetable-seed-production`
 
@@ -438,13 +524,13 @@ sync_with: pcr.en-US.md
 - 流：多汁路线清洗/分离后的湿种子中间体
 - 单位：kg 湿物，附含水率
 - 数量规则：以分离出口实测净质量计
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：多汁果实路线 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次称重和含水率 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_extraction_batch`
 - 来源：`fao-tree-seed-handling`, `fao-seed-drying-storage-2024`
 
@@ -452,12 +538,12 @@ sync_with: pcr.en-US.md
 - 流：取种分离出的果肉或果汁共产品
 - 单位：kg 湿物
 - 数量规则：按实际用途、销售、堆肥或废弃去向记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：副产品去向记录 `co_product_fate_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_co_product_and_residue_fate`
 - 来源：`fao-local-vegetable-seed-production`
 
@@ -467,25 +553,25 @@ sync_with: pcr.en-US.md
 - 流：多汁取种中因损伤、未成熟或污染而拒收的种子
 - 单位：kg 湿物
 - 数量规则：按批次拒收称重和去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次拒收记录 `co_product_fate_record`
-- 采集协议：`cp_co_product_and_residue_fate`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_extraction_batch`
 - 来源：`fao-seed-production-manual`
 
 ###### `fleshy_extraction_residual`
 - 流：多汁取种残渣、污泥和废液中的固体残留
 - 单位：kg 湿物，液体另报 m³
 - 数量规则：按固液分离和实际处置去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：废物/废水记录 `co_product_fate_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_co_product_and_residue_fate`
 - 来源：`fao-tree-seed-handling`
 
@@ -498,13 +584,13 @@ sync_with: pcr.en-US.md
 - 流：进入干果、荚果或果核取种的收获干材料
 - 单位：kg 干物或湿物，附含水率
 - 数量规则：按干路线批次入口称重
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：干取种路线 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：取种批次记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_extraction_batch`
 - 来源：`fao-seed-production-manual`, `fao-tree-seed-handling`
 
@@ -512,13 +598,13 @@ sync_with: pcr.en-US.md
 - 流：干果/荚果/果核脱粒、破壳、输送和筛分用电
 - 单位：kWh
 - 数量规则：分表或设备功率与运行时间估计
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：干取种路线 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：电表或能耗因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_extraction_batch`
 - 来源：`fao-seed-production-manual`
 
@@ -529,13 +615,13 @@ sync_with: pcr.en-US.md
 - 流：干取种后的未调制种子中间体
 - 单位：kg，附含水率
 - 数量规则：按脱粒/破壳出口称重
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：干取种路线 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次称重和含水率 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_extraction_batch`
 - 来源：`fao-tree-seed-handling`
 
@@ -545,12 +631,12 @@ sync_with: pcr.en-US.md
 - 流：干取种产生的果壳、荚壳、果核碎片和其他残渣
 - 单位：kg 干物或湿物
 - 数量规则：按残渣称重和实际去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：残渣去向记录 `co_product_fate_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_co_product_and_residue_fate`
 - 来源：`fao-tree-seed-handling`
 
@@ -558,13 +644,13 @@ sync_with: pcr.en-US.md
 - 流：干取种中破损、空壳、病害或不合格种子
 - 单位：kg
 - 数量规则：按批次分离称重和去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次拒收记录 `co_product_fate_record`
-- 采集协议：`cp_co_product_and_residue_fate`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_extraction_batch`
 - 来源：`fao-seed-production-manual`
 
 ### 过程：种子干燥与初级调制 (`seed_drying_primary_conditioning`)
@@ -576,12 +662,12 @@ sync_with: pcr.en-US.md
 - 流：进入干燥和初级调制的原始种子
 - 单位：kg，附含水率
 - 数量规则：按实际调制批次入口净质量
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次转移记录 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_batch`
 - 来源：`fao-seed-drying-storage-2024`, `fao-tree-seed-handling`
 
@@ -589,13 +675,13 @@ sync_with: pcr.en-US.md
 - 流：初级调制、清洗或降温用水
 - 单位：m³
 - 数量规则：区分工艺新水、回用水、排放和损失
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：实际用水时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：体积 `volume`
-- 证据类型：水表或工艺估计 `water_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_batch`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -603,26 +689,34 @@ sync_with: pcr.en-US.md
 - 流：干燥、通风、清选、输送和调制设备用电
 - 单位：kWh
 - 数量规则：分表或功率×时间×负荷，按批次分摊
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：电表或能耗因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_batch`
 - 来源：`fao-seed-drying-storage-2024`
+- 数量范围：默认估计
+  - 范围角色：默认估计（`default_estimate`）
+  - 下限：0
+  - 上限：20
+  - 单位：kWh/kg 合格参考种子
+  - 基准：覆盖干燥和清选技术的宽泛初筛区间；用批次计量记录替代
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### `conditioning_stationary_fuel`
 - 流：固定式干燥器或锅炉使用的燃料
 - 单位：L、kg 或 Nm³；附低位热值
 - 数量规则：按燃料计量器和批次运行记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：实际燃烧时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：燃料计量与因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_batch`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -633,12 +727,12 @@ sync_with: pcr.en-US.md
 - 流：达到目标含水率并完成初级调制的种子批次
 - 单位：kg，附湿基含水率
 - 数量规则：以批次出口净质量计，并与入口质量平衡
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次称重和含水率 `field_measurement`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_batch`
 - 来源：`fao-seed-drying-storage-2024`, `fao-tree-seed-handling`
 
@@ -648,26 +742,26 @@ sync_with: pcr.en-US.md
 - 流：初级调制的筛下物、轻杂和非种子组分
 - 单位：kg
 - 数量规则：按筛分出口实测质量和去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：筛分记录 `mass_balance_record`
-- 采集协议：`cp_co_product_and_residue_fate`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_conditioning_batch`
 - 来源：`fao-seed-drying-storage-2024`
 
 ###### `conditioning_dust_residue`
 - 流：清选和干燥产生的粉尘收集物
 - 单位：kg
 - 数量规则：按除尘器/清扫收集量或透明估计
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：残渣记录 `co_product_fate_record`
-- 采集协议：`cp_co_product_and_residue_fate`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_conditioning_batch`
 - 来源：`fao-seed-drying-storage-2024`
 
 ##### 基本流
@@ -676,12 +770,12 @@ sync_with: pcr.en-US.md
 - 流：清选、输送和干燥逸散至空气的颗粒物
 - 单位：kg PM（注明粒径类别）
 - 数量规则：按除尘监测或适用排放因子
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：排放监测或因子 `emission_measurement_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_emission_context`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -694,25 +788,25 @@ sync_with: pcr.en-US.md
 - 流：进入分级和检验的调制后种子
 - 单位：kg
 - 数量规则：按质量闸门前批次转移量
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次转移记录 `field_measurement`
-- 采集协议：`cp_conditioning_batch`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
+- 采集协议：`cp_quality_testing`
 - 来源：`fao-seed-drying-storage-2024`
 
 ###### `quality_testing_electricity`
 - 流：取样、检验和实验室设备用电
 - 单位：kWh
 - 数量规则：按实验室分表或设备/样品工作量分摊
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：电表或能耗因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_quality_testing`
 - 来源：`ista-international-rules`, `oecd-seed-schemes`
 
@@ -728,25 +822,33 @@ sync_with: pcr.en-US.md
 原始产出计量与核对要求：按放行证书对应的净质量
 
 - 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：检验与放行记录 `quality_release_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_quality_testing`
 - 来源：`ista-international-rules`, `oecd-seed-schemes`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：4
+  - 上限：14
+  - 单位：湿基百分比
+  - 基准：仅适用于正常型可储藏种子的暂定筛查区间；用物种特定放行规范替代，不适用于顽拗型种子
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### `downgraded_seed_lot`
 - 流：未达到高等级但有明确其他去向的种子
 - 单位：kg
 - 数量规则：按分级出口称重和真实销售/再加工/废弃去向
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：分级与去向记录 `co_product_fate_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_quality_testing`
 - 来源：`ista-international-rules`
 
@@ -756,12 +858,12 @@ sync_with: pcr.en-US.md
 - 流：拒收种子与检验样品
 - 单位：kg
 - 数量规则：按抽样、拒收和最终处置质量记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：质量放行和处置记录 `quality_release_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_quality_testing`
 - 来源：`ista-international-rules`, `oecd-seed-schemes`
 
@@ -774,12 +876,12 @@ sync_with: pcr.en-US.md
 - 流：进入处理、包装或储存的合格种子
 - 单位：kg
 - 数量规则：以批次放行量扣除样品后计
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：放行/转移记录 `quality_release_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`ista-international-rules`, `fao-seed-drying-storage-2024`
 
@@ -787,13 +889,13 @@ sync_with: pcr.en-US.md
 - 流：实际使用的种子处理剂、包衣剂、载体或消毒剂
 - 单位：kg 产品；另报有效成分质量
 - 数量规则：按产品、批次、剂量和有效成分基础
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：实际处理时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：产品标签/投料台账 `supplier_batch_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-tree-seed-handling`, `ista-international-rules`
 
@@ -801,27 +903,35 @@ sync_with: pcr.en-US.md
 - 流：袋、膜、内衬等软包装材料
 - 单位：kg 材料
 - 数量规则：按包装规格、实际用量和复用/回收比例
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：使用软包装时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：包装采购/领用记录 `packaging_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`
+- 数量范围：默认估计
+  - 范围角色：默认估计（`default_estimate`）
+  - 下限：0
+  - 上限：2
+  - 单位：kg 包装材料/kg 合格参考种子
+  - 基准：覆盖小包装和散装容器的宽泛初筛区间；用包装记录替代
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### `rigid_container_material`
 - 流：瓶、罐、桶等刚性容器
 - 单位：kg 材料
 - 数量规则：按容器质量、数量和实际复用/回收记录
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：使用刚性容器时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：包装采购/领用记录 `packaging_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -829,13 +939,13 @@ sync_with: pcr.en-US.md
 - 流：纸箱、瓦楞箱和其他外箱
 - 单位：kg 材料
 - 数量规则：按箱体规格、数量和实际损耗
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：使用纸箱/外箱时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：包装采购/领用记录 `packaging_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -843,13 +953,13 @@ sync_with: pcr.en-US.md
 - 流：托盘、周转箱和运输承载包装
 - 单位：kg 材料
 - 数量规则：按实际质量、周转次数、返还率和损耗分摊
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：使用托盘/周转箱时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：包装资产与周转记录 `packaging_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -857,13 +967,13 @@ sync_with: pcr.en-US.md
 - 流：包装区和交付前储存的照明、通风、制冷或除湿用电
 - 单位：kWh
 - 数量规则：按储存期、分表和批次占用质量/体积分摊
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：交付门前有包装或储存时 `applicable`
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：能量 `energy`
-- 证据类型：电表或能耗因子 `energy_meter_or_factor`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -879,13 +989,13 @@ sync_with: pcr.en-US.md
 原始产出计量与核对要求：放行批次净质量减皮重、样品、拒收和交付前损失
 
 - 数量规则：实测净转移质量，保留批次、实际产品状态和含水率基准；在声明交接门对账至最终参考输出。
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：批次放行称重 `quality_release_record`
-- 采集协议：`cp_quality_testing`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
+- 采集协议：`cp_treatment_packaging_storage`
 - 来源：`ista-international-rules`, `oecd-seed-schemes`
 
 ##### 废物流
@@ -894,12 +1004,12 @@ sync_with: pcr.en-US.md
 - 流：包装损坏、污染或规格不符的包装材料
 - 单位：kg 材料
 - 数量规则：按实际报废和回收质量
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：前景记录（`foreground_record`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：包装废弃记录 `packaging_record`
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`
 
@@ -907,12 +1017,12 @@ sync_with: pcr.en-US.md
 - 流：交付前储存期间因失水、霉变、虫害或质量不合格造成的损失
 - 单位：kg 种子
 - 数量规则：储存前后批次质量和放行量核对
-- 数值来源模式：现场实测或理由估计 `measured_or_reasoned_estimate`
+- 数值来源模式：计算值（`calculated_value`）
 原始活动或阶段基准：1 kg 放行合格种子.
 
 - 归一化基准：每声明的参考流
-- 基准类型：质量 `mass`
-- 证据类型：储存盘点和放行记录 `mass_balance_record`
+- 基准类型：storage_duration（`storage_duration`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_treatment_packaging_storage`
 - 来源：`fao-seed-drying-storage-2024`, `fao-tree-seed-handling`
 
@@ -926,7 +1036,7 @@ sync_with: pcr.en-US.md
 - 选定流：Fruit seeds, production mix, at farm gate, seed-grade cleaned for sowing
 - 流属性 / 单位：质量 / kg
 - 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -952,7 +1062,7 @@ sync_with: pcr.en-US.md
 - 选定流：Fruit seeds, production mix, at farm gate, seed-grade cleaned for sowing
 - 流属性 / 单位：质量 / kg
 - 数量规则：1 kg
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -983,6 +1093,8 @@ sync_with: pcr.en-US.md
 | `allocation_seed_grade_outputs` | 合格、降级、拒收和样品优先过程分流；若仍需分配，按种子质量和质量等级/价值记录。只有放行合格流作参考产品。 |
 | `allocation_cross_period_mother_plants` | 多年度母株或多年生采种园按实际生产期、可收获种子量或声明的管理周期分配土地、投入和设施活动。 |
 | `allocation_rejected_and_rework` | 拒收品和返工流保留独立质量与去向；返工产生的额外过程只计一次，避免与原批次重复计量。 |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算与质量规则
 
@@ -1096,3 +1208,5 @@ sync_with: pcr.en-US.md
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

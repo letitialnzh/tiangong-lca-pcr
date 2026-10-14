@@ -81,6 +81,7 @@ sync_with: pcr.en-US.md
 | `wood_removed_once` | 木材核算 | 交付的采出木材以皮下实积计量；区分树皮、留林剩余物；内部转移仅识别一次。 | `fao-jfsq-2020` |
 | `period_shared_assets` | 林分、林道、集材点及设备 | 识别营建、抚育和采伐期间及每项共用资产的使用方；在林分和产品间将服务量有据地归属一次。 | `fao-harvesting-code` |
 | `boundary_direct_release_coverage` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | 逐一核对所有实际启用节点的现场燃烧、实际施用及逸散/泄漏，按 cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip 建立唯一活动—物质—接收介质记录。购买燃料或化学品的上游数据不能替代其现场使用排放；对供应商服务已包含的同一活动须核实覆盖并避免重复。无活动须有证据，缺失数据不能默认为零。此要求不扩大原有产品门或下游使用边界，也不假定任何燃烧、施肥、药剂或设备必然发生。 |  |
+| `boundary_forest_carbon_land_coverage` | managed stand and purchased stand/wood interfaces | 声称林分到路边的 LCA 清单完整前，须选定适用的产品 LCA 核算方法和期间，并为土地占用、实际土地转化、地上和地下生物量、枯木、枯落物、土壤碳和采出碳转移记录覆盖及责任决定。每个相关项须有兼容的实测或模型证据、具名上游覆盖责任方，或按方法论证的排除及限制。IPCC 森林土地章节用于识别碳库，国家清单假设不能自动成为产品 LCA 默认值。不能只由参考原木含碳或带水去皮材积推定碳中和、总吸收、净储量变化或吸收信用。缺少相关土地历史、碳库和时间证据或核算责任时，不能声称完整。 | `ipcc-forest-land-2006` |
 
 按实际入场状态与所有权选择路线。外购已采收、已集运、已整理或已分级的相容原料，可在真实接收节点进入；此前已完成的操作不得再列为强制前景，也不得再投入立木或生物资源来重复来源。接收卡须记录实际物料、等级、湿/干基准、接收门、上游数据集及过程覆盖；无相应接收卡时新增实际接收交换。跳过操作不等于删除上游负荷；不得跳过实际发生的工序，最终参考产品、质量和交付门保持不变。
 
@@ -90,7 +91,7 @@ sync_with: pcr.en-US.md
 
 经营生产节点记录林分及可归属经营至采伐的交接。采伐节点独立地将立木来源变为集运原木。集材点分选产生纸浆/板材用材、其他等级及剔除物流。林内直接切片是从已分级圆木到林内木片的条件性初级处理节点，不是厂内切片。
 
-各卡的启用条件按林分、任务和批次记录判定；未使用与资料缺失分别标记。能源、肥料及其他通用投入按过程和需求类别保留汇总卡；具体能源品种、配方及供应规格在数据集建模时展开为经核实的实际交换，不要求逐规格新增 PCR 卡。产品状态、交接点或去向的独立边界要求仍须分别表达。燃料以质量、供电以电量、服务以其参考单位计量，体积换算保留有据密度；不得对 L、kg、kWh 或 h 使用同一数量范围。相邻节点的同批次输出／输入共用兼容物料身份，过程交付点保存在批次记录中。通用平台流可在其范围兼容且限定信息由前景记录完整承载时使用；不得仅因平台名称未列树种或采用质量计量就排除。
+各卡的启用条件按林分、任务和批次记录判定；未使用与资料缺失分别标记。能源、肥料及其他投入在各过程中按不同的实际流身份分别列卡；保留能源品种、配方及供应规格，在数据集使用前逐项核实适用身份。产品状态、交接点或去向的独立边界要求仍须分别表达。燃料以质量、供电以电量、服务以其参考单位计量，体积换算保留有据密度；不得对 L、kg、kWh 或 h 使用同一数量范围。相邻节点的同批次输出／输入共用兼容物料身份，过程交付点保存在批次记录中。通用平台流可在其范围兼容且限定信息由前景记录完整承载时使用；不得仅因平台名称未列树种或采用质量计量就排除。
 ### 过程图
 
 | process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
@@ -224,38 +225,39 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流 (`reference_flow`)
   - 证据类型：推理估算 (`reasoned_estimate`)
 
-###### 实际造林及抚育作业——能源投入（`stand_energy`）
+###### 设备供电点的电力（`stand_energy_electricity`）
 
-按本过程实际用能启用一张汇总卡，不在 PCR 中按燃料品种或供电规格拆卡。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+**stand_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：本过程实际燃料或电力供应；按实际能源展开，汇总卡不绑定单一 UUID
-- 流属性/单位：实际燃料质量 / kg；电力 / kWh；原始 L 记录及质量换算依据分别保留
-- 数量规则：逐种实际能源按记录的量值和单位归属本过程，再按下列基准归一；不直接相加 kg 与 kWh，不将缺失记录填作零。
-- 数值来源模式：前景记录 (`foreground_record`)
-- 适用范围：技术特定 (`technology_specific`)
-- 归一化基准：每 1 m3 参考流
-- 基准类型：参考流 (`reference_flow`)
-- 证据类型：采集记录 (`collected_record`)
+按本过程实际用能，分别为电力、各燃料及外购热量列条件卡；每卡仅代表一个具体身份的交换。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_management` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_management`
-- 来源：`fao-harvesting-code`
-- 数量范围：实际燃料质量的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kg/m3
-  - 基准：1 m3 皮下实积林道参考产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：参考流 (`reference_flow`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
-- 数量范围：实际电力的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kWh/m3
-  - 基准：1 m3 皮下实积林道参考产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：参考流 (`reference_flow`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
+###### 供应设备的柴油（`stand_energy_diesel`）
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_management` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_management`
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
 ###### 实际造林及抚育作业——声明服务边界的承包作业（`stand_service`）
 
@@ -344,38 +346,39 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 伐倒、造材及集运——能源投入（`harvest_energy`）
+###### 设备供电点的电力（`harvest_energy_electricity`）
 
-按本过程实际用能启用一张汇总卡，不在 PCR 中按燃料品种或供电规格拆卡。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+**harvest_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：本过程实际燃料或电力供应；按实际能源展开，汇总卡不绑定单一 UUID
-- 流属性/单位：实际燃料质量 / kg；电力 / kWh；原始 L 记录及质量换算依据分别保留
-- 数量规则：逐种实际能源按记录的量值和单位归属本过程，再按下列基准归一；不直接相加 kg 与 kWh，不将缺失记录填作零。
-- 数值来源模式：前景记录 (`foreground_record`)
-- 适用范围：技术特定 (`technology_specific`)
-- 归一化基准：每 1 m3 参考流
-- 基准类型：参考流 (`reference_flow`)
-- 证据类型：采集记录 (`collected_record`)
+按本过程实际用能，分别为电力、各燃料及外购热量列条件卡；每卡仅代表一个具体身份的交换。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_harvest_energy` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest_energy`
-- 来源：`fao-harvesting-code`
-- 数量范围：实际燃料质量的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kg/m3
-  - 基准：1 m3 皮下实积林道参考产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：参考流 (`reference_flow`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
-- 数量范围：实际电力的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kWh/m3
-  - 基准：1 m3 皮下实积林道参考产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：参考流 (`reference_flow`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
+###### 供应设备的柴油（`harvest_energy_diesel`）
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_harvest_energy` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_harvest_energy`
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
 ###### 伐倒、造材及集运——设备实际消耗润滑剂（`harvest_lubricant`）
 
@@ -466,37 +469,39 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 林道分选、测尺及装卸——能源投入（`landing_energy`）
+###### 设备供电点的电力（`landing_energy_electricity`）
 
-按本过程实际用能启用一张汇总卡，不在 PCR 中按燃料品种或供电规格拆卡。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+**landing_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：本过程实际燃料或电力供应；按实际能源展开，汇总卡不绑定单一 UUID
-- 流属性/单位：实际燃料质量 / kg；电力 / kWh；原始 L 记录及质量换算依据分别保留
-- 数量规则：逐种实际能源按记录的量值和单位归属本过程，再按下列基准归一；不直接相加 kg 与 kWh，不将缺失记录填作零。
-- 数值来源模式：前景记录 (`foreground_record`)
-- 适用范围：技术特定 (`technology_specific`)
-- 归一化基准：每 1 m3 参考流
-- 基准类型：参考流 (`reference_flow`)
-- 证据类型：采集记录 (`collected_record`)
+按本过程实际用能，分别为电力、各燃料及外购热量列条件卡；每卡仅代表一个具体身份的交换。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_landing_energy` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_landing_energy`
-- 来源：`fao-harvesting-code`
-- 数量范围：实际燃料质量的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kg/m3
-  - 基准：1 m3 皮下实积林道参考产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：参考流 (`reference_flow`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
-- 数量范围：实际电力的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kWh/m3
-  - 基准：1 m3 皮下实积林道参考产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：参考流 (`reference_flow`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
+###### 供应设备的柴油（`landing_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_landing_energy` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_landing_energy`
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
 ###### 林道分选、测尺及装卸——设备实际消耗润滑剂（`landing_lubricant`）
 
@@ -700,37 +705,39 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 林内直接切片——能源投入（`chipper_energy`）
+###### 设备供电点的电力（`chipper_energy_electricity`）
 
-按本过程实际用能启用一张汇总卡，不在 PCR 中按燃料品种或供电规格拆卡。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+**chipper_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：本过程实际燃料或电力供应；按实际能源展开，汇总卡不绑定单一 UUID
-- 流属性/单位：实际燃料质量 / kg；电力 / kWh；原始 L 记录及质量换算依据分别保留
-- 数量规则：逐种实际能源按记录的量值和单位归属本过程，再按下列基准归一；不直接相加 kg 与 kWh，不将缺失记录填作零。
-- 数值来源模式：前景记录 (`foreground_record`)
-- 适用范围：技术特定 (`technology_specific`)
-- 归一化基准：每 1 m3 参考流
-- 基准类型：参考流 (`reference_flow`)
-- 证据类型：采集记录 (`collected_record`)
+按本过程实际用能，分别为电力、各燃料及外购热量列条件卡；每卡仅代表一个具体身份的交换。建模时依据记录展开各实际能源交换，分别核实 UUID、供应规格及计量单位；计入承包服务或现场发电的能源负担不得重复计算。
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_chip_energy` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_chip_energy`
-- 来源：`fao-harvesting-code`
-- 数量范围：实际燃料质量的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kg/m3
-  - 基准：1 m3 皮下实积当量直接木片过程产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：过程产出 (`process_output`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
-- 数量范围：实际电力的暂定 QA 筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限：0
-  - 上限：1000
-  - 单位：kWh/m3
-  - 基准：1 m3 皮下实积当量直接木片过程产出；区间仅用于调查异常，不替代实测或定义普遍用量。；分别用于每种实际能源的对应单位，不是混合能源总量范围
-  - 基准类型：过程产出 (`process_output`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
+###### 供应设备的柴油（`chipper_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_chip_energy` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_chip_energy`
+- 来源：`fao-harvesting-code`；`fao-agricultural-energy`
 
 ###### 林内直接切片——设备实际消耗润滑剂（`chipper_lubricant`）
 
@@ -957,6 +964,8 @@ sync_with: pcr.en-US.md
 | `chip_internal_transfer` | 林内直接木片路线 | 进入切片机的分级圆木是内部转移，并非第二种最终销售产品；在林道交付前平衡实测木片和剔除物。 | `fao-jfsq-2020` |
 | `physical_ledger_before_allocation` | 实物台账与分配后负荷 | 原始物料平衡、交接和共产品数量均保留未分配实物值：q_B = Q_B/R。共享负荷单独按本 PCR 的分配规则计算 b_ref = B_shared * a_ref/R；直接负荷直接归属，期间与产出份额各只应用一次。R 是选定的最终参考输出量，排除内部转移。不得把负荷系数 a_ref 乘到原始共产品或交接数量上；分配后单产品过程投影须与未分配的整包物料台账明确区分。 |  |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
@@ -981,6 +990,7 @@ sync_with: pcr.en-US.md
 | `cp_direct_release_landing_sort_scale` | `landing_sort_scale` | 逐节点实际直接释放及覆盖判定 | 活动、测量及方法证据台账 | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | 将本节点输入/施用/设备日志逐项匹配排放事件；以实测或有适用性证据的方法和因子确定每一物质/介质的量。保留因子来源、单位换算、治理设备及不确定性；因子已含治理时不得再扣减。核对现有排放卡和承包服务，仅计一次；对未覆盖事件生成具体输出基本流，保留具体 UUID 核实证据。缺方法、量或身份时不能把数据包称为完整。 | 每种物质/介质的 kg；保留活动原单位 | 每次事件及批次/报告期核对 | 与节点活动及最终参考批次匹配的期间 | 实际活动场址；共用事件唯一归属 | 每 1 m3 参考流 | 仪表/测试；活动记录；方法和因子原始出处；服务范围；去重及完整性表 |
 | `cp_direct_release_forest_chip` | `forest_chip` | 逐节点实际直接释放及覆盖判定 | 活动、测量及方法证据台账 | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | 将本节点输入/施用/设备日志逐项匹配排放事件；以实测或有适用性证据的方法和因子确定每一物质/介质的量。保留因子来源、单位换算、治理设备及不确定性；因子已含治理时不得再扣减。核对现有排放卡和承包服务，仅计一次；对未覆盖事件生成具体输出基本流，保留具体 UUID 核实证据。缺方法、量或身份时不能把数据包称为完整。 | 每种物质/介质的 kg；保留活动原单位 | 每次事件及批次/报告期核对 | 与节点活动及最终参考批次匹配的期间 | 实际活动场址；共用事件唯一归属 | 每 1 m3 参考流 | 仪表/测试；活动记录；方法和因子原始出处；服务范围；去重及完整性表 |
 | `cp_producer_handover` | `producer_handover` | 最终验收批次及匹配接收移交 | 加工、测尺及发运记录 | lot_id；transfer_id；实际形态；上游节点；验收量 R；树皮/水分基准；木片当量依据；剔除及库存量；具体流身份 | 将一种声明形态的验收批次匹配至实际圆木或木片接收及生产者发运，不假定进一步实体处理。剔除量及库存实测量仍记在其负责节点。 | m3 皮下实积或有证据的当量 | 每个最终批次 | 匹配报告期间 | 同一林道交付门 | 每 1 m3 参考流 | 签署验收及测尺单；匹配换算和移交证据 |
+| `cp_forest_carbon_land` | `stand_management` | land and forest-carbon coverage | stand/method coverage ledger | area; dates; land history; pool inventory; growth; removals; carbon transfer; slash fate; method; owner; exclusions; uncertainty; reference output | 记录面积和日期、转化前后土地利用、地上和地下生物量、枯木、枯落物及土壤证据、适用干质量和碳分数、生长和采出、采伐剩余物去向、采出产品碳转移、库存和期间、适用 LCA 方法、上游覆盖或排除及不确定性。占用按面积时间，转化按前后状态面积事件，碳按声明干基 kg C 记录。留置采伐剩余物保留为源碳库及去向记录，不自动成为外运产品或废物；披露相关后续分解的核算责任。 | ha; ha-year; kg dry matter; kg C | inventory and event; period reconciliation | full declared accounting period | represented stand/source | attribute compatible totals once, then normalize to declared reference output | source maps; compatible pool records; original method; allocation and coverage ledger |
 
 ### 计算规则
 
@@ -992,6 +1002,7 @@ sync_with: pcr.en-US.md
 | `calc_shared_burden` | 跨产品和跨期投入 | 优先直接归属已计量使用；否则按有记录的服务/使用或林分内皮下产出份额将每项共用活动分配一次，份额和为100%。 | 服务记录、林分、产品 | 每m3产出归属活动量 | `fao-harvesting-code` |
 | `calculate_direct_release_ledger` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | 每一唯一事件、物质和介质的原始释放量 E 取实测值，或按已引用适用方法从活动量 A 与同口径因子 EF 计算；只有方法确实为简单因子模型时才用 E = A * EF，先验证单位及治理边界。不同物质或介质不相加；原始释放台账保持未分配。对归属后的负荷总量仅除以匹配的正值最终参考数量 R 一次；已有最终参考强度不再归一化，共用事件仅分配一次。未解释物料差不自动转成排放，缺因子不等于零。 | cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip；现有排放卡；供应商覆盖；参考数量 | 按节点/物质/介质分列的原始与归属量及未解决缺口 |  |
 | `calc_final_handover` | handover_roundwood_input; handover_chip_input; pulpwood_handover | 每个声明形态的最终批次只启用一项验收接收移交，其数量和身份与交付输出一致。分别以自身正值验收量 R 归一：R/R × 1 m3 = 1 m3。切片原料、加工产出、剔除物及期间库存继续实测，不必等于 R。整系统汇总时每笔内部移交只配对抵消一次；独立单元过程数据集中保留移交两端。 | cp_producer_handover; cp_grade_scale; cp_chip_conversion；形态及移交记录 | 一个最终参考输出及可追溯内部移交 | |
+| `calc_forest_carbon_land` | land, pools and upstream ownership | 按所选方法区分总吸收、释放、采出碳转移及净储量变化；同一碳库和期间不能同时累加储量变化法与增益损失法。只有密度、水分、碳分数及组分范围兼容时才能将湿材积换算干质量和碳。原木碳平衡不等于全森林碳库平衡。土地与碳量只向声明期间和产出归属一次，保留上游林分覆盖及外购木材转移责任，避免重复。不自动给予固碳信用或假定森林碳中和。 | `cp_forest_carbon_land` | method-specific land/carbon quantities and explicit completeness gaps | `ipcc-forest-land-2006` |
 
 ### 数据质量要求
 
@@ -1015,6 +1026,7 @@ sync_with: pcr.en-US.md
 | `validate_card_activation_units` | 全部细化卡 | 核实每张卡启用条件及实际物料／配方／任务／供应规格；资料缺失不得记作零。各卡数量和 Range 采用单一相容属性／单位；保留燃料密度和木材质量／体积转换证据。核对承包服务已包含组成，防止与燃料、设备及排放重复计负担。 | `fao-harvesting-code` |
 | `validate_direct_release_coverage` | `stand_management`; `felling_extraction`; `landing_sort_scale`; `forest_chip` | 对每个实际启用节点，以活动清单逐项核对 cp_direct_release_stand_management; cp_direct_release_felling_extraction; cp_direct_release_landing_sort_scale; cp_direct_release_forest_chip：记录应为有量的具体基本流、证据充分的上游服务覆盖，或有证据的无相关活动。缺失/不明不是零，须作为数据包完整性阻断项。检查每种实际物质及介质的量、方法因子单位、具体 UUID 和既有卡/服务覆盖，防止漏排或重复；空分组、购买电力的上游排放或其他节点的单一 CO2 卡不能代替本节点的现场释放核对。共享资产服务不得产生重复物理排放事件。 |  |
 | `validate_unique_handover` | producer_handover | 每个最终批次仅启用一种实际形态及一项匹配验收接收，最终输出为 pulpwood_handover。核对正值 R、形态、身份和换算；内部进料、库存及剔除量继续实测，不强设为 R。未知加工状态或木片当量缺证据时拒绝完整性声明。 | |
+| `validate_forest_carbon_land_coverage` | stand boundary and source responsibility | 声称完整前，要求所选 LCA 方法和期间、碳库与土地适用性决定、可追溯兼容证据或排除，以及唯一覆盖责任。相关碳库、历史、时间或单位证据未知或缺失时，完整性声明不通过；不得把缺数据当零，或未经产品 LCA 适用性论证借用国家一级默认值。 | `ipcc-forest-land-2006` |
 
 - 按入场状态逐节点核对 required/conditional 激活与上游覆盖；外购已达状态原料不得重复此前生长、采收或整理，分类相同不能替代状态及门点匹配。
 
@@ -1039,3 +1051,5 @@ sync_with: pcr.en-US.md
 | `fao-jfsq-2020` | official_guidance | FAO Joint Forest Sector Questionnaire Definitions, https://www.fao.org/forestry-fao/7800-0944787ecbf6036088182f841ab15fe42.pdf | 圆木形态、林内直接木片、用途类别及皮下实积 |
 | `fao-harvesting-code` | official_guidance | FAO Model Code of Forest Harvesting Practice, https://www.fao.org/4/v6530e/v6530e12.htm and https://www.fao.org/4/v6530e/v6530e08.htm | 伐倒、集运与林道集材点交接 |
 | `fao-planted-forest-management` | official_guidance | https://www.fao.org/sustainable-forest-management-toolbox/modules/management-of-planted-forests/1/en?tabInx=1; https://www.fao.org/4/AC601E/ac601e03.htm | 有条件的造林种苗、施肥、植被保护及浇灌投入；不规定通用施用率 |
+| `ipcc-forest-land-2006` | official_guidance | IPCC 2006 Guidelines, Volume 4, Chapter 4 Forest Land, sections 4.1–4.3, https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/4_Volume4/V4_04_Ch4_Forest_Land.pdf | Forest pool and land-use accounting context only; national defaults do not independently approve product-LCA methodology |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

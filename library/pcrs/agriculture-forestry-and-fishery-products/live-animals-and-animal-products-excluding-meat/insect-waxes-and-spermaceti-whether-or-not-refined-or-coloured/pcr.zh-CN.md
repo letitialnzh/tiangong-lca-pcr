@@ -271,31 +271,41 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 初制能源（`energy`）
+###### 设备供电点的电力（`energy_electricity`）
+
+**energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 计量熔融或分离实际使用的能源，不设默认热量。
-
 分母与范围要求：每千克初制蜡
-
 原始数量及计算要求：计量实际初制能源，并关联批次、来源、状态和期间。 原始采集分母类型：process_output。
 
-- 选定流：初次分离实际能源载体（UUID 未解析）
-- 流属性/单位：Energy / MJ
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_condition` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_condition`
-- 数量范围：暂定非负台账 QA，不是收率或配方
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100000
-  - 单位：MJ/kg
-  - 基准：每千克初制蜡
-  - 基准类型：过程产出（`process_output`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
+
+###### 过程入口的外购热量（`energy_heat`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：过程入口的外购热量
+- 流属性 / 单位：能源 / MJ
+- 数量规则：依 `cp_condition` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_condition`
+- 来源：`fao-agricultural-energy`
 
 ###### 条件性洗涤或清洁用水（`wash_water`）
 
@@ -710,6 +720,8 @@ sync_with: pcr.en-US.md
 | a_state | 加工与等级 | 实际蜡状态和相互独立可售等级各归集一次。添加着色剂或提纯不等于再产生原始蜡；废物不作为可售蜡。 | fao-beeswax |
 | a_period | 来源阶段与共用服务 | 标引蜂群/来源、采集、熔融、过滤、仓储与包装期间；共用罐、过滤器、能源及包装服务按观察的吞吐量/时间在实际使用者间分配一次，记录更换/终止。 | fao-beeswax |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
@@ -750,6 +762,7 @@ sync_with: pcr.en-US.md
 | v_balance | 批次 | 核对采集材料、添加物、初制/处理后蜡、等级、废弃及净重；调查残差。 | fao-beeswax |
 | v_allocation | 来源与共用服务 | 排除蜡自动零/全部负担、重复蜂蜜/蜡或共用资产期间。 | fao-beeswax |
 | v_identity | 具体交换 | 核实流类型、方向、来源、状态、gate、Mass 属性和单位组；蜂蜡专用流不能代表宽泛参考品。 |  |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
 
 ## 10. 发布数据集画像
 
@@ -770,3 +783,4 @@ sync_with: pcr.en-US.md
 | `un-cpc-3-notes` | official_guidance | [UN CPC 3.0 说明](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | 蜡范围与销售状态 |
 | `fao-beeswax` | official_guidance | [FAO 蜂蜡生产与精制](https://www.fao.org/4/i0842e/i0842e12.pdf) | 蜂来源与分离 |
 | `fao-beekeeping` | official_guidance | [FAO 蜂业增值产品，第 4 章](https://www.fao.org/4/w0076e/w0076e12.htm) | 蜂巢/封盖蜡与蜂蜜情境 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

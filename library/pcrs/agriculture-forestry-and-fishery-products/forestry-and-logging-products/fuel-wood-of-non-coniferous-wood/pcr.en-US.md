@@ -53,7 +53,7 @@ The final card alone is fixed to the normalized reference amount. Intermediate w
 | net_gate_mass | reference product | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Use paired calibrated gross/tare/foreign-matter records to obtain accepted net as-received wood mass at the actual producer gate using cp_dispatch; do not replace this with dry mass or thermal output. |
 | water_dry_bridge | wood at every source and transfer | Mass | kg | Record sampling state and wet-basis or dry-basis water definition. Reconcile actual wet mass, water and dry wood with matched lots; correct rewetting, bark and deterioration separately, without a universal drying loss. |
 | volume_mass_bridge | any solid or stacked-volume record | Volume and Mass | m3 and kg | Record solid/bulk/stacked volume, void/bark convention and paired site/species/form/moisture density or weighing evidence. A stere is not solid volume and hardwood is not one density. |
-| energy_carrier_bridge | energy umbrella cards | Energy | MJ | Preserve original carrier and unit; convert kWh to MJ only using the exact unit relation, and fuel quantity only with matched heating-value/unit evidence. No default LHV. Purchases of energy or services must not duplicate their embedded fuel exchanges. |
+| energy_carrier_bridge | energy collection requirements | Energy | MJ | Preserve original carrier and unit; convert kWh to MJ only using the exact unit relation, and fuel quantity only with matched heating-value/unit evidence. No default LHV. Purchases of energy or services must not duplicate their embedded fuel exchanges. |
 | resource_carbon_ledger | standing removal and stock changes | Dry mass and carbon mass | kg | Record actual removed dry biomass, retained stools/root/foliage stocks, dry-carbon evidence, land-use change and period. Carbon contained in wood is not an automatic sequestration credit or a use-stage emission. Required site-specific direct emissions need identified substance, medium and method evidence. |
 
 | rule_id | Applies to | Required property | Required unit | Rule |
@@ -153,28 +153,39 @@ One umbrella for actual fertilizer or amendment products: preserve each product 
   - Basis kind: reference_flow
   - Evidence kind: reasoned_estimate
 
-###### Actual energy carriers for stand management (`management_energy`)
+###### Electricity at the equipment supply point (`management_energy_electricity`)
+
+**Collection scope and applicability for management_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One energy umbrella; retain metered electricity, actual fuel and machinery task records with their original units and supported conversions. Do not add carrier use already inside a purchased service.
 
-- Selected flow: Actual energy carriers for stand management
-- Flow property / unit: Energy / MJ
-- Amount rule: One energy umbrella; retain metered electricity, actual fuel and machinery task records with their original units and supported conversions. Do not add carrier use already inside a purchased service.
-- Value mode: foreground_record
-- Specificity: site_specific
-- Normalization basis: per 1 kg reference flow
-- Basis kind: reference_flow
-- Evidence kind: collected_record
-- Collection protocol: cp_management
-- Sources: fao-woodfuel-planting
-- Range: Replaceable provisional broad QA screen, not an allowed ceiling or yield
-  - Range role: qa_guardrail
-  - Lower: 0
-  - Upper: 1000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: reference_flow
-  - Evidence kind: reasoned_estimate
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_management` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_management`
+- Sources: `fao-woodfuel-planting`; `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`management_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_management` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_management`
+- Sources: `fao-woodfuel-planting`; `fao-agricultural-energy`
 
 ###### Irrigation water supplied to the managed stand (`irrigation_water`)
 
@@ -313,28 +324,39 @@ Match actual managed standing_stock_handoff to the receiving harvest event and s
   - Basis kind: reference_flow
   - Evidence kind: reasoned_estimate
 
-###### Actual energy carriers for harvesting and extraction (`harvest_energy`)
+###### Electricity at the equipment supply point (`harvest_energy_electricity`)
+
+**Collection scope and applicability for harvest_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One actual-energy umbrella for manual/mechanical felling, stump-side sizing and extraction up to the next handoff; human labour is a task record, not presumed fossil fuel.
 
-- Selected flow: Actual energy carriers for harvesting and extraction
-- Flow property / unit: Energy / MJ
-- Amount rule: One actual-energy umbrella for manual/mechanical felling, stump-side sizing and extraction up to the next handoff; human labour is a task record, not presumed fossil fuel.
-- Value mode: foreground_record
-- Specificity: site_specific
-- Normalization basis: per 1 kg reference flow
-- Basis kind: reference_flow
-- Evidence kind: collected_record
-- Collection protocol: cp_harvest
-- Sources: fao-fuelwood-harvesting
-- Range: Replaceable provisional broad QA screen, not an allowed ceiling or yield
-  - Range role: qa_guardrail
-  - Lower: 0
-  - Upper: 1000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: reference_flow
-  - Evidence kind: reasoned_estimate
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_harvest` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_harvest`
+- Sources: `fao-fuelwood-harvesting`; `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`harvest_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_harvest` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_harvest`
+- Sources: `fao-fuelwood-harvesting`; `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -446,7 +468,6 @@ Calculate only fossil CO2 from documented on-site fuel combustion and a declared
 
 - Selected flow: Carbon dioxide (fossil), air unspecified `08a91e70-3ddc-11dd-923d-0050c2490048`
 - Flow property / unit: Mass / kg
-- Binding: fixed
 - Amount rule: Calculate only fossil CO2 from documented on-site fuel combustion and a declared compatible factor; exclude upstream fuel production, fuelwood use-stage combustion and alleged avoided emissions.
 - Value mode: calculated_value
 - Specificity: site_specific
@@ -497,28 +518,24 @@ Record pruning/branch/harvest source, original generation event, transfer status
   - Basis kind: reference_flow
   - Evidence kind: reasoned_estimate
 
-###### Actual energy carriers for woody-residue collection (`collection_energy`)
+###### Electricity at the equipment supply point (`collection_energy_electricity`)
+
+**Collection scope and applicability for collection_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One umbrella for actual gathering, local movement and loading energy; retain actual transport loads and distances and avoid repeating the original harvest energy.
 
-- Selected flow: Actual energy carriers for woody-residue collection
-- Flow property / unit: Energy / MJ
-- Amount rule: One umbrella for actual gathering, local movement and loading energy; retain actual transport loads and distances and avoid repeating the original harvest energy.
-- Value mode: foreground_record
-- Specificity: site_specific
-- Normalization basis: per 1 kg reference flow
-- Basis kind: reference_flow
-- Evidence kind: collected_record
-- Collection protocol: cp_residue
-- Sources: fao-fuelwood-harvesting
-- Range: Replaceable provisional broad QA screen, not an allowed ceiling or yield
-  - Range role: qa_guardrail
-  - Lower: 0
-  - Upper: 1000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: reference_flow
-  - Evidence kind: reasoned_estimate
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_residue` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_residue`
+- Sources: `fao-fuelwood-harvesting`; `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -611,28 +628,39 @@ Match actual gross feed mass, moisture, bark and species to harvested_raw_wood o
   - Basis kind: reference_flow
   - Evidence kind: reasoned_estimate
 
-###### Actual energy carriers for sizing and primary conditioning (`preparation_energy`)
+###### Electricity at the equipment supply point (`preparation_energy_electricity`)
+
+**Collection scope and applicability for preparation_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One actual-energy umbrella for the performed cutting/splitting/handling operation; natural air seasoning does not imply purchased heat. Preserve original energy units and factor evidence.
 
-- Selected flow: Actual energy carriers for sizing and primary conditioning
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_preparation` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_preparation`
+- Sources: `fao-fuelwood-harvesting`; `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`preparation_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
 - Flow property / unit: Energy / MJ
-- Amount rule: One actual-energy umbrella for the performed cutting/splitting/handling operation; natural air seasoning does not imply purchased heat. Preserve original energy units and factor evidence.
-- Value mode: foreground_record
-- Specificity: site_specific
-- Normalization basis: per 1 kg reference flow
-- Basis kind: reference_flow
-- Evidence kind: collected_record
-- Collection protocol: cp_preparation
-- Sources: fao-fuelwood-harvesting
-- Range: Replaceable provisional broad QA screen, not an allowed ceiling or yield
-  - Range role: qa_guardrail
-  - Lower: 0
-  - Upper: 1000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: reference_flow
-  - Evidence kind: reasoned_estimate
+- Amount rule: Collect raw quantities for this identity under `cp_preparation` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_preparation`
+- Sources: `fao-fuelwood-harvesting`; `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -698,7 +726,6 @@ Use paired wet/dry-matter stock measurements to separate evaporated water from d
 
 - Selected flow: Water vapour, air unspecified `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
-- Binding: fixed
 - Amount rule: Use paired wet/dry-matter stock measurements to separate evaporated water from dry wood deterioration; account for rain/rewetting separately. No universal drying-loss ratio.
 - Value mode: calculated_value
 - Specificity: site_specific
@@ -722,7 +749,6 @@ Include only an evidenced PM2.5 air release at the actual equipment boundary; so
 
 - Selected flow: Particles (PM2.5), air unspecified `08a91e70-3ddc-11dd-9293-0050c2490048`
 - Flow property / unit: Mass / kg
-- Binding: fixed
 - Amount rule: Include only an evidenced PM2.5 air release at the actual equipment boundary; source-specific measurement/factor must match capture controls. Bulk sawdust is not automatically PM2.5; other reported pollutants require their own substance and medium records.
 - Value mode: foreground_record
 - Specificity: site_specific
@@ -773,28 +799,24 @@ Record actual incoming wood from the selected source/preparation handoff, includ
   - Basis kind: reference_flow
   - Evidence kind: reasoned_estimate
 
-###### Actual energy carriers for producer qualification and loading (`dispatch_energy`)
+###### Electricity at the equipment supply point (`dispatch_energy_electricity`)
+
+**Collection scope and applicability for dispatch_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One umbrella for actual weighing/sorting/loading energy at the producer gate; exclude customer delivery and avoid carrier burdens already in bought handling services.
 
-- Selected flow: Actual energy carriers for producer qualification and loading
-- Flow property / unit: Energy / MJ
-- Amount rule: One umbrella for actual weighing/sorting/loading energy at the producer gate; exclude customer delivery and avoid carrier burdens already in bought handling services.
-- Value mode: foreground_record
-- Specificity: site_specific
-- Normalization basis: per 1 kg reference flow
-- Basis kind: reference_flow
-- Evidence kind: collected_record
-- Collection protocol: cp_dispatch
-- Sources: fao-fuelwood-harvesting
-- Range: Replaceable provisional broad QA screen, not an allowed ceiling or yield
-  - Range role: qa_guardrail
-  - Lower: 0
-  - Upper: 1000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: reference_flow
-  - Evidence kind: reasoned_estimate
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_dispatch` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_dispatch`
+- Sources: `fao-fuelwood-harvesting`; `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -954,6 +976,8 @@ Record actual saw/splitter/tractor/scales service time and useful-life/repair bo
 | temporal_source | stand and stool cohorts | Attribute establishment and management across actual harvest events and intended outputs using a disclosed cohort/period ledger; distinguish retained-stool regrowth, replanting and stump/root termination. Link carryover stock and losses to their actual period; never apply a universal rotation or re-charge establishment for every coppice harvest. | fao-woodfuel-planting; fao-dry-forest-silviculture |
 | single_shared_owner | shared access and equipment | Keep one asset/service total, list consumers and periods, and allocate measured use once; reconcile totals before assigning each output share. Node energy excludes service-embedded energy. A purchased already-removed wood dataset and foreground standing removal cannot own the same burden. | fao-fuelwood-harvesting |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -1032,3 +1056,4 @@ The provisional Range magnitudes are subjective broad screening buckets, not mea
 | fao-woodfuel-planting | official_guidance | https://www.fao.org/4/AC125E/ac125e03.htm | Site/species-specific woodlots, coppice/stand management, trees outside forest, residue and multi-output source context; no universal quantities adopted |
 | fao-fuelwood-harvesting | handbook | https://www.fao.org/4/x5328e/x5328e04.htm | Removal/extraction, cutting/splitting, roadside measurement, drying/storage and variable raw-wood handling; charcoal quantities not adopted |
 | fao-dry-forest-silviculture | official_guidance | https://www.fao.org/4/w4442e/w4442e0b.htm | Coppice/selection/reserved-tree regeneration differences and actual source/period requirements |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

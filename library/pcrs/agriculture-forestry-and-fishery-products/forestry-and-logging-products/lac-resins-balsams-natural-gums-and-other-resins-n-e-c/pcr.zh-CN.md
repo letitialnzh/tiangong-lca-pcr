@@ -128,27 +128,54 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 寄主管理能源载体（`host_energy`）
+###### 设备供电点的电力（`host_energy_electricity`）
+
+**host_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 仅记录建植和维护实际使用的燃料、购电和外供热；换算前保留载体、原始单位及计量期间，不在采集环节重复记共享泵或设备能源。
 
-- 选定流：寄主管理能源载体
-- 流属性/单位：Energy / MJ
-- 数量规则：由cp_host_management取得并归属的实测数量；仅按匹配验收发运净质量归一化一次
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_host_management` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_host_management`
-- 数量范围：可替换的暂定宽泛QA筛查；非默认值或强制限制
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：MJ
-  - 基准：每 1 kg 参考流
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
+
+###### 供应设备的柴油（`host_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_host_management` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_host_management`
+- 来源：`fao-agricultural-energy`
+
+###### 过程入口的外购热量（`host_energy_heat`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：过程入口的外购热量
+- 流属性 / 单位：能源 / MJ
+- 数量规则：依 `cp_host_management` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_host_management`
+- 来源：`fao-agricultural-energy`
 
 ###### 寄主灌溉供水（`host_water`）
 
@@ -331,27 +358,24 @@ sync_with: pcr.en-US.md
   - 证据类型：推理估算（`reasoned_estimate`）
 - 来源：`fao-tapping-route`; `fao-plant-exudate-production`
 
-###### 植物采集能源载体（`plant_collection_energy`）
+###### 设备供电点的电力（`plant_collection_energy_electricity`）
+
+**plant_collection_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 计量可归属采集及边界内场内移动能源；人工采集可有经核实的购入能源零值，不能假设普遍为零。
 
-- 选定流：植物采集能源载体
-- 流属性/单位：Energy / MJ
-- 数量规则：由cp_plant_collection取得并归属的实测数量；仅按匹配验收发运净质量归一化一次
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_plant_collection` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_plant_collection`
-- 数量范围：可替换的暂定宽泛QA筛查；非默认值或强制限制
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：MJ
-  - 基准：每 1 kg 参考流
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -489,27 +513,24 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 紫胶接种与收获能源载体（`lac_collection_energy`）
+###### 设备供电点的电力（`lac_collection_energy_electricity`）
+
+**lac_collection_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录寄主接近、接种、剪割或刮取及内部移动实际能源，归属于观察到的紫胶周期，不重复计算寄主维护能源。
 
-- 选定流：紫胶接种与收获能源载体
-- 流属性/单位：Energy / MJ
-- 数量规则：由cp_lac_collection取得并归属的实测数量；仅按匹配验收发运净质量归一化一次
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_lac_collection` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_lac_collection`
-- 数量范围：可替换的暂定宽泛QA筛查；非默认值或强制限制
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：MJ
-  - 基准：每 1 kg 参考流
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -645,27 +666,24 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 初级整理能源载体（`preparation_energy`）
+###### 设备供电点的电力（`preparation_energy_electricity`）
+
+**preparation_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录发运前有据的简单清理、筛分、分选、干燥和储存实际能源；不强制加热干燥、提取或统一配方。
 
-- 选定流：初级整理能源载体
-- 流属性/单位：Energy / MJ
-- 数量规则：由cp_primary_preparation取得并归属的实测数量；仅按匹配验收发运净质量归一化一次
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_primary_preparation` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_primary_preparation`
-- 数量范围：可替换的暂定宽泛QA筛查；非默认值或强制限制
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：MJ
-  - 基准：每 1 kg 参考流
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
 
 ###### 初级整理供水（`preparation_water`）
 
@@ -843,7 +861,6 @@ sync_with: pcr.en-US.md
 由对应水分专项测量或带不确定性的平衡闭合获取失水量。干燥失重可能含天然挥发油，不能自动全部称为水。下述固定水蒸气身份仅适用于声明接收隔室为空气且未细分的情况；已知更具体隔室时须另行核实兼容身份，不得暗用此默认。
 
 - 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
-- 绑定模式：`fixed`
 - 流属性/单位：Mass / kg
 - 数量规则：由cp_primary_preparation取得并归属的实测数量；仅按匹配验收发运净质量归一化一次
 - 数值来源模式：计算值（`calculated_value`）
@@ -933,49 +950,73 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 生产者发运保护及包装材料（`dispatch_packaging`）
+###### 木制板条箱（`dispatch_packaging_wood_crate`）
+
+**dispatch_packaging 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录保护具名初级产品的实际袋、衬里或容器；识别材料、皮重、新用或复用状态、实际使用次数及最终去向。包装不计入产品净质量。
 
-- 选定流：生产者发运保护及包装材料
-- 流属性/单位：Mass / kg
-- 数量规则：由cp_producer_dispatch取得并归属的实测数量；仅按匹配验收发运净质量归一化一次
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 参考流
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
-- 采集协议：`cp_producer_dispatch`
-- 数量范围：可替换的暂定宽泛QA筛查；非默认值或强制限制
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：5
-  - 单位：kg
-  - 基准：每 1 kg 参考流
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
 
-###### 生产者储存与发运能源载体（`dispatch_energy`）
+- 选定流：木制板条箱
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_producer_dispatch` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_producer_dispatch`
+- 来源：`fao-package-identities`
+
+###### 瓦楞纸板箱（`dispatch_packaging_corrugated_box`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：瓦楞纸板箱
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_producer_dispatch` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_producer_dispatch`
+- 来源：`fao-package-identities`
+
+###### 聚乙烯包装薄膜（`dispatch_packaging_pe_film`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚乙烯包装薄膜
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_producer_dispatch` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_producer_dispatch`
+- 来源：`fao-package-identities`
+
+###### 设备供电点的电力（`dispatch_energy_electricity`）
+
+**dispatch_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录边界内储存、称重和装卸实际能源。客户运输、分销及产品使用在声明的生产者发运门后开始，不在本边界内。
 
-- 选定流：生产者储存与发运能源载体
-- 流属性/单位：Energy / MJ
-- 数量规则：由cp_producer_dispatch取得并归属的实测数量；仅按匹配验收发运净质量归一化一次
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_producer_dispatch` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_producer_dispatch`
-- 数量范围：可替换的暂定宽泛QA筛查；非默认值或强制限制
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：MJ
-  - 基准：每 1 kg 参考流
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -1069,6 +1110,8 @@ sync_with: pcr.en-US.md
 | `rework_retention` | primary_preparation; producer_dispatch | 内部返工退回保留原负荷并记录重复能源材料；最终验收净输出排除拒收及留待下一期库存。明确废物处理责任，不假设替代抵扣。 | |
 | `common_service_once` | 共享道路泵工具储库及换线 | 登记全部消费节点及期间，优先计量细分，按有据服务分配唯一共同总量。季节批次清理换线仅归属实际批次一次；参考归一化前，兼容输出总量与分母核对。 | |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
@@ -1137,3 +1180,5 @@ sync_with: pcr.en-US.md
 | `fao-tapping-route` | `official_guidance` | FAO部分物种改进割胶技术持续利用天然胶树脂，https://www.fao.org/4/y4496e/Y4496E29.htm ；访问2026-10-08 | 条件割胶刺激实践，不是统一药剂配方或用量 |
 | `fao-lac-primary-states` | `official_guidance` | FAO非木材林产品国际贸易第IX章昆虫产品，https://www.fao.org/4/x5326e/x5326e0c.htm ；访问2026-10-08 | 天然及接种紫胶来源；粗枝胶、除去颗粒杂质的粒胶（seedlac）与提取虫胶的区别；粒胶不是接种用种胶（broodlac） |
 | `fao-gum-primary-handling` | `official_guidance` | FAO小额信贷与森林小企业：阿拉伯胶，https://www.fao.org/4/a0226e/a0226e10.htm ；访问2026-10-08 | 天然胶寄主照料清理等级包装示例，不向其他产品推定季节等级阈值或产出系数 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

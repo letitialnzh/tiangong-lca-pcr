@@ -112,22 +112,100 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_orchard_records`
 - 来源：`foreground-farm-records`
 
-###### 农业养分与肥料投入（`p_orchard_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`p_orchard_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**p_orchard_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：交接点每 1 kg 可销售鲜果.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_orchard_records`
-- 来源：`foreground-farm-records`
+- 来源：`foreground-farm-records`；`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`p_orchard_management_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_records`
+- 来源：`foreground-farm-records`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`p_orchard_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_records`
+- 来源：`foreground-farm-records`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`p_orchard_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_records`
+- 来源：`foreground-farm-records`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`p_orchard_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_records`
+- 来源：`foreground-farm-records`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`p_orchard_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_records`
+- 来源：`foreground-farm-records`；`fao-organic-nutrients`
 
 ###### 供应至果园的灌溉水（`irrigation_water`）
 记录果园获得的灌溉水，并将计量或计算供水与有效降水区分。
@@ -163,22 +241,40 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_orchard_records`
 - 来源：`foreground-farm-records`
 
-###### 果园作业燃料或电力（`orchard_energy`）
-记录纳入范围果园作业实际消耗的燃料或电力，并保留能量载体和分配基准。
+###### 设备供电点的电力（`orchard_energy_electricity`）
 
-- 选定流：移动机械燃料或电力；适用组 `energy-supply/mobile-machinery-fuel` 或 `energy-supply/electricity-supply`
-- 流属性/单位：Energy 或 mass / MJ、kWh、L 或 kg
-- 数量：场址特定
-- 数量规则：边界内果园作业的实际消耗
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：技术特定（`technology_specific`）
+**orchard_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
+
+记录纳入范围果园作业实际消耗的燃料或电力，并保留能量载体和分配基准。
 原始活动或阶段基准：交接点每 1 kg 可销售鲜果.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_orchard_records`
-- 来源：`foreground-farm-records`
+- 来源：`foreground-farm-records`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`orchard_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_records`
+- 来源：`foreground-farm-records`；`fao-agricultural-energy`
 
 ##### 废物流
 ##### 基本流
@@ -348,22 +444,40 @@ sync_with: pcr.en-US.md
 #### 输入
 ##### 产品流
 
-###### 采收燃料或电力（`harvest_energy`）
-记录采收实际使用的能源，并将共享消耗分配到报告水果产出。
+###### 设备供电点的电力（`harvest_energy_electricity`）
 
-- 选定流：移动机械燃料或电力；适用组 `energy-supply/mobile-machinery-fuel` 或 `energy-supply/electricity-supply`
-- 流属性/单位：Energy 或 mass / MJ、kWh、L 或 kg
-- 数量：场址特定
-- 数量规则：归属于报告水果输出的实际采收能源
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：技术特定（`technology_specific`）
+**harvest_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
+
+记录采收实际使用的能源，并将共享消耗分配到报告水果产出。
 原始活动或阶段基准：交接点每 1 kg 可销售鲜果.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_harvest_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest_records`
-- 来源：`foreground-farm-records`
+- 来源：`foreground-farm-records`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`harvest_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_harvest_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_harvest_records`
+- 来源：`foreground-farm-records`；`fao-agricultural-energy`
 
 ###### 可重复使用或一次性采收容器（`harvest_containers`）
 根据采收容器记录记录容器数量或质量、重复使用次数和损失率。
@@ -564,22 +678,40 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_conditioning_records`
 - 来源：`foreground-farm-records`
 
-###### 包装或展示材料（`packaging_materials`）
-记录实际供应的包装或展示材料，适用时包括重复使用周期。
+###### 聚乙烯包装薄膜（`packaging_materials_pe_film`）
 
-- 选定流：实际包装材料；适用组 `packaging-function/flexible-packaging`、`rigid-container-packaging`、`carton-and-box-packaging` 或 `pallet-and-crate-packaging`
-- 流属性/单位：Mass 或 item count / kg 或 item
-- 数量：场址特定
-- 数量规则：实际供应包装及适用的重复使用次数
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
+**packaging_materials 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
+
+记录实际供应的包装或展示材料，适用时包括重复使用周期。
 原始活动或阶段基准：交接点每 1 kg 净水果.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚乙烯包装薄膜
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_conditioning_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_records`
-- 来源：`foreground-farm-records`
+- 来源：`foreground-farm-records`；`fao-package-identities`
+
+###### 聚丙烯编织袋（`packaging_materials_pp_sack`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚丙烯编织袋
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_conditioning_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_conditioning_records`
+- 来源：`foreground-farm-records`；`fao-package-identities`
 
 ###### 冷却或整理电力（`conditioning_energy`）
 记录归属于纳入范围水果整理的计量或分配电量。
@@ -626,23 +758,55 @@ sync_with: pcr.en-US.md
 ##### 废物流
 
 
-###### 包装拒收物（`packaging_rejects`）
-记录包装库存拒收物及其处理或处置去向。
+###### 木制板条箱废物，交付记录中的处理环节（`packaging_rejects_wood_crate`）
 
-- 选定流：包装材料拒收物（未映射）
-- 流属性/单位：Mass / kg
-- 数量：场址特定
-- 数量规则：包装库存核对和拒收记录
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
+**packaging_rejects 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
+
+记录包装库存拒收物及其处理或处置去向。
 原始活动或阶段基准：交接点每 1 kg 净水果.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：木制板条箱废物，交付记录中的处理环节
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_conditioning_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_records`
-- 来源：`foreground-farm-records`
+- 来源：`foreground-farm-records`；`fao-package-identities`
 
+###### 瓦楞纸板箱废物，交付记录中的处理环节（`packaging_rejects_corrugated_box`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：瓦楞纸板箱废物，交付记录中的处理环节
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_conditioning_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_conditioning_records`
+- 来源：`foreground-farm-records`；`fao-package-identities`
+
+###### 聚乙烯包装薄膜废物，交付记录中的处理环节（`packaging_rejects_pe_film`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚乙烯包装薄膜废物，交付记录中的处理环节
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_conditioning_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_conditioning_records`
+- 来源：`foreground-farm-records`；`fao-package-identities`
 
 ###### 整理和包装水果损失（`conditioning_fruit_loss`）
 记录实测或核算的水果损失及其声明的下游去向。
@@ -672,6 +836,8 @@ sync_with: pcr.en-US.md
 | `allocation_shared_orchard` | 多物种、等级或输出 | 无法直接归属时，按有记录的物理关系分配作物周期和建园负荷；可比鲜果默认使用产品质量，并测试替代方法。 | `iso-14044-allocation`, `foreground-farm-records` |
 | `allocation_rejects` | 降级水果、拒收物、残余物和损失 | 在返工、回收、处理或处置明确前保留物料负荷；拒收物不得计入接受参考输出。 | `iso-14044-allocation`, `foreground-farm-records` |
 | `allocation_multi_site` | 多果园地块或场址 | 尽可能保留场址记录，按实际交接质量汇总；不得重复计入共享记录。 | `iso-14044-allocation`, `foreground-farm-records` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算与质量规则
 
@@ -744,3 +910,7 @@ sync_with: pcr.en-US.md
 | `iso-14044-allocation` | standard | ISO 14044:2006，https://www.iso.org/standard/38498.html | 拆分、分配、共产品和披露优先级 |
 | `fao-hygiene-fresh-produce` | official_guidance | Codex CXC 53-2003，https://www.fao.org/input/download/standards/10200/CXP_053e_2013.pdf | 采收、初级生产、水、处理和包装边界证据 |
 | `foreground-farm-records` | dataset | 随前景数据包提供的农场、果园、采收、分级、包装、计量、发票和交接原始记录 | 数量、身份、时间/场址覆盖、核对和质量证据 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

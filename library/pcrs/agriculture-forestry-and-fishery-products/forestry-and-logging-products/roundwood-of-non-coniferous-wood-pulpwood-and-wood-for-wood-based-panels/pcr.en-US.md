@@ -282,7 +282,6 @@ Managed non-conifer cohort stock handed to harvest at the forest site, not roads
 
 - Selected flow: Standing timber (forest biomass, merchantable growing stock) `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Binding: `fixed`
 - Amount rule: Measured actual quantity by lot/process, normalized to 1 kg reference output; record evidenced conditional absence explicitly; missing records are not zero
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
@@ -341,7 +340,6 @@ Use only for evidenced managed non-conifer stock. Match the stand output or equi
 
 - Selected flow: Standing timber (forest biomass, merchantable growing stock) `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Binding: `fixed`
 - Amount rule: Measured actual quantity by lot/process, normalized to 1 kg reference output; record evidenced conditional absence explicitly; missing records are not zero
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
@@ -904,7 +902,6 @@ Conditional other-use roundwood at forest-roadside handover, for actual poles/po
 
 - Selected flow: Roundwood of non-coniferous wood, other `b8b84d78-13c2-4dab-9b6d-8e7d9dc32f3b`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Binding: `fixed`
 - Amount rule: Measured actual quantity by lot/process, normalized to 1 kg reference output; record evidenced conditional absence explicitly; missing records are not zero
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
@@ -927,7 +924,6 @@ Conditional other-use roundwood at forest-roadside handover, for actual poles/po
 Conditional wood sold for fuel, with measured mass and actual moisture/bark state. It is not pulpwood and is not waste merely because it was downgraded. Declare destination without an automatic displaced-fuel credit.
 
 - Selected flow: Actual non-conifer fuelwood at roadside `aaabc17f-c8db-4493-aa7d-1acb67ee3fa2`
-- Binding: `fixed`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
 - Amount rule: Measured actual quantity by lot/process, normalized to 1 kg reference output; record evidenced conditional absence explicitly; missing records are not zero
 - Value mode: `foreground_record`

@@ -39,21 +39,22 @@ content_maturity: authored_methodology
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | 番茄，生产混合，在农场，鲜品未加工 `43dac9a5-d7b1-4536-84f3-38fa2f56562e` |
+| 参考产品流 | 番茄 `43dac9a5-d7b1-4536-84f3-38fa2f56562e` |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | 生产地理位置；番茄类型和品种组；露地、温室、水培或基质路线；种子或移栽苗状态；栽植日期；采收日期和轮次；作物周期或年度生产基准；成熟度和颜色阶段；尺寸和等级；硬度和缺陷标准；灌溉和养分供给方法；清洗和冷却状态；包装状态；声明门点；淘汰果和作物残体去向 |
-| 绑定模式 | `fixed` |
 
 构建前景数据包时，所有`必需限定信息`必须在数据集元数据、过程说明、参考流备注、产品描述或等效数据包字段中声明。缺失限定信息时，参考流定义不完整。参考产品流身份已按 CPC 3.0 01234 完成平台核验。
+
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
 | --- | --- | --- | --- | --- |
 | `reference_tomato_mass` | 参考产品和采收核算 | Mass | kg | 参考量采用声明门点的净合格番茄质量。分别称量采收、合格、降级、拒收、异物和作物残体流。 |
 | `crop_cycle_normalization` | 露地、温室、水培和基质路线 | Area and mass | ha or m2; kg | 分生产单元和栽植批次记录，再按同一作物周期的合格质量归一化全部投入和产出。 |
-| `nutrient_product_basis` | 矿质肥、施肥灌溉产品、粪肥、堆肥和改良剂 | Product and nutrient mass | kg product; kg N, P2O5, or K2O | 保留采购产品质量和声明养分浓度；只有依据标签、供应商规格、养分计划或实验室结果才可换算养分基准。 |
+| `nutrient_product_basis` | 矿质肥、施肥灌溉产品、粪肥、堆肥和改良剂 | Product and nutrient mass | kg product; kg N, P2O5, or K2O | 每种实际肥料或改良剂产品单独列卡，保留实物质量、配方、养分组成和施用记录；养分量不是同一产品的另一次投入，不使用集合或分组标识代替具体流身份。 |
 | `irrigation_delivery_basis` | 灌溉、施肥灌溉载水和源头取水 | Volume | m3 | 分别记录交付灌溉水和源头取水，并在建模时区分降雨、循环溶液、排水和排放。 |
 | `harvest_round_aggregation` | 多轮采收番茄路线 | Mass and time | kg and crop cycle | 汇总同一栽植批次的每个采收轮次，在归一化前核对合格果、降级果、田间损失和残体。 |
 | `energy_carrier_conversion` | 电力、加热、泵送和移动机械 | Energy or carrier mass | kWh, MJ, L, or kg | 保留计量载体、作业、换算因子和生产单元；不得仅根据产量推算温室加热。 |
@@ -215,48 +216,100 @@ content_maturity: authored_methodology
   - 基准类型：Crop cycle (`crop_cycle`)
   - 证据类型：Reasoned estimate (`reasoned_estimate`)
 
-###### 农业养分与肥料投入（`crop_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`crop_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**crop_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：同一作物周期每 1,000 kg 合格新鲜番茄.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_irrigation_records`
-- 来源：`fao-crop-evapotranspiration-56`; `fao-greenhouse-vegetables-2013`; `ipcc-2019-managed-soils`
-- 数量范围：作物氮筛查区间
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：40
-  - 上限：600
-  - 单位：kg N/ha per crop cycle
-  - 基准：声明番茄生产单元的矿质和有机氮总施入量
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-greenhouse-vegetables-2013`；`ipcc-2019-managed-soils`；`fao-fertilizer-identities`
 
-- 数量范围：作物磷筛查区间
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：350
-  - 单位：kg P2O5/ha per crop cycle
-  - 基准：土壤测试或配方支持的磷施用
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+###### 硫酸铵肥料（`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`）
 
-- 数量范围：作物钾筛查区间
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：50
-  - 上限：1,000
-  - 单位：kg K2O/ha per crop cycle
-  - 基准：土壤测试或配方支持的钾施用
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-greenhouse-vegetables-2013`；`ipcc-2019-managed-soils`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`crop_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-greenhouse-vegetables-2013`；`ipcc-2019-managed-soils`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`crop_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-greenhouse-vegetables-2013`；`ipcc-2019-managed-soils`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`crop_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-greenhouse-vegetables-2013`；`ipcc-2019-managed-soils`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`crop_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-greenhouse-vegetables-2013`；`ipcc-2019-managed-soils`；`fao-organic-nutrients`
 
 ###### 流：作物保护产品（`crop_protection_input`）
 
@@ -371,7 +424,7 @@ content_maturity: authored_methodology
 
 可销售番茄是在声明农场门或包装厂门交付的合格产品，按批次、采收轮次和等级核算。
 
-- 选定流：Fresh tomatoes at the declared gate
+- 选定流：番茄 `43dac9a5-d7b1-4536-84f3-38fa2f56562e`
 - 流属性/单位：Mass / kg
 原始产出计量与核对要求：汇总分级后及已纳入清洗或冷却后的净合格质量，排除包装皮重。
 
@@ -712,6 +765,8 @@ content_maturity: authored_methodology
 | `allocation_reusable_packaging` | 可重复使用周转箱、托盘和容器 | 按文件化重复使用次数及声明的容量或质量基准分配包装负担。门点可归属时纳入回收和损失记录。 | `iso-14044-2006`; `codex-cxs-293-2008` |
 | `allocation_residue_use` | 作物残体、清洗固体和废水固体 | 将残体处理和生产性利用与合格产品分开。只有接收方、用途、替代声明和分配方法有记录时才分配抵扣。 | `iso-14044-2006`; `fao-tomato-good-agricultural-practices` |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 先按各采集协议保留原始场址、批次、周期及阶段数量与分母，并完成库存、损失、含水率和共产品归属核对；随后按实际归属的验收交付产品量归一化：归一化交换量 = 归属原始交换量 × 声明参考数量 / 同一边界和计量基准的验收产品量。多年生建植和共享作业先执行各自分摊规则，不得把内部转移数量设为最终参考数量。每声明的参考流指第 3 节的数量、单位和产品状态；数据包必须声明实际路线和门。
@@ -796,3 +851,5 @@ content_maturity: authored_methodology
 | `ipcc-2019-managed-soils` | method_factor | IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://efdb.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html; retrieved 2026-09-14 | 氮排放方法和受管理土壤边界 |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html; retrieved 2026-09-14 | 分配、共产品、归因和数据质量原则 |
 | `mass-balance-identity` | method_factor | PCR mass-balance reconciliation method: gross received or harvested mass equals accepted product plus separately recorded downgraded, residue, treatment, and unexplained loss streams | 计算和校验质量闭合 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

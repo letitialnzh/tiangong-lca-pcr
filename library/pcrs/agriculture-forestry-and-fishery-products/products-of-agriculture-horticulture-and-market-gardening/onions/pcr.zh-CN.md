@@ -36,21 +36,22 @@ sync_with: pcr.en-US.md
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | 农场交付的可销售新鲜鳞茎洋葱 `<9a7c27da-f086-4d97-a251-b1989ad5d312>` |
+| 参考产品流 | 洋葱 `9a7c27da-f086-4d97-a251-b1989ad5d312` |
 | 参考流属性 | 质量 `<93a60a56-a3c8-11da-a746-0800200b9a66>` |
 | 参考单位组 | 质量单位 `<93a60a57-a4c8-11da-a746-0800200c9a66>` |
 | 参考单位 | kg |
 | 必需限定信息 | *Allium cepa* 鳞茎；鳞茎洋葱与青洋葱状态；品种或商业类型；颜色；生产地理位置；作物周期日期；收获成熟度；田间晾晒状态；水分或干物质基准；等级和尺寸；是否包含清洗、包装或储存 |
-| 绑定模式 | `fixed` |
 
 构建前景数据包时，所有必需限定信息都必须在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中声明。缺失限定信息的数据包，其参考流定义不完整。
+
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
 | --- | --- | --- | --- | --- |
 | `reference_mass_basis` | 参考产品和可销售输出 | 质量 | kg | 将 PCR 归一化为声明农场交付状态下 1,000 kg 可销售鳞茎。应在声明的收获、晾晒和纳入的调制步骤之后称量。 |
 | `moisture_state_declaration` | 参考产品和收获鳞茎输出 | 质量和水分含量 | kg 和质量-% | 有测量时声明收到状态水分或干物质；不得在未声明的情况下在收到状态质量和干物质质量之间静默换算。 |
-| `nutrient_product_basis` | 肥料和土壤改良剂投入 | 产品质量和养分质量 | kg 产品、kg N、kg P2O5、kg K2O | 记录实际施用的每种产品及其有文件依据的养分基准。将产品质量与养分质量分开，复合产品不得重复计量。 |
+| `nutrient_product_basis` | 肥料和土壤改良剂投入 | 产品质量和养分质量 | kg 产品、kg N、kg P2O5、kg K2O | 每种实际肥料或改良剂产品单独列卡，保留实物质量、配方、养分组成和施用记录；养分量不是同一产品的另一次投入，不使用集合或分组标识代替具体流身份。 |
 | `irrigation_volume_basis` | 灌溉水投入 | 体积 | m3 | 根据计量或有记录的水量平衡，按田块和作物周期记录交付灌溉水。将灌溉交付量与水源取水量和天然降雨分开。 |
 | `land_cycle_basis` | 耕地占用 | 面积-时间 | ha·crop cycle | 用声明的生产面积和洋葱作物周期日期计算占用；仅在所代表期间实际发生土地转化时报告土地转化。 |
 
@@ -214,30 +215,100 @@ sync_with: pcr.en-US.md
 #### 输入
 ##### 产品流
 
-###### 农业养分与肥料投入（`crop_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`crop_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**crop_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每 1,000 kg 可销售农场交付鳞茎洋葱.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_fertilizer_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fertilizer_amendment_records`
-- 来源：
-- 数量范围：暂定肥料和改良剂筛选区间
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：600
-  - 单位：每 1,000 kg 输出的产品 kg
-  - 基准：每 1,000 kg 可销售农场交付鳞茎洋葱
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_fertilizer_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_fertilizer_amendment_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`crop_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_fertilizer_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_fertilizer_amendment_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`crop_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_fertilizer_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_fertilizer_amendment_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`crop_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_fertilizer_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_fertilizer_amendment_records`
+- 来源：`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`crop_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_fertilizer_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_fertilizer_amendment_records`
+- 来源：`fao-organic-nutrients`
 
 ###### 交付给洋葱作物的灌溉水（`irrigation_water`）
 
@@ -257,15 +328,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_irrigation_and_withdrawal_records`
 - 来源：`fao-crop-water-needs-onion`, `fao-56-crop-evapotranspiration`
 
-- 数量范围：田间灌溉参考区间
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：3500
-  - 上限：5500
-  - 单位：每公顷洋葱作物周期的 m3
-  - 基准：一个洋葱作物周期的一公顷；使用实测面积和产量换算至 PCR 参考流
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：外部来源（`external_source`）
-  - 来源：`fao-crop-water-needs-onion`
+范围证据需求：不设灌溉供水默认值。FAO 350–550 mm 是作物需水量（ETc），相当于 3500–5500 m3/ha 蒸散，不是计量灌溉量。结合有效降雨、土壤储水变化和其他供水求净灌溉需求，再按记录的效率和损失求实际供水；雨养供水可为零。
 
 ###### 从声明的天然或市政水源取水（`water_resource_withdrawal`）
 
@@ -399,12 +462,12 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_crop_emission_activity_records`
 - 来源：`ipcc-2019-managed-soils-n2o`
 
-- 数量范围：IPCC 直接 N2O-N 因子范围
+- 数量范围：IPCC 表 11.1 非稻田氮投入因子分组背景；不作为硬性有效性界限
   - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0.002
+  - 下限：0
   - 上限：0.019
   - 单位：每 kg N 投入的 kg N2O-N
-  - 基准：每 kg 施用或其他建模的 N 投入
+  - 基准：必须选择有记录的分组：综合 EF1 0.010（不确定性 0.002–0.018）；湿润气候合成氮 0.016（0.013–0.019）；湿润气候其他氮 0.006（0.001–0.011）；干旱气候全部氮 0.005（0–0.011），单位 kg N2O-N/kg N。合并的 0–0.019 仅作背景，不能当作通用因子或一个统计区间。
   - 基准类型：氮投入（`n_input`）
   - 证据类型：外部来源（`external_source`）
   - 来源：`ipcc-2019-managed-soils-n2o`
@@ -754,31 +817,55 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 声明边界内使用的包装材料（`packaging_materials`）
+###### 木制板条箱（`packaging_materials_wood_crate`）
+
+**packaging_materials 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 仅当包装纳入农场交付边界时记录包装材料。保留材料类型、质量、重复使用状态以及废弃包装的去向。
-
-- 选定流：洋葱发运用包装材料＼
-- 流属性/单位：质量 / kg 包装材料
-- 数量规则：按包装成品可销售洋葱输出分配的实测包装质量
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
 原始活动或阶段基准：每 1,000 kg 可销售农场交付鳞茎洋葱.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：木制板条箱
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_packaging_records`
-- 来源：`codex-cxs-348-onions-2022`
+- 来源：`codex-cxs-348-onions-2022`；`fao-package-identities`
 
-- 数量范围：暂定包装筛选区间
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：每 1,000 kg 输出的包装 kg
-  - 基准：每 1,000 kg 可销售农场交付鳞茎洋葱
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+###### 瓦楞纸板箱（`packaging_materials_corrugated_box`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：瓦楞纸板箱
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_packaging_records`
+- 来源：`codex-cxs-348-onions-2022`；`fao-package-identities`
+
+###### 聚乙烯包装薄膜（`packaging_materials_pe_film`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚乙烯包装薄膜
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_packaging_records`
+- 来源：`codex-cxs-348-onions-2022`；`fao-package-identities`
 
 ##### 废物流
 
@@ -791,7 +878,7 @@ sync_with: pcr.en-US.md
 
 记录声明边界内所有调制或储存之后的最终可销售洋葱输出。声明用于识别参考产品的质量、尺寸、等级、水分和储存状态。
 
-- 选定流：农场交付的可销售新鲜鳞茎洋葱＼
+- 选定流：洋葱 `9a7c27da-f086-4d97-a251-b1989ad5d312`
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：纳入收获、晾晒、调制和储存步骤后的 1,000 kg 参考输出
 
@@ -872,6 +959,8 @@ sync_with: pcr.en-US.md
 | `allocation_rule_2` | 次品和作物残余物 | 根据有记录的去向，将次品和残余物作为共产品或废物处理。除非明确记录受影响产品、被替代功能和证据，否则不得施加抵扣或替代信用。 | `iso-14044-2006-allocation` |
 | `allocation_rule_3` | 调制、包装和储存 | 按处理输出质量分配共享的调制、包装和储存投入；当能源依赖时间时保留储存时长。 | `iso-14044-2006-allocation` |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 先按各采集协议保留原始场址、批次、周期及阶段数量与分母，并完成库存、损失、含水率和共产品归属核对；随后按实际归属的验收交付产品量归一化：归一化交换量 = 归属原始交换量 × 声明参考数量 / 同一边界和计量基准的验收产品量。多年生建植和共享作业先执行各自分摊规则，不得把内部转移数量设为最终参考数量。每声明的参考流指第 3 节的数量、单位和产品状态；数据包必须声明实际路线和门。
@@ -948,3 +1037,6 @@ sync_with: pcr.en-US.md
 | `fao-crop-water-needs-onion` | official_guidance | FAO Crop Water Needs manual, onion water-needs tables, https://www.fao.org/4/S2022E/s2022e07.htm | 田间洋葱用水筛选区间和灌溉数据方法 |
 | `ipcc-2019-managed-soils-n2o` | method_factor | IPCC 2019 Refinement to the 2006 Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | 管理土壤 N2O、挥发、淋失/径流、作物残余物以及尿素/石灰计算方法 |
 | `iso-14044-2006-allocation` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html | 过程细分、分配、共产品处理和负荷核对 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

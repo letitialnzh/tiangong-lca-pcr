@@ -28,25 +28,25 @@ system_boundary:
       rule: "Include harvesting, threshing or combining, field-side collection, and transport to the declared farm or primary-conditioning hand-off when these activities are in the foreground data package."
       source_ids:
         - fao-grain-postharvest-systems-1998
-        - fao-rye-postharvest-operations-1999
+        - fao-wheat-postharvest-operations-1999
     - rule_id: boundary_primary_conditioning
       applies_to: "post-harvest route"
       rule: "Include primary drying, cleaning, grading, dust or screenings handling, and short-term storage only when the declared gate is after those operations."
       source_ids:
-        - fao-rye-postharvest-operations-1999
+        - fao-wheat-postharvest-operations-1999
         - fao-grain-postharvest-systems-1998
     - rule_id: boundary_downstream_exclusion
       applies_to: "downstream processing"
       rule: "Exclude milling, malting, starch or ethanol conversion, food or feed formulation, retail, and consumer use; represent these as downstream datasets."
       source_ids:
-        - fao-rye-postharvest-operations-1999
+        - fao-wheat-postharvest-operations-1999
         - usda-rye-standards-2020
     - rule_id: boundary_input_completeness
       applies_to: "all foreground routes"
       rule: "Address fertilizer, irrigation, crop protection, field energy, electricity, land, harvest energy, drying energy, cleaning losses, residues, and direct emissions with a value, justified zero, or documented exclusion."
       source_ids:
         - ipcc-2019-managed-soils-n2o
-        - fao-rye-postharvest-operations-1999
+        - fao-wheat-postharvest-operations-1999
 boundary_abstraction:
   declared_starting_condition: "seed_for_sowing_input_and_declared_crop_cycle"
   starting_condition_role: "crop_establishment_condition"
@@ -176,24 +176,125 @@ process_inventory:
               collection_protocol_id: cp_seed_input_records
               source_ids: []
             ranges: []
-        - row_id: rye_crop_production_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: rye_crop_production_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg harvested rye grain at the selected gate."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for rye_crop_production_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg harvested rye grain at the selected gate. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_fertilizer_input_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_fertilizer_input_records
               source_ids:
                 - ipcc-2019-managed-soils-n2o
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: rye_crop_production_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_input_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: rye_crop_production_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_input_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: rye_crop_production_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_input_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: rye_crop_production_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_input_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: rye_crop_production_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_input_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_input_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-organic-nutrients
             ranges: []
         - row_id: irrigation_water_input
           role: "Irrigation water supplied as a product input"
@@ -327,10 +428,8 @@ process_inventory:
                   - mass-balance-identity
         - row_id: rye_straw_or_field_residue
           role: "Rye straw or field residue"
-          name: "Rye straw"
+          name: "Rye straw (UUID unresolved; crop-specific identity required)"
           flow_type: "product"
-          flow_ref:
-            uuid: "bcaf0254-cdd3-43d1-823a-2f69df3801d8"
           property_unit: "Mass / kg"
           description: "Straw or other field residue is recorded when it is removed, sold, transferred, incorporated, burned, or otherwise crosses the foreground boundary. Field residue that remains in place is recorded through its declared fate rather than as a product output. Raw activity or stage basis: per 1,000 kg harvested rye grain at the selected gate."
           amount:
@@ -433,23 +532,43 @@ process_inventory:
               collection_protocol_id: cp_harvest_and_output_records
               source_ids: []
             ranges: []
-        - row_id: harvest_energy_input
-          role: "Harvest fuel and electricity"
-          name: "Harvest energy carrier"
+        - row_id: harvest_energy_input_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy / MJ or kWh"
-          description: "Harvest fuel and electricity are recorded by machine or operation when they are separately measurable. Raw activity or stage basis: per 1,000 kg harvested rye grain."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for harvest_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Harvest fuel and electricity are recorded by machine or operation when they are separately measurable. Raw activity or stage basis: per 1,000 kg harvested rye grain. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "measured or supplier-recorded harvest energy by operation"
+            expression: "Collect raw quantities for this identity under cp_harvest_energy_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
-            specificity: "technology_specific"
+            specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_harvest_energy_records
-              source_ids: []
+              source_ids:
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: harvest_energy_input_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_harvest_energy_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_energy_records
+              source_ids:
+                - fao-agricultural-energy
             ranges: []
         - row_id: harvest_transport_service
           role: "Harvest or field-delivery transport service"
@@ -519,24 +638,25 @@ process_inventory:
               collection_protocol_id: cp_harvest_and_output_records
               source_ids: []
             ranges: []
-        - row_id: conditioning_energy_input
-          role: "Conditioning energy"
-          name: "Conditioning energy carrier"
+        - row_id: conditioning_energy_input_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy / MJ or kWh"
-          description: "Drying, cleaning, grading, and conveying energy is recorded by campaign or line where it crosses the conditioning boundary. Raw activity or stage basis: per kg conditioned rye grain output."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for conditioning_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Drying, cleaning, grading, and conveying energy is recorded by campaign or line where it crosses the conditioning boundary. Raw activity or stage basis: per kg conditioned rye grain output. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "metered or supplier-recorded energy allocated to the conditioning campaign"
+            expression: "Collect raw quantities for this identity under cp_conditioning_energy_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
-            specificity: "technology_specific"
+            specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_conditioning_energy_records
               source_ids:
-                - fao-rye-postharvest-operations-1999
+                - fao-wheat-postharvest-operations-1999
+                - fao-agricultural-energy
             ranges: []
       waste:
         []
@@ -561,7 +681,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_conditioned_output_records
               source_ids:
-                - fao-rye-postharvest-operations-1999
+                - fao-wheat-postharvest-operations-1999
                 - usda-rye-standards-2020
             ranges:
               - role: qa_guardrail
@@ -616,41 +736,81 @@ process_inventory:
               collection_protocol_id: cp_storage_and_handoff_records
               source_ids: []
             ranges: []
-        - row_id: storage_handoff_energy
-          role: "Storage or handoff energy"
-          name: "Storage or handoff energy carrier"
+        - row_id: storage_handoff_energy_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy / MJ or kWh"
-          description: "Storage electricity, aeration, or other energy is recorded only for the declared storage or handoff period. Raw activity or stage basis: per kg grain and declared storage duration."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for storage_handoff_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Storage electricity, aeration, or other energy is recorded only for the declared storage or handoff period. Raw activity or stage basis: per kg grain and declared storage duration. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "metered or supplier-recorded energy by storage period and grain mass"
+            expression: "Collect raw quantities for this identity under cp_storage_and_handoff_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "storage_duration"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_storage_and_handoff_records
-              source_ids: []
+              source_ids:
+                - fao-agricultural-energy
             ranges: []
-        - row_id: transport_packaging_input
-          role: "Transport packaging"
-          name: "Transport packaging material"
+        - row_id: transport_packaging_input_wood_crate
+          role: "Wooden crate"
+          name: "Wooden crate"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Packaging is recorded only when the declared gate uses bags, liners, or another transport-packaging state rather than bulk grain. Raw activity or stage basis: per kg grain at the declared packaged gate."
+          description: "**Collection scope and applicability for transport_packaging_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Packaging is recorded only when the declared gate uses bags, liners, or another transport-packaging state rather than bulk grain. Raw activity or stage basis: per kg grain at the declared packaged gate. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
           amount:
-            expression: "measured packaging mass or item count converted to mass"
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
-            specificity: "product_specific"
+            specificity: "site_specific"
             basis:
               text: "per declared reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_packaging_records
-              source_ids: []
+              source_ids:
+                - fao-package-identities
+            ranges: []
+        - row_id: transport_packaging_input_corrugated_box
+          role: "Corrugated fibreboard box"
+          name: "Corrugated fibreboard box"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - fao-package-identities
+            ranges: []
+        - row_id: transport_packaging_input_pe_film
+          role: "Polyethylene wrapping film"
+          name: "Polyethylene wrapping film"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - fao-package-identities
             ranges: []
       waste:
         []
@@ -759,12 +919,12 @@ allocation_rules:
     rule: "Treat residue left in the field according to its declared fate. When straw or another residue is removed or sold and subdivision is not possible, use an explicitly declared physical or economic allocation method and disclose sensitivity."
     source_ids:
       - iso-14044-2006
-      - fao-rye-postharvest-operations-1999
+      - fao-wheat-postharvest-operations-1999
   - rule_id: allocation_screenings_and_rejects
     applies_to: "screenings, damaged grain, and off-grade material"
     rule: "Record accepted grain, screenings, rejects, and losses as separate outputs with fates. Do not assign rejected material to the reference product without an explicit rework or allocation decision."
     source_ids:
-      - fao-rye-postharvest-operations-1999
+      - fao-wheat-postharvest-operations-1999
       - usda-rye-standards-2020
   - rule_id: allocation_substitution
     applies_to: "residue or by-product use"
@@ -983,7 +1143,7 @@ dataset_production:
         - "moisture records"
       output: "comparable mass basis"
       source_ids:
-        - fao-rye-postharvest-operations-1999
+        - fao-wheat-postharvest-operations-1999
         - usda-rye-standards-2020
     - id: calculate_water_withdrawal
       applies_to: "irrigation"
@@ -1021,7 +1181,7 @@ dataset_production:
         - cp_conditioned_output_records
       output: "conditioning yield and loss reconciliation"
       source_ids:
-        - fao-rye-postharvest-operations-1999
+        - fao-wheat-postharvest-operations-1999
         - mass-balance-identity
     - id: allocate_storage_energy
       applies_to: "storage"
@@ -1066,7 +1226,7 @@ validation_rules:
     rule: "Confirm that the reference product is non-seed rye grain and that seed for sowing, flour, malt, starch, ethanol, and downstream products are excluded or separately modelled."
     source_ids:
       - usda-rye-standards-2020
-      - fao-rye-postharvest-operations-1999
+      - fao-wheat-postharvest-operations-1999
   - rule_id: validation_reference_flow
     applies_to: "reference flow"
     rule: "Confirm exactly one selected output provides 1 kg of non-seed rye grain at the actual declared gate, using the mass property and kg unit. Record end use, moisture, quality, geography and crop year. Verify its UUID against that physical state before finalization; an unresolved identity is not a verified product, and tempering is not required unless actually performed."
@@ -1077,7 +1237,7 @@ validation_rules:
     rule: "Confirm crop production, harvest, and the applicable primary-conditioning or storage processes are present or explicitly excluded by the declared gate."
     source_ids:
       - fao-grain-postharvest-systems-1998
-      - fao-rye-postharvest-operations-1999
+      - fao-wheat-postharvest-operations-1999
   - rule_id: validation_nitrogen
     applies_to: "fertilizer and emissions"
     rule: "Confirm product mass differs from kg N, factor selection is declared, N2O-N conversion is transparent, and other nitrogen pathways are addressed or justified."
@@ -1092,7 +1252,7 @@ validation_rules:
     applies_to: "harvest and conditioning"
     rule: "Confirm mass reconciliation uses a common moisture basis and that accepted grain, residues, screenings, rejects, and losses have declared fates."
     source_ids:
-      - fao-rye-postharvest-operations-1999
+      - fao-wheat-postharvest-operations-1999
       - mass-balance-identity
   - rule_id: validation_allocation
     applies_to: "co-products and residues"
@@ -1112,10 +1272,10 @@ published_dataset_profile:
   required_quality_disclosure: "primary-record coverage; temporal and geographic representativeness; moisture and mass-balance treatment; selected factors; identity coverage and unmapped-flow disclosure; omitted inputs; allocation and sensitivity; module checklist result"
   update_trigger: "material change in route, gate, moisture or quality representation, end-use scope, fertilizer or crop-protection practice, irrigation, harvest or conditioning technology, storage duration, factor source, identity binding, or evidence status"
 data_sources:
-  - id: "fao-rye-postharvest-operations-1999"
+  - id: "fao-wheat-postharvest-operations-1999"
     type: "official_guidance"
     reference: "FAO INPhO, *WHEAT: Post-harvest Operations*, <https://www.fao.org/fileadmin/user_upload/inpho/docs/Post_Harvest_Compendium_-_WHEAT.pdf>"
-    used_for: "rye harvest, drying, cleaning, storage, loss, and primary-conditioning process decomposition"
+    used_for: "Generic grain cleaning, drying and storage context transferred from wheat; no rye/oat-specific yield, moisture default or straw identity is supplied."
   - id: "fao-grain-postharvest-systems-1998"
     type: "official_guidance"
     reference: "FAO, *Agricultural engineering in development — Grain and post-harvest systems*, <https://www.fao.org/4/t0522e/T0522E03.htm>"
@@ -1144,9 +1304,25 @@ data_sources:
     type: "method_factor"
     reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
     used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
+  - id: "fao-fertilizer-identities"
+    type: "official_guidance"
+    reference: "FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-organic-nutrients"
+    type: "official_guidance"
+    reference: "FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-agricultural-energy"
+    type: "official_guidance"
+    reference: "FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-package-identities"
+    type: "official_guidance"
+    reference: "FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:be793b1a705174b06d7566a87c0381e5e5152977460431dec76283ecfdc10512"
+  source_sha256: "sha256:7187040e15852fb3e314ed94e3c7e5a770710955ae44f03249c7448aab751be0"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6474"
@@ -1157,10 +1333,10 @@ normative_context:
           line: 57
           column: 1
         end:
-          offset: 9238
+          offset: 9246
           line: 74
           column: 1
-      markdown: "## 5. System Boundary\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_production` | field production | Include declared seed-for-sowing input, land occupation, soil preparation, sowing, fertilization, irrigation where applicable, crop protection, field operations, and direct field emissions through harvest. | `ipcc-2019-managed-soils-n2o`; `fao-crop-evapotranspiration-56` |\n| `boundary_harvest` | harvest and field hand-off | Include harvesting, threshing or combining, field-side collection, and transport to the declared farm or primary-conditioning hand-off when these activities are in the foreground data package. | `fao-grain-postharvest-systems-1998`; `fao-rye-postharvest-operations-1999` |\n| `boundary_primary_conditioning` | post-harvest route | Include primary drying, cleaning, grading, dust or screenings handling, and short-term storage only when the declared gate is after those operations. | `fao-rye-postharvest-operations-1999`; `fao-grain-postharvest-systems-1998` |\n| `boundary_downstream_exclusion` | downstream processing | Exclude milling, malting, starch or ethanol conversion, food or feed formulation, retail, and consumer use; represent these as downstream datasets. | `fao-rye-postharvest-operations-1999`; `usda-rye-standards-2020` |\n| `boundary_input_completeness` | all foreground routes | Address fertilizer, irrigation, crop protection, field energy, electricity, land, harvest energy, drying energy, cleaning losses, residues, and direct emissions with a value, justified zero, or documented exclusion. | `ipcc-2019-managed-soils-n2o`; `fao-rye-postharvest-operations-1999` |\n### Boundary Abstraction\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | seed_for_sowing_input_and_declared_crop_cycle |\n| starting_condition_role | crop_establishment_condition |\n| product_classification_scope | non-seed rye grain corresponding to CPC 3.0 `01162`, `Rye, other`; rye seed for sowing is an upstream input and is not the reference product |\n| recursive_input_rule | a same-category rye flow used as a crop-establishment input is recorded as seed-for-sowing input with source, lot, amount, and upstream seed-dataset disclosure; it must not be silently traced as the non-seed reference product |\n| upstream_dataset_requirement | seed-for-sowing, fertilizer, crop-protection products, energy, water supply, transport, drying, waste treatment, and other upstream inputs use identified datasets or declared supplier records |\n| disclosure | declare end use, rye class or variety where material, crop cycle, geography, crop year, seed-for-sowing source, irrigation status, moisture basis, harvest and conditioning route, gate, quality descriptors, and every non-reference output fate |\n"
+      markdown: "## 5. System Boundary\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_production` | field production | Include declared seed-for-sowing input, land occupation, soil preparation, sowing, fertilization, irrigation where applicable, crop protection, field operations, and direct field emissions through harvest. | `ipcc-2019-managed-soils-n2o`; `fao-crop-evapotranspiration-56` |\n| `boundary_harvest` | harvest and field hand-off | Include harvesting, threshing or combining, field-side collection, and transport to the declared farm or primary-conditioning hand-off when these activities are in the foreground data package. | `fao-grain-postharvest-systems-1998`; `fao-wheat-postharvest-operations-1999` |\n| `boundary_primary_conditioning` | post-harvest route | Include primary drying, cleaning, grading, dust or screenings handling, and short-term storage only when the declared gate is after those operations. | `fao-wheat-postharvest-operations-1999`; `fao-grain-postharvest-systems-1998` |\n| `boundary_downstream_exclusion` | downstream processing | Exclude milling, malting, starch or ethanol conversion, food or feed formulation, retail, and consumer use; represent these as downstream datasets. | `fao-wheat-postharvest-operations-1999`; `usda-rye-standards-2020` |\n| `boundary_input_completeness` | all foreground routes | Address fertilizer, irrigation, crop protection, field energy, electricity, land, harvest energy, drying energy, cleaning losses, residues, and direct emissions with a value, justified zero, or documented exclusion. | `ipcc-2019-managed-soils-n2o`; `fao-wheat-postharvest-operations-1999` |\n### Boundary Abstraction\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | seed_for_sowing_input_and_declared_crop_cycle |\n| starting_condition_role | crop_establishment_condition |\n| product_classification_scope | non-seed rye grain corresponding to CPC 3.0 `01162`, `Rye, other`; rye seed for sowing is an upstream input and is not the reference product |\n| recursive_input_rule | a same-category rye flow used as a crop-establishment input is recorded as seed-for-sowing input with source, lot, amount, and upstream seed-dataset disclosure; it must not be silently traced as the non-seed reference product |\n| upstream_dataset_requirement | seed-for-sowing, fertilizer, crop-protection products, energy, water supply, transport, drying, waste treatment, and other upstream inputs use identified datasets or declared supplier records |\n| disclosure | declare end use, rye class or variety where material, crop cycle, geography, crop year, seed-for-sowing source, irrigation status, moisture basis, harvest and conditioning route, gate, quality descriptors, and every non-reference output fate |\n"
       headings:
         - kind: "heading"
           span:
@@ -1197,18 +1373,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_39302"
+    - unit_id: "normative_52910"
       family: "allocation"
       span:
         start:
-          offset: 39302
-          line: 574
+          offset: 52910
+          line: 724
           column: 1
         end:
-          offset: 40673
-          line: 581
+          offset: 54673
+          line: 733
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_avoidance` | crop, harvest, and conditioning processes | First avoid allocation by subdividing crop operations, harvest, drying, cleaning, grading, storage, and waste-handling responsibilities wherever records support separate process nodes. | `iso-14044-2006` |\n| `allocation_grain_and_residue` | rye grain and removed straw or residue | Treat residue left in the field according to its declared fate. When straw or another residue is removed or sold and subdivision is not possible, use an explicitly declared physical or economic allocation method and disclose sensitivity. | `iso-14044-2006`; `fao-rye-postharvest-operations-1999` |\n| `allocation_screenings_and_rejects` | screenings, damaged grain, and off-grade material | Record accepted grain, screenings, rejects, and losses as separate outputs with fates. Do not assign rejected material to the reference product without an explicit rework or allocation decision. | `fao-rye-postharvest-operations-1999`; `usda-rye-standards-2020` |\n| `allocation_substitution` | residue or by-product use | Use substitution only when the displaced product, route, market, and evidence are declared; do not infer a displacement credit from a product label or generic residue name. | `iso-14044-2006` |\n"
+      markdown: "## 7. Allocation and Co-product Handling\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_avoidance` | crop, harvest, and conditioning processes | First avoid allocation by subdividing crop operations, harvest, drying, cleaning, grading, storage, and waste-handling responsibilities wherever records support separate process nodes. | `iso-14044-2006` |\n| `allocation_grain_and_residue` | rye grain and removed straw or residue | Treat residue left in the field according to its declared fate. When straw or another residue is removed or sold and subdivision is not possible, use an explicitly declared physical or economic allocation method and disclose sensitivity. | `iso-14044-2006`; `fao-wheat-postharvest-operations-1999` |\n| `allocation_screenings_and_rejects` | screenings, damaged grain, and off-grade material | Record accepted grain, screenings, rejects, and losses as separate outputs with fates. Do not assign rejected material to the reference product without an explicit rework or allocation decision. | `fao-wheat-postharvest-operations-1999`; `usda-rye-standards-2020` |\n| `allocation_substitution` | residue or by-product use | Use substitution only when the displaced product, route, market, and evidence are declared; do not infer a displacement credit from a product label or generic residue name. | `iso-14044-2006` |\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1225,12 +1401,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 39302
-              line: 574
+              offset: 52910
+              line: 724
               column: 1
             end:
-              offset: 39342
-              line: 574
+              offset: 52950
+              line: 724
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1245,18 +1421,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_53943"
+    - unit_id: "normative_67947"
       family: "validation"
       span:
         start:
-          offset: 53943
-          line: 624
+          offset: 67947
+          line: 776
           column: 1
         end:
-          offset: 56277
-          line: 635
+          offset: 70287
+          line: 787
           column: 1
-      markdown: "## 9. Validation Rules\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_non_seed_boundary` | product identity | Confirm that the reference product is non-seed rye grain and that seed for sowing, flour, malt, starch, ethanol, and downstream products are excluded or separately modelled. | `usda-rye-standards-2020`; `fao-rye-postharvest-operations-1999` |\n| `validation_reference_flow` | reference flow | Confirm exactly one selected output provides 1 kg of non-seed rye grain at the actual declared gate, using the mass property and kg unit. Record end use, moisture, quality, geography and crop year. Verify its UUID against that physical state before finalization; an unresolved identity is not a verified product, and tempering is not required unless actually performed. | `usda-rye-standards-2020` |\n| `validation_process_completeness` | process map and inventory | Confirm crop production, harvest, and the applicable primary-conditioning or storage processes are present or explicitly excluded by the declared gate. | `fao-grain-postharvest-systems-1998`; `fao-rye-postharvest-operations-1999` |\n| `validation_nitrogen` | fertilizer and emissions | Confirm product mass differs from kg N, factor selection is declared, N2O-N conversion is transparent, and other nitrogen pathways are addressed or justified. | `ipcc-2019-managed-soils-n2o` |\n| `validation_water` | irrigation | Confirm withdrawal, delivered irrigation, consumption, and water-footprint results are distinguished and not double counted. | `fao-crop-evapotranspiration-56` |\n| `validation_moisture_and_mass_balance` | harvest and conditioning | Confirm mass reconciliation uses a common moisture basis and that accepted grain, residues, screenings, rejects, and losses have declared fates. | `fao-rye-postharvest-operations-1999`; `mass-balance-identity` |\n| `validation_allocation` | co-products and residues | Confirm subdivision was considered first, any allocation method is declared, substitution has an evidenced displaced product, and sensitivity is reported when material. | `iso-14044-2006` |\n| `validation_uuid_review` | identity references | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n"
+      markdown: "## 9. Validation Rules\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_non_seed_boundary` | product identity | Confirm that the reference product is non-seed rye grain and that seed for sowing, flour, malt, starch, ethanol, and downstream products are excluded or separately modelled. | `usda-rye-standards-2020`; `fao-wheat-postharvest-operations-1999` |\n| `validation_reference_flow` | reference flow | Confirm exactly one selected output provides 1 kg of non-seed rye grain at the actual declared gate, using the mass property and kg unit. Record end use, moisture, quality, geography and crop year. Verify its UUID against that physical state before finalization; an unresolved identity is not a verified product, and tempering is not required unless actually performed. | `usda-rye-standards-2020` |\n| `validation_process_completeness` | process map and inventory | Confirm crop production, harvest, and the applicable primary-conditioning or storage processes are present or explicitly excluded by the declared gate. | `fao-grain-postharvest-systems-1998`; `fao-wheat-postharvest-operations-1999` |\n| `validation_nitrogen` | fertilizer and emissions | Confirm product mass differs from kg N, factor selection is declared, N2O-N conversion is transparent, and other nitrogen pathways are addressed or justified. | `ipcc-2019-managed-soils-n2o` |\n| `validation_water` | irrigation | Confirm withdrawal, delivered irrigation, consumption, and water-footprint results are distinguished and not double counted. | `fao-crop-evapotranspiration-56` |\n| `validation_moisture_and_mass_balance` | harvest and conditioning | Confirm mass reconciliation uses a common moisture basis and that accepted grain, residues, screenings, rejects, and losses have declared fates. | `fao-wheat-postharvest-operations-1999`; `mass-balance-identity` |\n| `validation_allocation` | co-products and residues | Confirm subdivision was considered first, any allocation method is declared, substitution has an evidenced displaced product, and sensitivity is reported when material. | `iso-14044-2006` |\n| `validation_uuid_review` | identity references | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n"
       headings:
         - kind: "heading"
           span:
@@ -1273,12 +1449,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 53943
-              line: 624
+              offset: 67947
+              line: 776
               column: 1
             end:
-              offset: 53965
-              line: 624
+              offset: 67969
+              line: 776
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1317,203 +1493,203 @@ normative_context:
           line: 61
           column: 1
         end:
-          offset: 7215
+          offset: 7217
           line: 61
-          column: 325
+          column: 327
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_primary_conditioning"
       identity_kind: "explicit"
       unit_id: "normative_6474"
       source_span:
         start:
-          offset: 7216
+          offset: 7218
           line: 62
           column: 1
         end:
-          offset: 7502
+          offset: 7506
           line: 62
-          column: 287
+          column: 289
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_downstream_exclusion"
       identity_kind: "explicit"
       unit_id: "normative_6474"
       source_span:
         start:
-          offset: 7503
+          offset: 7507
           line: 63
           column: 1
         end:
-          offset: 7779
+          offset: 7785
           line: 63
-          column: 277
+          column: 279
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_input_completeness"
       identity_kind: "explicit"
       unit_id: "normative_6474"
       source_span:
         start:
-          offset: 7780
+          offset: 7786
           line: 64
           column: 1
         end:
-          offset: 8126
+          offset: 8134
           line: 64
-          column: 347
+          column: 349
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_avoidance"
       identity_kind: "explicit"
-      unit_id: "normative_39302"
+      unit_id: "normative_52910"
       source_span:
         start:
-          offset: 39414
-          line: 577
+          offset: 53022
+          line: 727
           column: 1
         end:
-          offset: 39690
-          line: 577
+          offset: 53298
+          line: 727
           column: 277
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_grain_and_residue"
       identity_kind: "explicit"
-      unit_id: "normative_39302"
+      unit_id: "normative_52910"
       source_span:
         start:
-          offset: 39691
-          line: 578
+          offset: 53299
+          line: 728
           column: 1
         end:
-          offset: 40064
-          line: 578
-          column: 374
+          offset: 53674
+          line: 728
+          column: 376
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_screenings_and_rejects"
       identity_kind: "explicit"
-      unit_id: "normative_39302"
+      unit_id: "normative_52910"
       source_span:
         start:
-          offset: 40065
-          line: 579
+          offset: 53675
+          line: 729
           column: 1
         end:
-          offset: 40420
-          line: 579
-          column: 356
+          offset: 54032
+          line: 729
+          column: 358
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_substitution"
       identity_kind: "explicit"
-      unit_id: "normative_39302"
+      unit_id: "normative_52910"
       source_span:
         start:
-          offset: 40421
-          line: 580
+          offset: 54033
+          line: 730
           column: 1
         end:
-          offset: 40672
-          line: 580
+          offset: 54284
+          line: 730
           column: 252
     - pointer: "/validation_rules/0"
       rule_id: "validation_non_seed_boundary"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 54037
-          line: 627
+          offset: 68041
+          line: 779
           column: 1
         end:
-          offset: 54333
-          line: 627
-          column: 297
+          offset: 68339
+          line: 779
+          column: 299
     - pointer: "/validation_rules/1"
       rule_id: "validation_reference_flow"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 54334
-          line: 628
+          offset: 68340
+          line: 780
           column: 1
         end:
-          offset: 54782
-          line: 628
+          offset: 68788
+          line: 780
           column: 449
     - pointer: "/validation_rules/2"
       rule_id: "validation_process_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 54783
-          line: 629
+          offset: 68789
+          line: 781
           column: 1
         end:
-          offset: 55080
-          line: 629
-          column: 298
+          offset: 69088
+          line: 781
+          column: 300
     - pointer: "/validation_rules/3"
       rule_id: "validation_nitrogen"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 55081
-          line: 630
+          offset: 69089
+          line: 782
           column: 1
         end:
-          offset: 55326
-          line: 630
+          offset: 69334
+          line: 782
           column: 246
     - pointer: "/validation_rules/4"
       rule_id: "validation_water"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 55327
-          line: 631
+          offset: 69335
+          line: 783
           column: 1
         end:
-          offset: 55524
-          line: 631
+          offset: 69532
+          line: 783
           column: 198
     - pointer: "/validation_rules/5"
       rule_id: "validation_moisture_and_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 55525
-          line: 632
+          offset: 69533
+          line: 784
           column: 1
         end:
-          offset: 55806
-          line: 632
-          column: 282
+          offset: 69816
+          line: 784
+          column: 284
     - pointer: "/validation_rules/6"
       rule_id: "validation_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 55807
-          line: 633
+          offset: 69817
+          line: 785
           column: 1
         end:
-          offset: 56051
-          line: 633
+          offset: 70061
+          line: 785
           column: 245
     - pointer: "/validation_rules/7"
       rule_id: "validation_uuid_review"
       identity_kind: "explicit"
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 56052
-          line: 634
+          offset: 70062
+          line: 786
           column: 1
         end:
-          offset: 56276
-          line: 634
+          offset: 70286
+          line: 786
           column: 225
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -1533,36 +1709,48 @@ normative_context:
       unit_id: "normative_6474"
       source_span:
         start:
-          offset: 8152
+          offset: 8160
           line: 66
           column: 1
         end:
-          offset: 9237
+          offset: 9245
           line: 73
           column: 259
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_39302"
+      unit_id: "normative_52910"
       source_span:
         start:
-          offset: 39302
-          line: 574
+          offset: 52910
+          line: 724
           column: 1
         end:
-          offset: 39342
-          line: 574
+          offset: 52950
+          line: 724
           column: 41
+    - code: "UNSUPPORTED_NORMATIVE_BLOCK"
+      message: "Empty normative rule cell is retained in complete H2 source without creating a flat rule."
+      unit_id: "normative_52910"
+      source_span:
+        start:
+          offset: 54285
+          line: 731
+          column: 1
+        end:
+          offset: 54671
+          line: 731
+          column: 387
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_53943"
+      unit_id: "normative_67947"
       source_span:
         start:
-          offset: 53943
-          line: 624
+          offset: 67947
+          line: 776
           column: 1
         end:
-          offset: 53965
-          line: 624
+          offset: 67969
+          line: 776
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1571,5 +1759,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:be793b1a705174b06d7566a87c0381e5e5152977460431dec76283ecfdc10512"
-  generated_content_sha256: "sha256:ef3d881f69b82330566262c280b5cb958f719ffcba9e499afc80a688f83eb17e"
+    sha256: "sha256:7187040e15852fb3e314ed94e3c7e5a770710955ae44f03249c7448aab751be0"
+  generated_content_sha256: "sha256:5028115e62493163038589b74f0e5e23607c46a3a74fdc134578f73938f5455c"

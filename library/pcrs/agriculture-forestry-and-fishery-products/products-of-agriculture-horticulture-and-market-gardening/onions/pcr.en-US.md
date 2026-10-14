@@ -36,7 +36,7 @@ This PCR covers the foreground production of fresh market dry-bulb onions (*Alli
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Marketable fresh dry-bulb onion at farm gate `<9a7c27da-f086-4d97-a251-b1989ad5d312>` |
+| Reference product flow | Onions `9a7c27da-f086-4d97-a251-b1989ad5d312` |
 | Reference flow property | Mass `<93a60a56-a3c8-11da-a746-0800200b9a66>` |
 | Reference unit group | Mass units `<93a60a57-a4c8-11da-a746-0800200c9a66>` |
 | Reference unit | kg |
@@ -44,13 +44,15 @@ This PCR covers the foreground production of fresh market dry-bulb onions (*Alli
 
 When constructing a foreground data package, every required qualifier must be declared in dataset metadata, process notes, the reference-flow comment, product description, or an equivalent data-package field. A missing qualifier makes the reference-flow definition incomplete.
 
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
+
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `reference_mass_basis` | reference product and marketable output | Mass | kg | Normalize the PCR to 1,000 kg of marketable bulbs at the declared farm-gate state. Weigh after the declared harvest, curing and included conditioning steps. |
 | `moisture_state_declaration` | reference product and harvested bulb outputs | Mass and moisture content | kg and mass-% | Declare as-received moisture or dry matter when measured; do not silently convert between as-received and dry-matter mass. |
-| `nutrient_product_basis` | fertilizer and soil-amendment input | Product mass and nutrient mass | kg product, kg N, kg P2O5, kg K2O | Record each product actually applied and its documented nutrient basis. Keep product mass separate from nutrient mass and do not count a compound product twice. |
+| `nutrient_product_basis` | fertilizer and soil-amendment input | Product mass and nutrient mass | kg product, kg N, kg P2O5, kg K2O | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `irrigation_volume_basis` | irrigation-water input | Volume | m3 | Record delivered irrigation by field and crop cycle from meters or a documented water balance. Keep irrigation delivery separate from source withdrawal and natural rainfall. |
 | `land_cycle_basis` | cultivated land occupation | Area-time | ha·crop cycle | Calculate occupation from the declared productive area and the represented onion crop-cycle dates; report land transformation only when it occurs in the represented period. |
 
@@ -217,30 +219,100 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
 
 ##### Product flows
 
-###### Agricultural nutrient and fertilizer inputs (`crop_management_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`crop_management_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for crop_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fertilizer_amendment_records`
-- Sources:
-- Range: Provisional fertilizer and amendment screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 600
-  - Unit: kg product per 1,000 kg output
-  - Basis: per 1,000 kg marketable farm-gate onion bulbs
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_amendment_records`
+- Sources: `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`crop_management_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_amendment_records`
+- Sources: `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`crop_management_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_amendment_records`
+- Sources: `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`crop_management_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_amendment_records`
+- Sources: `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`crop_management_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_amendment_records`
+- Sources: `fao-organic-nutrients`
 
 ###### Irrigation water delivered to the onion crop (`irrigation_water`)
 
@@ -259,15 +331,7 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
 - Collection protocol: `cp_irrigation_and_withdrawal_records`
 - Sources: `fao-crop-water-needs-onion`, `fao-56-crop-evapotranspiration`
 
-- Range: Field irrigation reference interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 3500
-  - Upper: 5500
-  - Unit: m3/ha per onion crop cycle
-  - Basis: one hectare over an onion crop cycle; convert to the PCR reference flow using measured area and output
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: External source (`external_source`)
-  - Sources: `fao-crop-water-needs-onion`
+Range evidence need: no delivered-irrigation default is established. FAO 350–550 mm is crop water need (ETc), equivalent to 3500–5500 m3/ha of evapotranspiration, not metered irrigation. Derive net irrigation after effective rainfall, soil-water change and other supplies, then gross delivery from documented efficiency/losses; rain-fed delivery may be zero.
 
 ###### Water withdrawn from the declared natural or municipal source (`water_resource_withdrawal`)
 
@@ -400,12 +464,12 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
 - Collection protocol: `cp_crop_emission_activity_records`
 - Sources: `ipcc-2019-managed-soils-n2o`
 
-- Range: IPCC direct N2O-N factor envelope
+- Range: IPCC Table 11.1 non-rice N-input factor-family context; not a hard validity bound
   - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0.002
+  - Lower: 0
   - Upper: 0.019
   - Unit: kg N2O-N per kg N input
-  - Basis: per kg applied or otherwise modelled N input
+  - Basis: Select a documented family: aggregate EF1 0.010 (uncertainty 0.002–0.018); wet synthetic N 0.016 (0.013–0.019); wet other N 0.006 (0.001–0.011); dry all N 0.005 (0–0.011), in kg N2O-N/kg N. The combined 0–0.019 is contextual only, not a universal factor or statistical interval.
   - Basis kind: N input (`n_input`)
   - Evidence kind: External source (`external_source`)
   - Sources: `ipcc-2019-managed-soils-n2o`
@@ -754,31 +818,55 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Packaging materials used inside the declared boundary (`packaging_materials`)
+###### Wooden crate (`packaging_materials_wood_crate`)
+
+**Collection scope and applicability for packaging_materials.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record packaging materials only when packing is included in the farm-gate boundary. Retain material type, mass, reuse status and destination of discarded packaging.
-
-- Selected flow: Packaging materials for onion dispatch
-- Flow property / unit: Mass / kg packaging material
-- Amount rule: Measured packaging mass allocated to packed marketable onion output
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Product-specific (`product_specific`)
 Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Wooden crate
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_packaging_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_packaging_records`
-- Sources: `codex-cxs-348-onions-2022`
+- Sources: `codex-cxs-348-onions-2022`; `fao-package-identities`
 
-- Range: Provisional packaging screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg packaging per 1,000 kg output
-  - Basis: per 1,000 kg marketable farm-gate onion bulbs
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Corrugated fibreboard box (`packaging_materials_corrugated_box`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Corrugated fibreboard box
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_packaging_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_packaging_records`
+- Sources: `codex-cxs-348-onions-2022`; `fao-package-identities`
+
+###### Polyethylene wrapping film (`packaging_materials_pe_film`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Polyethylene wrapping film
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_packaging_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_packaging_records`
+- Sources: `codex-cxs-348-onions-2022`; `fao-package-identities`
 
 ##### Waste flows
 
@@ -792,7 +880,7 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
 
 Record the final marketable onion output after all conditioning or storage included in the declared boundary. Declare the quality, size, grade, moisture and storage state that identify the reference product.
 
-- Selected flow: Marketable fresh dry-bulb onion at farm gate
+- Selected flow: Onions `9a7c27da-f086-4d97-a251-b1989ad5d312`
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: 1,000 kg reference output after the included harvest, curing, conditioning and storage steps
 
@@ -873,6 +961,8 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs.
 | `allocation_rule_2` | culls and crop residues | Treat culls and residues as co-products or wastes according to their documented destination. Do not apply a credit or substitution claim unless the receiving product, displaced function and evidence are explicitly documented. | `iso-14044-2006-allocation` |
 | `allocation_rule_3` | conditioning, packing and storage | Allocate shared conditioning, packing and storage inputs by mass of handled output, with storage duration retained when energy depends on time. | `iso-14044-2006-allocation` |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 Retain raw site, lot, cycle and stage quantities and denominators in each collection protocol. Reconcile stocks, losses, moisture and co-product attribution first, then normalize: normalized exchange = attributable raw exchange × declared reference quantity / accepted hand-off product quantity on the same boundary and measurement basis. Apply perennial-establishment and shared-operation attribution before this normalization. Never set an internal-transfer quantity equal to the final reference quantity. Per declared reference flow means the amount, unit and product state in section 3; the data package must declare its actual route and gate.
@@ -949,3 +1039,6 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `fao-crop-water-needs-onion` | official_guidance | FAO Crop Water Needs manual, onion water-needs tables, https://www.fao.org/4/S2022E/s2022e07.htm | Field-level onion water-need screening interval and irrigation data method |
 | `ipcc-2019-managed-soils-n2o` | method_factor | IPCC 2019 Refinement to the 2006 Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | Managed-soil N2O, volatilization, leaching/runoff, crop-residue and urea/lime calculation methods |
 | `iso-14044-2006-allocation` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html | Subdivision, allocation, co-product handling and burden reconciliation |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | conditional concrete identities and method context; does not establish site use or quantities |

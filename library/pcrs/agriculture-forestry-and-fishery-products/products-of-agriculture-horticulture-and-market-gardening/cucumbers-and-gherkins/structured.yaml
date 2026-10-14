@@ -27,7 +27,7 @@ system_boundary:
       applies_to: "harvest rounds"
       rule: "Attribute every harvest round from the planting campaign to the same crop cycle and reconcile marketable fruit, downgraded fruit, field losses, and residues before normalizing."
       source_ids:
-        - fao-cucumber-production-guide
+        - fao-gap-framework-2003
         - usda-ams-cucumber-standard
     - rule_id: boundary_gate_preparation
       applies_to: "sorting, washing, cooling, and packing"
@@ -40,7 +40,7 @@ system_boundary:
       rule: "Record field return, composting, feed use, treatment, transport, or disposal for each residue stream. Do not assign a co-product credit without a documented recipient and intended use."
       source_ids:
         - iso-14044-2006
-        - fao-cucumber-production-guide
+        - fao-gap-framework-2003
 boundary_abstraction:
   declared_starting_condition: "Prepared field bed or protected cultivation unit receiving cucumber or gherkin seed or transplant material, with prior land use and excluded infrastructure work disclosed"
   starting_condition_role: "Start of the declared cucumber or gherkin crop cycle and foreground input accounting"
@@ -51,7 +51,7 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1000"
   product_flow_ref:
-    name: "Fresh cucumber or gherkin at farm gate"
+    name: "Cucumbers and gherkins"
     uuid: "7b96f91c-8055-431e-8b7d-f24fd4e6d17e"
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
@@ -96,7 +96,7 @@ measurement_rules:
       name: "Product and nutrient mass"
       uuid: ""
     required_unit: "kg product, kg N, kg P2O5, kg K2O"
-    rule: "Record formulated product mass and documented nutrient concentration separately. Convert nutrient equivalents only from a supplier specification, label, soil plan, or laboratory result."
+    rule: "Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity."
   - id: water_delivery_basis
     applies_to: "irrigation, fertigation, washing, and source withdrawal"
     required_property_ref:
@@ -159,7 +159,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_planting_records
               source_ids:
-                - fao-cucumber-production-guide
+                - fao-gap-framework-2003
             ranges:
               - role: qa_guardrail
                 lower: "0.1"
@@ -169,33 +169,126 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: crop_establishment_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: crop_establishment_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh cucumber or gherkin output."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for crop_establishment_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh cucumber or gherkin output. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_nutrient_records
               source_ids:
-                - fao-cucumber-production-guide
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "300"
-                unit: "kg product/ha"
-                basis: "preplant or starter application to the represented production unit"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: crop_establishment_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-organic-nutrients
+            ranges: []
         - row_id: establishment_irrigation_water
           role: "Establishment irrigation water"
           name: "Irrigation water supplied to crop"
@@ -243,7 +336,7 @@ process_inventory:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_area_and_cycle_records
               source_ids:
-                - fao-cucumber-production-guide
+                - fao-gap-framework-2003
             ranges:
               - role: qa_guardrail
                 lower: "0.01"
@@ -264,50 +357,132 @@ process_inventory:
     label: "Vine and crop management"
     inputs:
       product:
-        - row_id: crop_management_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: crop_management_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh cucumber or gherkin output."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for crop_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable fresh cucumber or gherkin output. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_nutrient_records
               source_ids:
                 - ipcc-2019-managed-soils-n2o
-                - fao-cucumber-production-guide
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "350"
-                unit: "kg N/ha"
-                basis: "total nutrient application to the represented crop cycle"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-              - role: qa_guardrail
-                lower: "0"
-                upper: "220"
-                unit: "kg P2O5/ha"
-                basis: "soil-test-supported nutrient application"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-              - role: qa_guardrail
-                lower: "0"
-                upper: "550"
-                unit: "kg K2O/ha"
-                basis: "soil-test-supported nutrient application"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-gap-framework-2003
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_nutrient_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_nutrient_records
+              source_ids:
+                - ipcc-2019-managed-soils-n2o
+                - fao-gap-framework-2003
+                - fao-organic-nutrients
+            ranges: []
         - row_id: crop_irrigation_water
           role: "Irrigation water during vine growth"
           name: "Irrigation water supplied to crop"
@@ -352,7 +527,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_crop_protection_records
               source_ids:
-                - fao-cucumber-production-guide
+                - fao-gap-framework-2003
             ranges:
               - role: qa_guardrail
                 lower: "0"
@@ -379,7 +554,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_field_energy_records
               source_ids:
-                - fao-cucumber-production-guide
+                - fao-gap-framework-2003
             ranges:
               - role: qa_guardrail
                 lower: "0"
@@ -412,7 +587,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_harvest_reconciliation
               source_ids:
-                - fao-cucumber-production-guide
+                - fao-gap-framework-2003
                 - usda-ams-cucumber-standard
             ranges:
               - role: qa_guardrail
@@ -441,7 +616,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_residue_and_reject_records
               source_ids:
-                - fao-cucumber-production-guide
+                - fao-gap-framework-2003
             ranges:
               - role: qa_guardrail
                 lower: "100"
@@ -505,9 +680,8 @@ process_inventory:
                 unit: "kg N2O/ha"
                 basis: "managed-soil nitrogen emissions in the declared crop cycle"
                 basis_kind: "n_input"
-                evidence_kind: "external_source"
-                source_ids:
-                  - ipcc-2019-managed-soils-n2o
+                evidence_kind: "reasoned_estimate"
+                source_ids: []
         - row_id: nitrate_freshwater_output
           role: "Nitrate loss to freshwater"
           name: "Nitrate, emissions to freshwater"
@@ -620,33 +794,66 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: primary_packaging_input
-          role: "Primary packaging material"
-          name: "Primary packaging material"
+        - row_id: primary_packaging_input_wood_crate
+          role: "Wooden crate"
+          name: "Wooden crate"
           flow_type: "product"
-          property_unit: "Mass / kg packaging material"
-          description: "Record crates, cartons, films, pallets, or other packaging that crosses the boundary before the declared gate, distinguishing reusable and one-way materials. Raw activity or stage basis: per 1,000 kg packed output."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for primary_packaging_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record crates, cartons, films, pallets, or other packaging that crosses the boundary before the declared gate, distinguishing reusable and one-way materials. Raw activity or stage basis: per 1,000 kg packed output. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
           amount:
-            expression: "Use packaging specifications, counts, unit mass, reuse cycles, and batch output to calculate the attributable packaging mass."
-            value_mode: "calculated_value"
-            specificity: "product_specific"
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
+              kind: "collected_record"
               collection_protocol_id: cp_packaging_records
               source_ids:
                 - usda-ams-cucumber-standard
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "35"
-                unit: "kg packaging material per 1,000 kg packed output"
-                basis: "declared primary packaging format and reuse practice"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+                - fao-package-identities
+            ranges: []
+        - row_id: primary_packaging_input_corrugated_box
+          role: "Corrugated fibreboard box"
+          name: "Corrugated fibreboard box"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - usda-ams-cucumber-standard
+                - fao-package-identities
+            ranges: []
+        - row_id: primary_packaging_input_pe_film
+          role: "Polyethylene wrapping film"
+          name: "Polyethylene wrapping film"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - usda-ams-cucumber-standard
+                - fao-package-identities
+            ranges: []
       waste:
         []
       elementary:
@@ -655,8 +862,10 @@ process_inventory:
       product:
         - row_id: marketable_farm_gate_output
           role: "Marketable fresh cucumber or gherkin at gate"
-          name: "Fresh cucumber or gherkin at farm gate"
+          name: "Cucumbers and gherkins"
           flow_type: "product"
+          flow_ref:
+            uuid: "7b96f91c-8055-431e-8b7d-f24fd4e6d17e"
           property_unit: "Mass / kg"
           description: "This is the declared reference product after harvest, grading, optional washing or cooling, and primary packing that occur before the hand-off. Raw output measurement and reconciliation: Use the final calibrated dispatch scale or lot record after grade acceptance and reconcile it to received fruit and rejects. Raw activity or stage basis: 1,000 kg reference output."
           amount:
@@ -744,12 +953,12 @@ allocation_rules:
     applies_to: "mixed cucumber and gherkin production"
     rule: "Attribute shared inputs to slicing cucumber, pickling cucumber, or gherkin using recorded production-unit area, crop-cycle output, or another documented physical basis. Do not average distinct crop types before their individual balances are complete."
     source_ids:
-      - fao-cucumber-production-guide
+      - fao-gap-framework-2003
   - rule_id: allocation_repeated_harvest
     applies_to: "multiple harvest rounds from one planting"
     rule: "Treat all harvest rounds attributable to one planting campaign as one crop-cycle inventory and reconcile each round before normalizing to total marketable output."
     source_ids:
-      - fao-cucumber-production-guide
+      - fao-gap-framework-2003
   - rule_id: allocation_shared_protected_unit
     applies_to: "greenhouse or other protected units with multiple crops"
     rule: "Allocate shared energy, water, and management records using declared area, occupied time, throughput, or another physical relationship. Disclose durable infrastructure separately."
@@ -760,6 +969,10 @@ allocation_rules:
     rule: "Do not provide a co-product credit unless a recipient, quantity, and intended use are documented. Otherwise report the material as residue or waste and retain the crop-cycle burden."
     source_ids:
       - usda-ams-cucumber-standard
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_planting_records
@@ -917,7 +1130,7 @@ dataset_production:
         - "application log"
       output: "kg N, kg P2O5, or kg K2O by crop cycle"
       source_ids:
-        - fao-cucumber-production-guide
+        - fao-gap-framework-2003
     - id: calc_crop_cycle_normalization
       applies_to: "all crop-cycle inputs and outputs"
       rule: "crop-cycle quantity ÷ marketable gate output × 1,000 kg"
@@ -935,7 +1148,7 @@ dataset_production:
         - "reject records"
       output: "total marketable crop-cycle output"
       source_ids:
-        - fao-cucumber-production-guide
+        - fao-gap-framework-2003
     - id: calc_area_time
       applies_to: "land occupation"
       rule: "production area × crop occupation period, with protected structure treatment declared separately"
@@ -944,7 +1157,7 @@ dataset_production:
         - "planting and final harvest dates"
       output: "m2*a"
       source_ids:
-        - fao-cucumber-production-guide
+        - fao-gap-framework-2003
     - id: calc_nitrogen_emission
       applies_to: "direct soil nitrous oxide"
       rule: "apply the selected IPCC-compatible factor to eligible nitrogen input and declared soil or climate method"
@@ -1022,18 +1235,18 @@ validation_rules:
     applies_to: "product identity and aggregation"
     rule: "Crop type and route must be declared. Slicing cucumbers, pickling cucumbers, and gherkins may be aggregated only after separate crop-cycle balances and an explicit physical allocation basis are available."
     source_ids:
-      - fao-cucumber-production-guide
+      - fao-gap-framework-2003
   - rule_id: validate_cycle_dates
     applies_to: "establishment, management, and harvest"
     rule: "Planting, applications, irrigation, harvest rounds, and gate output must fall within or be explicitly attributed to the declared crop cycle."
     source_ids:
-      - fao-cucumber-production-guide
+      - fao-gap-framework-2003
   - rule_id: validate_nutrient_basis
     applies_to: "nutrient inputs and emissions"
     rule: "Product mass, nutrient concentration, nutrient basis, and emission method must be internally consistent; do not count product mass and its nutrient equivalent as duplicate exchanges."
     source_ids:
       - ipcc-2019-managed-soils-n2o
-      - fao-cucumber-production-guide
+      - fao-gap-framework-2003
   - rule_id: validate_mass_balance
     applies_to: "harvest and gate preparation"
     rule: "Harvest or receiving mass must reconcile with marketable output, rejects, residues, wastewater-related losses, and documented measurement uncertainty."
@@ -1058,10 +1271,6 @@ published_dataset_profile:
   required_quality_disclosure: "time coverage, site scope, measured versus calculated values, route treatment, allocation rules, mass-balance result, platform identity resolution status, and all provisional estimates requiring replacement by foreground records"
   update_trigger: "change in crop type or route, irrigation technology, nutrient program, protected-cultivation energy, harvest or grade specification, washing or cooling line, packaging format, gate definition, or evidence affecting material quantities or boundary rules"
 data_sources:
-  - id: "fao-cucumber-production-guide"
-    type: "official_guidance"
-    reference: "FAO, crop production and good-practice guidance for cucumber and gherkin cultivation"
-    used_for: "crop route, planting, crop management, harvest rounds, residue context, and boundary decisions"
   - id: "fao-crop-evapotranspiration-56"
     type: "official_guidance"
     reference: "FAO Irrigation and drainage paper 56, *Crop evapotranspiration*"
@@ -1082,23 +1291,39 @@ data_sources:
     type: "standard"
     reference: "ISO 14044:2006, *Environmental management — Life cycle assessment — Requirements and guidelines*"
     used_for: "allocation, co-product, and residue-treatment principles"
+  - id: "fao-gap-framework-2003"
+    type: "official_guidance"
+    reference: "FAO Committee on Agriculture, COAG/2003/6, Development of a Framework for Good Agricultural Practices, section IV paragraphs 24–26 and Annex, https://www.fao.org/4/y8704e/y8704e.htm"
+    used_for: "General record/handling context only; not a crop-specific parameter or LCA boundary/allocation rule."
+  - id: "fao-fertilizer-identities"
+    type: "official_guidance"
+    reference: "FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-organic-nutrients"
+    type: "official_guidance"
+    reference: "FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-package-identities"
+    type: "official_guidance"
+    reference: "FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:016ab2d6f36e04a4f1b7b7609d71d953965b11e64ce296fdbbd1860ead3fc5f6"
+  source_sha256: "sha256:5478fc402287e0c4b33d0c5ff1a3a0951184106f47a9c69755e2d7ef879fd784"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_6080"
+    - unit_id: "normative_6595"
       family: "system_boundary"
       span:
         start:
-          offset: 6080
-          line: 60
+          offset: 6595
+          line: 62
           column: 1
         end:
-          offset: 8817
-          line: 82
+          offset: 9318
+          line: 84
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Prepared field bed or protected cultivation unit receiving cucumber or gherkin seed or transplant material, with prior land use and excluded infrastructure work disclosed |\n| starting_condition_role | Start of the declared cucumber or gherkin crop cycle and foreground input accounting |\n| product_classification_scope | Fresh cucumbers and gherkins classified under CPC 3.0:01232 through the declared farm-gate or pack-house hand-off |\n| recursive_input_rule | Seed, transplants, and other same-category planting materials are recorded at their received hand-off state and linked to an upstream dataset; their own production is not recreated inside this PCR. |\n| upstream_dataset_requirement | Use upstream datasets for seed or transplants, nutrient products, crop-protection products, supplied water, fuels, electricity, packaging, and purchased transport or treatment services when those inputs cross the boundary. |\n| disclosure | Declare crop type, cultivar group, geography, route, planting density, crop-cycle dates, irrigation source and method, nutrient basis, crop-protection program, trellis or protected route, harvest rounds, grade, yield, reject and residue fates, primary handling, packaging, and gate state. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_cycle` | establishment and cultivation | Include field or protected-bed preparation attributable to the declared crop cycle, planting, vine management, irrigation, nutrient and crop protection, and direct crop emissions; disclose prior land use and exclude unrelated infrastructure construction. | `fao-crop-evapotranspiration-56`; `ipcc-2019-managed-soils-n2o` |\n| `boundary_repeated_harvest` | harvest rounds | Attribute every harvest round from the planting campaign to the same crop cycle and reconcile marketable fruit, downgraded fruit, field losses, and residues before normalizing. | `fao-cucumber-production-guide`; `usda-ams-cucumber-standard` |\n| `boundary_gate_preparation` | sorting, washing, cooling, and packing | End the default foreground boundary at the declared farm-gate or pack-house gate. Include sorting, washing, cooling, and primary packaging only when they occur before that gate. | `usda-ams-cucumber-standard`; `usda-ams-pickling-cucumber-standard` |\n| `boundary_residue_fate` | vines, leaves, rejected fruit, and trim | Record field return, composting, feed use, treatment, transport, or disposal for each residue stream. Do not assign a co-product credit without a documented recipient and intended use. | `iso-14044-2006`; `fao-cucumber-production-guide` |\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Prepared field bed or protected cultivation unit receiving cucumber or gherkin seed or transplant material, with prior land use and excluded infrastructure work disclosed |\n| starting_condition_role | Start of the declared cucumber or gherkin crop cycle and foreground input accounting |\n| product_classification_scope | Fresh cucumbers and gherkins classified under CPC 3.0:01232 through the declared farm-gate or pack-house hand-off |\n| recursive_input_rule | Seed, transplants, and other same-category planting materials are recorded at their received hand-off state and linked to an upstream dataset; their own production is not recreated inside this PCR. |\n| upstream_dataset_requirement | Use upstream datasets for seed or transplants, nutrient products, crop-protection products, supplied water, fuels, electricity, packaging, and purchased transport or treatment services when those inputs cross the boundary. |\n| disclosure | Declare crop type, cultivar group, geography, route, planting density, crop-cycle dates, irrigation source and method, nutrient basis, crop-protection program, trellis or protected route, harvest rounds, grade, yield, reject and residue fates, primary handling, packaging, and gate state. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_crop_cycle` | establishment and cultivation | Include field or protected-bed preparation attributable to the declared crop cycle, planting, vine management, irrigation, nutrient and crop protection, and direct crop emissions; disclose prior land use and exclude unrelated infrastructure construction. | `fao-crop-evapotranspiration-56`; `ipcc-2019-managed-soils-n2o` |\n| `boundary_repeated_harvest` | harvest rounds | Attribute every harvest round from the planting campaign to the same crop cycle and reconcile marketable fruit, downgraded fruit, field losses, and residues before normalizing. | `fao-gap-framework-2003`; `usda-ams-cucumber-standard` |\n| `boundary_gate_preparation` | sorting, washing, cooling, and packing | End the default foreground boundary at the declared farm-gate or pack-house gate. Include sorting, washing, cooling, and primary packaging only when they occur before that gate. | `usda-ams-cucumber-standard`; `usda-ams-pickling-cucumber-standard` |\n| `boundary_residue_fate` | vines, leaves, rejected fruit, and trim | Record field return, composting, feed use, treatment, transport, or disposal for each residue stream. Do not assign a co-product credit without a documented recipient and intended use. | `iso-14044-2006`; `fao-gap-framework-2003` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1115,12 +1340,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 6080
-              line: 60
+              offset: 6595
+              line: 62
               column: 1
             end:
-              offset: 6101
-              line: 60
+              offset: 6616
+              line: 62
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1135,18 +1360,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_36014"
+    - unit_id: "normative_50850"
       family: "allocation"
       span:
         start:
-          offset: 36014
-          line: 668
+          offset: 50850
+          line: 816
           column: 1
         end:
-          offset: 37344
-          line: 677
+          offset: 52554
+          line: 827
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_crop_type` | mixed cucumber and gherkin production | Attribute shared inputs to slicing cucumber, pickling cucumber, or gherkin using recorded production-unit area, crop-cycle output, or another documented physical basis. Do not average distinct crop types before their individual balances are complete. | `fao-cucumber-production-guide` |\n| `allocation_repeated_harvest` | multiple harvest rounds from one planting | Treat all harvest rounds attributable to one planting campaign as one crop-cycle inventory and reconcile each round before normalizing to total marketable output. | `fao-cucumber-production-guide` |\n| `allocation_shared_protected_unit` | greenhouse or other protected units with multiple crops | Allocate shared energy, water, and management records using declared area, occupied time, throughput, or another physical relationship. Disclose durable infrastructure separately. | `iso-14044-2006` |\n| `allocation_residue_fate` | vines, leaves, rejected fruit, and trim | Do not provide a co-product credit unless a recipient, quantity, and intended use are documented. Otherwise report the material as residue or waste and retain the crop-cycle burden. | `usda-ams-cucumber-standard` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_crop_type` | mixed cucumber and gherkin production | Attribute shared inputs to slicing cucumber, pickling cucumber, or gherkin using recorded production-unit area, crop-cycle output, or another documented physical basis. Do not average distinct crop types before their individual balances are complete. | `fao-gap-framework-2003` |\n| `allocation_repeated_harvest` | multiple harvest rounds from one planting | Treat all harvest rounds attributable to one planting campaign as one crop-cycle inventory and reconcile each round before normalizing to total marketable output. | `fao-gap-framework-2003` |\n| `allocation_shared_protected_unit` | greenhouse or other protected units with multiple crops | Allocate shared energy, water, and management records using declared area, occupied time, throughput, or another physical relationship. Disclose durable infrastructure separately. | `iso-14044-2006` |\n| `allocation_residue_fate` | vines, leaves, rejected fruit, and trim | Do not provide a co-product credit unless a recipient, quantity, and intended use are documented. Otherwise report the material as residue or waste and retain the crop-cycle burden. | `usda-ams-cucumber-standard` |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1163,12 +1388,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 36014
-              line: 668
+              offset: 50850
+              line: 816
               column: 1
             end:
-              offset: 36054
-              line: 668
+              offset: 50890
+              line: 816
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1183,18 +1408,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_48928"
+    - unit_id: "normative_64117"
       family: "validation"
       span:
         start:
-          offset: 48928
-          line: 723
+          offset: 64117
+          line: 873
           column: 1
         end:
-          offset: 50940
-          line: 735
+          offset: 66108
+          line: 885
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_output` | reference flow | The reference output must be fresh whole cucumber or gherkin at the declared gate and use mass in kg; pickled, fermented, canned, cut, or retail products are outside this PCR. | `usda-ams-cucumber-standard`; `usda-ams-pickling-cucumber-standard` |\n| `validate_crop_type` | product identity and aggregation | Crop type and route must be declared. Slicing cucumbers, pickling cucumbers, and gherkins may be aggregated only after separate crop-cycle balances and an explicit physical allocation basis are available. | `fao-cucumber-production-guide` |\n| `validate_cycle_dates` | establishment, management, and harvest | Planting, applications, irrigation, harvest rounds, and gate output must fall within or be explicitly attributed to the declared crop cycle. | `fao-cucumber-production-guide` |\n| `validate_nutrient_basis` | nutrient inputs and emissions | Product mass, nutrient concentration, nutrient basis, and emission method must be internally consistent; do not count product mass and its nutrient equivalent as duplicate exchanges. | `ipcc-2019-managed-soils-n2o`; `fao-cucumber-production-guide` |\n| `validate_mass_balance` | harvest and gate preparation | Harvest or receiving mass must reconcile with marketable output, rejects, residues, wastewater-related losses, and documented measurement uncertainty. | `usda-ams-cucumber-standard` |\n| `validate_flow_identity_resolution` | parameterized rows | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n| `validate_qualifiers` | reference flow and dataset metadata | Required qualifiers must be present, including crop type, route, crop cycle, harvest round, grade, washing, cooling, packaging, and declared gate. | `usda-ams-cucumber-standard`; `usda-ams-pickling-cucumber-standard` |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_output` | reference flow | The reference output must be fresh whole cucumber or gherkin at the declared gate and use mass in kg; pickled, fermented, canned, cut, or retail products are outside this PCR. | `usda-ams-cucumber-standard`; `usda-ams-pickling-cucumber-standard` |\n| `validate_crop_type` | product identity and aggregation | Crop type and route must be declared. Slicing cucumbers, pickling cucumbers, and gherkins may be aggregated only after separate crop-cycle balances and an explicit physical allocation basis are available. | `fao-gap-framework-2003` |\n| `validate_cycle_dates` | establishment, management, and harvest | Planting, applications, irrigation, harvest rounds, and gate output must fall within or be explicitly attributed to the declared crop cycle. | `fao-gap-framework-2003` |\n| `validate_nutrient_basis` | nutrient inputs and emissions | Product mass, nutrient concentration, nutrient basis, and emission method must be internally consistent; do not count product mass and its nutrient equivalent as duplicate exchanges. | `ipcc-2019-managed-soils-n2o`; `fao-gap-framework-2003` |\n| `validate_mass_balance` | harvest and gate preparation | Harvest or receiving mass must reconcile with marketable output, rejects, residues, wastewater-related losses, and documented measurement uncertainty. | `usda-ams-cucumber-standard` |\n| `validate_flow_identity_resolution` | parameterized rows | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |\n| `validate_qualifiers` | reference flow and dataset metadata | Required qualifiers must be present, including crop type, route, crop cycle, harvest round, grade, washing, cooling, packaging, and declared gate. | `usda-ams-cucumber-standard`; `usda-ams-pickling-cucumber-standard` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1211,12 +1436,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 48928
-              line: 723
+              offset: 64117
+              line: 873
               column: 1
             end:
-              offset: 48950
-              line: 723
+              offset: 64139
+              line: 873
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1235,246 +1460,259 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_crop_cycle"
       identity_kind: "explicit"
-      unit_id: "normative_6080"
+      unit_id: "normative_6595"
       source_span:
         start:
-          offset: 7511
-          line: 77
+          offset: 8026
+          line: 79
           column: 1
         end:
-          offset: 7891
-          line: 77
+          offset: 8406
+          line: 79
           column: 381
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_repeated_harvest"
       identity_kind: "explicit"
-      unit_id: "normative_6080"
+      unit_id: "normative_6595"
       source_span:
         start:
-          offset: 7892
-          line: 78
+          offset: 8407
+          line: 80
           column: 1
         end:
-          offset: 8183
-          line: 78
-          column: 292
+          offset: 8691
+          line: 80
+          column: 285
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_gate_preparation"
       identity_kind: "explicit"
-      unit_id: "normative_6080"
+      unit_id: "normative_6595"
       source_span:
         start:
-          offset: 8184
-          line: 79
+          offset: 8692
+          line: 81
           column: 1
         end:
-          offset: 8506
-          line: 79
+          offset: 9014
+          line: 81
           column: 323
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_residue_fate"
       identity_kind: "explicit"
-      unit_id: "normative_6080"
+      unit_id: "normative_6595"
       source_span:
         start:
-          offset: 8507
-          line: 80
+          offset: 9015
+          line: 82
           column: 1
         end:
-          offset: 8815
-          line: 80
-          column: 309
+          offset: 9316
+          line: 82
+          column: 302
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_crop_type"
       identity_kind: "explicit"
-      unit_id: "normative_36014"
+      unit_id: "normative_50850"
       source_span:
         start:
-          offset: 36127
-          line: 672
+          offset: 50963
+          line: 820
           column: 1
         end:
-          offset: 36480
-          line: 672
-          column: 354
+          offset: 51309
+          line: 820
+          column: 347
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_repeated_harvest"
       identity_kind: "explicit"
-      unit_id: "normative_36014"
+      unit_id: "normative_50850"
       source_span:
         start:
-          offset: 36481
-          line: 673
+          offset: 51310
+          line: 821
           column: 1
         end:
-          offset: 36757
-          line: 673
-          column: 277
+          offset: 51579
+          line: 821
+          column: 270
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_shared_protected_unit"
       identity_kind: "explicit"
-      unit_id: "normative_36014"
+      unit_id: "normative_50850"
       source_span:
         start:
-          offset: 36758
-          line: 674
+          offset: 51580
+          line: 822
           column: 1
         end:
-          offset: 37055
-          line: 674
+          offset: 51877
+          line: 822
           column: 298
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_residue_fate"
       identity_kind: "explicit"
-      unit_id: "normative_36014"
+      unit_id: "normative_50850"
       source_span:
         start:
-          offset: 37056
-          line: 675
+          offset: 51878
+          line: 823
           column: 1
         end:
-          offset: 37342
-          line: 675
+          offset: 52164
+          line: 823
           column: 287
+    - pointer: "/allocation_rules/4"
+      rule_id: "allocation_rule_5"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_50850"
+      source_span:
+        start:
+          offset: 52166
+          line: 825
+          column: 1
+        end:
+          offset: 52552
+          line: 825
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference_output"
       identity_kind: "explicit"
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 49023
-          line: 727
+          offset: 64212
+          line: 877
           column: 1
         end:
-          offset: 49319
-          line: 727
+          offset: 64508
+          line: 877
           column: 297
     - pointer: "/validation_rules/1"
       rule_id: "validate_crop_type"
       identity_kind: "explicit"
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 49320
-          line: 728
+          offset: 64509
+          line: 878
           column: 1
         end:
-          offset: 49620
-          line: 728
-          column: 301
+          offset: 64802
+          line: 878
+          column: 294
     - pointer: "/validation_rules/2"
       rule_id: "validate_cycle_dates"
       identity_kind: "explicit"
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 49621
-          line: 729
+          offset: 64803
+          line: 879
           column: 1
         end:
-          offset: 49865
-          line: 729
-          column: 245
+          offset: 65040
+          line: 879
+          column: 238
     - pointer: "/validation_rules/3"
       rule_id: "validate_nutrient_basis"
       identity_kind: "explicit"
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 49866
-          line: 730
+          offset: 65041
+          line: 880
           column: 1
         end:
-          offset: 50177
-          line: 730
-          column: 312
+          offset: 65345
+          line: 880
+          column: 305
     - pointer: "/validation_rules/4"
       rule_id: "validate_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 50178
-          line: 731
+          offset: 65346
+          line: 881
           column: 1
         end:
-          offset: 50420
-          line: 731
+          offset: 65588
+          line: 881
           column: 243
     - pointer: "/validation_rules/5"
       rule_id: "validate_flow_identity_resolution"
       identity_kind: "explicit"
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 50421
-          line: 732
+          offset: 65589
+          line: 882
           column: 1
         end:
-          offset: 50655
-          line: 732
+          offset: 65823
+          line: 882
           column: 235
     - pointer: "/validation_rules/6"
       rule_id: "validate_qualifiers"
       identity_kind: "explicit"
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 50656
-          line: 733
+          offset: 65824
+          line: 883
           column: 1
         end:
-          offset: 50938
-          line: 733
+          offset: 66106
+          line: 883
           column: 283
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_6080"
+      unit_id: "normative_6595"
       source_span:
         start:
-          offset: 6080
-          line: 60
+          offset: 6595
+          line: 62
           column: 1
         end:
-          offset: 6101
-          line: 60
+          offset: 6616
+          line: 62
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_6080"
+      unit_id: "normative_6595"
       source_span:
         start:
-          offset: 6129
-          line: 64
+          offset: 6644
+          line: 66
           column: 1
         end:
-          offset: 7418
-          line: 71
+          offset: 7933
+          line: 73
           column: 306
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_36014"
+      unit_id: "normative_50850"
       source_span:
         start:
-          offset: 36014
-          line: 668
+          offset: 50850
+          line: 816
           column: 1
         end:
-          offset: 36054
-          line: 668
+          offset: 50890
+          line: 816
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_48928"
+      unit_id: "normative_64117"
       source_span:
         start:
-          offset: 48928
-          line: 723
+          offset: 64117
+          line: 873
           column: 1
         end:
-          offset: 48950
-          line: 723
+          offset: 64139
+          line: 873
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1483,5 +1721,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:016ab2d6f36e04a4f1b7b7609d71d953965b11e64ce296fdbbd1860ead3fc5f6"
-  generated_content_sha256: "sha256:3bfb13d888f4f0daf3617393f86b1daf49c04041c327827d882fbaf320040ae4"
+    sha256: "sha256:5478fc402287e0c4b33d0c5ff1a3a0951184106f47a9c69755e2d7ef879fd784"
+  generated_content_sha256: "sha256:7c98f84156ee032cac47479468dd0cd261d00f8ececa11bdea28205c8747cd4d"
