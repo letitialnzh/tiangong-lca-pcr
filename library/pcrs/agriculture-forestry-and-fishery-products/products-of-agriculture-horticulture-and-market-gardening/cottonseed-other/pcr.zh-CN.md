@@ -457,15 +457,14 @@ sync_with: pcr.en-US.md
 - 证据类型: 采集记录（`collected_record`）
 - 采集协议: `cp_gin_lot_balance`
 - 来源: `cottonseed-storage-2018`
-- 数量范围：Cottonseed-to-lint co-product screen
+- 数量范围：作者暂定棉籽与皮棉比例估计；引用的全国均值不能确立这些端点
   - 范围角色：典型范围（`typical_range`）
   - 下限：1100
   - 上限：1800
   - 单位：kg cottonseed/1,000 kg lint
   - 基准：same reconciled gin lot
   - 基准类型：过程输出（`process_output`）
-  - 证据类型：外部来源（`external_source`）
-  - 来源：`cottonseed-storage-2018`
+  - 证据类型：推理估计 (`reasoned_estimate`)
 
 ###### 皮棉联产品 (`cotton_lint_output`)
 
@@ -694,7 +693,7 @@ sync_with: pcr.en-US.md
 - 选定流：Cottonseed, other, production mix at farm gate, fresh unprocessed
 - 流属性 / 单位：质量 / kg
 - 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -720,7 +719,7 @@ sync_with: pcr.en-US.md
 - 选定流：Cottonseed, other, production mix at farm gate, fresh unprocessed
 - 流属性 / 单位：质量 / kg
 - 数量规则：1000 kg
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）

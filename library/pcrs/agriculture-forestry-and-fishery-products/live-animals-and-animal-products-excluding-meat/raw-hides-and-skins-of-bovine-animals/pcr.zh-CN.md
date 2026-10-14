@@ -514,31 +514,26 @@ sync_with: pcr.en-US.md
   - 基准类型：过程输出 (`process_output`)
   - 证据类型：推理估算 (`reasoned_estimate`)
 
-###### 保藏能源（`preserve_energy`）
+###### 设备供电点的电力（`preserve_energy_electricity`）
+
+**preserve_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录动力干燥/冷却所用实际能源；常温保藏不得虚构用电。
-
 分母与范围要求：每 kg 保藏原皮
-
 原始数量及计算要求：计量或发票能源仅归属一次。 原始采集分母类型：process_output。
 
-- 选定流: 实际保藏能源载体（UUID 未解析）
-- 流属性/单位: Energy or Mass / kWh, MJ or kg
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：场址特定 (`site_specific`)
-- 归一化基准：每参考流
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_utilities` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
-- 采集协议: `cp_utilities`
-- 数量范围: 暂定能耗筛查
-  - 范围角色：QA 校验 (`qa_guardrail`)
-  - 下限: 0
-  - 上限: 1000
-  - 单位: kWh/kg
-  - 基准: 每 kg 保藏皮的等效能源，并披露能源载体换算
-  - 基准类型：过程输出 (`process_output`)
-  - 证据类型：推理估算 (`reasoned_estimate`)
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_utilities`
+- 来源：`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -735,6 +730,8 @@ sync_with: pcr.en-US.md
 | a_grade | 等级与保藏 | 合格皮及独立销售的降级皮有不同交付。拒收与残余在未上市时属废物。比较可售质量前需对账水分与盐变化。 | fao-hides |
 | a_period | 动物阶段及设施 | 记录生长、乳用、役用和终端阶段、替换/终止，以及共享剥皮/清洗/保藏/包装服务的使用者和服务期；按实测吞吐量、时间或其他有依据驱动量只归属一次。 | fao-hides |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
@@ -776,6 +773,7 @@ sync_with: pcr.en-US.md
 | v_balance | 所有批次 | 对账剥皮、初整、分级、保藏及最终质量，并纳入修边物、盐/盐水和水分损失；按场址容差调查差额。 | fao-hides |
 | v_attribution | 动物及共享资产 | 对重复动物阶段或设施服务期、缺失产出交接或归属决策予以拒绝。 | fao-hides |
 | v_binding | 所有卡 | 仅在实际状态、交付点与质量属性有证据后，才将宽义最终产出解析为一个具体产品 UUID；狭义厂门流不得强加于全部批次。其余具体 UUID 和待确认流身份成员在生成交换前均须独立核实。 |  |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
 
 ## 10. 发布数据集画像
 
@@ -797,3 +795,4 @@ sync_with: pcr.en-US.md
 | `fao-hides` | official_guidance | [FAO，原皮与皮张](https://www.fao.org/4/i0523e/i0523e.pdf) | 剥皮、初次处理、分级与保藏路线。 |
 | `fao-statistics` | official_guidance | [FAO，皮张产量定义](https://www.fao.org/4/x9892e/X9892e06.htm) | 屠宰与倒毙动物来源区分。 |
 | `unido-leather` | official_guidance | [UNIDO 可持续皮革框架](https://downloads.unido.org/ot/46/70/4670793/KRAL_AGR_AIT_URT_2015_100228_001.pdf) | 原皮与后续皮革加工边界。 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

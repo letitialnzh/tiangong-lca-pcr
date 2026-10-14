@@ -54,8 +54,9 @@ sync_with: pcr.en-US.md
 | `headcount_to_mass` | 动物头数、进入、出生、死亡和移交 | 质量 | kg | 头数记录在换算为 kg 前必须包含动物类别及实测或抽样平均活重，并保留头数与换算证据。 |
 | `feed_mass_basis` | 放牧饲草、贮藏饲草、精料、副产品、补充料和代乳品 | 质量 | kg 干物质和 kg 原物 | 保留原物数量及实测或供应者干物质比例；无换算证据不得合并湿基与干基记录。 |
 | `water_measurement_basis` | 供应的饮水与作业用水 | 质量或体积 | kg 或 m3 | 单独记录供水，不把降雨和非管理地表水作为 Product 投入；无水表时披露估算方法。 |
-| `gas_species_basis` | 甲烷和氧化亚氮产出 | 指定气体或元素基准的质量 | kg CH4、kg N2O 或 kg N2O-N | 保留物种与基准；无明确换算不得混用 CH4 与碳当量或 N2O 与 N2O-N。 |
+| `gas_species_basis` | 甲烷和氧化亚氮产出 | 最终交换中指定化合物的质量 | kg CH4; kg N2O | 保留氮基准原始记录；在最终归一化前，将 kg N2O-N 乘以 44/28 换算为 kg N2O。已为化合物质量的数量不得再次换算。最终固定 UUID 交换使用所绑定化合物的质量，不能直接填写氮基准数量。明确原始物种与元素基准；碳当量不得替代 CH4 质量。 |
 | `inventory_reference_normalization` | 所有清单行 | 实际流属性 | 每参考流的交换单位 | 下方清单和采集汇总字段表示每个声明参考流的最终数量。保留全部原始采集记录、原分母限定信息、路线及期间分层、单位换算和分配要求。对每项流，先依原有规则取得以其自身分子单位表示的可归属数量，再除以同一范围的实测合格参考产出数量，并乘以声明参考数量。不得混合物种、状态、交付门或不相容路线；内部移交及共享负担只计一次。合格产出分母缺失、为零或不可追溯时，属于阻断性数据质量问题。暂定 QA 范围仍使用其明确声明的基准，不能视为换算因子或生产默认值。 归一化数量 = 可归属数量 × 声明参考数量 / 实测合格参考产出数量。归一化只执行一次，不得再次除以已使用的分母。 |
+| `stage_throughput_linkage` | 阶段记录及最终数据包贡献 | 实际流属性及其原始基准 | 保留原生分子及阶段分母单位 | 保留原始批次、事件、群组、期间及阶段分母与单位。使用实测阶段数量 Q_stage 和有依据的归属关系重建可归属分子 A，再作最终归一化。若报告数量 a_B 对应明确阶段基准 B_stage（例如 1000 kg），则 A = a_B × Q_stage / B_stage。若 r_stage 已是交换单位／阶段单位的单位强度，则改用 A = r_stage × Q_stage，不再次除以 B_stage。可归属原始总量直接使用。最终贡献 = A × 声明参考数量 / 实测合格最终产出。明确换算相容单位，每项归属／分配份额恰应用一次；不得将基准数量下的报告用量或单位强度当成原始总量。阶段移交、损失、拒收、库存、共享服务及分配必须关联同一实际路线、期间和最终产出分层。1000 kg 基准仍明确保留 1000 kg。不得假设单位产率、鲜干质量相同、个体质量相同、剂量质量等价或交付门可互换。关联缺失、单位换算无依据、分母为零或分配不可追溯时，阻断数据包生产。阶段原生数据集保留自身阶段参考；数据包贡献为单独投影。 |
 
 ## 5. 系统边界
 
@@ -126,7 +127,7 @@ sync_with: pcr.en-US.md
 
 - 选定流：按实际产品身份区分的绵羊饲料和饲草（UUID 未解析）
 - 流属性/单位：质量 / kg 干物质和 kg 原物
-- 数量规则：按动物类别、阶段、来源和干物质基准记录采食或供应量；重要时保留牧草分配和剩料。
+- 数量规则：采用保留边界内损失及其生产负担的已核对饲料投入记录，依 inventory_reference_normalization 和 stage_throughput_linkage 计算可归属最终数据包交换量。
 - 数值来源模式：`calculated_value`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -134,12 +135,14 @@ sync_with: pcr.en-US.md
 - 证据类型：`calculated_from_collection`
 - 采集协议：`cp_feed_and_grazing`
 - 来源：`fao-leap-small-ruminants-2016`; `ipcc-2019-livestock-manure`
+本卡 QA 对象：下方摄入量范围仅校验按 calc_feed_supply_and_intake 单独记录并重建的生物摄入量，沿用该范围声明的单位及分母；不用于限定或替代饲料供应交换量，后者保留边界内未食用损失及其生产负担。不得用摄入量上下限校验供应量，也不得为满足范围而扣除损失。供应量专用范围须有独立证据；摄入及损失记录缺失时，此项摄入量 QA 未评估，不视为通过。
+
 - 数量范围：暂定全期饲料摄入筛查
   - 范围角色：`qa_guardrail`
   - 下限：0.5
   - 上限：30
   - 单位：kg 饲料干物质/kg 参考活重
-  - 基准：覆盖动物类别、路线、生长期、牧草核算和联产品系统的宽泛可替换筛查；不是默认日粮
+  - 基准：覆盖动物类别、路线、生长期、牧草核算和联产品系统的宽泛可替换筛查；不是默认日粮；QA 变量仅为实录生物摄入量，不是饲料供应清单数量
   - 基准类型：`reference_flow`
   - 证据类型：`reasoned_estimate`
 
@@ -193,30 +196,55 @@ sync_with: pcr.en-US.md
   - 基准类型：`reference_flow`
   - 证据类型：`reasoned_estimate`
 
-###### 能源供应（`energy_supply`）
+###### 设备供电点的电力（`energy_supply_electricity`）
+
+**energy_supply 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录圈舍、供水、饲喂、剪毛、粪污处理、称量及直接控制羊群移动所用的外购或场内电力、燃料、热和其他载体。
-
 分母与范围要求：每 kg 农场门口活羊
 
-- 选定流：受管理绵羊生产能源载体供应
-- 流属性/单位：能量或载体数量 / kWh、MJ、L 或 kg
-- 数量规则：按活动和期间分别记录每种载体，并为共享能源系统保留计量或分摊证据。
-- 数值来源模式：`foreground_record`
-- 适用范围：`technology_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_water_energy_transport` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_water_energy_transport`
-- 来源：`fao-leap-small-ruminants-2016`
-- 数量范围：暂定农场能源筛查
-  - 范围角色：`qa_guardrail`
-  - 下限：0
-  - 上限：20
-  - 单位：kWh-equivalent/kg 参考活重
-  - 基准：覆盖低投入放牧和舍饲系统的宽泛可替换筛查；保留实际载体单位
-  - 基准类型：`reference_flow`
-  - 证据类型：`reasoned_estimate`
+- 来源：`fao-leap-small-ruminants-2016`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`energy_supply_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_water_energy_transport` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_water_energy_transport`
+- 来源：`fao-leap-small-ruminants-2016`；`fao-agricultural-energy`
+
+###### 过程入口的外购热量（`energy_supply_heat`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：过程入口的外购热量
+- 流属性 / 单位：能源 / MJ
+- 数量规则：依 `cp_water_energy_transport` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_water_energy_transport`
+- 来源：`fao-leap-small-ruminants-2016`；`fao-agricultural-energy`
 
 ###### 进场运输服务（`inbound_transport_service`）
 
@@ -283,8 +311,7 @@ sync_with: pcr.en-US.md
 
 分母与范围要求：每 kg 活羊参考产出及报告期
 
-- 选定流：Shorn wool, greasy, including fleece-washed shorn wool `bc0047e4-c6e8-4758-b86e-887af8a1f176`
-- 绑定：固定（`fixed`）
+- 选定流：含脂的绵羊毛，包括剪前水洗的绵羊毛（原毛、未洗净，农场交付） `bc0047e4-c6e8-4758-b86e-887af8a1f176`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：记录剪毛质量、含水或含脂基准、动物群、等级及移交；非毛用产出时记不适用。
 - 数值来源模式：`foreground_record`
@@ -388,8 +415,7 @@ sync_with: pcr.en-US.md
 
 分母与范围要求：每 kg 农场门口活羊
 
-- 选定流：methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
-- 绑定：固定（`fixed`）
+- 选定流：甲烷 (生物源)（排放至空气） `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - 数量规则：按动物类别和期间，根据采集的种群与饲料或总能量记录计算，并保留方法层级和因子。
 - 数值来源模式：`calculated_value`
@@ -414,8 +440,7 @@ sync_with: pcr.en-US.md
 
 分母与范围要求：每 kg 农场门口活羊
 
-- 选定流：methane (biogenic) `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
-- 绑定：固定（`fixed`）
+- 选定流：甲烷 (生物源)（排放至空气） `fe0acd60-3ddc-11dd-a8e8-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg CH4
 - 数量规则：使用申报的经审查方法和因子，根据采集的动物、饲料、排泄和粪污路径记录计算。
 - 数值来源模式：`calculated_value`
@@ -440,9 +465,8 @@ sync_with: pcr.en-US.md
 
 分母与范围要求：每 kg 农场门口活羊
 
-- 选定流：nitrous oxide `08a91e70-3ddc-11dd-94c3-0050c2490048`
-- 绑定：固定（`fixed`）
-- 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O 或 kg N2O-N
+- 选定流：一氧化二氮（排放至空气） `08a91e70-3ddc-11dd-94c3-0050c2490048`
+- 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg N2O
 - 数量规则：按粪污路径和期间，根据采集的动物种群、饲料氮、排泄及管理记录计算，并保留物种基准换算。
 - 数值来源模式：`calculated_value`
 - 适用范围：`site_specific`
@@ -460,6 +484,36 @@ sync_with: pcr.en-US.md
   - 基准类型：`reference_flow`
   - 证据类型：`reasoned_estimate`
 
+###### 粪污氮引致的间接氧化亚氮排放至空气（`review_managed_sheep_production_indirect_n2o`）
+
+适用时，由有记录的粪污氮挥发/沉降及淋溶/径流路径计算可归属间接 N2O。与直接 N2O 分开，并核对下游或所用背景/影响模型中已包含的氮去向计算。 仅适用于实际运行的 `managed_sheep_production` 节点；保留其既有路线及期间条件。数据集须落实该路径的真实活动、方法适用性及有证据的范围或物理界限，才能认为清单完整。证据缺失不等于零或 not_applicable。最终绑定交换仍须核实物质/来源/介质专属 UUID。
+
+- 选定流：氧化亚氮排放至空气（UUID 未解析）
+- 流属性/单位：Mass / kg N2O
+- 数量规则：计算本节点及期间的路径总量，执行既有分配与 stage_throughput_linkage，再依 inventory_reference_normalization 对实测最终合格参考产出恰归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_pathway_emissions`
+- 来源：`ipcc-2019-livestock-manure`
+
+###### 粪污氨排放至空气（`review_managed_sheep_production_nh3`）
+
+采用真实物种、圈舍/贮存条件及有依据的氮流方法。逐阶段跟踪总氮和铵态氮；通用挥发氮估计可能包含其他氮物种，不能自动视为 NH3。 仅适用于实际运行的 `managed_sheep_production` 节点；保留其既有路线及期间条件。数据集须落实该路径的真实活动、方法适用性及有证据的范围或物理界限，才能认为清单完整。证据缺失不等于零或 not_applicable。最终绑定交换仍须核实物质/来源/介质专属 UUID。
+
+- 选定流：氨排放至空气（UUID 未解析）
+- 流属性/单位：Mass / kg NH3
+- 数量规则：计算本节点及期间的路径总量，执行既有分配与 stage_throughput_linkage，再依 inventory_reference_normalization 对实测最终合格参考产出恰归一化一次。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_pathway_emissions`
+- 来源：`review-eea-manure-2023`
+
 ## 7. 分配及联产品处理
 
 | rule_id | Applies to | Rule | source_ids |
@@ -470,6 +524,8 @@ sync_with: pcr.en-US.md
 | `multi_period_attribution` | 跨期种羊、补充羊、长期羊群资产和产出 | 将进入、出生、补充、淘汰、死亡和产出事件连接至生物阶段和报告期；按实际服务或生产期归属长期动物及资产负担，后续群组不得再次归属。 | `fao-leap-small-ruminants-2016` |
 | `shared_infrastructure_attribution` | 群体或期间共享的圈舍、围栏、供水、保定、剪毛、车辆和粪污系统 | 识别全部消费群体或活动及服务期；优先采用计量或活动专用使用量，其次采用动物日或活重—时间；记录动因且每项负担仅计一次。 | `fao-leap-small-ruminants-2016` |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
@@ -477,11 +533,14 @@ sync_with: pcr.en-US.md
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_flock_events` | managed_sheep_production | 动物进入、出生、阶段转移、销售、淘汰及参考产出 | 羊群登记、称量、销售或移交记录 | 动物或批次 id；类别；性别；用途；重要时的品种；事件；日期；头数；活重；称重点；来源或去向 | 与羊群记录相连的校准个体或批次称量；原始汇总要求：核对期初存栏 + 进入 + 出生 = 期末存栏 + 转移 + 销售 + 死亡，再以移交活重归一化。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | 头和 kg 活重 | 每次事件 | 完整群组或代表性报告期 | 全部代表羊群及农场门口移交点 | 每参考流 | 秤校准、签署移交、羊群登记核对；可追溯分子、合格参考产出分母及归一化计算表 |
-| `cp_feed_and_grazing` | managed_sheep_production | 饲料和饲草投入 | 发票、日粮、牧场及放牧日志、转群记录 | 饲料身份；来源；原物质量；干物质；动物类别；放牧面积与时间；剩料 | 称量供应饲料；无法直接测量时以申报的经审查方法推导牧草摄入；原始汇总要求：按饲料身份和动物类别汇总；保留摄入估算方法并按动物日或实测使用量分配牧草。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg 原物和 kg 干物质 | 饲喂事件或期间 | 群组或报告期全部生物阶段 | 羊群、牧地和圈舍单元 | 每参考流 | 发票、称量、饲料分析、牧场和移动记录；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_feed_and_grazing` | managed_sheep_production | 饲料和饲草投入 | 发票、日粮、牧场及放牧日志、转群记录 | 饲料身份；来源；原物质量；干物质；动物类别；放牧面积与时间；剩料 | 称量供应饲料；无法直接测量时以申报的经审查方法推导牧草摄入；原始汇总要求： 按 calc_feed_supply_and_intake 区分承担生产负担的饲料投入、实际采食量及损失；保留原生库存及期间记录，可归属量对合格最终产出归一化一次。 | kg 原物和 kg 干物质 | 饲喂事件或期间 | 群组或报告期全部生物阶段 | 羊群、牧地和圈舍单元 | 每参考流 | 发票、称量、饲料分析、牧场和移动记录；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_health_products` | managed_sheep_production | 兽医和健康产品 | 治疗登记和采购记录 | 产品；配方或活性成分；剂量；数量；动物类别；日期；原因；废弃 | 治疗日志与采购、库存核对；原始汇总要求：按配方汇总实际施用和废弃量。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | dose、kg 或 L | 每次治疗 | 完整群组或报告期 | 全部代表羊群 | 每参考流 | 签署治疗登记、发票、库存核对；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_water_energy_transport` | managed_sheep_production | 供应水、能源及进场运输 | 表计、发票、燃料和行程日志 | 水源及数量；能源载体及数量；表计 id；活动；货物；质量；距离；车辆；日期 | 表计、发票、油箱记录、里程或路线记录；原始汇总要求：有分表时直接归属；否则按有据工时、动物日或活重—时间分配。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | m3、kg、L、kWh、MJ 和 t*km | 每月、每程或每事件 | 完整群组或报告期 | 农场、放牧支持、圈舍、保定、粪污和纳入的移动活动 | 每参考流 | 校准、发票、表计照片、运输单、分摊工作表；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_outputs_and_losses` | managed_sheep_production | 羊毛、奶、外运粪污、死亡及其他产出或损失 | 剪毛、奶、粪污移交、死亡和废物记录 | 产出身份；质量；湿/干或成分基准；动物群；日期；去向；损失原因；最终去向 | 称量或计量每项产出；依据记录活重或有据类别平均值估算死亡质量；原始汇总要求：按产出身份和 hand-off 汇总；区分预期产品、内部使用、残余和废物。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg、L 和头 | 每次产出或损失 | 完整群组或报告期 | 全部代表羊群和产出 gate | 每参考流 | 称量或计量、发票、移交文件、死亡和废物日志；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_manure_and_emissions` | managed_sheep_production | 粪污路径、肠道 CH4、粪污 CH4 和直接 N2O | 动物种群、饲料、排泄、粪污路径和气候记录 | 动物类别；头数或动物日；活重；饲料或总能量；氮摄入；粪污路径；储存期；气候；方法层级；因子 | 采集羊群与粪污记录并用申报的经审查方法计算；原始汇总要求：按类别、阶段和粪污路径计算后汇总，不重复计算沉积、储存、施用或外运粪污。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg CH4、kg N2O 或 kg N2O-N、kg 粪污 | 每月或阶段 | 全部生物阶段和粪污路径 | 牧地、圈舍、储存、处理、施用及外运点 | 每参考流 | 来源记录、方法工作表、因子来源、独立路径核对；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_pathway_emissions` | `managed_sheep_production` | 路径专属气体及粪污氮/碳 | 动物、饲料、粪污、田间及方法台账 | 物种/类别；动物日；采食/干物质/消化率；挥发性固体；粪污氮/铵态氮；系统份额；气候；贮存时间；肥料氮；放牧；挥发/淋溶；甲烷回收；因子来源/单位；最终合格产出 ；收集粪污湿质量；干物质；去向| 按节点及期间采集一手活动数据，证明参数适用性，保留各路径计算表及链接的处理/牧地数据集  保留原始总量，可归属数量仅对实测最终合格参考产出归一化一次。| animal-day；kg DM；kg VS；kg N；kg CH4；kg N2O；kg NH3 | 各运行期间及管理变化时 | 完整所代表群体与服务期间 | 仅实际运行节点 | 每参考流 | 计量/分析记录、氮级联、方法与因子证据、防重复台账 |
+| `cp_feed_supply_and_intake` | `managed_sheep_production` | 饲料投入、采食及损失 | 库存、收货、发料及损失台账 | 饲料身份/来源；群体/阶段；期间；期初/期末库存；收货；自产供给；未用退回/转出；未食用/变质质量及去向；原物/干物质；实际采食量；负担归属；合格最终产出 | 按 calc_feed_supply_and_intake 核对匹配的库存、称重、日粮/采草估算及处置记录。保留原始总量及阶段分母，生产与处理负担各归属一次，再对合格最终产出归一化。 | kg as-fed; kg DM | 每次发料及期间结算 | 完整所代表群体/期间 | 实际运行饲喂节点 | 每参考流 | 库存及供应商记录；水分证据；损失及无重复核算核对 |
+| `cp_manure_n2o_coverage` | `managed_sheep_production` | 粪污/土壤直接及间接 N2O 覆盖 | 分路径氮台账及方法计算表 | 物种/类别；期间；排泄氮；阶段库存/转移；系统份额；挥发 NH3-N/NOx-N；淋溶/径流氮；施用/放牧氮；因子来源、单位及适用性；直接/间接分项；接受介质；已链接过程及归属卡；合格最终产出 | 按 calc_manure_n2o_coverage 保留原始阶段氮及分项计算，并匹配实际作业与现有粪污协议。记录缺证据或不适用路径及覆盖边界，可归属 N2O 归一化一次。 | kg N; kg N2O | 每个报告期间及管理变化 | 完整所代表管理期间 | 实际运行及明确链接节点 | 每参考流 | 氮平衡、因子单位/适用性、分项到卡片及无重复核算表 |
 
 ### 计算规则
 
@@ -491,8 +550,11 @@ sync_with: pcr.en-US.md
 | `reconcile_flock_balance` | 羊群事件 | 期初头数 + 进入 + 出生 = 期末头数 + 活体转移 + 活体销售 + 死亡；类别变化须连接而不是视作新动物。 | 羊群事件记录 | 头数核对和异常 | `fao-leap-small-ruminants-2016` |
 | `calculate_feed_dry_matter` | 饲料和饲草 | 干物质数量 = 原物数量 × 实测或供应者干物质比例；放牧摄入采用申报的经审查估算方法。 | 原物质量；干物质比例；放牧记录 | kg 饲料干物质 | `fao-leap-small-ruminants-2016` |
 | `calculate_enteric_methane` | 肠道甲烷 | 按绵羊类别和期间应用申报的 IPCC 层级或经审查方法，并保留活动数据和因子来源。 | 动物类别；种群或动物日；饲料或总能量；因子 | kg CH4 | `ipcc-2019-livestock-manure` |
-| `calculate_manure_emissions` | 粪污甲烷和直接氧化亚氮 | 按动物类别、排泄及粪污路径应用经审查公式；仅以明确分子量比将 N2O-N 换算为 N2O。 | 动物记录；饲料氮或排泄；粪污路径；气候；因子 | kg CH4 和 kg N2O | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
+| `calculate_manure_emissions` | 粪污甲烷和直接氧化亚氮 | 按动物类别、排泄及粪污路径应用声明的经审查公式。保留氮基准原始记录；在最终归一化前，将 kg N2O-N 乘以 44/28 换算为 kg N2O。已为化合物质量的数量不得再次换算。最终固定 UUID 交换使用所绑定化合物的质量，不能直接填写氮基准数量。 | 动物记录；饲料氮或排泄；粪污路径；气候；因子 | kg CH4 和 kg N2O | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
 | `calculate_transport_service` | 纳入的公路进场运输 | 运输服务 = 运输质量（吨）× 纳入的单程距离（公里）。 | 货物质量；距离 | t*km | `fao-leap-small-ruminants-2016` |
+| `calc_pathway_emissions` | `managed_sheep_production` | 采用物种和管理方式相容的方法，保留分路径总量。N2O-N 乘 44/28 转为 N2O，NH3-N 乘 17/14 转为 NH3，且恰换算一次；已为分子质量者不得重算。依据有记录的可用碳/甲烷潜力平衡检查甲烷，并按各阶段可用氮核对氮损失。已挥发氮引致的间接形成是下游转化，不是源阶段第二次氮损失。归属及归一化只做一次，不重复计入链接处理或去向模型中的排放。  物理筛查采用分配前、同一原始期间的数量：CH4 质量 × 12/16 不得超过所代表路径的可用碳；源阶段 NH3 质量 × 14/17、直接 N2O 质量 × 28/44 与其他源阶段氮损失之和，在核对库存及转移后不得超过该阶段可用氮。各项间接 N2O-N 计算以有记录的挥发氮或淋溶氮前体为上限，不再从源台账扣除该下游转化。这些是守恒检查，不是排放因子或经验单位产品区间。| `cp_pathway_emissions` | 每最终参考流的指定化合物 kg | `ipcc-2019-livestock-manure`; `review-eea-manure-2023`; `review-ipcc-soils-2019` |
+| `calc_feed_supply_and_intake` | `feed_forage_supply` | 所代表作业使用的饲料投入 = 期初饲料库存 + 收货 + 进入本作业的自产饲料 - 期末饲料库存 - 有记录的未用退回或转出。该投入保留边界内变质、拒食及被丢弃的剩余料。实际采食量 = 该投入 - 实测未食用/丢弃损失，并匹配水分/干物质与期间；采食量仅用于营养及代谢计算。期初库存承接原有负担，不是再次采购。追溯未用退回或转出的物料及负担去向，不自动给予替代抵扣。同一饲料的生产负担由采购饲料数据集或已建模自产作物/采集节点承担一次，不得两者并计。实际废料处理及粪污贡献计一次，不再次添加饲料生产负担。 | `cp_feed_supply_and_intake` | 同一原物/干物质基准下分开的饲料投入、采食及损失数量 | `fao-feed-loss-accounting-2018` |
+| `calc_manure_n2o_coverage` | `manure_direct_n2o_air`; `review_managed_sheep_production_indirect_n2o` | 按真实粪污阶段，采用有记录的物种/系统活动量及因子基准，分别计算直接 N2O、挥发/沉降引致间接 N2O，以及适用的淋溶/径流引致间接 N2O。N2O-N 乘 44/28 恰换算一次为分子态 N2O；已为分子质量的不得再次换算。保留分项计算表。现有 N2O 卡同时覆盖直接与间接排放时，填报其不重叠总和；已有直接/间接独立卡时，每个分项只归入对应卡，不再另报总和。放牧沉积及田间施用采用管理土壤方法，不套用粪污贮存因子。明确前景与已链接处理/牧地数据的核算责任；粪污转出不消除此前排放，已覆盖的下游排放不得重复。氮级联核对库存、转移及此前氮损失；间接 N2O 是前体的下游转化，不再次视为源阶段氮损失。可归属分子质量对合格参考产出归一化一次。记录不适用依据；路径数据缺失不等于零。 | `cp_manure_n2o_coverage` | 按路径及现有归属卡分开的 kg 分子态 N2O | `ipcc-2019-livestock-manure`; `review-ipcc-soils-2019` |
 
 ### 数据质量要求
 
@@ -516,6 +578,10 @@ sync_with: pcr.en-US.md
 | `validate_shared_infrastructure` | 共享圈舍、围栏、供水、保定、剪毛、车辆和粪污系统 | 要求至少两个消费群体、活动或期间、一个服务边界、有据归属动因及同一共享负担未重复的证据。 | `fao-leap-small-ruminants-2016` |
 | `validate_manure_and_emissions` | 肠道及粪污排放行 | 要求动物类别、活动数据、粪污路径、方法层级、因子来源、气体物种与基准及路径核对；拒绝把 IPCC 因子作为实测农场清单数量。 | `ipcc-2019-livestock-manure`; `fao-leap-nutrient-flows-2018` |
 | `validate_flow_identity_resolution` | 待确认水、能源及运输卡 | 要求前景生成时选择一个与实际产品或载体、属性、单位、地域及用途相容且经核实的具体 UUID；待确认卡不得携带固定 UUID。 |  |
+| `v_pathway_emission_coverage` | `managed_sheep_production` | 要求路径覆盖台账，包含生物学适用时的肠道 CH4、粪污 CH4、直接/间接 N2O、NH3 及相关田间排放。每条路径须有实测/计算量、覆盖匹配的明确链接过程，或有依据的不适用结论；缺数据不得记零。捕获前的野生生活不纳入受管理饲养，实际受管理留置须另行评估，并保留物种专属证据。 | `ipcc-2019-livestock-manure`; `review-ipcc-soils-2019`; `review-eea-manure-2023` |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
+| `v_feed_supply_intake_separation` | 全部饲料投入 | 拒绝扣除边界内拒食、变质或丢弃剩余料且未保留其生产负担的上游饲料清单。按 calc_feed_supply_and_intake 核对投入、采食、库存、转移及损失去向。不得把采食量当作饲料投入，不得假设自产饲料零负担或自动给予替代产品抵扣。 | `fao-feed-loss-accounting-2018` |
+| `v_manure_n2o_coverage` | 适用粪污及管理土壤氮路径 | 须明确直接及间接路径覆盖、阶段氮平衡及分子质量换算。按 calc_manure_n2o_coverage，将各分项归入现有 N2O 卡或明确覆盖的已链接过程一次。间接路径证据缺失时不得宣称完整；不得默认零值或把汇总值与分项重复并计。 | `ipcc-2019-livestock-manure`; `review-ipcc-soils-2019` |
 
 ## 10. 发布数据集画像
 
@@ -536,3 +602,7 @@ sync_with: pcr.en-US.md
 | `fao-leap-small-ruminants-2016` | official_guidance | FAO LEAP, *Greenhouse gas emissions and fossil energy use from small ruminant supply chains*, 2016. <https://openknowledge.fao.org/handle/20.500.14283/i6434en>（检索于 2026-09-29）。 | 绵羊供应链边界、路线与过程分解、前景记录、分配、产出及期间要求 |
 | `fao-leap-nutrient-flows-2018` | official_guidance | FAO LEAP, *Nutrient flows and associated environmental impacts in livestock supply chains*, 2018. <https://openknowledge.fao.org/handle/20.500.14283/ca1328en>（检索于 2026-09-29）。 | 粪污和养分路径、外运粪污区分、路径核对及质量要求 |
 | `ipcc-2019-livestock-manure` | method_factor | IPCC, *2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 10: Emissions from Livestock and Manure Management*. <https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch10_Livestock.pdf>（检索于 2026-09-29）。 | 动物类别、饲料、肠道甲烷、粪污甲烷、直接氧化亚氮、方法层级、因子来源及物种基准规则 |
+| `review-eea-manure-2023` | official_guidance | [EMEP/EEA Air Pollutant Emission Inventory Guidebook 2023, 3.B Manure Management](https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023/part-b-sectoral-guidance-chapters/3-agriculture/3-b-manure-management-2023) | NH3 氮流方法；采用参数前核实实际物种、管理方式及地域适用性 |
+| `review-ipcc-soils-2019` | official_guidance | [IPCC 2019 Refinement, Volume 4, Chapter 11: N2O Emissions from Managed Soils](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf) | 管理土壤直接及间接氮路径与边界核对 |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | 饲料投入、采食及废料负担的区分，不提供动物参数。将该核算原则用于声明类群是本 PCR 的方法学选择；不移植猪的日粮或排放因子。 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

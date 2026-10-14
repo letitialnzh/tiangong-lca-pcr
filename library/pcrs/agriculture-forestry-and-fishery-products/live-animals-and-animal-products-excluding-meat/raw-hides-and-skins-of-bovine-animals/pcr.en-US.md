@@ -514,31 +514,26 @@ Raw quantity and calculation requirements: Issued less return and stock change. 
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Preservation energy (`preserve_energy`)
+###### Electricity at the equipment supply point (`preserve_energy_electricity`)
+
+**Collection scope and applicability for preserve_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record actual carrier for powered drying/chilling; do not invent electricity for ambient curing.
-
 Denominator and scope requirements：per kg preserved hide
-
 Raw quantity and calculation requirements: Metered or invoice energy attributed once. Original collection denominator kind: process_output.
 
-- Selected flow: Actual preservation energy carrier (UUID unresolved)
-- Flow property / unit: Energy or Mass / kWh, MJ or kg
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_utilities` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_utilities`
-- Range: Provisional energy screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kWh/kg
-  - Basis: equivalent energy per kg preserved hide with carrier conversion disclosed
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -735,6 +730,8 @@ Raw quantity and calculation requirements: Weigh discard to handler. Original co
 | a_grade | grade and preservation | Accepted and independently sold downgraded grades have distinct handovers. Rejects and residues are waste unless marketed. Reconcile moisture/salt changes before comparing saleable masses. | fao-hides |
 | a_period | animal phases and plant | Record growth, dairy, draught and terminal phases, replacement/termination, and shared flaying/cleaning/curing/packing services by consumer and service period; charge each once using measured throughput, time or other evidenced driver. | fao-hides |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -776,6 +773,7 @@ Raw quantity and calculation requirements: Weigh discard to handler. Original co
 | v_balance | all lots | Reconcile removal, preparation, grades, preservation and final mass, with trims, salt/brine and moisture loss; investigate residual by site tolerance. | fao-hides |
 | v_attribution | animal and shared assets | Reject duplicated animal phases or plant service periods and missing output handovers or attribution decisions. | fao-hides |
 | v_binding | all cards | Resolve the broad final output to one concrete Product UUID only after actual state, gate and Mass are evidenced; no narrower plant flow can be imposed on every lot. All other concrete UUIDs and set members require independent verification before exchange generation. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 
 ## 10. Published Dataset Profile
 
@@ -797,3 +795,4 @@ Raw quantity and calculation requirements: Weigh discard to handler. Original co
 | `fao-hides` | official_guidance | [FAO, Hides and Skins](https://www.fao.org/4/i0523e/i0523e.pdf) | Flaying, first treatment, grade and preservation route. |
 | `fao-statistics` | official_guidance | [FAO, hide/skin production definitions](https://www.fao.org/4/x9892e/X9892e06.htm) | Slaughter and fallen-animal source distinction. |
 | `unido-leather` | official_guidance | [UNIDO sustainable leather framework](https://downloads.unido.org/ot/46/70/4670793/KRAL_AGR_AIT_URT_2015_100228_001.pdf) | Raw-hide versus later leather-processing boundary. |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

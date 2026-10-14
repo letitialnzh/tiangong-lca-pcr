@@ -125,11 +125,11 @@ sync_with: pcr.en-US.md
 
 分母与范围要求：每 kg 按物种受控饲养产出
 
-原始数量及计算要求：记录跨越受控边界的实际按物种饲料。 原始采集分母类型：process_output。
+原始数量及计算要求：按 calc_feed_supply_and_intake 分别建立饲料投入、采食及损失台账。承担饲料生产负担的数量包含边界内拒食、变质及未食用饲料，不得缩减为动物采食量。保留来源、物种/群体、阶段及原始质量/水分基准。最终贡献依 inventory_reference_normalization 和 stage_throughput_linkage 恰归一化一次。 原始采集分母类型：process_output.
 
 - 选定流: 饲料供应 (UUID unresolved)
 - 流属性/单位: Mass / kg
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数量规则：采用保留边界内损失及其生产负担的已核对饲料投入记录，依 inventory_reference_normalization 和 stage_throughput_linkage 计算可归属最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
 - 归一化基准：每参考流
@@ -746,10 +746,11 @@ sync_with: pcr.en-US.md
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_rear | rear | 全部所列流 | 批次/计量/来源账本 | 物种、阶段、时间、来源、校准质量、数量、投入、死亡、产出、去向 | 逐批称量和清点；核对许可、发票和表计。；原始汇总要求：按物种、阶段、节点和不重叠期间求和。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;count;kWh | 每批及每期间 | 完整批群或采集及服务期间 | 实际场址 | 每参考流 | 校准、来源、许可、账本及去向证据；可追溯分子、合格参考产出分母及归一化计算表 |
+| cp_rear | rear | 全部所列流 | 批次/计量/来源账本 | 物种、阶段、时间、来源、校准质量、数量、投入、死亡、产出、去向 | 逐批称量和清点；核对许可、发票和表计。；原始汇总要求： 按 calc_feed_supply_and_intake 区分承担生产负担的饲料投入、实际采食量及损失；保留原生库存及期间记录，可归属量对合格最终产出归一化一次。 | kg;count;kWh | 每批及每期间 | 完整批群或采集及服务期间 | 实际场址 | 每参考流 | 校准、来源、许可、账本及去向证据；可追溯分子、合格参考产出分母及归一化计算表 |
 | cp_capture | capture | 全部所列流 | 批次/计量/来源账本 | 物种、阶段、时间、来源、校准质量、数量、投入、死亡、产出、去向 | 逐批称量和清点；核对许可、发票和表计。；原始汇总要求：按物种、阶段、节点和不重叠期间求和。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;count;kWh | 每批及每期间 | 完整批群或采集及服务期间 | 实际场址 | 每参考流 | 校准、来源、许可、账本及去向证据；可追溯分子、合格参考产出分母及归一化计算表 |
 | cp_select | select | 全部所列流 | 批次/计量/来源账本 | 物种、阶段、时间、来源、校准质量、数量、投入、死亡、产出、去向 | 逐批称量和清点；核对许可、发票和表计。；原始汇总要求：按物种、阶段、节点和不重叠期间求和。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;count;kWh | 每批及每期间 | 完整批群或采集及服务期间 | 实际场址 | 每参考流 | 校准、来源、许可、账本及去向证据；可追溯分子、合格参考产出分母及归一化计算表 |
 | cp_gate | gate | 全部所列流 | 批次/计量/来源账本 | 物种、阶段、时间、来源、校准质量、数量、投入、死亡、产出、去向 | 逐批称量和清点；核对许可、发票和表计。；原始汇总要求：按物种、阶段、节点和不重叠期间求和。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;count;kWh | 每批及每期间 | 完整批群或采集及服务期间 | 实际场址 | 每参考流 | 校准、来源、许可、账本及去向证据；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_feed_supply_and_intake` | `rear` | 饲料投入、采食及损失 | 库存、收货、发料及损失台账 | 饲料身份/来源；群体/阶段；期间；期初/期末库存；收货；自产供给；未用退回/转出；未食用/变质质量及去向；原物/干物质；实际采食量；负担归属；合格最终产出 | 按 calc_feed_supply_and_intake 核对匹配的库存、称重、日粮/采草估算及处置记录。保留原始总量及阶段分母，生产与处理负担各归属一次，再对合格最终产出归一化。 | kg as-fed; kg DM | 每次发料及期间结算 | 完整所代表群体/期间 | 实际运行饲喂节点 | 每参考流 | 库存及供应商记录；水分证据；损失及无重复核算核对 |
 
 ### 计算规则
 
@@ -758,6 +759,7 @@ sync_with: pcr.en-US.md
 | c_net | 参考批次 | 净活体质量=实称总质量−可分离介质和容器皮重。 | 校准总质量、皮重、活力 | kg | mass-balance-identity |
 | c_stock | 批群 | 期初+新增−死亡−销售−期末=已解释的逐阶段差额。 | 存量、死亡和销售账本 | kg;count | mass-balance-identity |
 | c_shared | 共享服务 | 节点负担=共用服务表计总量×有据节点份额；份额之和为 1。 | 表计、动物日或面积时间、期间 | kg;kWh | mass-balance-identity |
+| `calc_feed_supply_and_intake` | `feed` | 所代表作业使用的饲料投入 = 期初饲料库存 + 收货 + 进入本作业的自产饲料 - 期末饲料库存 - 有记录的未用退回或转出。该投入保留边界内变质、拒食及被丢弃的剩余料。实际采食量 = 该投入 - 实测未食用/丢弃损失，并匹配水分/干物质与期间；采食量仅用于营养及代谢计算。期初库存承接原有负担，不是再次采购。追溯未用退回或转出的物料及负担去向，不自动给予替代抵扣。同一饲料的生产负担由采购饲料数据集或已建模自产作物/采集节点承担一次，不得两者并计。实际废料处理及粪污贡献计一次，不再次添加饲料生产负担。 | `cp_feed_supply_and_intake` | 同一原物/干物质基准下分开的饲料投入、采食及损失数量 | `fao-feed-loss-accounting-2018` |
 
 ### 数据质量要求
 
@@ -774,6 +776,8 @@ sync_with: pcr.en-US.md
 | v_balance | 节点及期间 | 逐阶段核对投入、销售、死亡、废弃及期末存量；同一动物或损失不得在两个交接点重复。 | mass-balance-identity |
 | v_alloc | 产出及共享服务 | 核对每项预期产品及独立交接点、分配基础、期间以及份额总和为 1 的共享服务。 | mass-balance-identity |
 | v_route | 条件路线 | 无许可野外采集不是合法来源；野外路线不虚构繁育，购入种源不免除上游负担。 | un-cpc-2025 |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
+| `v_feed_supply_intake_separation` | 全部饲料投入 | 拒绝扣除边界内拒食、变质或丢弃剩余料且未保留其生产负担的上游饲料清单。按 calc_feed_supply_and_intake 核对投入、采食、库存、转移及损失去向。不得把采食量当作饲料投入，不得假设自产饲料零负担或自动给予替代产品抵扣。 | `fao-feed-loss-accounting-2018` |
 
 ## 10. 发布数据集画像
 
@@ -794,3 +798,4 @@ sync_with: pcr.en-US.md
 | un-cpc-2025 | official_guidance | https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf | 类别范围与排除 |
 | woah-transport-7-3 | official_guidance | https://www.woah.org/fileadmin/Home/eng/Health_standards/tahc/current/en_chapitre_aw_land_transpt.htm | 适物种处理的审慎依据；对野生或无脊椎动物并非通用规范 |
 | mass-balance-identity | method_factor | Mass conservation and non-overlapping inventory accounting identity | 质量、期间及共享服务核对 |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | 饲料投入、采食及废料负担的区分，不提供动物参数。将该核算原则用于声明类群是本 PCR 的方法学选择；不移植猪的日粮或排放因子。 |

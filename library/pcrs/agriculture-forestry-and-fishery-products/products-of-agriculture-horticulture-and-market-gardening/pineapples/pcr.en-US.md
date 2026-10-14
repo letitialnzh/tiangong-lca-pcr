@@ -58,7 +58,7 @@ The sole reference output is `reference_product_at_declared_handoff`, receiving 
 | --- | --- | --- | --- | --- |
 | `reference_mass` | reference product | Mass | kg | Express the reference flow as net kg of whole fresh pineapple at the declared gate and retain the as-received basis. |
 | `cycle_and_yield_basis` | production and output | Mass and time | kg and cycle identifier | Record plant and each ratoon or replant cycle separately; normalize inputs and outputs to the same cycle and accepted-output basis. |
-| `nutrient_product_basis` | fertilizer and soil amendments | Mass | kg product and kg nutrient | Record actual products and declared nutrients in one conditional total card; do not infer product mass from nutrient mass. |
+| `nutrient_product_basis` | fertilizer and soil amendments | Mass | kg product and kg nutrient | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `water_and_energy_basis` | irrigation, withdrawal, fuel, and electricity | Volume, mass, or energy | m3, L, kg, MJ, or kWh | Keep source withdrawal, delivered irrigation, pumping energy, field fuel, and electricity distinct. |
 | `output_quality_basis` | harvest, conditioning, and losses | Mass and quality | kg and declared quality basis | Reconcile harvested fruit, accepted fruit, culls, residues, losses, and conditioned output on one declared basis. |
 
@@ -79,11 +79,11 @@ The sole reference output is `reference_product_at_declared_handoff`, receiving 
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `boundary_crop_establishment_and_maintenance` | field production | Include establishment, soil and field preparation, nutrient and amendment inputs, irrigation, crop protection, field operations, land occupation, and managed-soil emissions through harvest. | `fao-crop-production-methodology`; `fao-pineapple-production-guide`; `ipcc-2019-refinement` |
-| `boundary_harvest_and_field_delivery` | harvest and field hand-off | Include harvest, collection, internal handling, and transport to the declared farm or field-delivery hand-off when foreground. | `fao-pineapple-production-guide`; `fao-postharvest-handling` |
-| `boundary_primary_conditioning` | optional conditioning | Include washing, sorting, trimming, cooling, conditioning energy, wastewater, and culls only when the gate follows them. | `codex-cxs-182-1993`; `fao-postharvest-handling` |
+| `boundary_crop_establishment_and_maintenance` | field production | Include establishment, soil and field preparation, nutrient and amendment inputs, irrigation, crop protection, field operations, land occupation, and managed-soil emissions through harvest. | `fao-gap-framework-2003`; `ipcc-2019-refinement` |
+| `boundary_harvest_and_field_delivery` | harvest and field hand-off | Include harvest, collection, internal handling, and transport to the declared farm or field-delivery hand-off when foreground. | `fao-gap-framework-2003`; `fao-postharvest-handling-ae075e` |
+| `boundary_primary_conditioning` | optional conditioning | Include washing, sorting, trimming, cooling, conditioning energy, wastewater, and culls only when the gate follows them. | `codex-cxs-182-1993`; `fao-postharvest-handling-ae075e` |
 | `boundary_downstream_exclusion` | downstream conversion and use | Exclude juice, canning, drying, freezing, fermentation, cutting, sweetening, retail, consumer use, and logistics beyond the gate. | `codex-cxs-182-1993`; `iso-14067` |
-| `boundary_input_completeness` | all routes | Address propagation material, nutrients, crop protection, water, land, energy, harvest, transport, emissions, output fates, and conditioning inputs with a value, justified zero, or documented exclusion. | `fao-crop-production-methodology`; `ipcc-2019-refinement`; `mass-balance-identity` |
+| `boundary_input_completeness` | all routes | Address propagation material, nutrients, crop protection, water, land, energy, harvest, transport, emissions, output fates, and conditioning inputs with a value, justified zero, or documented exclusion. | `fao-gap-framework-2003`; `ipcc-2019-refinement`; `mass-balance-identity` |
 
 ## 6. Process Inventory Structure
 
@@ -117,24 +117,102 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_propagation_and_cycle_records`
-- Sources: `fao-pineapple-production-guide`
+- Sources: `fao-gap-framework-2003`
 
-###### Agricultural nutrient and fertilizer inputs (`pineapple_crop_production_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`pineapple_crop_production_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for pineapple_crop_production_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at declared gate.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fertilizer_and_amendment_records`
-- Sources: `fao-pineapple-production-guide`; `ipcc-2019-refinement`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-refinement`; `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`pineapple_crop_production_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-refinement`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`pineapple_crop_production_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-refinement`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`pineapple_crop_production_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-refinement`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`pineapple_crop_production_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-refinement`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`pineapple_crop_production_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-refinement`; `fao-organic-nutrients`
 
 ###### Irrigation water supplied (`irrigation_water_input`)
 
@@ -151,7 +229,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_irrigation_and_withdrawal_records`
-- Sources: `fao-crop-evapotranspiration-56`; `fao-pineapple-production-guide`
+- Sources: `fao-crop-evapotranspiration-56`; `fao-gap-framework-2003`
 
 ###### Crop-protection products (`crop_protection_input`)
 
@@ -168,7 +246,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_crop_protection_records`
-- Sources: `fao-pineapple-production-guide`
+- Sources: `fao-gap-framework-2003`
 
 ###### Field machinery fuel (`field_machinery_fuel`)
 
@@ -185,7 +263,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_field_energy_records`
-- Sources: `fao-crop-production-methodology`
+- Sources: `fao-gap-framework-2003`
 
 ##### Waste flows
 
@@ -206,7 +284,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_land_and_cycle_records`
-- Sources: `fao-crop-production-methodology`
+- Sources: `fao-gap-framework-2003`
 
 ###### Water source withdrawal (`water_source_withdrawal`)
 
@@ -243,7 +321,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_harvest_and_output_records`
-- Sources: `fao-pineapple-production-guide`; `mass-balance-identity`
+- Sources: `fao-gap-framework-2003`; `mass-balance-identity`
 
 ##### Waste flows
 
@@ -289,7 +367,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_harvest_and_output_records`
-- Sources: `fao-pineapple-production-guide`
+- Sources: `fao-gap-framework-2003`
 
 ###### Harvest machinery fuel (`harvest_machinery_fuel`)
 
@@ -306,7 +384,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_harvest_energy_records`
-- Sources: `fao-pineapple-production-guide`
+- Sources: `fao-gap-framework-2003`
 
 ###### Harvest-to-gate road transport service (`harvest_road_transport`)
 
@@ -323,7 +401,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_harvest_transport_records`
-- Sources: `fao-postharvest-handling`
+- Sources: `fao-postharvest-handling-ae075e`
 
 ##### Waste flows
 
@@ -366,7 +444,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_harvest_and_output_records`
-- Sources: `mass-balance-identity`; `fao-postharvest-handling`
+- Sources: `mass-balance-identity`; `fao-postharvest-handling-ae075e`
 
 ##### Elementary flows
 
@@ -391,7 +469,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning_and_gate_records`
-- Sources: `fao-postharvest-handling`
+- Sources: `fao-postharvest-handling-ae075e`
 
 ###### Conditioning water (`conditioning_water_input`)
 
@@ -408,7 +486,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning_water_records`
-- Sources: `fao-postharvest-handling`
+- Sources: `fao-postharvest-handling-ae075e`
 
 ###### Conditioning electricity (`conditioning_electricity_input`)
 
@@ -425,7 +503,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning_energy_records`
-- Sources: `fao-postharvest-handling`
+- Sources: `fao-postharvest-handling-ae075e`
 
 ##### Waste flows
 
@@ -472,7 +550,7 @@ Raw activity or stage basis: per 1,000 kg accepted fresh pineapple output at dec
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning_and_gate_records`
-- Sources: `fao-postharvest-handling`; `mass-balance-identity`
+- Sources: `fao-postharvest-handling-ae075e`; `mass-balance-identity`
 
 
 ###### Conditioning loss (`conditioning_loss`)
@@ -556,9 +634,11 @@ Record actual emissions at the operation where they occur; do not duplicate them
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `allocation_subdivision_priority` | crop, harvest, and conditioning | First subdivide plant, ratoon, harvest, field delivery, conditioning, and storage responsibilities when records support separate nodes. | `iso-14044`; `fao-crop-production-methodology` |
-| `allocation_plant_and_ratoon_cycles` | shared field and infrastructure burdens | Attribute shared establishment and multi-cycle burdens using declared cycle, duration, and accepted-output bases; disclose sensitivity when incomplete. | `iso-14044`; `fao-pineapple-production-guide` |
+| `allocation_subdivision_priority` | crop, harvest, and conditioning | First subdivide plant, ratoon, harvest, field delivery, conditioning, and storage responsibilities when records support separate nodes. | `iso-14044`; `fao-gap-framework-2003` |
+| `allocation_plant_and_ratoon_cycles` | shared field and infrastructure burdens | Attribute shared establishment and multi-cycle burdens using declared cycle, duration, and accepted-output bases; disclose sensitivity when incomplete. | `iso-14044`; `fao-gap-framework-2003` |
 | `allocation_fruit_and_nonreference_outputs` | accepted fruit, culls, residues, and losses | Record intended outputs, residues, culls, and waste with separate fates. If subdivision is unavailable, use a declared physical or economic method and disclose the alternative. | `iso-14044`; `mass-balance-identity` |
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -587,9 +667,9 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `calc_reference_normalization` | all inventory rows | `normalized amount = recorded amount / accepted fresh pineapple output × 1,000 kg` | recorded amount; accepted output; gate and cycle | amount per 1,000 kg accepted output | `mass-balance-identity` |
-| `calc_cycle_allocation` | plant and ratoon cycles | Allocate shared field and establishment records by declared cycle duration and accepted output; disclose basis and sensitivity. | area; duration; output; shared input | cycle-attributed input or emission | `iso-14044`; `fao-pineapple-production-guide` |
-| `calc_nutrient_basis` | fertilizer and amendments | `nutrient mass = product mass × declared nutrient fraction`; retain product and nutrient separately. | product mass; label or analysis fraction | kg nutrient and kg product | `fao-pineapple-production-guide` |
+| `calc_reference_normalization` | all inventory rows | `normalized amount = recorded amount / accepted fresh pineapple output × 1 kg` | recorded amount; accepted output; gate and cycle | amount per 1 kg accepted output | `mass-balance-identity` |
+| `calc_cycle_allocation` | plant and ratoon cycles | Allocate shared field and establishment records by declared cycle duration and accepted output; disclose basis and sensitivity. | area; duration; output; shared input | cycle-attributed input or emission | `iso-14044`; `fao-gap-framework-2003` |
+| `calc_nutrient_basis` | fertilizer and amendments | `nutrient mass = product mass × declared nutrient fraction`; retain product and nutrient separately. | product mass; label or analysis fraction | kg nutrient and kg product | `fao-gap-framework-2003` |
 | `calc_managed_soil_emission` | soil emissions | Apply the selected method tier to nutrient, amendment, residue, and soil inputs; convert N2O-N only when required and disclose the factor. | inputs; factor; conversion | emission by substance and compartment | `ipcc-2019-refinement`; `emep-eea-2023-guidebook` |
 | `calc_output_reconciliation` | harvest and conditioning | `input mass = accepted output + culls + residues + measured loss` after aligning the declared basis. | input; output; culls; residues; loss | mass-balance result and discrepancy | `mass-balance-identity` |
 
@@ -609,9 +689,9 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
 | `validation_reference_flow` | reference product | Confirm one 1 kg reference flow uses whole fresh pineapple at the declared gate, with qualifiers and identity status recorded. | `codex-cxs-182-1993` |
-| `validation_cycle_coverage` | process map | Confirm plant, ratoon, replant, and crop-year treatment is explicit and not double counted. | `fao-pineapple-production-guide`; `iso-14044` |
-| `validation_input_completeness` | production and harvest | Confirm propagation material, nutrients, crop protection, water, land, energy, transport, and emissions have a value, justified zero, or documented exclusion. | `fao-crop-production-methodology`; `ipcc-2019-refinement` |
-| `validation_water_and_energy` | irrigation and conditioning | Confirm withdrawal, delivered water, pumping energy, field fuel, and conditioning electricity remain distinct and have a declared basis. | `fao-crop-evapotranspiration-56`; `fao-postharvest-handling` |
+| `validation_cycle_coverage` | process map | Confirm plant, ratoon, replant, and crop-year treatment is explicit and not double counted. | `fao-gap-framework-2003`; `iso-14044` |
+| `validation_input_completeness` | production and harvest | Confirm propagation material, nutrients, crop protection, water, land, energy, transport, and emissions have a value, justified zero, or documented exclusion. | `fao-gap-framework-2003`; `ipcc-2019-refinement` |
+| `validation_water_and_energy` | irrigation and conditioning | Confirm withdrawal, delivered water, pumping energy, field fuel, and conditioning electricity remain distinct and have a declared basis. | `fao-crop-evapotranspiration-56`; `fao-postharvest-handling-ae075e` |
 | `validation_mass_balance` | harvest and conditioning | Confirm input, accepted fruit, culls, residues, wastewater, and losses reconcile and each non-reference output has a fate. | `mass-balance-identity` |
 | `validation_allocation_and_disclosure` | shared burdens and outputs | Confirm cycle allocation, multi-output treatment, gate, quality, geography, crop year, and sensitivity are disclosed. | `iso-14044`; `iso-14067` |
 
@@ -627,15 +707,14 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | required_quality_disclosure | represented cycles and years; primary-record coverage; scale and meter calibration; water treatment; mass-balance tolerance; factor sources and methods; parameterized and unmapped flows; exclusions; uncertainty and sensitivity |
 | update_trigger | change in cycle model, variety, route, water source, nutrient or crop-protection practice, yield, conditioning boundary, identity taxonomy, emission method, or representativeness period |
 
+Evidence applicability: cited general farm-record and postharvest frameworks do not supply crop-specific yields, lifetimes, gate cutoffs or LCA allocation defaults. Those are this PCR methodology decisions; qualify them by the actual species, route and period and obtain compatible agronomic evidence before asserting completeness. Provisional author ranges are screening aids, not empirical acceptance limits or substituted measurements.
+
 ## 11. Data Sources
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
 | `codex-cxs-182-1993` | standard | Codex Alimentarius CXS 182-1993, Standard for Pineapples | fresh scope, quality descriptors, and processing exclusion |
-| `fao-crop-production-methodology` | official_guidance | FAO crop production and farm-data methodology guidance | field records, boundary, input collection, and farm-gate requirements |
-| `fao-pineapple-production-guide` | extension_guidance | Pineapple production and crop-management extension guidance | propagation material, plant and ratoon cycles, management, harvest, and yield context |
 | `fao-crop-evapotranspiration-56` | official_guidance | FAO Irrigation and drainage paper 56, Crop evapotranspiration | irrigation records and water-balance distinctions |
-| `fao-postharvest-handling` | extension_guidance | FAO post-harvest handling guidance for fresh horticultural produce | harvest, field delivery, conditioning, handling, and loss records |
 | `ipcc-2019-refinement` | method_factor | 2019 IPCC Refinement to the 2006 IPCC Guidelines | managed-soil and residue emission calculations |
 | `emep-eea-2023-guidebook` | method_factor | EMEP/EEA air pollutant emission inventory guidebook, agricultural chapters | agricultural emission method selection |
 | `iso-14044` | standard | ISO 14044, Environmental management — LCA requirements and guidelines | allocation hierarchy, co-product treatment, and validation |
@@ -645,3 +724,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |
+| `fao-gap-framework-2003` | official_guidance | FAO Committee on Agriculture, COAG/2003/6, Development of a Framework for Good Agricultural Practices, section IV paragraphs 24–26 and Annex, https://www.fao.org/4/y8704e/y8704e.htm | Generic monitoring and farm-record context only; crop-specific routes, lifetimes, quantitative ranges and LCA allocation are PCR choices requiring separate applicable evidence. |
+| `fao-postharvest-handling-ae075e` | official_guidance | Kitinoja and Kader, Small-Scale Postharvest Handling Practices: A Manual for Horticultural Crops, 4th edition (2002), FAO-hosted original, https://www.fao.org/4/ae075e/ae075e00.htm | General handling, cooling and loss-record context only; crop-specific parameters and this PCR gate/attribution require separate evidence. |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

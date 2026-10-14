@@ -42,7 +42,7 @@ sync_with: pcr.en-US.md
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Locust beans (carobs), production mix, at farm gate, fresh, unprocessed (`a5e8d701-0314-4eba-a5ba-37ba590d469b`) |
+| 参考产品流 | 角豆 `a5e8d701-0314-4eba-a5ba-37ba590d469b` |
 | Reference flow property | Mass (`93a60a56-a3c8-11da-a746-0800200b9a66`) |
 | Reference unit group | Units of mass (`93a60a57-a4c8-11da-a746-0800200c9a66`) |
 | Reference unit | kg |
@@ -51,13 +51,15 @@ sync_with: pcr.en-US.md
 
 构建前景数据包时，Required qualifiers 中的项目必须写入数据集元数据、过程说明、参考流注释、产品描述或等效数据包字段。净产品质量不包括容器皮重。最终 TIDAS 交换应保留经复核的产品流、质量流属性和单位组身份，并验证其与申报交接点及批次证据兼容。
 
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
+
 ## 4. 计量与单位规则
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `reference_mass` | 参考产品和可接受输出 | Mass | kg | 参考流应表示申报交接点的净可接受整荚角豆质量。保留原始接收质量和水分测量；不得无说明地替换为仅种子、仅果肉、干物质或加工产品质量。 |
 | `moisture_basis` | 采收、干燥、储存和可接受豆荚 | Mass and moisture fraction | kg 以及 percent 或 kg water/kg product | 记录批次水分、测定方法和采样点。进行干质量换算时，仅使用相应批次测得的水分比例，并说明输入和输出质量是原始接收基准还是干基。 |
 | `orchard_life_annualization` | 建园、更新和未成熟树体投入 | 面积、时间或质量活动属性 | ha、orchard-year 或 kg product | 每项建园或更新活动均应关联园地、生产期和可接受豆荚输出。只有在生产期假设有文件依据时才进行年度化，并保留原始活动记录。 |
-| `nutrient_product_and_basis` | 肥料和土壤改良剂投入 | 产品质量和养分质量 | kg product 以及 kg N、P2O5、K2O 或申报的有机基准 | 只记录实际使用的产品、产品质量以及申报的养分或改良剂基准。不得从养分总量反推肥料类型。 |
+| `nutrient_product_and_basis` | 肥料和土壤改良剂投入 | 产品质量和养分质量 | kg product 以及 kg N、P2O5、K2O 或申报的有机基准 | 每种实际肥料或改良剂产品单独列卡，保留实物质量、配方、养分组成和施用记录；养分量不是同一产品的另一次投入，不使用集合或分组标识代替具体流身份。 |
 | `water_energy_unit` | 灌溉、直接取水、园地作业、采收和调理 | 体积、质量或能量 | m3、kg、L、MJ 或 kWh | 保留实测活动单位、载体或来源、设备或作业、期间及任何换算方程。当供应水和直接取水描述同一体积时，不得相加。 |
 | `whole_pod_identity` | 产品输出和同类别过程连接 | 申报的产品状态 | 申报的描述符 | 本 PCR 保持果肉和种子在同一完整豆荚内。分离成种子、果肉、切碎物、角豆胶或其他产品属于下游转化，不能表示为整荚参考输出。 |
 
@@ -123,22 +125,100 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_carob_orchard_lifecycle_records`
 - 来源：`fao-feedipedia-carob`
 
-###### 农业养分与肥料投入（`carob_orchard_production_agricultural_nutrient_inputs`）
+###### 尿素肥料（`carob_orchard_production_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**carob_orchard_production_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每个作物年度、每 1,000 kg 可接受整荚角豆.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_carob_orchard_lifecycle_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：作物周期（`crop_cycle`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_carob_orchard_lifecycle_records`
-- 来源：`carob-macronutrients-water-2005`
+- 来源：`carob-macronutrients-water-2005`；`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`carob_orchard_production_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_carob_orchard_lifecycle_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_carob_orchard_lifecycle_records`
+- 来源：`carob-macronutrients-water-2005`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`carob_orchard_production_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_carob_orchard_lifecycle_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_carob_orchard_lifecycle_records`
+- 来源：`carob-macronutrients-water-2005`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`carob_orchard_production_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_carob_orchard_lifecycle_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_carob_orchard_lifecycle_records`
+- 来源：`carob-macronutrients-water-2005`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`carob_orchard_production_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_carob_orchard_lifecycle_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_carob_orchard_lifecycle_records`
+- 来源：`carob-macronutrients-water-2005`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`carob_orchard_production_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_carob_orchard_lifecycle_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_carob_orchard_lifecycle_records`
+- 来源：`carob-macronutrients-water-2005`；`fao-organic-nutrients`
 
 ###### 供应的灌溉水（`carob_irrigation_water_input`）
 
@@ -510,7 +590,7 @@ sync_with: pcr.en-US.md
 
 记录终端可接受整荚输出。默认市场状态是自然干燥或以其他方式稳定化的整荚豆荚，但在没有调理的路线中也可以申报原始状态交接。本卡不进行种子分离。
 
-- 选定流：保留种子的可接受成熟整荚角豆（UUID 未解析；有意留空）
+- 选定流：角豆 `a5e8d701-0314-4eba-a5ba-37ba590d469b`
 - 流属性/单位：质量 / kg
 原始产出计量与核对要求：申报交接点实测的净可接受质量，不含容器皮重
 
@@ -580,6 +660,8 @@ sync_with: pcr.en-US.md
 | `allocation_rejects_not_products` | 田间损失、采收拒收物和调理拒收物 | 不得仅因拒收或残余物流可能被下游利用，就向其分配负荷。只有当其以申报身份和目的地被有意转移时，才将其重分类为有意联产品，并应用 `allocation_quality_destination_outputs` 或另行论证的方法。 | `iso-14044-2006` |
 | `allocation_perennial_establishment_and_replacement` | 种植、建园、更新和未成熟树体活动 | 在有文件依据的生产期内年度化可归属活动，并将年度化量分配到作物年度输出基准。保留原始活动质量、日期、地块和假设以供审计。 | `fao-feedipedia-carob`；`carob-macronutrients-water-2005`；`iso-14044-2006` |
 | `allocation_period_and_phase_linkage` | 多个作物年度、结果阶段和更新事件 | 将每项投入、输出、建园事件、更新事件和分配因子关联到申报的作物年度或生命周期阶段。没有明确核对，不得将同一活动归入两个报告期。 | `iso-14044-2006` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算与质量规则
 
@@ -657,3 +739,5 @@ sync_with: pcr.en-US.md
 | `carob-nutritional-characterization-2018` | literature | Papaefstathiou 等，“Nutritional characterization of carobs and traditional carob products”，Food Science & Nutrition 6, 2151–2161，DOI: 10.1002/fsn3.776 | 支持 QA 筛选的豆荚水分和产品状态特征 |
 | `ipcc-2019-refinement-vol-4` | method_factor | 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4: Agriculture, Forestry and Other Land Use，https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html | 养分、残余物、土壤和气候相关排放计算方法的选择与披露 |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines，https://www.iso.org/standard/38498.html | 边界、归一化、分配、质量核对和数据质量方法规则 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

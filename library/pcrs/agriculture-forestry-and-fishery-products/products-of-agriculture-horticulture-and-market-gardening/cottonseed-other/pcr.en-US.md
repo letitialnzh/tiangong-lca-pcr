@@ -462,15 +462,14 @@ Raw activity or stage basis: per gin lot; scale to 1,000 kg reference.
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_gin_lot_balance`
 - Sources: `cottonseed-storage-2018`
-- Range: Cottonseed-to-lint co-product screen
+- Range: Provisional author cottonseed/lint ratio estimate; cited national averages do not establish these endpoints
   - Range role: Typical range (`typical_range`)
   - Lower: 1100
   - Upper: 1800
   - Unit: kg cottonseed/1,000 kg lint
   - Basis: same reconciled gin lot
   - Basis kind: Process output (`process_output`)
-  - Evidence kind: External source (`external_source`)
-  - Sources: `cottonseed-storage-2018`
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ###### Cotton lint co-product (`cotton_lint_output`)
 

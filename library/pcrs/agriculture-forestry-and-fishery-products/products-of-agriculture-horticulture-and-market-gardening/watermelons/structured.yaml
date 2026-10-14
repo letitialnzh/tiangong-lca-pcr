@@ -22,12 +22,12 @@ system_boundary:
       rule: "Include field preparation, planting, crop management, and all harvests of the declared annual crop cycle; allocate shared field operations to the reported crop using documented field records."
       source_ids:
         - fao-crop-production-framework
-        - usda-watermelon-production-guidance
+        - uga-watermelon-production-b996-2017
     - rule_id: boundary_farm_gate
       applies_to: "harvest and preparation"
       rule: "End the foreground boundary when marketable whole watermelon is transferred at the farm gate; include on-farm grading, trimming of damaged fruit, washing, cooling, and primary packaging only when they occur before transfer."
       source_ids:
-        - usda-watermelon-production-guidance
+        - uga-watermelon-production-b996-2017
         - fao-postharvest-handling
     - rule_id: boundary_managed_soils
       applies_to: "fertilizer, amendment, and residue flows"
@@ -147,7 +147,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_planting_records
               source_ids:
-                - usda-watermelon-production-guidance
+                - uga-watermelon-production-b996-2017
             ranges:
               - role: qa_guardrail
                 lower: "0.1"
@@ -174,7 +174,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_field_operation_records
               source_ids:
-                - usda-watermelon-production-guidance
+                - uga-watermelon-production-b996-2017
             ranges: []
       waste:
         []
@@ -225,49 +225,126 @@ process_inventory:
     label: "Watermelon field management"
     inputs:
       product:
-        - row_id: watermelon_field_management_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: watermelon_field_management_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for watermelon_field_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_fertilizer_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "crop_cycle"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_fertilizer_records
               source_ids:
-                - usda-watermelon-production-guidance
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "250"
-                unit: "kg N/ha"
-                basis: "broad first-pass annual watermelon crop-cycle range pending soil tests and fertilizer records"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-              - role: qa_guardrail
-                lower: "0"
-                upper: "180"
-                unit: "kg P2O5/ha"
-                basis: "broad first-pass crop-cycle range pending soil tests and fertilizer records"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-              - role: qa_guardrail
-                lower: "0"
-                upper: "350"
-                unit: "kg K2O/ha"
-                basis: "broad first-pass crop-cycle range pending soil tests and fertilizer records"
-                basis_kind: "crop_cycle"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+                - uga-watermelon-production-b996-2017
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: watermelon_field_management_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_records
+              source_ids:
+                - uga-watermelon-production-b996-2017
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: watermelon_field_management_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_records
+              source_ids:
+                - uga-watermelon-production-b996-2017
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: watermelon_field_management_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_records
+              source_ids:
+                - uga-watermelon-production-b996-2017
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: watermelon_field_management_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_records
+              source_ids:
+                - uga-watermelon-production-b996-2017
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: watermelon_field_management_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_records
+              source_ids:
+                - uga-watermelon-production-b996-2017
+                - fao-organic-nutrients
+            ranges: []
         - row_id: irrigation_water_input
           role: "Irrigation water"
           name: "Irrigation water"
@@ -312,7 +389,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_crop_protection_records
               source_ids:
-                - usda-watermelon-production-guidance
+                - uga-watermelon-production-b996-2017
             ranges:
               - role: qa_guardrail
                 lower: "0"
@@ -322,24 +399,45 @@ process_inventory:
                 basis_kind: "crop_cycle"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: field_operation_energy
-          role: "Field-operation fuel or electricity"
-          name: "Field-operation fuel or electricity"
+        - row_id: field_operation_energy_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Mass or energy / kg fuel or kWh"
-          description: "Record fuel and electricity consumed by irrigation pumps, field machinery, and other crop-management operations. Keep each carrier and operation identifiable. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for field_operation_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record fuel and electricity consumed by irrigation pumps, field machinery, and other crop-management operations. Keep each carrier and operation identifiable. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Use fuel receipts, machinery logs, pump meters, or service records by field and crop cycle."
+            expression: "Collect raw quantities for this identity under cp_field_operation_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "crop_cycle"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_field_operation_records
               source_ids:
-                - usda-watermelon-production-guidance
+                - uga-watermelon-production-b996-2017
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: field_operation_energy_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_field_operation_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_field_operation_records
+              source_ids:
+                - uga-watermelon-production-b996-2017
+                - fao-agricultural-energy
             ranges: []
       waste:
         []
@@ -409,43 +507,105 @@ process_inventory:
     label: "Harvest and farm-gate preparation"
     inputs:
       product:
-        - row_id: harvest_handling_energy
-          role: "Harvest and handling energy"
-          name: "Harvest and handling fuel or electricity"
+        - row_id: harvest_handling_energy_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Mass or energy / kg fuel or kWh"
-          description: "Record energy used for harvesting, field collection, grading, washing, cooling, and primary packing when those operations occur before farm-gate transfer. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for harvest_handling_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record energy used for harvesting, field collection, grading, washing, cooling, and primary packing when those operations occur before farm-gate transfer. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Use equipment logs, meter readings, or supplier records for operations assigned to the crop cycle."
+            expression: "Collect raw quantities for this identity under cp_harvest_handling_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "crop_cycle"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_harvest_handling_records
               source_ids:
                 - fao-postharvest-handling
+                - fao-agricultural-energy
             ranges: []
-        - row_id: primary_packaging_input
-          role: "Primary packaging"
-          name: "Primary packaging material"
+        - row_id: harvest_handling_energy_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
           flow_type: "product"
-          property_unit: "Mass / kg packaging"
-          description: "Record primary packaging that crosses the foreground boundary before farm-gate hand-off. Loose produce should be recorded as zero packaging only when this state is explicitly declared. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon."
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Weigh or obtain supplier mass for crates, pallets, cartons, or other packaging assigned to marketable output."
+            expression: "Collect raw quantities for this identity under cp_harvest_handling_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_harvest_handling_records
+              source_ids:
+                - fao-postharvest-handling
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: primary_packaging_input_wood_crate
+          role: "Wooden crate"
+          name: "Wooden crate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for primary_packaging_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record primary packaging that crosses the foreground boundary before farm-gate hand-off. Loose produce should be recorded as zero packaging only when this state is explicitly declared. Raw activity or stage basis: per 1,000 kg marketable farm-gate watermelon. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_packaging_records
               source_ids:
                 - fao-postharvest-handling
+                - fao-package-identities
+            ranges: []
+        - row_id: primary_packaging_input_corrugated_box
+          role: "Corrugated fibreboard box"
+          name: "Corrugated fibreboard box"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - fao-postharvest-handling
+                - fao-package-identities
+            ranges: []
+        - row_id: primary_packaging_input_pe_film
+          role: "Polyethylene wrapping film"
+          name: "Polyethylene wrapping film"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - fao-postharvest-handling
+                - fao-package-identities
             ranges: []
       waste:
         []
@@ -511,6 +671,10 @@ allocation_rules:
     rule: "Treat rejected fruit and residues as waste or loss according to their declared destination. Do not allocate burdens to a waste stream as a co-product without evidence of productive use and a defined hand-off."
     source_ids:
       - fao-postharvest-handling
+  - rule_id: allocation_rule_4
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_planting_records
@@ -527,7 +691,7 @@ dataset_production:
       quality_evidence: "supplier invoice plus signed field register or equivalent"
     - protocol_id: cp_field_operation_records
       process_id: "field_preparation_and_planting_watermelon_field_management"
-      flow_role: "field_preparation_energy, field_occupation, field_operation_energy"
+      flow_role: "field_preparation_energy, field_occupation, field_operation_energy_electricity, field_operation_energy_diesel"
       record_type: "machinery, pump, and field register"
       raw_fields: "field_id; operation; date; equipment; fuel or electricity; hours; area"
       collection_method: "meter, fuel receipt, machinery log, or service record; Raw aggregation and attribution: assign shared operations by documented area or time basis"
@@ -599,7 +763,7 @@ dataset_production:
       quality_evidence: "weigh record, compost or feed receipt, or field-return log"
     - protocol_id: cp_harvest_handling_records
       process_id: "harvest_and_farm_gate_preparation"
-      flow_role: "harvest_handling_energy"
+      flow_role: "harvest_handling_energy_electricity, harvest_handling_energy_diesel"
       record_type: "handling and packing register"
       raw_fields: "lot_id; operation; date; energy carrier; quantity; marketable mass"
       collection_method: "meter, equipment log, or service record; Raw aggregation and attribution: assign energy to marketable mass and declare shared-service allocation"
@@ -611,7 +775,7 @@ dataset_production:
       quality_evidence: "meter or service record"
     - protocol_id: cp_packaging_records
       process_id: "harvest_and_farm_gate_preparation"
-      flow_role: "primary_packaging_input"
+      flow_role: "primary_packaging_input_wood_crate, primary_packaging_input_corrugated_box, primary_packaging_input_pe_film"
       record_type: "packaging register"
       raw_fields: "lot_id; material; reusable or single-use; unit count; unit mass; losses; reuse cycles"
       collection_method: "supplier specification and count or weight record; Raw aggregation and attribution: sum packaging mass and document reuse allocation"
@@ -638,7 +802,7 @@ dataset_production:
         - "label or supplier concentration"
       output: "kg N, kg P2O5, or kg K2O"
       source_ids:
-        - usda-watermelon-production-guidance
+        - uga-watermelon-production-b996-2017
     - id: calc_land_occupation
       applies_to: "field occupation"
       rule: "occupation = field area × declared crop-cycle occupation duration"
@@ -750,10 +914,10 @@ data_sources:
     type: "official_guidance"
     reference: "FAO crop production and resource-management guidance. https://www.fao.org/land-water/databases-and-software/crop-information/en/"
     used_for: "annual crop-cycle boundary, field records, and allocation requirements"
-  - id: "usda-watermelon-production-guidance"
+  - id: "uga-watermelon-production-b996-2017"
     type: "extension_guidance"
-    reference: "USDA and extension production guidance for watermelon planting, nutrient management, field operations, and harvest records. https://extension.uga.edu/publications/detail.html?number=C1101"
-    used_for: "planting, nutrient management, field operations, and harvest records"
+    reference: "University of Georgia Cooperative Extension, Commercial Watermelon Production, Bulletin 996 (2017), https://fieldreport.caes.uga.edu/publications/B996/commercial-watermelon-production/"
+    used_for: "Georgia planting, nutrient management, field operations and harvest context; PCR boundary and allocation are author methodological choices"
   - id: "fao-crop-evapotranspiration-56"
     type: "official_guidance"
     reference: "FAO Irrigation and drainage paper 56, *Crop evapotranspiration*. https://www.fao.org/4/X0490E/X0490E00.htm"
@@ -770,9 +934,25 @@ data_sources:
     type: "official_guidance"
     reference: "FAO post-harvest handling guidance. https://www.fao.org/4/ac301e/ac301e00.htm"
     used_for: "grading, loss recording, packaging, and farm-gate preparation"
+  - id: "fao-fertilizer-identities"
+    type: "official_guidance"
+    reference: "FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-organic-nutrients"
+    type: "official_guidance"
+    reference: "FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-agricultural-energy"
+    type: "official_guidance"
+    reference: "FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-package-identities"
+    type: "official_guidance"
+    reference: "FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:3e4cd1b3fe94a1269f7b1be5d5bb31752a1ced12ad95ae302d41529129ee9c01"
+  source_sha256: "sha256:b33680908d5f14f8ac99a54faa5eb7268ca325150bc070c323ec1a4203070e48"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_4456"
@@ -786,7 +966,7 @@ normative_context:
           offset: 7006
           line: 79
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Prepared agricultural field receiving watermelon seed or transplants, with prior land use, field preparation, and excluded pre-plant operations disclosed |\n| starting_condition_role | Beginning of the declared annual watermelon crop cycle |\n| product_classification_scope | Fresh whole watermelons under CPC 3.0:01221 through farm-gate hand-off |\n| recursive_input_rule | Purchased watermelon seed or transplants are distinct upstream product inputs and are linked once rather than recreated as an internal watermelon production process. |\n| upstream_dataset_requirement | Require upstream datasets for seed or transplants, fertilizers, amendments, crop-protection products, irrigation water, energy, field machinery services, and packaging when used. |\n| disclosure | Declare production geography, prior land use, crop cycle dates, cultivar or seed type, irrigation regime, nutrient basis, crop-protection program, field emissions method, residue fate, harvest and grading method, washing, and packaging. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_annual_crop_cycle` | field preparation through final harvest | Include field preparation, planting, crop management, and all harvests of the declared annual crop cycle; allocate shared field operations to the reported crop using documented field records. | `fao-crop-production-framework`; `usda-watermelon-production-guidance` |\n| `boundary_farm_gate` | harvest and preparation | End the foreground boundary when marketable whole watermelon is transferred at the farm gate; include on-farm grading, trimming of damaged fruit, washing, cooling, and primary packaging only when they occur before transfer. | `usda-watermelon-production-guidance`; `fao-postharvest-handling` |\n| `boundary_managed_soils` | fertilizer, amendment, and residue flows | Include direct and indirect managed-soil emissions attributable to applied nutrients and returned residues under one declared calculation method, without double counting emissions represented by an upstream dataset. | `ipcc-2019-managed-soils` |\n| `boundary_residue_fate` | rejected fruit and crop residues | Record field return, composting, feed, treatment, disposal, or another declared destination for each residue stream; an unreported destination remains a data-quality gap and is not an automatic co-product. | `fao-crop-residue-management`; `fao-postharvest-handling` |\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Prepared agricultural field receiving watermelon seed or transplants, with prior land use, field preparation, and excluded pre-plant operations disclosed |\n| starting_condition_role | Beginning of the declared annual watermelon crop cycle |\n| product_classification_scope | Fresh whole watermelons under CPC 3.0:01221 through farm-gate hand-off |\n| recursive_input_rule | Purchased watermelon seed or transplants are distinct upstream product inputs and are linked once rather than recreated as an internal watermelon production process. |\n| upstream_dataset_requirement | Require upstream datasets for seed or transplants, fertilizers, amendments, crop-protection products, irrigation water, energy, field machinery services, and packaging when used. |\n| disclosure | Declare production geography, prior land use, crop cycle dates, cultivar or seed type, irrigation regime, nutrient basis, crop-protection program, field emissions method, residue fate, harvest and grading method, washing, and packaging. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_annual_crop_cycle` | field preparation through final harvest | Include field preparation, planting, crop management, and all harvests of the declared annual crop cycle; allocate shared field operations to the reported crop using documented field records. | `fao-crop-production-framework`; `uga-watermelon-production-b996-2017` |\n| `boundary_farm_gate` | harvest and preparation | End the foreground boundary when marketable whole watermelon is transferred at the farm gate; include on-farm grading, trimming of damaged fruit, washing, cooling, and primary packaging only when they occur before transfer. | `uga-watermelon-production-b996-2017`; `fao-postharvest-handling` |\n| `boundary_managed_soils` | fertilizer, amendment, and residue flows | Include direct and indirect managed-soil emissions attributable to applied nutrients and returned residues under one declared calculation method, without double counting emissions represented by an upstream dataset. | `ipcc-2019-managed-soils` |\n| `boundary_residue_fate` | rejected fruit and crop residues | Record field return, composting, feed, treatment, disposal, or another declared destination for each residue stream; an unreported destination remains a data-quality gap and is not an automatic co-product. | `fao-crop-residue-management`; `fao-postharvest-handling` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -823,18 +1003,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_24137"
+    - unit_id: "normative_36684"
       family: "allocation"
       span:
         start:
-          offset: 24137
-          line: 446
+          offset: 36684
+          line: 567
           column: 1
         end:
-          offset: 25279
-          line: 454
+          offset: 38214
+          line: 577
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_crop_fields` | field operations assigned to one crop | Assign field operations directly to watermelon when the operation serves only the declared crop cycle; document any shared operation before applying an allocation method. | `fao-crop-production-framework` |\n| `allocation_multiple_outputs` | marketable fruit and any documented productive residue use | Report marketable watermelon as the reference output. If a residue or other output has a documented productive use and leaves the boundary as a product, apply a declared physical or economic allocation method consistently across the shared process and disclose the allocation basis. | `fao-crop-residue-management` |\n| `allocation_rejects_and_losses` | damaged fruit and crop residues without productive use | Treat rejected fruit and residues as waste or loss according to their declared destination. Do not allocate burdens to a waste stream as a co-product without evidence of productive use and a defined hand-off. | `fao-postharvest-handling` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_single_crop_fields` | field operations assigned to one crop | Assign field operations directly to watermelon when the operation serves only the declared crop cycle; document any shared operation before applying an allocation method. | `fao-crop-production-framework` |\n| `allocation_multiple_outputs` | marketable fruit and any documented productive residue use | Report marketable watermelon as the reference output. If a residue or other output has a documented productive use and leaves the boundary as a product, apply a declared physical or economic allocation method consistently across the shared process and disclose the allocation basis. | `fao-crop-residue-management` |\n| `allocation_rejects_and_losses` | damaged fruit and crop residues without productive use | Treat rejected fruit and residues as waste or loss according to their declared destination. Do not allocate burdens to a waste stream as a co-product without evidence of productive use and a defined hand-off. | `fao-postharvest-handling` |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -851,12 +1031,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 24137
-              line: 446
+              offset: 36684
+              line: 567
               column: 1
             end:
-              offset: 24177
-              line: 446
+              offset: 36724
+              line: 567
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -871,16 +1051,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_34538"
+    - unit_id: "normative_47652"
       family: "validation"
       span:
         start:
-          offset: 34538
-          line: 495
+          offset: 47652
+          line: 618
           column: 1
         end:
-          offset: 36273
-          line: 507
+          offset: 49387
+          line: 630
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference_flow` | reference product | Reference amount is 1,000 kg mass of whole, marketable watermelon at farm gate and carries all required qualifiers. |  |\n| `validate_cycle_completeness` | process map and records | Field preparation, planting, managed production, harvest, and farm-gate hand-off are present for the declared annual crop cycle, with conditional operations explicitly marked. | `fao-crop-production-framework` |\n| `validate_mass_balance` | harvest and grading | Gross harvested, marketable, rejected, residue, and other destination masses are reconciled and do not double count the reference output. | `fao-postharvest-handling` |\n| `validate_nutrient_and_water_basis` | fertilizer and irrigation | Fertilizer inputs retain nutrient basis and concentration evidence; irrigation volume identifies source and field and is not conflated with rainfall. | `fao-crop-evapotranspiration-56` |\n| `validate_residue_and_loss_fate` | rejected fruit and residues | Every non-marketable stream has a declared destination or an explicit data-quality finding; waste is not treated as a co-product without documented productive use. | `fao-crop-residue-management` |\n| `validate_boundary_disclosure` | dataset metadata | Prior land use, crop cycle, production geography, irrigation regime, soil-emission method, residue fate, and all included farm-gate operations are disclosed. | `fao-crop-production-framework`; `ipcc-2019-managed-soils` |\n| `validate_normalization` | all inventory rows | All amounts can be traced to field, crop-cycle, harvest, or lot records and normalize to 1,000 kg marketable farm-gate output. |  |\n\n"
       headings:
@@ -899,12 +1079,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 34538
-              line: 495
+              offset: 47652
+              line: 618
               column: 1
             end:
-              offset: 34560
-              line: 495
+              offset: 47674
+              line: 618
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -975,132 +1155,145 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_single_crop_fields"
       identity_kind: "explicit"
-      unit_id: "normative_24137"
+      unit_id: "normative_36684"
       source_span:
         start:
-          offset: 24250
-          line: 450
+          offset: 36797
+          line: 571
           column: 1
         end:
-          offset: 24532
-          line: 450
+          offset: 37079
+          line: 571
           column: 283
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_multiple_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_24137"
+      unit_id: "normative_36684"
       source_span:
         start:
-          offset: 24533
-          line: 451
+          offset: 37080
+          line: 572
           column: 1
         end:
-          offset: 24944
-          line: 451
+          offset: 37491
+          line: 572
           column: 412
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rejects_and_losses"
       identity_kind: "explicit"
-      unit_id: "normative_24137"
+      unit_id: "normative_36684"
       source_span:
         start:
-          offset: 24945
-          line: 452
+          offset: 37492
+          line: 573
           column: 1
         end:
-          offset: 25277
-          line: 452
+          offset: 37824
+          line: 573
           column: 333
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_rule_4"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_36684"
+      source_span:
+        start:
+          offset: 37826
+          line: 575
+          column: 1
+        end:
+          offset: 38212
+          line: 575
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference_flow"
       identity_kind: "explicit"
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 34633
-          line: 499
+          offset: 47747
+          line: 622
           column: 1
         end:
-          offset: 34803
-          line: 499
+          offset: 47917
+          line: 622
           column: 171
     - pointer: "/validation_rules/1"
       rule_id: "validate_cycle_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 34804
-          line: 500
+          offset: 47918
+          line: 623
           column: 1
         end:
-          offset: 35075
-          line: 500
+          offset: 48189
+          line: 623
           column: 272
     - pointer: "/validation_rules/2"
       rule_id: "validate_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 35076
-          line: 501
+          offset: 48190
+          line: 624
           column: 1
         end:
-          offset: 35294
-          line: 501
+          offset: 48408
+          line: 624
           column: 219
     - pointer: "/validation_rules/3"
       rule_id: "validate_nutrient_and_water_basis"
       identity_kind: "explicit"
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 35295
-          line: 502
+          offset: 48409
+          line: 625
           column: 1
         end:
-          offset: 35549
-          line: 502
+          offset: 48663
+          line: 625
           column: 255
     - pointer: "/validation_rules/4"
       rule_id: "validate_residue_and_loss_fate"
       identity_kind: "explicit"
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 35550
-          line: 503
+          offset: 48664
+          line: 626
           column: 1
         end:
-          offset: 35814
-          line: 503
+          offset: 48928
+          line: 626
           column: 265
     - pointer: "/validation_rules/5"
       rule_id: "validate_boundary_disclosure"
       identity_kind: "explicit"
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 35815
-          line: 504
+          offset: 48929
+          line: 627
           column: 1
         end:
-          offset: 36089
-          line: 504
+          offset: 49203
+          line: 627
           column: 275
     - pointer: "/validation_rules/6"
       rule_id: "validate_normalization"
       identity_kind: "explicit"
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 36090
-          line: 505
+          offset: 49204
+          line: 628
           column: 1
         end:
-          offset: 36271
-          line: 505
+          offset: 49385
+          line: 628
           column: 182
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -1129,27 +1322,27 @@ normative_context:
           column: 254
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_24137"
+      unit_id: "normative_36684"
       source_span:
         start:
-          offset: 24137
-          line: 446
+          offset: 36684
+          line: 567
           column: 1
         end:
-          offset: 24177
-          line: 446
+          offset: 36724
+          line: 567
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_34538"
+      unit_id: "normative_47652"
       source_span:
         start:
-          offset: 34538
-          line: 495
+          offset: 47652
+          line: 618
           column: 1
         end:
-          offset: 34560
-          line: 495
+          offset: 47674
+          line: 618
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1158,5 +1351,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:3e4cd1b3fe94a1269f7b1be5d5bb31752a1ced12ad95ae302d41529129ee9c01"
-  generated_content_sha256: "sha256:95106de74fda7f7f21545d49bceaa747a44cb3b786b2f25927d54cd8c34dd73e"
+    sha256: "sha256:b33680908d5f14f8ac99a54faa5eb7268ca325150bc070c323ec1a4203070e48"
+  generated_content_sha256: "sha256:b979e4ec7f8fbb8e2322e2473d195ebd5a6fb14a7171dd1cf589fb0ad819c335"

@@ -119,29 +119,54 @@ One conditional collection-material ledger records actual supplied water, tool c
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Actual energy carriers for collection (`collection_energy`)
+###### Electricity at the equipment supply point (`collection_energy_electricity`)
+
+**Collection scope and applicability for collection_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One energy umbrella for actual fuels, electricity or supplied heat; keep original carrier/provider/state, unit and conversion evidence. Purchased service energy must not be added a second time. Unknown carrier use cannot be set to zero.
 
-- Selected flow: Actual energy carriers for collection
-- Flow property / unit: Energy / MJ
-- Amount rule: Measure the attributable amount, retaining actual identity and destination; divide by the accepted net reference mass using cp_collection. Unknown is a data gap, not zero.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_collection` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_collection`
-- Sources: `fao-truffle-harvesting`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
-- Range: Provisional reasoned screen, not a default or enforcing ceiling
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Diesel fuel supplied to equipment (`collection_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_collection` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_collection`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`collection_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_collection` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_collection`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
 ###### Actual services and allocated shared assets for collection (`collection_services`)
 
@@ -377,29 +402,54 @@ One conditional conditioning-material ledger records actual supplied cleaning wa
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Actual energy carriers for conditioning (`conditioning_energy`)
+###### Electricity at the equipment supply point (`conditioning_energy_electricity`)
+
+**Collection scope and applicability for conditioning_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One energy umbrella for actual fuels, electricity or supplied heat; keep original carrier/provider/state, unit and conversion evidence. Purchased service energy must not be added a second time. Unknown carrier use cannot be set to zero.
 
-- Selected flow: Actual energy carriers for conditioning
-- Flow property / unit: Energy / MJ
-- Amount rule: Measure the attributable amount, retaining actual identity and destination; divide by the accepted net reference mass using cp_conditioning. Unknown is a data gap, not zero.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_conditioning` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning`
-- Sources: `fao-truffle-harvesting`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
-- Range: Provisional reasoned screen, not a default or enforcing ceiling
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Diesel fuel supplied to equipment (`conditioning_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_conditioning` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_conditioning`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`conditioning_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_conditioning` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_conditioning`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
 ###### Actual services and allocated shared assets for conditioning (`conditioning_services`)
 
@@ -611,29 +661,54 @@ One fresh-holding-material ledger records actual hygiene supplies, cooling media
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Actual energy carriers for holding (`holding_energy`)
+###### Electricity at the equipment supply point (`holding_energy_electricity`)
+
+**Collection scope and applicability for holding_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One energy umbrella for actual fuels, electricity or supplied heat; keep original carrier/provider/state, unit and conversion evidence. Purchased service energy must not be added a second time. Unknown carrier use cannot be set to zero.
 
-- Selected flow: Actual energy carriers for holding
-- Flow property / unit: Energy / MJ
-- Amount rule: Measure the attributable amount, retaining actual identity and destination; divide by the accepted net reference mass using cp_holding. Unknown is a data gap, not zero.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_holding` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_holding`
-- Sources: `fao-truffle-harvesting`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
-- Range: Provisional reasoned screen, not a default or enforcing ceiling
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Diesel fuel supplied to equipment (`holding_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_holding` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_holding`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`holding_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_holding` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_holding`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
 ###### Actual services and allocated shared assets for holding (`holding_services`)
 
@@ -821,29 +896,54 @@ One primary-handover-material ledger records actual protective containers, wrapp
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Actual energy carriers for handover (`handover_energy`)
+###### Electricity at the equipment supply point (`handover_energy_electricity`)
+
+**Collection scope and applicability for handover_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 One energy umbrella for actual fuels, electricity or supplied heat; keep original carrier/provider/state, unit and conversion evidence. Purchased service energy must not be added a second time. Unknown carrier use cannot be set to zero.
 
-- Selected flow: Actual energy carriers for handover
-- Flow property / unit: Energy / MJ
-- Amount rule: Measure the attributable amount, retaining actual identity and destination; divide by the accepted net reference mass using cp_handover. Unknown is a data gap, not zero.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_handover` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover`
-- Sources: `fao-truffle-harvesting`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
-- Range: Provisional reasoned screen, not a default or enforcing ceiling
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10000
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Diesel fuel supplied to equipment (`handover_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_handover` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_handover`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`handover_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_handover` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_handover`
+- Sources: `fao-truffle-harvesting`; `fao-agricultural-energy`
 
 ###### Actual services and allocated shared assets for handover (`handover_services`)
 
@@ -1011,6 +1111,8 @@ Conditional direct-emission umbrella: require actual substance or particle size,
 | `reject_loops` | all rejects and returns | Off-spec/spoiled goods exit as actual other intended goods or actual waste; record producing node and recipient. Recleaning returns link handover/holding to conditioning with retained burdens and incremental inputs only. Do not count each passage as newly removed or accepted output. Waste disposal receives its actual attributable burden, never an automatic zero or recovered credit. |  |
 
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -1067,3 +1169,4 @@ Conditional direct-emission umbrella: require actual substance or particle size,
 | `unsd-wild-truffles` | official_guidance | https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/03233 | Untended product classification context; not quantity defaults |
 | `fao-truffle-harvesting` | official_guidance | https://www.fao.org/4/y5489e/y5489e07.htm | Targeted underground extraction, conditional trained assistance, source distinction; not current legal advice or universal practice |
 | `fao-fresh-fungi-handling` | official_guidance | https://www.fao.org/4/y5489e/y5489e09.htm | Fresh handling and state distinction; no universal temperature/yield/shelf-life transferred |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

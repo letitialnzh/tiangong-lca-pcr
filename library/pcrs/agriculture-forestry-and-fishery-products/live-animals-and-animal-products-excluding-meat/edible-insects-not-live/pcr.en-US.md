@@ -106,11 +106,11 @@ Actual species-compatible feed or substrate including supplier burdens; classify
 
 Denominator and scope requirements：per kg Managed insect rearing output
 
-Raw quantity and calculation requirements: Actual species-compatible feed or substrate including supplier burdens; classify food-grade eligibility. Original collection denominator kind: process_output.
+Raw quantity and calculation requirements: Use separate feed-supply, intake and loss ledgers under calc_feed_supply_and_intake. The quantity carrying feed-production burden includes in-boundary refusals, spoilage and uneaten feed; it is not reduced to animal intake. Retain source, species/cohort, phase and original mass/moisture basis. Calculate the final contribution with inventory_reference_normalization and stage_throughput_linkage exactly once. Original collection denominator kind: process_output.
 
 - Selected flow: Actual rearing feed or substrate (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per reference flow
@@ -666,31 +666,43 @@ Raw quantity and calculation requirements: Transfer accepted grade once; identif
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Energy for actual preservation (`preserve_energy`)
+###### Electricity at the equipment supply point (`preserve_energy_electricity`)
+
+**Collection scope and applicability for preserve_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Select carrier from actual records for cooling, freezing, drying or smoking; no universal recipe.
-
 Denominator and scope requirements：per kg Optional preservation output
-
 Raw quantity and calculation requirements: Select carrier from actual records for cooling, freezing, drying or smoking; no universal recipe. Original collection denominator kind: process_output.
+Energy accounting basis: retain separate carrier quantities in their native units. Convert electricity from kWh to MJ using 3.6; convert fuel mass/volume only with documented carrier-specific calorific value and, where needed, density. This card reports the MJ accounting quantity, not a mass exchange or a summed mixed-carrier flow. Final exchanges retain their actual carrier property and unit; do not add kg, L, kWh and MJ or assign one carrier UUID to their total.
+Range evidence need: the former generic kg/kg screen is not an energy range. Obtain carrier- and preservation-route-specific MJ records before defining an empirical energy interval; no universal numerical interval is asserted.
 
-- Selected flow: Energy carrier for preservation
-- Flow property / unit: Mass / kg
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_preserve` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
-- Range: Broad provisional lot-completeness screen, not an empirical factor
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100000
-  - Unit: kg/kg
-  - Basis: per kg Optional preservation output
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`preserve_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_preserve` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_preserve`
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -983,19 +995,22 @@ Raw quantity and calculation requirements: Record spoiled or rejected material a
 | a_shared | shared rooms, traps, chillers, mills and packers | Identify every consuming node and service period. Use metered service, else documented hours or throughput, once without duplicate supplier burden. | fao-edible-insects-2013 |
 | a_form | wet, preserved and meal states | Attribute preservation and milling only to lots that undergo them; one physical lot has one marketed form at a time. | un-cpc-02931 |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_rear | rear | cohort and management | cohort log | species; stage; feed; water; living_mass; frass; coproduct; loss; service; period | feed tickets, meters and scale; Raw aggregation requirements: link products and residues once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; m3; period | each cohort | actual cohort phases | farm | per reference flow | purchase, meter and batch records; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| cp_rear | rear | cohort and management | cohort log | species; stage; feed; water; living_mass; frass; coproduct; loss; service; period | feed tickets, meters and scale; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output. | kg; m3; period | each cohort | actual cohort phases | farm | per reference flow | purchase, meter and batch records; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_collect | collect | killing and collection | event log | source; legal_id; stage; live_mass; dead_mass; loss; method; period | permit and scale; Raw aggregation requirements: reconcile captured and dead material. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each event | collection season | farm or wild site | per reference flow | permit, scale and event record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_condition | condition | first preparation | hygiene batch | source; raw_mass; water; prepared_mass; reject; method | batch scale and cleaning log; Raw aggregation requirements: actual intervention only. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; m3 | each lot | batch period | preparation site | per reference flow | hygiene and scale record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_grade | grade | food grades | grade ledger | prepared_mass; accepted; downgrade; reject; food_qualification; destinations | grade and sale tickets; Raw aggregation requirements: reconcile destinations. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each lot | batch period | grading site | per reference flow | grade, sale and reject record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_preserve | preserve | before/after state | treatment log | input; output; moisture_before; moisture_after; state; energy; preservation_medium; residue | scale, moisture test and meter; Raw aggregation requirements: treated lots only. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; kg/kg; kWh | treated lot | treatment period | treatment site | per reference flow | test and meter record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_mill | mill | flour or meal | milling log | input; product; fineness; moisture; reject; rework | scale and quality record; Raw aggregation requirements: one output and rework loop. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; kg/kg | milled lot | milling period | mill | per reference flow | scale and food release; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | cp_pack | pack | net sold product | handover log | species; stage; form; state; gross; tare; free_brine; package; reuse; gate | scale and handover ticket; Raw aggregation requirements: one marketed lot. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg; turn | each sale | sale period | gate | per reference flow | qualification and ticket; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_feed_supply_and_intake` | `rear` | Feed supply, intake and loss | stock, receipt, issue and loss ledger | feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output | Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output. | kg as-fed; kg DM | each issue and period close | complete represented cohort/period | actual operated feeding nodes | per reference flow | stock and supplier records; moisture evidence; loss and no-duplication reconciliation |
 
 ### Calculation Rules
 
@@ -1005,6 +1020,7 @@ Raw quantity and calculation requirements: Record spoiled or rejected material a
 | c_state | drying or milling | Actual matched input/output mass and moisture; no default wet/dry or whole/meal factor. | before/after mass; moisture | lot-specific balance | fao-edible-insects-2013 |
 | c_balance | every node | Reconcile input, products, sold downgrade, reject and measured state change; investigate gaps. | input; outputs; residues; moisture | kg ledger | fao-edible-insects-2013 |
 | c_shared | shared assets | Assign measured service or documented hours/throughput to unique node and period. | burden; use; period | allocated burden | fao-edible-insects-2013 |
+| `calc_feed_supply_and_intake` | `feed` | Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden. | `cp_feed_supply_and_intake` | separate feed supply, intake and loss quantities, in matched as-fed/DM units | `fao-feed-loss-accounting-2018` |
 
 ### Data Quality Requirements
 
@@ -1026,6 +1042,8 @@ Raw quantity and calculation requirements: Record spoiled or rejected material a
 | v_safety | edible output | Require source legality and applicable hygiene/contamination evidence before food-grade release. | fao-edible-insects-2013 |
 | v_period | shared service | Each event and asset service has one period and one attributed share; replacement does not duplicate prior burden. | fao-edible-insects-2013 |
 | v_binding | all cards | conditional product inputs require actual concrete selection; other identities need matching detail/property/unit-group evidence before exchange publication. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
+| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |
 
 ## 10. Published Dataset Profile
 
@@ -1045,3 +1063,5 @@ Raw quantity and calculation requirements: Record spoiled or rejected material a
 | --- | --- | --- | --- |
 | un-cpc-02931 | official_guidance | https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/02931 | Category states and exclusions. |
 | fao-edible-insects-2013 | official_guidance | https://www.fao.org/docrep/018/i3253e/i3253e.pdf | Farm/wild routes, safety and first-processing questions. |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred. |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

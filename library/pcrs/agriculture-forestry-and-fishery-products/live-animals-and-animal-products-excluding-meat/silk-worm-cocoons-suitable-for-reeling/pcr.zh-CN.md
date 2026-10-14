@@ -132,11 +132,11 @@ sync_with: pcr.en-US.md
 
 分母与范围要求：每 kg 已结蚕茧（按蚕批）
 
-原始数量及计算要求：按批次与来源计量发放量，扣除实测剩余和库存变化。 原始采集分母类型：process_output。
+原始数量及计算要求：按 calc_feed_supply_and_intake 分别建立饲料投入、采食及损失台账。承担饲料生产负担的数量包含边界内拒食、变质及未食用饲料，不得缩减为动物采食量。保留来源、物种/群体、阶段及原始质量/水分基准。最终贡献依 inventory_reference_normalization 和 stage_throughput_linkage 恰归一化一次。 原始采集分母类型：process_output.
 
 - 选定流: 适配蚕种的寄主叶与有证据的补充饲料（UUID 未解析）
 - 流属性/单位: 质量 / kg
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
+- 数量规则：采用保留边界内损失及其生产负担的已核对饲料投入记录，依 inventory_reference_normalization 和 stage_throughput_linkage 计算可归属最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
 - 归一化基准：每参考流
@@ -178,31 +178,56 @@ sync_with: pcr.en-US.md
   - 基准类型: 过程产出 (`process_output`)
   - 证据类型: 推理估算 (`reasoned_estimate`)
 
-###### 养蚕能源供应（`rear_energy`）
+###### 设备供电点的电力（`rear_energy_electricity`）
+
+**rear_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 根据记录将电力、热力与燃料拆为具体交换；待确认流身份 本身不是单一能源商品。
-
 分母与范围要求：每 kg 已结蚕茧（按蚕批）
-
 原始数量及计算要求：按能源载体、蚕批、房间和期间计量。 原始采集分母类型：process_output。
 
-- 选定流: 场址实际能源载体（UUID 未解析）
-- 流属性/单位: 能量 / MJ
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围: 场址特定 (`site_specific`)
-- 归一化基准：每参考流
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_utilities` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
-- 采集协议: `cp_utilities`
-- 数量范围: 暂定完整性筛查范围（非默认因子）
-  - 范围角色: QA 校验 (`qa_guardrail`)
-  - 下限: 0
-  - 上限: 100000
-  - 单位: MJ/kg
-  - 基准: 每 kg 已结蚕茧（按蚕批）
-  - 基准类型: 过程产出 (`process_output`)
-  - 证据类型: 推理估算 (`reasoned_estimate`)
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_utilities`
+- 来源：`fao-agricultural-energy`
+
+###### 供应设备的柴油（`rear_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_utilities` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_utilities`
+- 来源：`fao-agricultural-energy`
+
+###### 过程入口的外购热量（`rear_energy_heat`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：过程入口的外购热量
+- 流属性 / 单位：能源 / MJ
+- 数量规则：依 `cp_utilities` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_utilities`
+- 来源：`fao-agricultural-energy`
 
 ###### 蚕匾与蔟具服务（`tray_service`）
 
@@ -543,31 +568,56 @@ sync_with: pcr.en-US.md
   - 基准类型: 过程产出 (`process_output`)
   - 证据类型: 采集记录 (`collected_record`)
 
-###### 杀蛹干燥能源（`dry_energy`）
+###### 设备供电点的电力（`dry_energy_electricity`）
+
+**dry_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 按能源载体记录实际燃料、热力或电力；不得由鲜干质量差反推能耗。
-
 分母与范围要求：每 kg 干燥节点接收鲜茧
-
 原始数量及计算要求：按批次与期间计量或归属各能源载体。 原始采集分母类型：process_output。
 
-- 选定流: 实际干燥能源载体（UUID 未解析）
-- 流属性/单位: 能量 / MJ
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围: 场址特定 (`site_specific`)
-- 归一化基准：每参考流
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_utilities` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
-- 采集协议: `cp_utilities`
-- 数量范围: 暂定完整性筛查范围（非默认因子）
-  - 范围角色: QA 校验 (`qa_guardrail`)
-  - 下限: 0
-  - 上限: 100000
-  - 单位: MJ/kg
-  - 基准: 每 kg 干燥节点接收鲜茧
-  - 基准类型: 过程产出 (`process_output`)
-  - 证据类型: 推理估算 (`reasoned_estimate`)
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_utilities`
+- 来源：`fao-agricultural-energy`
+
+###### 供应设备的柴油（`dry_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_utilities` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_utilities`
+- 来源：`fao-agricultural-energy`
+
+###### 过程入口的外购热量（`dry_energy_heat`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：过程入口的外购热量
+- 流属性 / 单位：能源 / MJ
+- 数量规则：依 `cp_utilities` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_utilities`
+- 来源：`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -709,9 +759,8 @@ sync_with: pcr.en-US.md
 
 生产者交付关联：仅当本状态／交付门专属行被选为实际路线的最终来源时，才向 reference_handover_input 提供同一批实际合格产品。此时它是内部交付记录，不是第二次对外参考产品销售；否则保留原有中间移交角色。保留确切身份及原有路线条件，只选实际最终来源，不汇总所有连续移交；匹配同批次及相容的物种／状态／交付门证据。较窄固定身份的交付门或物种不得扩大。交付接口不增加加工、运输、产率假设或重复处理负担。
 
-- 选定流: Silk-worm cocoons suitable for reeling `2e62f60f-611b-4e07-bc8a-958260a9cba1`
+- 选定流：适于缫丝的丝茧 `2e62f60f-611b-4e07-bc8a-958260a9cba1`
 - 流属性/单位: 质量 / kg
-- 绑定: 固定 (`fixed`)
 - 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围: 场址特定 (`site_specific`)
@@ -782,7 +831,7 @@ sync_with: pcr.en-US.md
 - 流属性 / 单位：质量 / kg
 - 数量规则：使用与关联来源行核对的同批实测合格数量，仅对声明参考流归一化一次。
 - 数值来源模式：计算值（`calculated_value`）
-- 数据特异性：场址特异（`site_specific`）
+- 适用范围：场址特异（`site_specific`）
 - 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：由采集计算（`calculated_from_collection`）
@@ -819,7 +868,7 @@ sync_with: pcr.en-US.md
 - 流属性 / 单位：质量 / kg
 - 数量规则：1 kg
 - 数值来源模式：计算值（`calculated_value`）
-- 数据特异性：场址特异（`site_specific`）
+- 适用范围：场址特异（`site_specific`）
 - 归一化基准：每参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：由采集计算（`calculated_from_collection`）
@@ -846,13 +895,15 @@ sync_with: pcr.en-US.md
 | a_period | 蚕批和寄主作物阶段 | 将叶片投入、养蚕操作与蚕茧产出归属实际蚕批和报告期间；跨日历截点结转期初／期末存量及未完成蚕批。 | fao-cocoon-quality |
 | a_shared | 共用基础设施 | 记录寄主地块、蚕室、蚕匾、蔟具、分级设备和烘干机的实际使用节点、蚕批与服务期间；按观察到的使用量或有理由且披露的代理量，只归属一次制造、维修和公用工程负担。 | fao-cocoon-quality;fao-cocoon-drying |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_cohort_inputs` | rear | 蚕种与寄主饲料 | 采购和发料日志 | 蚕批；蚕种；龄期；种量；寄主种类；叶片量；库存变化；供应商 | 数量和发放称重；原始汇总要求：按蚕批汇总净投入。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | item;kg | 每次发料 | 全蚕批 | 每养蚕场 | 每参考流 | 收据与称量票；可追溯分子、合格参考产出分母及归一化计算表 |
+| `cp_cohort_inputs` | rear | 蚕种与寄主饲料 | 采购和发料日志 | 蚕批；蚕种；龄期；种量；寄主种类；叶片量；库存变化；供应商 | 数量和发放称重；原始汇总要求： 按 calc_feed_supply_and_intake 区分承担生产负担的饲料投入、实际采食量及损失；保留原生库存及期间记录，可归属量对合格最终产出归一化一次。 | item;kg | 每次发料 | 全蚕批 | 每养蚕场 | 每参考流 | 收据与称量票；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_utilities` | rear;dry | 水与能源 | 水电表和燃料日志 | 仪表；载体；始末读数；批次；房间；期间；分配键 | 仪表或燃料收据；原始汇总要求：共用计量只分配一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;MJ | 按批次或每月 | 全活动期间 | 每场址 | 每参考流 | 仪表照片与发票；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_assets` | rear;dry;present | 共用服务 | 资产台账 | 资产；购置；维修；服务日期；使用节点；使用时数或批次 | 资产与服务日志；原始汇总要求：按观察到的使用量只分配一次。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;hour | 每次服务事件 | 服务寿命 | 每场址 | 每参考流 | 采购及维修记录；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_cocoon_mass` | rear;collect;grade | 蚕茧转移 | 蚕批票据 | 蚕批；转移时间；投入量；产出量；杂物；抽样 | 校准秤与批次标识；原始汇总要求：核对节点间同一次转移。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg | 每批 | 采茧至分级 | 全部批次 | 每参考流 | 校准和票据；可追溯分子、合格参考产出分母及归一化计算表 |
@@ -861,6 +912,7 @@ sync_with: pcr.en-US.md
 | `cp_drying_batch` | dry | 鲜至干状态 | 烘干批记录 | 批次；入口／出口质量和含水率；能源；时间；剔除量；出口等级 | 称重与含水率抽样；原始汇总要求：平衡干物质与剔除物。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;kg/kg;MJ | 每批 | 入口至干茧移交 | 全部干茧批 | 每参考流 | 秤、样品与烘干日志；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_handover` | present | 最终状态与包装 | 销售及包装记录 | 批次；鲜／干；等级；含水率；毛／皮重；包装；复用；门槛；买方；时间 | 秤、包装计数与收据；原始汇总要求：按状态／门槛算蚕茧净重。执行原有路线、期间、换算及分配规则；保留原始总量及同一范围的实测合格参考产出分母。最终归一化恰执行一次，不得对已归一化数量再次除以分母。 | kg;item | 每次交付 | 交付前 | 每销售批 | 每参考流 | 校准与签收凭证；可追溯分子、合格参考产出分母及归一化计算表 |
 | `cp_reference_handover` | `reference_handover` | 合格产品及匹配的内部来源移交 | 生产者交付台账 | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | 在同一实际交付门测量合格净产品，将列出的状态／交付门专属来源行及关联输入与唯一实际产出核对。拒收、库存变化及其他销售单独记录；不假设新增处理或运输。 | kg；原生来源数量 | 每次实际交付 | 匹配来源及交付期间 | 仅声明生产者交付门 | 每参考流 | 可追溯验收记录、同批来源至产出台账、校准数量方法及归一化计算表 |
+| `cp_feed_supply_and_intake` | `rear` | 饲料投入、采食及损失 | 库存、收货、发料及损失台账 | 饲料身份/来源；群体/阶段；期间；期初/期末库存；收货；自产供给；未用退回/转出；未食用/变质质量及去向；原物/干物质；实际采食量；负担归属；合格最终产出 | 按 calc_feed_supply_and_intake 核对匹配的库存、称重、日粮/采草估算及处置记录。保留原始总量及阶段分母，生产与处理负担各归属一次，再对合格最终产出归一化。 | kg as-fed; kg DM | 每次发料及期间结算 | 完整所代表群体/期间 | 实际运行饲喂节点 | 每参考流 | 库存及供应商记录；水分证据；损失及无重复核算核对 |
 
 ### 计算规则
 
@@ -870,6 +922,7 @@ sync_with: pcr.en-US.md
 | c_dry | 配对鲜／干批次 | 干物质＝各状态湿质量×（1－实测含水率）；按干物质比较并计入抽样与剔除固体，不作假设换算。 | 入口／出口质量、含水率、剔除物 | 实测干物质平衡 | fao-cocoon-characteristics;fao-cocoon-drying |
 | c_grade | 分选 | 合格＋独立销售降级＋废物＋样品与分级来料核对，允许有记录的水分测量时点差异。 | 来料与各产出质量 | 批次平衡及缺陷比例 | fao-cocoon-quality |
 | c_intensity | 每个节点 | 将归属的过程量除以其声明产出质量，再将最终数据集归一化至一个状态特定门槛的 1 kg。 | 归属投入、产出质量、状态 | 每 kg 清单 | fao-cocoon-characteristics |
+| `calc_feed_supply_and_intake` | `host_leaves` | 所代表作业使用的饲料投入 = 期初饲料库存 + 收货 + 进入本作业的自产饲料 - 期末饲料库存 - 有记录的未用退回或转出。该投入保留边界内变质、拒食及被丢弃的剩余料。实际采食量 = 该投入 - 实测未食用/丢弃损失，并匹配水分/干物质与期间；采食量仅用于营养及代谢计算。期初库存承接原有负担，不是再次采购。追溯未用退回或转出的物料及负担去向，不自动给予替代抵扣。同一饲料的生产负担由采购饲料数据集或已建模自产作物/采集节点承担一次，不得两者并计。实际废料处理及粪污贡献计一次，不再次添加饲料生产负担。 | `cp_feed_supply_and_intake` | 同一原物/干物质基准下分开的饲料投入、采食及损失数量 | `fao-feed-loss-accounting-2018` |
 
 ### 数据质量要求
 
@@ -889,6 +942,8 @@ sync_with: pcr.en-US.md
 | v_routes | 路线差异 | 寄主、气候或上蔟变体只有相对于管理型父路线的清单、计算、质量或校验要求变化有证据时才成立；拒绝仅改标签。 | fao-cocoon-quality |
 | v_attribution | 多产出与跨期间 | 核查独立销售产出、废物、未完蚕批、共用资产及服务期间；一个实物茧量与共用负担只能归属一个交付点。 | fao-cocoon-quality |
 | v_binding | 流卡 | 在形成 TIDAS 过程交换前，把待确认投入解析到有证据的具体 UUID；其他 UUID 在详情核实前保持未解析。 | |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
+| `v_feed_supply_intake_separation` | 全部饲料投入 | 拒绝扣除边界内拒食、变质或丢弃剩余料且未保留其生产负担的上游饲料清单。按 calc_feed_supply_and_intake 核对投入、采食、库存、转移及损失去向。不得把采食量当作饲料投入，不得假设自产饲料零负担或自动给予替代产品抵扣。 | `fao-feed-loss-accounting-2018` |
 
 ## 10. 发布数据集画像
 
@@ -909,3 +964,5 @@ sync_with: pcr.en-US.md
 | `fao-cocoon-characteristics` | handbook | [FAO《缫丝与测试手册》第 2 章](https://www.fao.org/4/x2099e/x2099e03.htm) | 蚕茧组成、质量／含水率状态和干物质比较。 |
 | `fao-cocoon-quality` | handbook | [FAO《缫丝与测试手册》第 3 章](https://www.fao.org/4/x2099e/x2099e04.htm) | 养蚕／上蔟质量、采茧、分级以及穿孔／不可缫区分。 |
 | `fao-cocoon-drying` | handbook | [FAO《缫丝与测试手册》第 4 章](https://www.fao.org/4/x2099e/x2099e05.htm) | 可选生产者杀蛹／干燥、储存和状态特定计量。 |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | 饲料投入、采食及废料负担的区分，不提供动物参数。将该核算原则用于声明类群是本 PCR 的方法学选择；不移植猪的日粮或排放因子。 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

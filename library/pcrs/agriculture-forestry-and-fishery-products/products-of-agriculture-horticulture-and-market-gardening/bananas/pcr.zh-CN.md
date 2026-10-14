@@ -36,15 +36,16 @@ sync_with: pcr.en-US.md
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Fresh bananas at the declared farm-gate or pack-house gate `7c496507-1583-4181-9a3a-2cf56d54b99c` |
+| 参考产品流 | 香蕉 `7c496507-1583-4181-9a3a-2cf56d54b99c` |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | production geography; cultivar or variety group; plantation, smallholder, or multisite route; establishment or ratoon-cycle status; stand age or cycle number; planting or regrowth date; harvest dates and bunch or lot identifiers; declared gate; maturity, size, grade, and trimming state; irrigation source and method; nutrient and crop-protection basis; washing and cooling state; packaging state; field-residue, reject, and wastewater fate |
-| 绑定模式 | fixed |
 
 
 构建前景数据包时，`必需限定信息` 中列出的信息应在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中明确声明。缺失必需限定信息的数据包视为参考流定义不完整。
+
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -52,7 +53,7 @@ sync_with: pcr.en-US.md
 | `reference_banana_mass` | marketable bananas and harvest records | Mass | kg | 将果穗或批次总采收量、可销售新鲜香蕉、不可销售果实、修整物、田间残余物和已记录的处理损失作为独立的实测或计算数量保留。 |
 | `plantation_cycle_normalization` | plantation, field, and crop-cycle records | Area, time, and mass | ha, year, and kg | 按种植园单元、田块或生产批次记录投入和采收，并将其归一化到归属于同一声明生产年度或作物周期的可销售产出。 |
 | `planting_material_basis` | suckers, corms, tissue-culture plants, and other establishment material | Count or mass | plant, sucker, corm, or kg | 保留材料类型和购买批次数量；仅在有供应商或场址记录的转换依据时，才将数量转换为质量。 |
-| `nutrient_product_basis` | fertilizer, manure, compost, mulch, and soil-amendment inputs | Product mass and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | 仅依据标签、供应商规格、养分计划或实验室结果，将购买产品质量转换为养分基准，同时保留原始产品质量。 |
+| `nutrient_product_basis` | fertilizer, manure, compost, mulch, and soil-amendment inputs | Product mass and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | 每种实际肥料或改良剂产品单独列卡，保留实物质量、配方、养分组成和施用记录；养分量不是同一产品的另一次投入，不使用集合或分组标识代替具体流身份。 |
 | `water_energy_basis` | irrigation, washing, cooling, electricity, and fuel | Volume, energy, or fuel | m3, kWh, MJ, or L | 分别记录灌溉水和调理水；以实测单位记录外购电力和燃料，并披露所使用的转换因子。 |
 
 ## 5. 系统边界
@@ -143,22 +144,100 @@ sync_with: pcr.en-US.md
 #### 输入
 ##### 产品流
 
-###### 农业养分与肥料投入（`managed_banana_crop_cycle_agricultural_nutrient_inputs`）
+###### 尿素肥料（`managed_banana_crop_cycle_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**managed_banana_crop_cycle_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：归属于同一作物周期或生产年度的每 1,000 kg 可销售新鲜香蕉.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_nutrient_records`
-- 来源：`fao-banana-production-guide-2015`; `ipcc-2019-refinement-afolu`
+- 来源：`fao-banana-production-guide-2015`；`ipcc-2019-refinement-afolu`；`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`managed_banana_crop_cycle_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-banana-production-guide-2015`；`ipcc-2019-refinement-afolu`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`managed_banana_crop_cycle_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-banana-production-guide-2015`；`ipcc-2019-refinement-afolu`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`managed_banana_crop_cycle_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-banana-production-guide-2015`；`ipcc-2019-refinement-afolu`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`managed_banana_crop_cycle_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-banana-production-guide-2015`；`ipcc-2019-refinement-afolu`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`managed_banana_crop_cycle_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-banana-production-guide-2015`；`ipcc-2019-refinement-afolu`；`fao-organic-nutrients`
 
 ###### 香蕉作物保护产品（`crop_protection_input`）
 
@@ -194,22 +273,40 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_irrigation_records`
 - 来源：`fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6`
 
-###### 种植园能源或燃料投入（`plantation_energy_input`）
+###### 设备供电点的电力（`plantation_energy_input_electricity`）
+
+**plantation_energy_input 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录泵送、田间机械、作物作业以及声明边界内其他作物周期活动所使用的电力和燃料。
-
-- 选定流：Plantation electricity or fuel
-- 流属性/单位：Energy or fuel / kWh, MJ, or L
-- 数量规则：按设备、作业和种植园单元记录外购电力和燃料；披露共享设备使用的转换和分配方法。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：归属于同一作物周期或生产年度的每 1,000 kg 可销售新鲜香蕉.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_field_energy_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_energy_records`
-- 来源：`fao-banana-production-guide-2015`
+- 来源：`fao-banana-production-guide-2015`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`plantation_energy_input_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_energy_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_energy_records`
+- 来源：`fao-banana-production-guide-2015`；`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -278,22 +375,40 @@ sync_with: pcr.en-US.md
 #### 输入
 ##### 产品流
 
-###### 采收和调理能源（`harvest_energy_input`）
+###### 设备供电点的电力（`harvest_energy_input_electricity`）
+
+**harvest_energy_input 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录声明交接门之前果穗处理、去手、分级、清洗、冷却和初级包装使用的电力和燃料。
-
-- 选定流：Harvest and conditioning electricity or fuel
-- 流属性/单位：Energy or fuel / kWh, MJ, or L
-- 数量规则：使用电表、燃料、运行时间或吞吐量记录，并依据有文件支持的吞吐量或运行时间将共享公用工程分配给香蕉批次。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：声明交接门处每 1,000 kg 可销售新鲜香蕉.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_postharvest_energy_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_postharvest_energy_records`
-- 来源：`fao-banana-production-guide-2015`; `globalgap-ifa-fruit-vegetables-v6`
+- 来源：`fao-banana-production-guide-2015`；`globalgap-ifa-fruit-vegetables-v6`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`harvest_energy_input_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_postharvest_energy_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_postharvest_energy_records`
+- 来源：`fao-banana-production-guide-2015`；`globalgap-ifa-fruit-vegetables-v6`；`fao-agricultural-energy`
 
 ###### 调理或清洗水（`conditioning_water_input`）
 
@@ -340,7 +455,7 @@ sync_with: pcr.en-US.md
 
 记录符合声明的成熟度、尺寸、等级、清洁度、修整、包装和交接门状态限定条件的新鲜香蕉批次。
 
-- 选定流：Fresh bananas at the declared farm-gate or pack-house gate
+- 选定流：香蕉 `7c496507-1583-4181-9a3a-2cf56d54b99c`
 - 流属性/单位：质量 / kg
 
 原参考状态单位说明：Mass / kg wet fresh bananas
@@ -480,22 +595,40 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
-###### 包含的残余物或废水处理排放（`routing_treatment_emissions`）
+###### 甲烷排入空气（`routing_treatment_emissions_ch4`）
+
+**routing_treatment_emissions 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 仅当处理路径、方法以及实测或有文件支持的投入支持该排放路径时，记录或计算边界内处理活动产生的排放。
-
-- 选定流：Emissions from included banana residue or wastewater treatment
-- 流属性/单位：Mass / kg substance
-- 数量规则：应用声明的处理方法和有文件支持的因子或实测值；当物流转移至独立下游数据集时，不推断处理排放。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：技术特定（`technology_specific`）
 原始活动或阶段基准：声明交接门处每 1,000 kg 可销售新鲜香蕉.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按原过程实际路径、物质量基准和接收隔室分别核算；以 N 或 C 表示的因子先转换成该化学物质质量。仅计前景直接贡献，避免与上游或处理服务排放重复。
+
+- 选定流：甲烷排入空气
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_residue_and_reject_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：基于采集计算（`calculated_from_collection`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_residue_and_reject_records`
-- 来源：`ipcc-2019-refinement-afolu`
+- 来源：`ipcc-biological-waste-2006`
+
+###### 氧化亚氮排入空气（`routing_treatment_emissions_n2o`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按原过程实际路径、物质量基准和接收隔室分别核算；以 N 或 C 表示的因子先转换成该化学物质质量。仅计前景直接贡献，避免与上游或处理服务排放重复。
+
+- 选定流：氧化亚氮排入空气
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_residue_and_reject_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
+- 采集协议：`cp_residue_and_reject_records`
+- 来源：`ipcc-biological-waste-2006`
 
 ## 7. 分配与共产品处理
 
@@ -505,6 +638,8 @@ sync_with: pcr.en-US.md
 | `allocation_plantation_establishment` | establishment, replanting, ratoon renewal, and shared plantation burdens | 披露种植园年龄和周期编号，并使用有文件支持的归属规则将建立阶段或共享种植园负荷分配到声明的生产周期；不得无说明地将全部建立负荷分配给一个采收年度。 | `fao-banana-production-guide-2015`; `iso-14044-2006` |
 | `allocation_residue_reject_fate` | field residue, harvest rejects, trim, recovered material, and wastewater | 除非存在有文件支持的接收方、数量、质量基准和预期用途，不得为残余物或废弃物分配共产品信用；否则将负荷保留在香蕉生产中并报告其去向。 | `fao-banana-production-guide-2015`; `iso-14044-2006` |
 | `allocation_shared_conditioning` | shared harvest, conditioning, packing, and utilities | 按实测香蕉吞吐量、运行时间或其他有文件支持的物理关系分配共享调理投入；披露分配基准并与交接门产出核对。 | `globalgap-ifa-fruit-vegetables-v6`; `iso-14044-2006` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算与质量规则
 
@@ -583,6 +718,13 @@ sync_with: pcr.en-US.md
 | `globalgap-ifa-fruit-vegetables-v6` | official_guidance | GLOBALG.A.P., *Integrated Farm Assurance guideline for Fruit and Vegetables v6*, https://documents.globalgap.org/documents/230414_IFA_guideline_FV_v6_0_Apr23_en.pdf | 生产记录、肥料和作物保护记录、可追溯性、采收和采后质量证据 |
 | `globalgap-tr4-banana-biosecurity` | official_guidance | GLOBALG.A.P., *TR4 Biosecurity Add-on for Bananas*, https://globalgap.org/what-we-offer/solutions/tr4-biosecurity-add-on/ | 香蕉种植材料追溯、种植园卫生和生物安全披露 |
 | `iso-14044-2006` | standard | ISO 14044:2006, *Environmental management — Life cycle assessment — Requirements and guidelines* | 分配层级、共产品处理和有文件支持的归属规则 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `eea-emission-methods` | official_guidance | EMEP/EEA air pollutant emission inventory guidebook 2023, https://www.eea.europa.eu/en/analysis/publications/emep-eea-guidebook-2023 | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `ipcc-soils-n2o-2019` | official_guidance | IPCC 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `ipcc-biological-waste-2006` | method_factor | IPCC 2006 Guidelines, Volume 5, Chapter 4: Biological Treatment of Solid Waste, https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/5_Volume5/V5_4_Ch4_Bio_Treat.pdf | 仅适用于声明的实际路径；活动量和适用因子另行记录 |
+
 
 ###### 氮和养分向水体或土壤的损失（`nutrient_loss_emission`）
 

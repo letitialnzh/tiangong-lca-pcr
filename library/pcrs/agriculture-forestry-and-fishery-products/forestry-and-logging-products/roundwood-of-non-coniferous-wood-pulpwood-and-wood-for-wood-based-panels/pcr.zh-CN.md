@@ -282,7 +282,6 @@ sync_with: pcr.en-US.md
 
 - 选定流: 立木 `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - 流属性/单位: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- 绑定: `fixed`
 - 数量规则: 按批次／过程实测实际数量，归一化至 1 kg 参考输出；明确记录有证据的条件性未发生，缺失记录不等于零
 - 数值来源模式: `foreground_record`
 - 适用范围: `site_specific`
@@ -341,7 +340,6 @@ sync_with: pcr.en-US.md
 
 - 选定流: 立木 `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - 流属性/单位: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- 绑定: `fixed`
 - 数量规则: 按批次／过程实测实际数量，归一化至 1 kg 参考输出；明确记录有证据的条件性未发生，缺失记录不等于零
 - 数值来源模式: `foreground_record`
 - 适用范围: `site_specific`
@@ -904,7 +902,6 @@ sync_with: pcr.en-US.md
 
 - 选定流: 阔叶圆木、其他 `b8b84d78-13c2-4dab-9b6d-8e7d9dc32f3b`
 - 流属性/单位: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- 绑定: `fixed`
 - 数量规则: 按批次／过程实测实际数量，归一化至 1 kg 参考输出；明确记录有证据的条件性未发生，缺失记录不等于零
 - 数值来源模式: `foreground_record`
 - 适用范围: `site_specific`
@@ -927,7 +924,6 @@ sync_with: pcr.en-US.md
 以燃料用途出售的条件木材，保留实测质量及实际水分／树皮状态。该项不是纸浆材，不因降级便是废物。申明去向，不自动给予替代燃料信用。
 
 - 选定流: 非针叶树木柴 `aaabc17f-c8db-4493-aa7d-1acb67ee3fa2`
-- 绑定: `fixed`
 - 流属性/单位: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
 - 数量规则: 按批次／过程实测实际数量，归一化至 1 kg 参考输出；明确记录有证据的条件性未发生，缺失记录不等于零
 - 数值来源模式: `foreground_record`

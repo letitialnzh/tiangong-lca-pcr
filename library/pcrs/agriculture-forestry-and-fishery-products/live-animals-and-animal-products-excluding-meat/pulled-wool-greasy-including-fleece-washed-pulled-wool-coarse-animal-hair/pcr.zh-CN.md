@@ -129,7 +129,7 @@ sync_with: pcr.en-US.md
 
 原始数量及计算要求：计量各相关皮张批次的供水。 原始采集分母类型：process_output。
 
-- 选定流：实际洗皮过程用水（待确认流身份 待确认）
+- 选定流：原皮清洗用水
 - 流属性/单位：质量 / kg
 - 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
@@ -269,31 +269,26 @@ sync_with: pcr.en-US.md
 
 ##### Product flows
 
-###### 粗毛采集能源（`coarse_energy`）
+###### 设备供电点的电力（`coarse_energy_electricity`）
+
+**coarse_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 仅计入剪取、梳取或收集实际使用的能源；活体动物是上游存量，并非被消耗的质量投入。
-
 分母与范围要求：每 kg 已采集粗毛
-
 原始数量及计算要求：计量或按因果关系分摊各能源载体。 原始采集分母类型：process_output。
 
-- 选定流：实际采集能源载体（待确认流身份 待确认）
-- 流属性/单位：按载体 / 实测单位
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_coarse` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_coarse`
-- 数量范围：能源暂定筛查范围
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：kWh/kg
-  - 基准：每 kg 已采集粗毛；仅暂定筛查
-  - 基准类型：过程产出（`process_output`）
-  - 证据类型：推理估计（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -399,7 +394,7 @@ sync_with: pcr.en-US.md
 
 原始数量及计算要求：计量水量并标识处理批次。 原始采集分母类型：process_output。
 
-- 选定流：实际初处理过程用水（待确认流身份 待确认）
+- 选定流：纤维初级调理用水
 - 流属性/单位：质量 / kg
 - 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
 - 数值来源模式：计算值（`calculated_value`）
@@ -417,31 +412,26 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：推理估计（`reasoned_estimate`）
 
-###### 初处理能源（`condition_energy`）
+###### 设备供电点的电力（`condition_energy_electricity`）
+
+**condition_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 仅计入实际初次择毛、干燥和清理服务，不计后续纺织洗毛。
-
 分母与范围要求：每 kg 初处理原纤维
-
 原始数量及计算要求：计量实际能源载体，共用烘干机服务只分摊一次。 原始采集分母类型：process_output。
 
-- 选定流：实际初处理能源载体（待确认流身份 待确认）
-- 流属性/单位：按载体 / 实测单位
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_condition` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_condition`
-- 数量范围：能源暂定筛查范围
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：kWh/kg
-  - 基准：每 kg 初处理原纤维；仅暂定筛查
-  - 基准类型：过程产出（`process_output`）
-  - 证据类型：推理估计（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -661,31 +651,41 @@ sync_with: pcr.en-US.md
   - 基准类型：过程产出（`process_output`）
   - 证据类型：推理估计（`reasoned_estimate`）
 
-###### 打包或装袋材料（`pack_material`）
+###### 聚乙烯包装薄膜（`pack_material_pe_film`）
+
+**pack_material 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 标识一次性或周转包装及其使用次数；排除下游运输。
-
 分母与范围要求：每 kg 净重可售原纤维
-
 原始数量及计算要求：计数或称量包装物并按实际周转次数分摊。 原始采集分母类型：process_output。
 
-- 选定流：实际纤维打包物、袋或包裹材料（待确认流身份 待确认）
-- 流属性/单位：按包装物 / 实测单位
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚乙烯包装薄膜
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_pack` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_pack`
-- 数量范围：包装物暂定筛查范围
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：kg/kg
-  - 基准：每 kg 净重可售原纤维；仅暂定筛查
-  - 基准类型：过程产出（`process_output`）
-  - 证据类型：推理估计（`reasoned_estimate`）
+- 来源：`fao-package-identities`
+
+###### 聚丙烯编织袋（`pack_material_pp_sack`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚丙烯编织袋
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_pack` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_pack`
+- 来源：`fao-package-identities`
 
 ##### Waste flows
 
@@ -735,6 +735,8 @@ sync_with: pcr.en-US.md
 | a_shared | 两条路线 | 共用采集工具、洗涤系统、烘干机、分级场地和压包设备按实测时间、计量消耗或有证据的产能在真实消费节点和服务期间分摊，不重复负担。 | fao-animal-fibres-ch4 |
 | a_grades | 全部等级 | 合格和可售降级品各有唯一交接与应归属服务；弃料和废水保留实际处理负担，不另计产品抵扣。 | fao-animal-fibres-ch4 |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### 数据采集协议
@@ -775,6 +777,7 @@ sync_with: pcr.en-US.md
 | v_mass | 各批次 | 按实测不确定度核对所有等级、脱毛皮、弃料、公用工程和水分；排除无记录的原毛至净毛系数。 | fao-animal-fibres-ch4 |
 | v_attribution | 动物与共用服务 | 排除附皮与已分离羊毛双计、无证据皮张零负担、动物期间、脱毛皮或共用资产负担重复。 | fao-animal-fibres-ch4 |
 | v_uuid | 最终交换 | 未解析卡片仅保留语义；每项最终交换须有一个经详情核实的具体 UUID 以及兼容的属性/单位组。 |  |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
 
 ## 10. 发布数据集画像
 
@@ -795,3 +798,5 @@ sync_with: pcr.en-US.md
 | `un-cpc-3-notes` | official_guidance | [UN CPC 3.0 说明](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | 产品边界 |
 | `fao-animal-fibres-ch4` | official_guidance | [FAO 动物纤维采集，第 4 章](https://www.fao.org/4/v9384e/v9384e09.htm) | 拉毛、脱毛皮、采集、初处理和分配 |
 | `fao-animal-fibres-ch5` | official_guidance | [FAO 动物纤维采集，第 5 章](https://www.fao.org/4/v9384e/v9384e10.htm) | 原纤维初处理与分级 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

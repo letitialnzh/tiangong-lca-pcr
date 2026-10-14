@@ -128,27 +128,54 @@ Declared nursery plants, fertilizers, protection chemicals and consumables used 
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Host management energy carriers (`host_energy`)
+###### Electricity at the equipment supply point (`host_energy_electricity`)
+
+**Collection scope and applicability for host_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Actual fuels, purchased electricity and supplied heat for establishment and maintenance only; preserve carrier, native units and metering period before justified conversion. Do not duplicate shared pump or equipment energy at collection.
 
-- Selected flow: Host management energy carriers
-- Flow property / unit: Energy / MJ
-- Amount rule: Attributed measured quantity from cp_host_management; normalize once to matched accepted net dispatch mass
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_host_management` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_host_management`
-- Range: Replaceable provisional broad QA screen; not a default or mandatory limit
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`host_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_host_management` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_host_management`
+- Sources: `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`host_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_host_management` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_host_management`
+- Sources: `fao-agricultural-energy`
 
 ###### Supplied host irrigation water (`host_water`)
 
@@ -331,27 +358,24 @@ Actual collection vessels, tool replacement shares and permitted stimulants when
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 - Sources: `fao-tapping-route`; `fao-plant-exudate-production`
 
-###### Plant collection energy carriers (`plant_collection_energy`)
+###### Electricity at the equipment supply point (`plant_collection_energy_electricity`)
+
+**Collection scope and applicability for plant_collection_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Meter attributable collection and in-boundary site movement energy; manual collection may have verified zero purchased energy, not an assumed universal zero.
 
-- Selected flow: Plant collection energy carriers
-- Flow property / unit: Energy / MJ
-- Amount rule: Attributed measured quantity from cp_plant_collection; normalize once to matched accepted net dispatch mass
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_plant_collection` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_plant_collection`
-- Range: Replaceable provisional broad QA screen; not a default or mandatory limit
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -489,27 +513,24 @@ Actual tying, collection and harvest consumables excluding broodlac already reco
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Lac inoculation and harvest energy carriers (`lac_collection_energy`)
+###### Electricity at the equipment supply point (`lac_collection_energy_electricity`)
+
+**Collection scope and applicability for lac_collection_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Actual energy for host access, inoculation, cutting/scraping and internal movement, attributed to the observed lac cycle; do not count host maintenance energy twice.
 
-- Selected flow: Lac inoculation and harvest energy carriers
-- Flow property / unit: Energy / MJ
-- Amount rule: Attributed measured quantity from cp_lac_collection; normalize once to matched accepted net dispatch mass
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_lac_collection` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_lac_collection`
-- Range: Replaceable provisional broad QA screen; not a default or mandatory limit
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -645,27 +666,24 @@ Match the active source output by lot and state, including external purchased pr
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Primary preparation energy carriers (`preparation_energy`)
+###### Electricity at the equipment supply point (`preparation_energy_electricity`)
+
+**Collection scope and applicability for preparation_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Actual energy for evidenced simple cleaning, screening, sorting, drying and storage before dispatch; no mandatory heated drying, extraction or universal recipe.
 
-- Selected flow: Primary preparation energy carriers
-- Flow property / unit: Energy / MJ
-- Amount rule: Attributed measured quantity from cp_primary_preparation; normalize once to matched accepted net dispatch mass
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_primary_preparation` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_primary_preparation`
-- Range: Replaceable provisional broad QA screen; not a default or mandatory limit
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ###### Primary preparation supplied water (`preparation_water`)
 
@@ -843,7 +861,6 @@ Measure actual wastewater leaving to treatment, including suspended solids and o
 Obtain water loss from matched water-specific measurements or closure with uncertainty. Loss on drying may include natural volatile oils and cannot automatically be called water. The fixed water-vapour identity below applies only when the declared receiving compartment is air, unspecified; a known more-specific receiving compartment requires its own compatible verified identity, not silent use of this default.
 
 - Selected flow: Water vapour, emissions to air unspecified `fe0acd60-3ddc-11dd-ac04-0050c2490048`
-- Binding: `fixed`
 - Flow property / unit: Mass / kg
 - Amount rule: Attributed measured quantity from cp_primary_preparation; normalize once to matched accepted net dispatch mass
 - Value mode: Calculated value (`calculated_value`)
@@ -933,49 +950,73 @@ Trace actual accepted product from preparation, or the declared source on a no-c
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Producer dispatch protection and packaging materials (`dispatch_packaging`)
+###### Wooden crate (`dispatch_packaging_wood_crate`)
+
+**Collection scope and applicability for dispatch_packaging.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Actual sacks, liners or containers protecting the named primary product; identify material, tare, new/reused status, number of actual uses and final destination. Exclude packaging from product net mass.
 
-- Selected flow: Producer dispatch protection and packaging materials
-- Flow property / unit: Mass / kg
-- Amount rule: Attributed measured quantity from cp_producer_dispatch; normalize once to matched accepted net dispatch mass
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_producer_dispatch`
-- Range: Replaceable provisional broad QA screen; not a default or mandatory limit
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 5
-  - Unit: kg
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
 
-###### Producer storage and dispatch energy carriers (`dispatch_energy`)
+- Selected flow: Wooden crate
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_producer_dispatch` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_producer_dispatch`
+- Sources: `fao-package-identities`
+
+###### Corrugated fibreboard box (`dispatch_packaging_corrugated_box`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Corrugated fibreboard box
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_producer_dispatch` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_producer_dispatch`
+- Sources: `fao-package-identities`
+
+###### Polyethylene wrapping film (`dispatch_packaging_pe_film`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Polyethylene wrapping film
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_producer_dispatch` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_producer_dispatch`
+- Sources: `fao-package-identities`
+
+###### Electricity at the equipment supply point (`dispatch_energy_electricity`)
+
+**Collection scope and applicability for dispatch_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Actual in-boundary storage, weighing and handling energy. Customer transport, distribution and product use begin after the declared producer dispatch gate and are excluded.
 
-- Selected flow: Producer storage and dispatch energy carriers
-- Flow property / unit: Energy / MJ
-- Amount rule: Attributed measured quantity from cp_producer_dispatch; normalize once to matched accepted net dispatch mass
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_producer_dispatch` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 kg reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_producer_dispatch`
-- Range: Replaceable provisional broad QA screen; not a default or mandatory limit
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: MJ
-  - Basis: per 1 kg reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -1069,6 +1110,8 @@ Where recorded fuel is burned inside this node, produce separate air exchanges f
 | `rework_retention` | primary_preparation; producer_dispatch | Keep internal rework/returns with their originating burdens and record repeated energy/material use; net final accepted output excludes rejects and stock retained for a later period. Record waste treatment responsibility explicitly; do not assume substitution credits. | |
 | `common_service_once` | shared roads pumps tools stores and changeovers | Register all consuming nodes and periods, meter/subdivide where possible and distribute the one common total using evidenced services. Attribute campaign cleaning and changeovers once to actual lots; compatible output totals reconcile to the denominator before reference normalization. | |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -1137,3 +1180,5 @@ Provisional numeric QA screens on nonreference cards are subjective order-of-mag
 | `fao-tapping-route` | `official_guidance` | FAO Sustainable utilization of gum and resin by improved tapping technique in some species, https://www.fao.org/4/y4496e/Y4496E29.htm ; accessed 2026-10-08 | Conditional tapping/stimulant practices, not a universal chemical recipe or amount |
 | `fao-lac-primary-states` | `official_guidance` | FAO International trade in non-wood forest products: IX Insect products, https://www.fao.org/4/x5326e/x5326e0c.htm ; accessed 2026-10-08 | Natural versus inoculated lac sources; crude sticklac, cleaned seedlac and extracted shellac distinction |
 | `fao-gum-primary-handling` | `official_guidance` | FAO Microfinance and forest-based small-scale enterprises: gum arabic, https://www.fao.org/4/a0226e/a0226e10.htm ; accessed 2026-10-08 | Gum host care, cleaning/grade and packaging example; no extrapolation of season, grade threshold or output factors to other products |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | conditional concrete identities and method context; does not establish site use or quantities |

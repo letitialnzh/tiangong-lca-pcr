@@ -56,7 +56,7 @@ The sole reference output is `reference_product_at_declared_handoff`, receiving 
 | --- | --- | --- | --- | --- |
 | `reference_product_mass` | marketable heads or florets and all product, reject, and trim mass rows | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | Weigh product on the declared farm-gate state. Keep harvested mass, marketable output, rejects, trims, and field losses separate before normalization. |
 | `crop_identity_separation` | cauliflower and broccoli records | Product identity | declared product | Record cauliflower and broccoli as separate crop identities. Aggregate them only after each product has a reconciled field-year inventory and an explicit aggregation rule. |
-| `nutrient_product_basis` | fertilizer and amendment inputs | Mass | kg product and kg nutrient | Record formulated product mass and documented nutrient concentration separately; calculate kg N, kg P2O5, and kg K2O without substituting one nutrient basis for another. |
+| `nutrient_product_basis` | fertilizer and amendment inputs | Mass | kg product and kg nutrient | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `water_delivery_basis` | irrigation and water withdrawal | Volume | m3 | Record source-specific withdrawal and delivered irrigation separately from rainfall, and disclose the irrigation technology and metering basis. |
 | `land_occupation_basis` | occupied crop area | Area-time | m2*a | Record field area and the occupied crop period before normalizing occupation to the crop cycle and reference output. |
 | `moisture_and_trim_basis` | harvest, cooling, washing, and packing | Mass and moisture | kg and percent | Retain as-is mass and any measured moisture or water gain/loss. Do not use washing or cooling mass change as product yield without a documented reconciliation. |
@@ -125,57 +125,100 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate product.
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Agricultural nutrient and fertilizer inputs (`crop_establishment_and_field_management_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`crop_establishment_and_field_management_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for crop_establishment_and_field_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg marketable farm-gate product.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fertilizer_and_amendment_records`
-- Sources: `ipcc-2019-managed-soils-n2o`; `fao-fruit-vegetable-preparation-2004`
-- Range: Nitrogen input screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 500
-  - Unit: kg N/ha
-  - Basis: represented crop field
-  - Basis kind: crop_cycle
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `ipcc-2019-managed-soils-n2o`; `fao-fruit-vegetable-preparation-2004`; `fao-fertilizer-identities`
 
-- Range: Phosphorus input screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 250
-  - Unit: kg P2O5/ha
-  - Basis: represented crop field
-  - Basis kind: crop_cycle
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Ammonium sulfate fertilizer (`crop_establishment_and_field_management_agricultural_nutrient_inputs_ammonium_sulfate`)
 
-- Range: Potassium input screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 700
-  - Unit: kg K2O/ha
-  - Basis: represented crop field
-  - Basis kind: crop_cycle
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
 
-- Range: Organic amendment screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 20000
-  - Unit: kg product/ha
-  - Basis: represented crop field
-  - Basis kind: crop_cycle
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `ipcc-2019-managed-soils-n2o`; `fao-fruit-vegetable-preparation-2004`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`crop_establishment_and_field_management_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `ipcc-2019-managed-soils-n2o`; `fao-fruit-vegetable-preparation-2004`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`crop_establishment_and_field_management_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `ipcc-2019-managed-soils-n2o`; `fao-fruit-vegetable-preparation-2004`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`crop_establishment_and_field_management_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `ipcc-2019-managed-soils-n2o`; `fao-fruit-vegetable-preparation-2004`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`crop_establishment_and_field_management_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fertilizer_and_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fertilizer_and_amendment_records`
+- Sources: `ipcc-2019-managed-soils-n2o`; `fao-fruit-vegetable-preparation-2004`; `fao-organic-nutrients`
 
 ###### Irrigation water (`irrigation_water_input`)
 
@@ -290,8 +333,8 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate product.
 Calculate direct soil N2O from accounted nitrogen inputs using the selected IPCC method tier and disclose the factor and conversion.
 
 - Selected flow: Nitrous oxide to air from managed agricultural soil
-- Flow property / unit: Mass / kg N2O-N
-- Amount rule: Apply the selected method factor to accounted field nitrogen and convert N2O-N to N2O only when required by the receiving dataset.
+- Flow property / unit: Mass / kg N2O
+- Amount rule: Calculate kg N2O-N with the selected method, then multiply by 44/28 for the final kg N2O exchange; do not repeat conversion for factors already expressed as N2O mass. Retain nitrogen activity, factors and accepted output for the same period.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per 1,000 kg marketable farm-gate product.
@@ -301,15 +344,17 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate product.
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_fertilizer_and_amendment_records`
 - Sources: `ipcc-2019-managed-soils-n2o`
-- Range: Direct soil-N2O screening interval
+- Range: Provisional author screening estimate; endpoints are not IPCC limits
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 30
   - Unit: kg N2O-N/1,000 kg product
   - Basis: accounted field nitrogen and reference output
   - Basis kind: n_input
-  - Evidence kind: External source (`external_source`)
-  - Sources: `ipcc-2019-managed-soils-n2o`
+  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+
+The screening range remains on the kg N2O-N basis; apply the same 44/28 conversion when checking the final N2O exchange. It is a provisional reasoned estimate, not an IPCC default emission factor.
 
 ###### Ammonia emission (`field_nitrogen_emissions`)
 
@@ -477,30 +522,40 @@ Raw activity or stage basis: per 1,000 kg marketable farm-gate product.
   - Basis kind: reference_flow
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Harvest operation fuel or electricity (`harvest_energy_input`)
+###### Electricity at the equipment supply point (`harvest_energy_input_electricity`)
+
+**Collection scope and applicability for harvest_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record fuel or electricity used by harvest machinery, contracted harvest operations, conveyors, and field-to-farm-gate handling.
-
-- Selected flow: Mobile machinery fuel or electricity for harvest
-- Flow property / unit: Mass or energy / L, kg, or kWh
-- Amount rule: Meter, contractor, machine, or invoice record allocated to the represented harvest lot or crop output.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
 Raw activity or stage basis: per 1,000 kg marketable farm-gate product.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_harvest_and_handling_energy_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_harvest_and_handling_energy_records`
-- Sources: `fao-fruit-vegetable-preparation-2004`
-- Range: Harvest-energy screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 400
-  - Unit: kWh or L/1,000 kg marketable product
-  - Basis: harvest and field-to-gate handling
-  - Basis kind: process_output
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-fruit-vegetable-preparation-2004`; `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`harvest_energy_input_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_harvest_and_handling_energy_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_harvest_and_handling_energy_records`
+- Sources: `fao-fruit-vegetable-preparation-2004`; `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -798,6 +853,8 @@ Record actual emissions at the operation where they occur; do not duplicate them
 | `allocation_cauliflower_broccoli_aggregation` | cauliflower and broccoli produced by one farm or shared operation | Keep cauliflower and broccoli separate through inventory reconciliation. Aggregate only by declared mass or another justified allocation basis after product-specific records are complete. | `iso-14044-2006`; `mass-balance-identity` |
 | `allocation_rejects_and_residues` | rejects, trims, and field residues | Treat rejects and residues as waste unless a documented buyer, quantity, specification, and destination establish a co-product. If allocation remains necessary, document the physical or economic basis and sensitivity. | `iso-14044-2006` |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 Retain raw site, lot, cycle and stage quantities and denominators in each collection protocol. Reconcile stocks, losses, moisture and co-product attribution first, then normalize: normalized exchange = attributable raw exchange × declared reference quantity / accepted hand-off product quantity on the same boundary and measurement basis. Apply perennial-establishment and shared-operation attribution before this normalization. Never set an internal-transfer quantity equal to the final reference quantity. Per declared reference flow means the amount, unit and product state in section 3; the data package must declare its actual route and gate.
@@ -879,3 +936,6 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

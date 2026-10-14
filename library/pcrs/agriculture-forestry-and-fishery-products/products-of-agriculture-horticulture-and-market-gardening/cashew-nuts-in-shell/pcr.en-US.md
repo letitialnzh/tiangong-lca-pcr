@@ -138,30 +138,100 @@ Raw activity or stage basis: per 1,000 kg accepted cashew nuts in shell.
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Agricultural nutrient and fertilizer inputs (`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for cashew_orchard_establishment_and_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg accepted cashew nuts in shell.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cashew_orchard_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_cashew_orchard_input_records`
-- Sources: `ipcc-2019-afolu`
-- Range: Provisional nutrient-input screening estimate
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 500
-  - Unit: kg formulated product per 1,000 kg reference product
-  - Basis: broad annual orchard nutrient and amendment input
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `ipcc-2019-afolu`; `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cashew_orchard_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cashew_orchard_input_records`
+- Sources: `ipcc-2019-afolu`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cashew_orchard_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cashew_orchard_input_records`
+- Sources: `ipcc-2019-afolu`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cashew_orchard_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cashew_orchard_input_records`
+- Sources: `ipcc-2019-afolu`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cashew_orchard_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cashew_orchard_input_records`
+- Sources: `ipcc-2019-afolu`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cashew_orchard_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cashew_orchard_input_records`
+- Sources: `ipcc-2019-afolu`; `fao-organic-nutrients`
 
 ###### Irrigation water supplied (`cashew_irrigation_water`)
 
@@ -680,7 +750,7 @@ Calculate water removed from the cashew lot from measured as-received and condit
 
 - Selected flow: water released to air during cashew drying
 - Flow property / unit: Mass / kg water
-- Amount rule: received dry matter minus conditioned dry matter, with measured lot moisture and mass
+- Amount rule: incoming water plus water additions minus water retained in all accepted, downgraded, rejected and residue outputs, other water exits and water stock increase; use each stream wet mass multiplied by its measured water fraction
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Technology-specific (`technology_specific`)
 Raw activity or stage basis: per 1,000 kg fresh farm-gate reference product.
@@ -936,6 +1006,8 @@ Record actual emissions at the operation where they occur; do not duplicate them
 
 Cashew shell mass is part of the in-shell reference product and is not a separate co-product in this PCR. CNSL, shell fragments, kernel, testa, and all shelling outputs belong to a downstream shelling or kernel PCR and must not be introduced into this inventory. No output may be counted both as a cashew-apple co-product and as orchard residue.
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 Retain raw site, lot, cycle and stage quantities and denominators in each collection protocol. Reconcile stocks, losses, moisture and co-product attribution first, then normalize: normalized exchange = attributable raw exchange × declared reference quantity / accepted hand-off product quantity on the same boundary and measurement basis. Apply perennial-establishment and shared-operation attribution before this normalization. Never set an internal-transfer quantity equal to the final reference quantity. Per declared reference flow means the amount, unit and product state in section 3; the data package must declare its actual route and gate.
@@ -965,7 +1037,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `calc_02` | every harvest, conditioning, and storage lot | `opening mass + inputs = accepted outputs + co-products + rejects + residues + measured losses`; investigate any unexplained residual. | lot weights and fates | reconciled mass balance | `mass-balance-identity` |
 | `calc_03` | fresh to dried or conditioned lots | Dry matter = wet mass × (1 − moisture fraction); water removed = input wet mass − output wet mass after accounting for non-water losses. | input/output mass and measured moisture | moisture-corrected mass and drying water loss | `mass-balance-identity`; `fao-cashew-minor-oil-crops` |
 | `calc_04` | cashew apple co-product | If the apple is intended and transferred, apply measured dry-matter mass allocation to shared orchard and harvest burdens; if not intended, model residue fate without co-product credit. | nut mass; apple mass; moisture or dry matter; declared destination | allocated burdens and co-product share | `iso-14044-2006` |
-| `calc_05` | premium, standard, downgraded, and rejected lots | Grade outputs must be mutually exclusive. Conditioned accepted output equals the sum of grade outputs plus declared downgraded, rework, reject, foreign-material, water-loss, and unexplained-loss terms. | batch input; grade and reject records | normalized output rows | `mass-balance-identity` |
+| `calc_05` | graded lots | Accepted output equals the sum of mutually exclusive accepted grades only. Reconcile incoming batch mass plus additions and opening stock with accepted and separately sold downgraded outputs, rejects, residues, measured water/non-water losses and closing stock. Internal rework is a transfer, not another sale; investigate unexplained residual. | batch input; additions; stocks; grade and reject records | accepted output and complete batch balance | `mass-balance-identity` |
 | `calc_06` | storage | `opening stock + receipts − dispatches − closing stock = measured storage loss`; storage loss is not accepted gate output. | stock ledger; dispatches; closing stock; loss records | storage loss per storage duration | `mass-balance-identity` |
 
 ### Data Quality Requirements
@@ -1022,3 +1094,5 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

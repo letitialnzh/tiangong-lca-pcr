@@ -47,7 +47,7 @@ boundary_abstraction:
 reference_flow_definition:
   reference_amount: "1000"
   product_flow_ref:
-    name: "Marketable fresh dry-bulb onion at farm gate <>"
+    name: "Onions"
     uuid: "9a7c27da-f086-4d97-a251-b1989ad5d312"
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
@@ -90,7 +90,7 @@ measurement_rules:
       name: "Product mass and nutrient mass"
       uuid: ""
     required_unit: "kg product, kg N, kg P2O5, kg K2O"
-    rule: "Record each product actually applied and its documented nutrient basis. Keep product mass separate from nutrient mass and do not count a compound product twice."
+    rule: "Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity."
   - id: irrigation_volume_basis
     applies_to: "irrigation-water input"
     required_property_ref:
@@ -253,14 +253,14 @@ process_inventory:
     label: "Crop management and input application"
     inputs:
       product:
-        - row_id: crop_management_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: crop_management_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for crop_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_fertilizer_amendment_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -269,22 +269,110 @@ process_inventory:
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_fertilizer_amendment_records
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "600"
-                unit: "kg product per 1,000 kg output"
-                basis: "per 1,000 kg marketable farm-gate onion bulbs"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+              source_ids:
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_amendment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_amendment_records
+              source_ids:
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_amendment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_amendment_records
+              source_ids:
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_amendment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_amendment_records
+              source_ids:
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_amendment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_amendment_records
+              source_ids:
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: crop_management_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_fertilizer_amendment_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_fertilizer_amendment_records
+              source_ids:
+                - fao-organic-nutrients
+            ranges: []
         - row_id: irrigation_water
           role: "Irrigation water delivered to the onion crop"
           name: "Irrigation water supply"
           flow_type: "product"
           property_unit: "Volume / m3"
-          description: "Record water delivered to the onion field or protected unit for establishment and crop growth. Separate metered delivery from rainfall, recirculated water and the source withdrawal. Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs."
+          description: "Record water delivered to the onion field or protected unit for establishment and crop growth. Separate metered delivery from rainfall, recirculated water and the source withdrawal. Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs. Range evidence need: no delivered-irrigation default is established. FAO 350–550 mm is crop water need (ETc), equivalent to 3500–5500 m3/ha of evapotranspiration, not metered irrigation. Derive net irrigation after effective rainfall, soil-water change and other supplies, then gross delivery from documented efficiency/losses; rain-fed delivery may be zero."
           amount:
             expression: "Metered or documented water-balance volume delivered to the crop cycle"
             value_mode: "foreground_record"
@@ -298,16 +386,7 @@ process_inventory:
               source_ids:
                 - fao-crop-water-needs-onion
                 - fao-56-crop-evapotranspiration
-            ranges:
-              - role: qa_guardrail
-                lower: "3500"
-                upper: "5500"
-                unit: "m3/ha per onion crop cycle"
-                basis: "one hectare over an onion crop cycle; convert to the PCR reference flow using measured area and output"
-                basis_kind: "crop_cycle"
-                evidence_kind: "external_source"
-                source_ids:
-                  - fao-crop-water-needs-onion
+            ranges: []
         - row_id: water_resource_withdrawal
           role: "Water withdrawn from the declared natural or municipal source"
           name: "Water resource withdrawal"
@@ -443,10 +522,10 @@ process_inventory:
                 - ipcc-2019-managed-soils-n2o
             ranges:
               - role: qa_guardrail
-                lower: "0.002"
+                lower: "0"
                 upper: "0.019"
                 unit: "kg N2O-N per kg N input"
-                basis: "per kg applied or otherwise modelled N input"
+                basis: "Select a documented family: aggregate EF1 0.010 (uncertainty 0.002–0.018); wet synthetic N 0.016 (0.013–0.019); wet other N 0.006 (0.001–0.011); dry all N 0.005 (0–0.011), in kg N2O-N/kg N. The combined 0–0.019 is contextual only, not a universal factor or statistical interval."
                 basis_kind: "n_input"
                 evidence_kind: "external_source"
                 source_ids:
@@ -796,16 +875,16 @@ process_inventory:
                 basis_kind: "reference_flow"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: packaging_materials
-          role: "Packaging materials used inside the declared boundary"
-          name: "Packaging materials for onion dispatch"
+        - row_id: packaging_materials_wood_crate
+          role: "Wooden crate"
+          name: "Wooden crate"
           flow_type: "product"
-          property_unit: "Mass / kg packaging material"
-          description: "Record packaging materials only when packing is included in the farm-gate boundary. Retain material type, mass, reuse status and destination of discarded packaging. Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for packaging_materials.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record packaging materials only when packing is included in the farm-gate boundary. Retain material type, mass, reuse status and destination of discarded packaging. Raw activity or stage basis: per 1,000 kg marketable farm-gate onion bulbs. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
           amount:
-            expression: "Measured packaging mass allocated to packed marketable onion output"
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
-            specificity: "product_specific"
+            specificity: "site_specific"
             basis:
               text: "per declared reference flow"
               kind: "reference_flow"
@@ -814,15 +893,48 @@ process_inventory:
               collection_protocol_id: cp_packaging_records
               source_ids:
                 - codex-cxs-348-onions-2022
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "100"
-                unit: "kg packaging per 1,000 kg output"
-                basis: "per 1,000 kg marketable farm-gate onion bulbs"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+                - fao-package-identities
+            ranges: []
+        - row_id: packaging_materials_corrugated_box
+          role: "Corrugated fibreboard box"
+          name: "Corrugated fibreboard box"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - codex-cxs-348-onions-2022
+                - fao-package-identities
+            ranges: []
+        - row_id: packaging_materials_pe_film
+          role: "Polyethylene wrapping film"
+          name: "Polyethylene wrapping film"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_packaging_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_packaging_records
+              source_ids:
+                - codex-cxs-348-onions-2022
+                - fao-package-identities
+            ranges: []
       waste:
         []
       elementary:
@@ -831,8 +943,10 @@ process_inventory:
       product:
         - row_id: farm_gate_marketable_onion_bulbs
           role: "Marketable fresh dry-bulb onion at farm gate"
-          name: "Marketable fresh dry-bulb onion at farm gate"
+          name: "Onions"
           flow_type: "product"
+          flow_ref:
+            uuid: "9a7c27da-f086-4d97-a251-b1989ad5d312"
           property_unit: "Mass / kg"
           description: "Record the final marketable onion output after all conditioning or storage included in the declared boundary. Declare the quality, size, grade, moisture and storage state that identify the reference product. Raw output measurement and reconciliation: 1,000 kg reference output after the included harvest, curing, conditioning and storage steps Raw activity or stage basis: 1,000 kg reference output."
           amount:
@@ -919,6 +1033,10 @@ allocation_rules:
     rule: "Allocate shared conditioning, packing and storage inputs by mass of handled output, with storage duration retained when energy depends on time."
     source_ids:
       - iso-14044-2006-allocation
+  - rule_id: allocation_rule_4
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_planting_material_records
@@ -1207,21 +1325,33 @@ data_sources:
     type: "standard"
     reference: "ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines, https://www.iso.org/standard/38498.html"
     used_for: "Subdivision, allocation, co-product handling and burden reconciliation"
+  - id: "fao-fertilizer-identities"
+    type: "official_guidance"
+    reference: "FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-organic-nutrients"
+    type: "official_guidance"
+    reference: "FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-package-identities"
+    type: "official_guidance"
+    reference: "FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:ac9326facf6ebe1251e0b203357209cb1b7b111fa132dc5d3aa34c670bf42d32"
+  source_sha256: "sha256:23478cac91e87b9794bf50aaad4580c0178357418ddc8477d6ed2fdeea978b4f"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5010"
+    - unit_id: "normative_5526"
       family: "system_boundary"
       span:
         start:
-          offset: 5010
-          line: 57
+          offset: 5526
+          line: 59
           column: 1
         end:
-          offset: 8189
-          line: 79
+          offset: 8705
+          line: 81
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | The declared crop cycle starts when seed, sets or transplants, the occupied field or protected unit, and the first operation records enter the foreground system. Existing soil, inherited land history and prior-crop burdens are not silently re-created. |\n| starting_condition_role | Foreground production begins at establishment and includes operations, inputs, land occupation, crop emissions, harvest and field curing required to produce the declared farm-gate bulbs. |\n| product_classification_scope | Fresh market dry-bulb onions of *Allium cepa* L. Cepa group at farm gate; green onions, shallots and industrial-processing bulbs are outside this product boundary. |\n| recursive_input_rule | If onion sets or other same-category planting material are used, record the material as a product input with its source lot and use in the current crop cycle. Do not recursively expand another onion production cycle inside this PCR. |\n| upstream_dataset_requirement | Link upstream or background datasets for planting material, fertilizer or soil amendment products, crop-protection products, supplied water, fuels, electricity, packaging and treatment services when they are used. Declare provider, geography, time and technology where available. |\n| disclosure | Declare crop form, cultivar or commercial type, colour, production system, geography, field or protected-unit area, crop-cycle dates, planting-material route, irrigation and nutrient records, crop-protection records, harvest and curing state, quality grade, moisture basis, residue destination and any included conditioning, packing or storage. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_rule_1` | foreground production boundary | Include establishment, crop management, harvest and field curing through the declared farm-gate output. Include on-site conditioning or storage only when the operation and its inputs cross the stated boundary. | `codex-cxs-348-onions-2022` |\n| `boundary_rule_2` | product inputs and upstream links | Record purchased or retained planting material, applied fertilizer or soil amendments, crop-protection products, supplied irrigation water, fuel, electricity, packaging and treatment services when they cross the foreground boundary; link their upstream burdens as declared background inputs. | `codex-cxc-53-hygiene-fresh-fruit-vegetables-2003` |\n| `boundary_rule_3` | land and inherited conditions | Report crop-cycle land occupation. Report land transformation only for a change occurring in the represented period, and disclose inherited soil, land history and prior-crop conditions without inventing a new transformation event. | `ipcc-2019-managed-soils-n2o` |\n| `boundary_rule_4` | field emissions and residues | Derive soil-emission rows from the declared nitrogen inputs, residue handling and applicable water-loss pathways. Record residue removal, treatment or disposal only when it crosses the boundary, and prevent duplicate accounting of the same nitrogen pathway. | `ipcc-2019-managed-soils-n2o` |\n\n"
       headings:
@@ -1240,12 +1370,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5010
-              line: 57
+              offset: 5526
+              line: 59
               column: 1
             end:
-              offset: 5031
-              line: 57
+              offset: 5547
+              line: 59
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1260,18 +1390,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_44403"
+    - unit_id: "normative_53875"
       family: "allocation"
       span:
         start:
-          offset: 44403
-          line: 866
+          offset: 53875
+          line: 954
           column: 1
         end:
-          offset: 45412
-          line: 876
+          offset: 55272
+          line: 966
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n### Allocation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_rule_1` | shared field and harvest operations | Subdivide operations when separate records exist for onion cultivars, products or destinations. When subdivision is not possible, allocate shared burdens by measured mass of marketable bulbs and co-products at the point of separation. | `iso-14044-2006-allocation` |\n| `allocation_rule_2` | culls and crop residues | Treat culls and residues as co-products or wastes according to their documented destination. Do not apply a credit or substitution claim unless the receiving product, displaced function and evidence are explicitly documented. | `iso-14044-2006-allocation` |\n| `allocation_rule_3` | conditioning, packing and storage | Allocate shared conditioning, packing and storage inputs by mass of handled output, with storage duration retained when energy depends on time. | `iso-14044-2006-allocation` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n### Allocation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_rule_1` | shared field and harvest operations | Subdivide operations when separate records exist for onion cultivars, products or destinations. When subdivision is not possible, allocate shared burdens by measured mass of marketable bulbs and co-products at the point of separation. | `iso-14044-2006-allocation` |\n| `allocation_rule_2` | culls and crop residues | Treat culls and residues as co-products or wastes according to their documented destination. Do not apply a credit or substitution claim unless the receiving product, displaced function and evidence are explicitly documented. | `iso-14044-2006-allocation` |\n| `allocation_rule_3` | conditioning, packing and storage | Allocate shared conditioning, packing and storage inputs by mass of handled output, with storage duration retained when energy depends on time. | `iso-14044-2006-allocation` |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1288,12 +1418,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 44403
-              line: 866
+              offset: 53875
+              line: 954
               column: 1
             end:
-              offset: 44443
-              line: 866
+              offset: 53915
+              line: 954
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1308,16 +1438,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_57126"
+    - unit_id: "normative_66986"
       family: "validation"
       span:
         start:
-          offset: 57126
-          line: 919
+          offset: 66986
+          line: 1009
           column: 1
         end:
-          offset: 58976
-          line: 930
+          offset: 68836
+          line: 1020
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_rule_1` | reference flow | Confirm that the reference amount is 1,000 kg and that product identity, maturity, moisture, grade, size, geography, crop cycle and included conditioning qualifiers are present. | `codex-cxs-348-onions-2022` |\n| `validation_rule_2` | process map and inventory | Confirm that every required process has an inventory section and that each flow card has a direction, flow type, amount rule, value mode, specificity, basis kind, evidence kind and collection protocol when required. |  |\n| `validation_rule_3` | nutrient and emission completeness | For every applied nutrient product, confirm documented nutrient content and a non-duplicated calculation of direct N2O, volatilization and leaching/runoff pathways when those pathways occur. | `ipcc-2019-managed-soils-n2o` |\n| `validation_rule_4` | irrigation and water withdrawal | Confirm that delivered irrigation and source withdrawal are separate, source and field are identified, and any ETc or water-balance estimate retains its assumptions and units. | `fao-56-crop-evapotranspiration`, `fao-crop-water-needs-onion` |\n| `validation_rule_5` | output mass balance | Confirm lot-level reconciliation of harvested bulbs, marketable output, culls, residues, conditioning rejects, storage losses and declared destinations. Investigate unexplained negative or excess balances. | `iso-14044-2006-allocation` |\n| `validation_rule_6` | quality and hygiene disclosure | Where the farm-gate state is described as fresh market produce, check the declared whole, firm, sound, clean, mature and sufficiently dry state and any applicable hygiene, pesticide-residue and contaminant disclosure. | `codex-cxs-348-onions-2022`, `codex-cxc-53-hygiene-fresh-fruit-vegetables-2003` |\n\n"
       headings:
@@ -1336,12 +1466,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 57126
-              line: 919
+              offset: 66986
+              line: 1009
               column: 1
             end:
-              offset: 57148
-              line: 919
+              offset: 67008
+              line: 1009
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1360,220 +1490,233 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_rule_1"
       identity_kind: "explicit"
-      unit_id: "normative_5010"
+      unit_id: "normative_5526"
       source_span:
         start:
-          offset: 6822
-          line: 74
+          offset: 7338
+          line: 76
           column: 1
         end:
-          offset: 7118
-          line: 74
+          offset: 7634
+          line: 76
           column: 297
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_rule_2"
       identity_kind: "explicit"
-      unit_id: "normative_5010"
+      unit_id: "normative_5526"
       source_span:
         start:
-          offset: 7119
-          line: 75
+          offset: 7635
+          line: 77
           column: 1
         end:
-          offset: 7523
-          line: 75
+          offset: 8039
+          line: 77
           column: 405
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_rule_3"
       identity_kind: "explicit"
-      unit_id: "normative_5010"
+      unit_id: "normative_5526"
       source_span:
         start:
-          offset: 7524
-          line: 76
+          offset: 8040
+          line: 78
           column: 1
         end:
-          offset: 7842
-          line: 76
+          offset: 8358
+          line: 78
           column: 319
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_rule_4"
       identity_kind: "explicit"
-      unit_id: "normative_5010"
+      unit_id: "normative_5526"
       source_span:
         start:
-          offset: 7843
-          line: 77
+          offset: 8359
+          line: 79
           column: 1
         end:
-          offset: 8187
-          line: 77
+          offset: 8703
+          line: 79
           column: 345
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "explicit"
-      unit_id: "normative_44403"
+      unit_id: "normative_53875"
       source_span:
         start:
-          offset: 44538
-          line: 872
+          offset: 54010
+          line: 960
           column: 1
         end:
-          offset: 44866
-          line: 872
+          offset: 54338
+          line: 960
           column: 329
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_rule_2"
       identity_kind: "explicit"
-      unit_id: "normative_44403"
+      unit_id: "normative_53875"
       source_span:
         start:
-          offset: 44867
-          line: 873
+          offset: 54339
+          line: 961
           column: 1
         end:
-          offset: 45174
-          line: 873
+          offset: 54646
+          line: 961
           column: 308
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rule_3"
       identity_kind: "explicit"
-      unit_id: "normative_44403"
+      unit_id: "normative_53875"
       source_span:
         start:
-          offset: 45175
-          line: 874
+          offset: 54647
+          line: 962
           column: 1
         end:
-          offset: 45410
-          line: 874
+          offset: 54882
+          line: 962
           column: 236
+    - pointer: "/allocation_rules/3"
+      rule_id: "allocation_rule_4"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_53875"
+      source_span:
+        start:
+          offset: 54884
+          line: 964
+          column: 1
+        end:
+          offset: 55270
+          line: 964
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "validation_rule_1"
       identity_kind: "explicit"
-      unit_id: "normative_57126"
+      unit_id: "normative_66986"
       source_span:
         start:
-          offset: 57221
-          line: 923
+          offset: 67081
+          line: 1013
           column: 1
         end:
-          offset: 57471
-          line: 923
+          offset: 67331
+          line: 1013
           column: 251
     - pointer: "/validation_rules/1"
       rule_id: "validation_rule_2"
       identity_kind: "explicit"
-      unit_id: "normative_57126"
+      unit_id: "normative_66986"
       source_span:
         start:
-          offset: 57472
-          line: 924
+          offset: 67332
+          line: 1014
           column: 1
         end:
-          offset: 57744
-          line: 924
+          offset: 67604
+          line: 1014
           column: 273
     - pointer: "/validation_rules/2"
       rule_id: "validation_rule_3"
       identity_kind: "explicit"
-      unit_id: "normative_57126"
+      unit_id: "normative_66986"
       source_span:
         start:
-          offset: 57745
-          line: 925
+          offset: 67605
+          line: 1015
           column: 1
         end:
-          offset: 58030
-          line: 925
+          offset: 67890
+          line: 1015
           column: 286
     - pointer: "/validation_rules/3"
       rule_id: "validation_rule_4"
       identity_kind: "explicit"
-      unit_id: "normative_57126"
+      unit_id: "normative_66986"
       source_span:
         start:
-          offset: 58031
-          line: 926
+          offset: 67891
+          line: 1016
           column: 1
         end:
-          offset: 58331
-          line: 926
+          offset: 68191
+          line: 1016
           column: 301
     - pointer: "/validation_rules/4"
       rule_id: "validation_rule_5"
       identity_kind: "explicit"
-      unit_id: "normative_57126"
+      unit_id: "normative_66986"
       source_span:
         start:
-          offset: 58332
-          line: 927
+          offset: 68192
+          line: 1017
           column: 1
         end:
-          offset: 58615
-          line: 927
+          offset: 68475
+          line: 1017
           column: 284
     - pointer: "/validation_rules/5"
       rule_id: "validation_rule_6"
       identity_kind: "explicit"
-      unit_id: "normative_57126"
+      unit_id: "normative_66986"
       source_span:
         start:
-          offset: 58616
-          line: 928
+          offset: 68476
+          line: 1018
           column: 1
         end:
-          offset: 58974
-          line: 928
+          offset: 68834
+          line: 1018
           column: 359
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5010"
+      unit_id: "normative_5526"
       source_span:
         start:
-          offset: 5010
-          line: 57
+          offset: 5526
+          line: 59
           column: 1
         end:
-          offset: 5031
-          line: 57
+          offset: 5547
+          line: 59
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5010"
+      unit_id: "normative_5526"
       source_span:
         start:
-          offset: 5059
-          line: 61
+          offset: 5575
+          line: 63
           column: 1
         end:
-          offset: 6729
-          line: 68
+          offset: 7245
+          line: 70
           column: 362
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_44403"
+      unit_id: "normative_53875"
       source_span:
         start:
-          offset: 44403
-          line: 866
+          offset: 53875
+          line: 954
           column: 1
         end:
-          offset: 44443
-          line: 866
+          offset: 53915
+          line: 954
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_57126"
+      unit_id: "normative_66986"
       source_span:
         start:
-          offset: 57126
-          line: 919
+          offset: 66986
+          line: 1009
           column: 1
         end:
-          offset: 57148
-          line: 919
+          offset: 67008
+          line: 1009
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1582,5 +1725,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:ac9326facf6ebe1251e0b203357209cb1b7b111fa132dc5d3aa34c670bf42d32"
-  generated_content_sha256: "sha256:fe669da878b179a305015456a35ba33fe8c1ce04393cbe8c944608f955a485fc"
+    sha256: "sha256:23478cac91e87b9794bf50aaad4580c0178357418ddc8477d6ed2fdeea978b4f"
+  generated_content_sha256: "sha256:263d9f33ddb878bfb04953626fef69a39ee82416dd7db63afe25c7f42607c592"

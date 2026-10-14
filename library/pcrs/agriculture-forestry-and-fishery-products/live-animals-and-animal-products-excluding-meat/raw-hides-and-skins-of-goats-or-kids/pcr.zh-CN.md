@@ -533,29 +533,40 @@ sync_with: pcr.en-US.md
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 实际冷藏或干燥的能源 (`preservation_energy`)
+###### 设备供电点的电力（`preservation_energy_electricity`）
+
+**preservation_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 防腐中实际使用的电、燃料或其他能源载体.
-
 分母与范围要求：每实际记录批次；最终结果按 1 kg 净销售原皮归一
 
-- 选定流：防腐中实际使用的电、燃料或其他能源载体（UUID 未解析）
-- 流属性/单位：Energy / kWh
-- 数量规则：按载体与期间计量；未实施能源干预时省略。
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_preservation` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
 - 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：路线特定（`route_specific`）
-- 归一化基准：每参考流
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preservation`
-- 数量范围：暂定完整性筛查，不是默认产率
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限: 0
-  - 上限: 1000000
-  - 单位: kWh per lot
-  - 基准: 每批实际测量质量或服务量，仅初步筛查
-  - 基准类型：过程输出（`process_output`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
+
+###### 供应设备的柴油（`preservation_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_preservation` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_preservation`
+- 来源：`fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -744,6 +755,8 @@ sync_with: pcr.en-US.md
 | `grade_and_state` | 分选和防腐 | 合格及降级等级仅在实际独立销售时构成不同产品；淘汰皮、废盐水及修边料按实测去向处置。损失不得抵作可销售产出。 | `fao-hides` |
 | `shared_period` | 共享场址与容器 | 依据实测工时或吞吐量，在实际使用节点、批次和期间间分摊房间、防腐架、计量表及复用容器负担；每项服务只计一次并披露方法。 | `fao-hides` |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 ### Data Collection Protocols
@@ -781,6 +794,7 @@ sync_with: pcr.en-US.md
 | `route_balance` | 各节点 | 按批次标识及实测质量从剥皮追踪至唯一最终交接；协调合格、降级、淘汰、留存盐、游离盐水及可解释的水分变化。 | `fao-small-ruminant` |
 | `outputs_periods` | 分配 | 核实真实肉／乳／纤维／繁殖产品集、期间、共享使用节点与分配份额；禁止默认零／全皮负担和重复计入。 | `fao-hides` |
 | `identity_resolution` | 具体数据集交换 | 形成最终交换前将每项未解析产品／废物流／基本流身份核实至与状态和交接点相容的详情流；待确认流身份 只是暂定范围而非 UUID。 |  |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
 
 ## 10. 发布数据集画像
 
@@ -801,3 +815,4 @@ sync_with: pcr.en-US.md
 | `un-cpc-3` | `official_guidance` | [联合国 CPC 3.0 解释说明](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | 原皮分类与加工品边界 |
 | `fao-small-ruminant` | `official_guidance` | [FAO，小反刍动物屠宰手册，第 10 章](https://www.fao.org/4/X6552E/X6552E10.htm) | 实际剥皮、初步防腐及残余物 |
 | `fao-hides` | `official_guidance` | [FAO，Hides and Skins](https://www.fao.org/4/i0523e/i0523e.pdf) | 原皮收集、质量、分级与防腐 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

@@ -4,8 +4,8 @@ source_markdown: pcr.en-US.md
 product_category_identity:
   canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.live-animals-and-animal-products-excluding-meat.raw-milk-of-camel"
   classification_refs: "CPC 3.0 02293"
-  covered_products: "Raw dromedary and Bactrian milk at actual producing-herd handover"
-  excluded_products: "Pasteurized, fermented, separated, skimmed or formulated milk; collection-centre work and later transport"
+  covered_products: "Raw dromedary and Bactrian milk at actual producing-herd handover; unskimmed/not partly skimmed, measured milk-fat mass fraction at least 3.5% (35 g/kg milk)"
+  excluded_products: "Pasteurized, fermented, separated, skimmed or formulated milk; collection-centre work and later transport; milk with fat content below 3.5%, skimmed or partly skimmed milk"
   representative_product: "1 kg net raw camel milk at declared herd gate"
   production_route: "Managed herd followed by independent milking capture; mobile pastoral and fixed housed/intensive management use mutually exclusive animal-day records. Conditional first conditioning and cooling are distinct."
   market_state: "Warm or on-herd chilled; disclose species, gate, temperature and conditioning"
@@ -68,9 +68,19 @@ reference_flow_definition:
     - "milking method"
     - period
     - "measured density if converting volume"
+    - "unskimmed/not partly skimmed"
+    - "measured milk-fat mass fraction at least 3.5% (35 g/kg milk)"
+    - "with lot-matched assay method and sampling date"
 reference_flows:
   []
 measurement_rules:
+  - id: cpc_milk_scope
+    applies_to: "final reference milk"
+    required_property_ref:
+      name: "Milk-fat mass fraction, wet-milk basis"
+      uuid: ""
+    required_unit: "% or g/kg milk"
+    rule: "Verify at least 3.5% (35 g/kg) on a sample matched to the actual handover lot, with method, sampling date and skimmed/not-skimmed state. Below-threshold or skimmed/partly skimmed milk is outside the declared CPC-linked scope. Missing or incomparable composition evidence prevents a classification claim; never assume eligibility from species, breed or a default fat content. This condition does not change net-mass normalization."
   - id: net_mass
     applies_to: "reference milk"
     required_property_ref:
@@ -153,9 +163,9 @@ process_inventory:
           name: "Camel feed or grazed biomass (UUID unresolved)"
           flow_type: "product"
           property_unit: "Mass / kg dry matter"
-          description: "Actual dry-matter intake by route and animal phase. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Obtain by event, route and period, then normalize to kg DM/kg milk. Original collection denominator kind: reference_flow."
+          description: "Record feed-supply dry matter, actual dry-matter intake and losses separately by route and animal phase. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Use separate feed-supply, intake and loss ledgers under calc_feed_supply_and_intake. The quantity carrying feed-production burden includes in-boundary refusals, spoilage and uneaten feed; it is not reduced to animal intake. Retain source, species/cohort, phase and original mass/moisture basis. Calculate the final contribution with inventory_reference_normalization and stage_throughput_linkage exactly once. Original collection denominator kind: reference_flow."
           amount:
-            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
+            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -381,7 +391,7 @@ process_inventory:
           flow_ref:
             uuid: "08a91e70-3ddc-11dd-94c3-0050c2490048"
           property_unit: "Mass / kg"
-          description: "Calculate direct manure-system N2O from actual nitrogen excretion, system and IPCC method; avoid double counting managed soils. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Apply selected method to herd-class and manure-stage records, normalized to net milk. Original collection denominator kind: reference_flow."
+          description: "Calculate direct and applicable indirect N2O separately from actual nitrogen excretion, management system and an applicable IPCC method; avoid double counting managed soils. Coverage of this single N2O card: use calc_manure_n2o_coverage to calculate direct and applicable indirect components separately for the represented node, then report only their non-overlapping molecular-N2O sum assigned to this card. Keep storage and managed-soil calculations distinct. Exclude components explicitly covered by a linked process, retain the coverage evidence, and do not duplicate them as both aggregate and component exchanges. Missing indirect-pathway evidence is not zero. Denominator and scope requirements：per kg net producer-gate milk Raw quantity and calculation requirements: Apply selected method to herd-class and manure-stage records, normalized to net milk. Original collection denominator kind: reference_flow."
           amount:
             expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
             value_mode: "calculated_value"
@@ -917,7 +927,7 @@ process_inventory:
           name: "Raw camel milk at mobile-camp or fixed-farm herd gate for actual producer-handover linkage"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "This input matches the accepted goods represented by warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk Required product-instance qualifiers: species; mobile or fixed gate; warm/chilled temperature; conditioning; milking method; period; measured density if converting volume"
+          description: "This input matches the accepted goods represented by warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk under their unchanged route conditions. It is an internal source-to-handover linkage, not a newly purchased same-category good and not extra production. The matching source and input cancel at the package boundary. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk Required product-instance qualifiers: species; mobile or fixed gate; warm/chilled temperature; conditioning; milking method; period; measured density if converting volume; unskimmed/not partly skimmed; measured milk-fat mass fraction at least 3.5% (35 g/kg milk), with lot-matched assay method and sampling date"
           amount:
             expression: "Use measured accepted same-lot quantity reconciled to the linked source rows; normalize once to the declared reference flow."
             value_mode: "calculated_value"
@@ -949,7 +959,7 @@ process_inventory:
           name: "Raw camel milk at mobile-camp or fixed-farm herd gate"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk Required product-instance qualifiers: species; mobile or fixed gate; warm/chilled temperature; conditioning; milking method; period; measured density if converting volume"
+          description: "This is the actual accepted reference product at the declared producer boundary, measured under cp_reference_handover. It is the sole external reference output; instantiate its real identity from the lot, not a broad fixed UUID. The actual route/state/gate is selected from foreground handover evidence; retain every required qualifier. Use the actual terminal source for the same accepted physical lot, not every successive stage transfer. Fixed source identities apply only to their exact species/state/gate; use an unbound compatible source role for other covered routes and resolve the actual foreground exchange before final dataset creation. Selected source/interface rows: warm_gate_milk, chilled_mobile_gate_milk, chilled_farm_gate_milk Required product-instance qualifiers: species; mobile or fixed gate; warm/chilled temperature; conditioning; milking method; period; measured density if converting volume; unskimmed/not partly skimmed; measured milk-fat mass fraction at least 3.5% (35 g/kg milk), with lot-matched assay method and sampling date"
           amount:
             expression: "1 kg"
             value_mode: "calculated_value"
@@ -1002,7 +1012,7 @@ dataset_production:
       flow_role: "herd inputs and outputs"
       record_type: "herd log"
       raw_fields: "species; class; route; phase; animal-days; feed; grazing; water; fuel; births; culls; manure; mortality"
-      collection_method: "weigh, meter, dated register; Raw aggregation requirements: partition by route and period. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again."
+      collection_method: "weigh, meter, dated register; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output."
       unit: "kg; m3; MJ; head; day"
       frequency: "daily/event"
       temporal_coverage: "full supporting period"
@@ -1069,6 +1079,30 @@ dataset_production:
       site_scope: "declared producer gate only"
       aggregation_rule: "per reference flow"
       quality_evidence: "traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet"
+    - protocol_id: cp_feed_supply_and_intake
+      process_id: "herd_management"
+      flow_role: "Feed supply, intake and loss"
+      record_type: "stock, receipt, issue and loss ledger"
+      raw_fields: "feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output"
+      collection_method: "Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output."
+      unit: "kg as-fed; kg DM"
+      frequency: "each issue and period close"
+      temporal_coverage: "complete represented cohort/period"
+      site_scope: "actual operated feeding nodes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "stock and supplier records; moisture evidence; loss and no-duplication reconciliation"
+    - protocol_id: cp_manure_n2o_coverage
+      process_id: "herd_management"
+      flow_role: "Direct and indirect manure/soil N2O coverage"
+      record_type: "pathway N ledger and method worksheet"
+      raw_fields: "species/class; period; excreted N; stage stocks/transfers; system shares; volatilised NH3-N/NOx-N; leached/runoff N; application/grazing N; factor source, unit and applicability; direct/indirect components; receiving medium; linked process and assigned card; accepted final output"
+      collection_method: "Retain raw stage N and component calculations under calc_manure_n2o_coverage, matched to actual operation and existing manure protocols. Document unsupported or inapplicable paths and coverage boundaries; normalize attributable N2O once."
+      unit: "kg N; kg N2O"
+      frequency: "each reporting period and management change"
+      temporal_coverage: "complete represented management period"
+      site_scope: "actual operated and explicitly linked nodes"
+      aggregation_rule: "per reference flow"
+      quality_evidence: "N balance, factor unit/applicability, component-to-card and no-duplication worksheet"
   calculation_rules:
     - id: net_yield
       applies_to: "final milk"
@@ -1115,6 +1149,23 @@ dataset_production:
       output: "burden/kg milk"
       source_ids:
         - fao-camel-dairy
+    - id: calc_feed_supply_and_intake
+      applies_to: "herd_feed"
+      rule: "Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden."
+      inputs:
+        - cp_feed_supply_and_intake
+      output: "separate feed supply, intake and loss quantities, in matched as-fed/DM units"
+      source_ids:
+        - fao-feed-loss-accounting-2018
+    - id: calc_manure_n2o_coverage
+      applies_to: "manure_n2o"
+      rule: "For each actual manure stage, calculate direct N2O, volatilisation/deposition-derived indirect N2O, and applicable leaching/runoff-derived indirect N2O separately with documented species/system activity and factor basis. Convert N2O-N to molecular N2O by 44/28 once; do not reconvert molecular masses. Retain component worksheets. Where an existing N2O card covers both direct and indirect emissions, report their non-overlapping sum; where separate direct/indirect cards exist, assign each component once to its matching card and never also report the sum. Pasture deposition and land application use the managed-soil method, not a manure-storage factor. Assign foreground versus linked treatment/pasture coverage explicitly; a manure export does not erase earlier emissions, and already covered downstream emissions are not repeated. Account for stock, transfers and previous N losses in the nitrogen cascade; indirect N2O is a downstream transformation of its precursor, not a second source-stage N loss. Normalize attributed molecular masses once to the accepted reference output. Document inapplicability; absent pathway data are not zero."
+      inputs:
+        - cp_manure_n2o_coverage
+      output: "kg molecular N2O by pathway and assigned existing card"
+      source_ids:
+        - ipcc-livestock-2019
+        - ipcc-managed-soils-2019
   data_quality_requirements:
     - id: gate_identity
       applies_to: "final product"
@@ -1133,6 +1184,11 @@ dataset_production:
       requirement: "Retain calibration, density conversion, estimates and method version; ranges do not replace data."
       evidence: "QA records"
 validation_rules:
+  - rule_id: v_cpc_milk_scope
+    applies_to: "final reference product and classification"
+    rule: "Check the lot-matched measured milk-fat fraction is at least 3.5% (35 g/kg milk) and that the milk is neither skimmed nor partly skimmed. Reject use of this exact CPC-linked scope for lower-fat or separated milk; missing evidence leaves classification eligibility undetermined, not assumed. Do not reinterpret this as a quality acceptance limit or change the actual composition."
+    source_ids:
+      - un-cpc-3-02293
   - rule_id: v_gate
     applies_to: "reference milk"
     rule: "Reject the fixed chilled-farm UUID for warm, mobile, unspecified-gate or processed milk. Broad reference remains unbound."
@@ -1161,6 +1217,21 @@ validation_rules:
     rule: "Provisional reasoned ranges are screening guardrails only, not measured defaults or acceptance limits."
     source_ids:
       - mass-balance-identity
+  - rule_id: v_foreground_emission_responsibility
+    applies_to: "Actual operated nodes and linked services"
+    rule: "Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting."
+    source_ids: []
+  - rule_id: v_feed_supply_intake_separation
+    applies_to: "All feed inputs"
+    rule: "Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits."
+    source_ids:
+      - fao-feed-loss-accounting-2018
+  - rule_id: v_manure_n2o_coverage
+    applies_to: "Applicable manure and managed-soil N pathways"
+    rule: "Require explicit direct and indirect pathway coverage, stage N balances and molecular-mass conversion. Map each component to an existing N2O card or an explicitly covering linked process once under calc_manure_n2o_coverage. Missing indirect-pathway evidence prevents a completeness claim; no default zero or duplicate aggregate-plus-components."
+    source_ids:
+      - ipcc-livestock-2019
+      - ipcc-managed-soils-2019
 published_dataset_profile:
   dataset_role: "Producing-herd foreground raw camel milk"
   downstream_use: "secondary_dataset; background_dataset only for matching route and gate"
@@ -1170,6 +1241,10 @@ published_dataset_profile:
   required_quality_disclosure: "primary-data coverage, inferred calf share, loss balance, shared-service shares, emission method, UUID gaps"
   update_trigger: "Changed species, route, gate, cooling, co-products or significant activity evidence"
 data_sources:
+  - id: "un-cpc-3-02293"
+    type: "official_guidance"
+    reference: "[UN Statistics Division, CPC 3.0 02293: explanatory note](https://unstats.un.org/unsd/classifications/Econ/Structure/Detail/EN/2100/02293)"
+    used_for: "Species-specific classification scope and low-fat/skimmed/partly skimmed exclusion; not a general quality or emission threshold"
   - id: "un-cpc-3"
     type: "official_guidance"
     reference: "[UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf)"
@@ -1190,21 +1265,29 @@ data_sources:
     type: "standard"
     reference: "Conservation of mass: input = retained plus losses"
     used_for: "milk QA identity"
+  - id: "fao-feed-loss-accounting-2018"
+    type: "official_guidance"
+    reference: "[FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf)"
+    used_for: "Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred."
+  - id: "ipcc-managed-soils-2019"
+    type: "official_guidance"
+    reference: "[IPCC 2019 Refinement, Volume 4, Chapter 11](https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf)"
+    used_for: "Direct/indirect nitrogen pathways and coordination of manure storage with managed-soil emissions; select applicable species and management evidence."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:79f5516ae5a85b277462daaa800665f01bd16d7e01d3abaf924d40c5e9143d4e"
+  source_sha256: "sha256:ded0c2d648a2424e8afebbf7707b2ff5761be45e89ffaf8cbd0d36c54c3e92aa"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_6109"
+    - unit_id: "normative_7558"
       family: "system_boundary"
       span:
         start:
-          offset: 6109
-          line: 57
+          offset: 7558
+          line: 60
           column: 1
         end:
-          offset: 8435
-          line: 80
+          offset: 9884
+          line: 83
           column: 1
       markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Managed breeding and lactating herd at actual camp/pasture or fixed farm; acquired animals and feed disclosed. |\n| starting_condition_role | Biological milk production, not dairy processing. |\n| product_classification_scope | CPC 3.0 `02293`. |\n| recursive_input_rule | Purchased raw camel milk remains a traced upstream input, not merged with own-herd yield. |\n| upstream_dataset_requirement | Distinct datasets for purchased animals, feed, energy, water service and materials with origin. |\n| disclosure | Species, route, actual gate, herd phases, calf share, manure, losses, cooling and independent outputs. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `gate` | all routes | End at actual herd-to-buyer handover; mobile camp is not assumed fixed farm. Exclude later transport and centre work. | `un-cpc-3`; `fao-camel-dairy` |\n| `route_delta` | herd | Mobile management records grazing and moved water/fuel; housed management records delivered feed, pumping, shelter and managed manure. Partition mixed-herd days. | `fao-camel-dairy`; `fao-camel-production` |\n| `raw_state` | milk | Separate collected warm, prepared warm and cooled milk. Straining and cooling occur only with batch evidence; no heat treatment. | `fao-camel-production` |\n| `shared_asset` | nodes | Allocate well, pump, vehicle, shelter, milking equipment or cooler to actual consumers and service periods once. | `fao-camel-dairy` |\n| `reference_handover_linkage` | actual reference-product boundary | Record reference_handover as the same physical producer handover already represented by its source rows. It must not extend the gate or insert new processing, capture, storage, transport, service or capital burdens. For a unit-process projection, keep the actually operated stage references; the handover record may be a boundary interface in the resulting foreground package, not an invented standalone operation. Select one actual qualified route/output stratum; trace matching source and input as internal transfers and expose the accepted reference product once. If the source already ended at this gate, partition its existing handover responsibility without counting it again. |  |\n\n"
       headings:
@@ -1223,12 +1306,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 6109
-              line: 57
+              offset: 7558
+              line: 60
               column: 1
             end:
-              offset: 6130
-              line: 57
+              offset: 7579
+              line: 60
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1243,15 +1326,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_51265"
+    - unit_id: "normative_53902"
       family: "allocation"
       span:
         start:
-          offset: 51265
+          offset: 53902
           line: 961
           column: 1
         end:
-          offset: 52558
+          offset: 55195
           line: 970
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `output_set` | herd and handover | Enumerate raw milk, independently sold/transferred calves and culls, and any marketed manure, dung fuel or fibre at first external handover. Own-herd suckling and retained replacements are internal; dead stock and discarded milk are waste. | `fao-camel-dairy` |\n| `allocation_precedence` | inseparable herd burden | Subdivide directly measured milking and calf-rearing services first. For inseparable herd burdens use a defensible documented biophysical relation, otherwise period-specific economic allocation with prices and sensitivity. Never assign all breeding/dry-period burden to milk or silently expand the system. | `fao-camel-dairy` |\n| `period_attribution` | herd periods | Link lactation, dry, pregnancy, calf-rearing and replacement periods to inputs, assets, births, deaths and outputs; allocate supporting-period burden once, with no universal annualization factor. | `fao-camel-production` |\n| `shared_service` | shared assets | List all consumers and service periods of wells, pumps, vehicles, shelters, milking devices and coolers. Apportion measured water, energy or runtime once and disclose proxies. | `fao-camel-dairy` |\n\n"
@@ -1271,11 +1354,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 51265
+              offset: 53902
               line: 961
               column: 1
             end:
-              offset: 51305
+              offset: 53942
               line: 961
               column: 41
           text: "## 7. Allocation and Co-product Handling"
@@ -1291,18 +1374,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_59625"
+    - unit_id: "normative_66286"
       family: "validation"
       span:
         start:
-          offset: 59625
-          line: 1002
+          offset: 66286
+          line: 1006
           column: 1
         end:
-          offset: 60637
-          line: 1012
+          offset: 69288
+          line: 1020
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_gate` | reference milk | Reject the fixed chilled-farm UUID for warm, mobile, unspecified-gate or processed milk. Broad reference remains unbound. | `un-cpc-3`; `fao-camel-dairy` |\n| `v_mass` | milk stages | Reconcile collected, calf-consumed, conditioned, chilled, rejected and handed-over milk, with one final output per batch. | `fao-camel-production`; `mass-balance-identity` |\n| `v_route` | mixed herd | Verify route-specific feed, water, energy, manure and mutually exclusive animal-days; conditional interventions need batch records. | `fao-camel-dairy`; `fao-camel-production` |\n| `v_attribution` | co-products and assets | Verify independent calves/culls, supporting periods and shared consumers; reject duplicate burdens. | `fao-camel-dairy` |\n| `v_range` | amount QA | Provisional reasoned ranges are screening guardrails only, not measured defaults or acceptance limits. | `mass-balance-identity` |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_cpc_milk_scope` | final reference product and classification | Check the lot-matched measured milk-fat fraction is at least 3.5% (35 g/kg milk) and that the milk is neither skimmed nor partly skimmed. Reject use of this exact CPC-linked scope for lower-fat or separated milk; missing evidence leaves classification eligibility undetermined, not assumed. Do not reinterpret this as a quality acceptance limit or change the actual composition. | `un-cpc-3-02293` |\n| `v_gate` | reference milk | Reject the fixed chilled-farm UUID for warm, mobile, unspecified-gate or processed milk. Broad reference remains unbound. | `un-cpc-3`; `fao-camel-dairy` |\n| `v_mass` | milk stages | Reconcile collected, calf-consumed, conditioned, chilled, rejected and handed-over milk, with one final output per batch. | `fao-camel-production`; `mass-balance-identity` |\n| `v_route` | mixed herd | Verify route-specific feed, water, energy, manure and mutually exclusive animal-days; conditional interventions need batch records. | `fao-camel-dairy`; `fao-camel-production` |\n| `v_attribution` | co-products and assets | Verify independent calves/culls, supporting periods and shared consumers; reject duplicate burdens. | `fao-camel-dairy` |\n| `v_range` | amount QA | Provisional reasoned ranges are screening guardrails only, not measured defaults or acceptance limits. | `mass-balance-identity` |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |\n| `v_manure_n2o_coverage` | Applicable manure and managed-soil N pathways | Require explicit direct and indirect pathway coverage, stage N balances and molecular-mass conversion. Map each component to an existing N2O card or an explicitly covering linked process once under calc_manure_n2o_coverage. Missing indirect-pathway evidence prevents a completeness claim; no default zero or duplicate aggregate-plus-components. | `ipcc-livestock-2019`; `ipcc-managed-soils-2019` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1319,12 +1402,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 59625
-              line: 1002
+              offset: 66286
+              line: 1006
               column: 1
             end:
-              offset: 59647
-              line: 1002
+              offset: 66308
+              line: 1006
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1343,233 +1426,285 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "gate"
       identity_kind: "explicit"
-      unit_id: "normative_6109"
+      unit_id: "normative_7558"
       source_span:
         start:
-          offset: 6927
-          line: 74
+          offset: 8376
+          line: 77
           column: 1
         end:
-          offset: 7102
-          line: 74
+          offset: 8551
+          line: 77
           column: 176
     - pointer: "/system_boundary/rules/1"
       rule_id: "route_delta"
       identity_kind: "explicit"
-      unit_id: "normative_6109"
+      unit_id: "normative_7558"
       source_span:
         start:
-          offset: 7103
-          line: 75
+          offset: 8552
+          line: 78
           column: 1
         end:
-          offset: 7335
-          line: 75
+          offset: 8784
+          line: 78
           column: 233
     - pointer: "/system_boundary/rules/2"
       rule_id: "raw_state"
       identity_kind: "explicit"
-      unit_id: "normative_6109"
+      unit_id: "normative_7558"
       source_span:
         start:
-          offset: 7336
-          line: 76
+          offset: 8785
+          line: 79
           column: 1
         end:
-          offset: 7514
-          line: 76
+          offset: 8963
+          line: 79
           column: 179
     - pointer: "/system_boundary/rules/3"
       rule_id: "shared_asset"
       identity_kind: "explicit"
-      unit_id: "normative_6109"
+      unit_id: "normative_7558"
       source_span:
         start:
-          offset: 7515
-          line: 77
+          offset: 8964
+          line: 80
           column: 1
         end:
-          offset: 7676
-          line: 77
+          offset: 9125
+          line: 80
           column: 162
     - pointer: "/system_boundary/rules/4"
       rule_id: "reference_handover_linkage"
       identity_kind: "explicit"
-      unit_id: "normative_6109"
+      unit_id: "normative_7558"
       source_span:
         start:
-          offset: 7677
-          line: 78
+          offset: 9126
+          line: 81
           column: 1
         end:
-          offset: 8433
-          line: 78
+          offset: 9882
+          line: 81
           column: 757
     - pointer: "/allocation_rules/0"
       rule_id: "output_set"
       identity_kind: "explicit"
-      unit_id: "normative_51265"
+      unit_id: "normative_53902"
       source_span:
         start:
-          offset: 51378
+          offset: 54015
           line: 965
           column: 1
         end:
-          offset: 51676
+          offset: 54313
           line: 965
           column: 299
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_precedence"
       identity_kind: "explicit"
-      unit_id: "normative_51265"
+      unit_id: "normative_53902"
       source_span:
         start:
-          offset: 51677
+          offset: 54314
           line: 966
           column: 1
         end:
-          offset: 52058
+          offset: 54695
           line: 966
           column: 382
     - pointer: "/allocation_rules/2"
       rule_id: "period_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_51265"
+      unit_id: "normative_53902"
       source_span:
         start:
-          offset: 52059
+          offset: 54696
           line: 967
           column: 1
         end:
-          offset: 52321
+          offset: 54958
           line: 967
           column: 263
     - pointer: "/allocation_rules/3"
       rule_id: "shared_service"
       identity_kind: "explicit"
-      unit_id: "normative_51265"
+      unit_id: "normative_53902"
       source_span:
         start:
-          offset: 52322
+          offset: 54959
           line: 968
           column: 1
         end:
-          offset: 52556
+          offset: 55193
           line: 968
           column: 235
     - pointer: "/validation_rules/0"
+      rule_id: "v_cpc_milk_scope"
+      identity_kind: "explicit"
+      unit_id: "normative_66286"
+      source_span:
+        start:
+          offset: 66381
+          line: 1010
+          column: 1
+        end:
+          offset: 66848
+          line: 1010
+          column: 468
+    - pointer: "/validation_rules/1"
       rule_id: "v_gate"
       identity_kind: "explicit"
-      unit_id: "normative_59625"
+      unit_id: "normative_66286"
       source_span:
         start:
-          offset: 59720
-          line: 1006
+          offset: 66849
+          line: 1011
           column: 1
         end:
-          offset: 59905
-          line: 1006
+          offset: 67034
+          line: 1011
           column: 186
-    - pointer: "/validation_rules/1"
+    - pointer: "/validation_rules/2"
       rule_id: "v_mass"
       identity_kind: "explicit"
-      unit_id: "normative_59625"
+      unit_id: "normative_66286"
       source_span:
         start:
-          offset: 59906
-          line: 1007
+          offset: 67035
+          line: 1012
           column: 1
         end:
-          offset: 60106
-          line: 1007
+          offset: 67235
+          line: 1012
           column: 201
-    - pointer: "/validation_rules/2"
+    - pointer: "/validation_rules/3"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_59625"
+      unit_id: "normative_66286"
       source_span:
         start:
-          offset: 60107
-          line: 1008
+          offset: 67236
+          line: 1013
           column: 1
         end:
-          offset: 60311
-          line: 1008
+          offset: 67440
+          line: 1013
           column: 205
-    - pointer: "/validation_rules/3"
+    - pointer: "/validation_rules/4"
       rule_id: "v_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_59625"
+      unit_id: "normative_66286"
       source_span:
         start:
-          offset: 60312
-          line: 1009
+          offset: 67441
+          line: 1014
           column: 1
         end:
-          offset: 60478
-          line: 1009
+          offset: 67607
+          line: 1014
           column: 167
-    - pointer: "/validation_rules/4"
+    - pointer: "/validation_rules/5"
       rule_id: "v_range"
       identity_kind: "explicit"
-      unit_id: "normative_59625"
+      unit_id: "normative_66286"
       source_span:
         start:
-          offset: 60479
-          line: 1010
+          offset: 67608
+          line: 1015
           column: 1
         end:
-          offset: 60635
-          line: 1010
+          offset: 67764
+          line: 1015
           column: 157
+    - pointer: "/validation_rules/6"
+      rule_id: "v_foreground_emission_responsibility"
+      identity_kind: "explicit"
+      unit_id: "normative_66286"
+      source_span:
+        start:
+          offset: 67765
+          line: 1016
+          column: 1
+        end:
+          offset: 68365
+          line: 1016
+          column: 601
+    - pointer: "/validation_rules/7"
+      rule_id: "v_feed_supply_intake_separation"
+      identity_kind: "explicit"
+      unit_id: "normative_66286"
+      source_span:
+        start:
+          offset: 68366
+          line: 1017
+          column: 1
+        end:
+          offset: 68812
+          line: 1017
+          column: 447
+    - pointer: "/validation_rules/8"
+      rule_id: "v_manure_n2o_coverage"
+      identity_kind: "explicit"
+      unit_id: "normative_66286"
+      source_span:
+        start:
+          offset: 68813
+          line: 1018
+          column: 1
+        end:
+          offset: 69286
+          line: 1018
+          column: 474
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_6109"
+      unit_id: "normative_7558"
       source_span:
         start:
-          offset: 6109
-          line: 57
+          offset: 7558
+          line: 60
           column: 1
         end:
-          offset: 6130
-          line: 57
+          offset: 7579
+          line: 60
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_6109"
+      unit_id: "normative_7558"
       source_span:
         start:
-          offset: 6158
-          line: 61
+          offset: 7607
+          line: 64
           column: 1
         end:
-          offset: 6834
-          line: 68
+          offset: 8283
+          line: 71
           column: 120
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_51265"
+      unit_id: "normative_53902"
       source_span:
         start:
-          offset: 51265
+          offset: 53902
           line: 961
           column: 1
         end:
-          offset: 51305
+          offset: 53942
           line: 961
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_59625"
+      unit_id: "normative_66286"
       source_span:
         start:
-          offset: 59625
-          line: 1002
+          offset: 66286
+          line: 1006
           column: 1
         end:
-          offset: 59647
-          line: 1002
+          offset: 66308
+          line: 1006
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1578,5 +1713,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:79f5516ae5a85b277462daaa800665f01bd16d7e01d3abaf924d40c5e9143d4e"
-  generated_content_sha256: "sha256:ee0bce67d6da0ac2ad5b0ce94b24b775f0fa43377d4cef6a5ef8b0ebe22736bc"
+    sha256: "sha256:ded0c2d648a2424e8afebbf7707b2ff5761be45e89ffaf8cbd0d36c54c3e92aa"
+  generated_content_sha256: "sha256:763e43fa6d0a76399d7bf12188bfa98929bce5251de5d12a5f5f2b70010211f7"

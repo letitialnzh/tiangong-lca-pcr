@@ -43,7 +43,6 @@ This PCR covers untreated non-conifer roundwood supplied at forest-roadside prod
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | actual non-conifer species/cohort; origin and management regime; intended other industrial use; dimensions/quality grade; roadside handover; bark state; moisture value and wet/dry basis; reporting interval; route and contractor scope |
-| Binding | `fixed` |
 
 ## 4. Measurement and Unit Rules
 
@@ -226,7 +225,6 @@ For evidenced managed non-conifer stands only, measure the merchantable stock pa
 
 - Selected flow: Standing timber (merchantable growing stock) `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Binding: `fixed`
 - Amount rule: Collect actual quantities under the linked protocol, attribute periods/outputs, and normalize separately by measured roadside reference mass. Evidence is required for non-applicability; missing is not zero.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
@@ -320,7 +318,6 @@ Use only for a managed forest or plantation starting condition with species/coho
 
 - Selected flow: Standing timber (merchantable growing stock) `43034c5e-4265-48bc-bd6d-eb64fb5dd78a`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Binding: `fixed`
 - Amount rule: Collect actual quantities under the linked protocol, attribute periods/outputs, and normalize separately by measured roadside reference mass. Evidence is required for non-applicability; missing is not zero.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
@@ -741,7 +738,6 @@ Measure the untreated other-use roundwood handed over at forest roadside. Aggreg
 
 - Selected flow: Roundwood of non-coniferous wood, other `b8b84d78-13c2-4dab-9b6d-8e7d9dc32f3b`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Binding: `fixed`
 Measurement detail: Divide positive measured roadside reference-lot mass by the same reference mass, normalized to 1 kg.
 
 - Amount rule: 1 kg
@@ -813,7 +809,6 @@ Record an actual energy-use destination separately; do not automatically turn un
 
 - Selected flow: Non-conifer fuelwood at roadside `aaabc17f-c8db-4493-aa7d-1acb67ee3fa2`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Binding: `fixed`
 - Amount rule: Collect actual quantities under the linked protocol, attribute periods/outputs, and normalize separately by measured roadside reference mass. Evidence is required for non-applicability; missing is not zero.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)

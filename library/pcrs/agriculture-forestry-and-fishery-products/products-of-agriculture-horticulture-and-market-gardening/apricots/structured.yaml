@@ -21,13 +21,12 @@ system_boundary:
       applies_to: "all conforming datasets"
       rule: "Include site preparation, planting, orchard establishment, immature years, productive orchard management, harvest, and primary handling performed before the declared farm-gate hand-off."
       source_ids:
-        - fao-crop-production-methodology
-        - fao-stone-fruit-production-guide
+        - fao-gap-framework-2003
     - rule_id: boundary_perennial_orchard_disclosure
       applies_to: "establishment and replacement trees"
       rule: "Include establishment and replacement-tree inputs only after assigning them to the declared orchard life or accepted fruit output basis; disclose the allocation horizon and non-bearing years."
       source_ids:
-        - fao-stone-fruit-production-guide
+        - fao-gap-framework-2003
         - iso-14067
     - rule_id: boundary_direct_field_emissions
       applies_to: "managed soil, crop residues, and nutrient application"
@@ -39,7 +38,7 @@ system_boundary:
       applies_to: "optional primary handling"
       rule: "Include washing, sorting, grading, packing, or short holding only when performed before hand-off and not already embedded in the harvest record; identify rejected fruit and its destination."
       source_ids:
-        - fao-crop-production-methodology
+        - fao-gap-framework-2003
     - rule_id: boundary_post_farm_gate_exclusion
       applies_to: "downstream activities"
       rule: "Exclude off-farm transport, storage, distribution, retail, consumer use, processing, and packaging end-of-life unless the study explicitly extends beyond this PCR."
@@ -104,7 +103,7 @@ measurement_rules:
       name: "product mass and nutrient mass"
       uuid: ""
     required_unit: "kg product; kg N, kg P2O5, or kg K2O"
-    rule: "Record the actual product and application quantity together with the declared nutrient basis. One conditional total card may contain the products and nutrients actually used."
+    rule: "Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity."
 process_map:
   - id: apricot_orchard_establishment_and_management
     name: "Apricot orchard establishment and management"
@@ -152,27 +151,127 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_establishment_records
               source_ids:
-                - fao-stone-fruit-production-guide
+                - fao-gap-framework-2003
             ranges: []
-        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs
-          role: "Agricultural nutrient and fertilizer inputs"
-          name: "Agricultural nutrient and fertilizer supply"
+        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs_urea
+          role: "Urea fertilizer"
+          name: "Urea fertilizer"
           flow_type: "product"
-          property_unit: "Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable"
-          description: "Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per orchard-year and converted to 1,000 kg accepted fruit."
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for apricot_orchard_establishment_and_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once. Raw activity or stage basis: per orchard-year and converted to 1,000 kg accepted fruit. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
           amount:
-            expression: "Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID."
+            expression: "Collect raw quantities for this identity under cp_apricot_orchard_management_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "crop_cycle"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_orchard_management_records
               source_ids:
-                - fao-fertilizer-code
-                - fao-stone-fruit-production-guide
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs_ammonium_sulfate
+          role: "Ammonium sulfate fertilizer"
+          name: "Ammonium sulfate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_orchard_management_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_orchard_management_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs_triple_superphosphate
+          role: "Triple superphosphate fertilizer"
+          name: "Triple superphosphate fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_orchard_management_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_orchard_management_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs_potassium_chloride
+          role: "Potassium chloride fertilizer"
+          name: "Potassium chloride fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_orchard_management_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_orchard_management_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-fertilizer-identities
+            ranges: []
+        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs_cattle_manure
+          role: "Cattle manure applied as fertilizer"
+          name: "Cattle manure applied as fertilizer"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_orchard_management_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_orchard_management_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-organic-nutrients
+            ranges: []
+        - row_id: apricot_orchard_establishment_and_management_agricultural_nutrient_inputs_plant_compost
+          role: "Composted plant residues applied to soil"
+          name: "Composted plant residues applied to soil"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_orchard_management_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_orchard_management_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-organic-nutrients
             ranges: []
         - row_id: irrigation_water_input
           role: "Irrigation water supplied"
@@ -191,7 +290,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_irrigation_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
         - row_id: farm_energy_input
           role: "Farm machinery fuel or service supplied"
@@ -210,7 +309,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_energy_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
         - row_id: crop_protection_input
           role: "Crop-protection products supplied"
@@ -229,8 +328,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_crop_protection_records
               source_ids:
-                - fao-crop-production-methodology
-                - fao-stone-fruit-production-guide
+                - fao-gap-framework-2003
             ranges: []
       waste:
         []
@@ -252,7 +350,7 @@ process_inventory:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_apricot_land_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
                 - iso-14067
             ranges: []
     outputs:
@@ -274,7 +372,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_harvest_records
               source_ids:
-                - fao-stone-fruit-production-guide
+                - fao-gap-framework-2003
             ranges: []
       waste:
         - row_id: orchard_residue_output
@@ -294,7 +392,7 @@ process_inventory:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_apricot_residue_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
                 - ipcc-2019-refinement
             ranges: []
       elementary:
@@ -339,7 +437,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_harvest_records
               source_ids:
-                - fao-stone-fruit-production-guide
+                - fao-gap-framework-2003
             ranges: []
       waste:
         []
@@ -364,7 +462,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_harvest_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
       waste:
         - row_id: harvest_loss_output
@@ -384,7 +482,7 @@ process_inventory:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_apricot_harvest_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
         - row_id: rejected_apricot_output
           role: "Rejected or downgraded apricot fruit"
@@ -403,7 +501,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_harvest_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
       elementary:
         []
@@ -428,45 +526,107 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_handling_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
-        - row_id: primary_handling_energy_input
-          role: "Primary handling energy"
-          name: "Primary handling electricity or fuel"
+        - row_id: primary_handling_energy_input_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy / kWh or MJ"
-          description: "Record electricity or fuel used for washing, sorting, grading, packing, or short holding included before farm-gate hand-off. Raw activity or stage basis: per 1,000 kg handled fruit."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for primary_handling_energy_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record electricity or fuel used for washing, sorting, grading, packing, or short holding included before farm-gate hand-off. Raw activity or stage basis: per 1,000 kg handled fruit. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "meter, invoice, or equipment log allocated to the handled apricot batches"
+            expression: "Collect raw quantities for this identity under cp_apricot_handling_records and calculate the exchange per declared reference flow using the original attribution rules."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_handling_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
+                - fao-agricultural-energy
             ranges: []
-        - row_id: packing_material_input
-          role: "Packing materials"
-          name: "Packaging material for fresh apricots"
+        - row_id: primary_handling_energy_input_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
           flow_type: "product"
-          property_unit: "Mass / kg packaging"
-          description: "Record packing material only when packing is part of the declared farm-gate hand-off, retaining material type, mass, reuse cycles, and loss. Raw activity or stage basis: per 1,000 kg accepted handled fruit."
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "purchased packaging mass adjusted for reuse and allocated to accepted handled fruit"
-            value_mode: "calculated_value"
-            specificity: "product_specific"
+            expression: "Collect raw quantities for this identity under cp_apricot_handling_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
             basis:
               text: "per declared reference flow"
-              kind: "process_output"
+              kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
+              kind: "collected_record"
               collection_protocol_id: cp_apricot_handling_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: packing_material_input_wood_crate
+          role: "Wooden crate"
+          name: "Wooden crate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "**Collection scope and applicability for packing_material_input.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Record packing material only when packing is part of the declared farm-gate hand-off, retaining material type, mass, reuse cycles, and loss. Raw activity or stage basis: per 1,000 kg accepted handled fruit. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_handling_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-package-identities
+            ranges: []
+        - row_id: packing_material_input_corrugated_box
+          role: "Corrugated fibreboard box"
+          name: "Corrugated fibreboard box"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_handling_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-package-identities
+            ranges: []
+        - row_id: packing_material_input_pe_film
+          role: "Polyethylene wrapping film"
+          name: "Polyethylene wrapping film"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_apricot_handling_records and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_apricot_handling_records
+              source_ids:
+                - fao-gap-framework-2003
+                - fao-package-identities
             ranges: []
       waste:
         []
@@ -491,7 +651,7 @@ process_inventory:
               kind: "collected_record"
               collection_protocol_id: cp_apricot_handling_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
       waste:
         - row_id: handling_reject_output
@@ -511,7 +671,7 @@ process_inventory:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_apricot_handling_records
               source_ids:
-                - fao-crop-production-methodology
+                - fao-gap-framework-2003
             ranges: []
       elementary:
         []
@@ -592,7 +752,7 @@ allocation_rules:
     applies_to: "establishment, replacement, and shared orchard assets"
     rule: "Allocate multi-period inputs to the declared orchard-year and accepted fruit output using the declared orchard life, productive years, area, and yield records."
     source_ids:
-      - fao-stone-fruit-production-guide
+      - fao-gap-framework-2003
       - iso-14067
   - rule_id: allocation_apricot_destinations
     applies_to: "fresh, processing, feed, compost, and disposal destinations"
@@ -605,6 +765,10 @@ allocation_rules:
     source_ids:
       - iso-14044
       - ipcc-2019-refinement
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_apricot_establishment_records
@@ -746,7 +910,7 @@ dataset_production:
         - "reporting period"
       output: "orchard-year input"
       source_ids:
-        - fao-stone-fruit-production-guide
+        - fao-gap-framework-2003
         - iso-14067
     - id: calc_apricot_nutrient_basis
       applies_to: "nutrient and amendment card"
@@ -756,7 +920,7 @@ dataset_production:
         - "label or analysis fraction"
       output: "kg product and kg nutrient"
       source_ids:
-        - fao-fertilizer-code
+        - fao-gap-framework-2003
     - id: calc_apricot_mass_balance
       applies_to: "harvest and primary handling"
       rule: "incoming mass = accepted output + rejected output + measured loss, with unexplained residual investigated"
@@ -767,7 +931,7 @@ dataset_production:
         - "and loss records"
       output: "reconciled batch flows"
       source_ids:
-        - fao-crop-production-methodology
+        - fao-gap-framework-2003
     - id: calc_apricot_field_emissions
       applies_to: "soil and residue emissions"
       rule: "apply the selected geographic method to collected nutrient, residue, soil, and climate inputs; do not reuse a default factor without recording its applicability"
@@ -812,13 +976,13 @@ validation_rules:
     applies_to: "establishment and management"
     rule: "Check that orchard establishment, non-bearing periods, replacement events, productive years, and annualization basis are declared and not double counted."
     source_ids:
-      - fao-stone-fruit-production-guide
+      - fao-gap-framework-2003
       - iso-14067
   - rule_id: validation_apricot_mass_balance
     applies_to: "harvest and primary handling"
     rule: "Check incoming fruit = accepted fruit + rejects + measured losses within the declared tolerance and trace every rejected destination."
     source_ids:
-      - fao-crop-production-methodology
+      - fao-gap-framework-2003
   - rule_id: validation_apricot_flow_bindings
     applies_to: "all flow cards"
     rule: "Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable."
@@ -838,18 +1002,6 @@ published_dataset_profile:
   required_quality_disclosure: "measurement sources, estimation and conversion rules, temporal and geographic coverage, completeness checks, allocation basis, method factors, uncertainty or guardrails, and identity evidence gaps"
   update_trigger: "new crop year, cultivar or production-route change, orchard replacement or land-history change, material handling change, revised emission method, or verified identity and evidence resolution"
 data_sources:
-  - id: "fao-crop-production-methodology"
-    type: "official_guidance"
-    reference: "FAO crop production and farm data collection guidance"
-    used_for: ""
-  - id: "fao-stone-fruit-production-guide"
-    type: "extension_guidance"
-    reference: "FAO or equivalent official stone-fruit orchard production guidance"
-    used_for: ""
-  - id: "fao-fertilizer-code"
-    type: "official_guidance"
-    reference: "FAO fertilizer best-management code"
-    used_for: ""
   - id: "ipcc-2019-refinement"
     type: "method_factor"
     reference: "2019 IPCC Refinement to the 2006 IPCC Guidelines"
@@ -870,23 +1022,43 @@ data_sources:
     type: "method_factor"
     reference: "This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing."
     used_for: "Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication."
+  - id: "fao-gap-framework-2003"
+    type: "official_guidance"
+    reference: "FAO Committee on Agriculture, COAG/2003/6, Development of a Framework for Good Agricultural Practices, section IV paragraphs 24–26 and Annex, https://www.fao.org/4/y8704e/y8704e.htm"
+    used_for: "Generic monitoring and farm-record context only; crop-specific routes, lifetimes, quantitative ranges and LCA allocation are PCR choices requiring separate applicable evidence."
+  - id: "fao-fertilizer-identities"
+    type: "official_guidance"
+    reference: "FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-organic-nutrients"
+    type: "official_guidance"
+    reference: "FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-agricultural-energy"
+    type: "official_guidance"
+    reference: "FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
+  - id: "fao-package-identities"
+    type: "official_guidance"
+    reference: "FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:b197123b42fd19f6e64f29e609ce889346bfb5daffa1552a1016f4a75a053631"
+  source_sha256: "sha256:63936c9fdcddec17d13016e5b01752966c75b5d0524cd7feda3284f337d9aa5b"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_5380"
+    - unit_id: "normative_5508"
       family: "system_boundary"
       span:
         start:
-          offset: 5380
+          offset: 5508
           line: 60
           column: 1
         end:
-          offset: 8226
+          offset: 8290
           line: 83
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | orchard site before or at establishment, with planting material and purchased management inputs crossing the foreground boundary; prior land condition and existing orchard history are disclosed |\n| starting_condition_role | start of managed perennial apricot production and orchard asset accounting |\n| product_classification_scope | fresh apricot fruit corresponding to CPC 3.0 code 01343 |\n| recursive_input_rule | apricot planting material and retained fruit are upstream inputs only when crossing the boundary; they must not be recursively represented as the same farm-gate apricot output |\n| upstream_dataset_requirement | compatible upstream datasets for planting material, nutrient and soil-amendment products, crop protection, energy, irrigation supply, machinery services, packaging used before hand-off, and applicable waste treatment |\n| disclosure | cultivar, orchard age, establishment year, productive life, replacement trees, orchard area, previous land use, soil and climate context, irrigation, nutrient basis, crop protection, yield, harvest losses, handling, co-products, and residue or waste destination |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_establishment_to_farm_gate` | all conforming datasets | Include site preparation, planting, orchard establishment, immature years, productive orchard management, harvest, and primary handling performed before the declared farm-gate hand-off. | `fao-crop-production-methodology`; `fao-stone-fruit-production-guide` |\n| `boundary_perennial_orchard_disclosure` | establishment and replacement trees | Include establishment and replacement-tree inputs only after assigning them to the declared orchard life or accepted fruit output basis; disclose the allocation horizon and non-bearing years. | `fao-stone-fruit-production-guide`; `iso-14067` |\n| `boundary_direct_field_emissions` | managed soil, crop residues, and nutrient application | Include direct and indirect nutrient- and residue-related emissions using a geographically applicable method and the same activity data used for nutrient and residue accounting. | `ipcc-2019-refinement`; `emep-eea-2023-guidebook` |\n| `boundary_farm_gate_handling` | optional primary handling | Include washing, sorting, grading, packing, or short holding only when performed before hand-off and not already embedded in the harvest record; identify rejected fruit and its destination. | `fao-crop-production-methodology` |\n| `boundary_post_farm_gate_exclusion` | downstream activities | Exclude off-farm transport, storage, distribution, retail, consumer use, processing, and packaging end-of-life unless the study explicitly extends beyond this PCR. | `iso-14044` |\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | orchard site before or at establishment, with planting material and purchased management inputs crossing the foreground boundary; prior land condition and existing orchard history are disclosed |\n| starting_condition_role | start of managed perennial apricot production and orchard asset accounting |\n| product_classification_scope | fresh apricot fruit corresponding to CPC 3.0 code 01343 |\n| recursive_input_rule | apricot planting material and retained fruit are upstream inputs only when crossing the boundary; they must not be recursively represented as the same farm-gate apricot output |\n| upstream_dataset_requirement | compatible upstream datasets for planting material, nutrient and soil-amendment products, crop protection, energy, irrigation supply, machinery services, packaging used before hand-off, and applicable waste treatment |\n| disclosure | cultivar, orchard age, establishment year, productive life, replacement trees, orchard area, previous land use, soil and climate context, irrigation, nutrient basis, crop protection, yield, harvest losses, handling, co-products, and residue or waste destination |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `boundary_establishment_to_farm_gate` | all conforming datasets | Include site preparation, planting, orchard establishment, immature years, productive orchard management, harvest, and primary handling performed before the declared farm-gate hand-off. | `fao-gap-framework-2003` |\n| `boundary_perennial_orchard_disclosure` | establishment and replacement trees | Include establishment and replacement-tree inputs only after assigning them to the declared orchard life or accepted fruit output basis; disclose the allocation horizon and non-bearing years. | `fao-gap-framework-2003`; `iso-14067` |\n| `boundary_direct_field_emissions` | managed soil, crop residues, and nutrient application | Include direct and indirect nutrient- and residue-related emissions using a geographically applicable method and the same activity data used for nutrient and residue accounting. | `ipcc-2019-refinement`; `emep-eea-2023-guidebook` |\n| `boundary_farm_gate_handling` | optional primary handling | Include washing, sorting, grading, packing, or short holding only when performed before hand-off and not already embedded in the harvest record; identify rejected fruit and its destination. | `fao-gap-framework-2003` |\n| `boundary_post_farm_gate_exclusion` | downstream activities | Exclude off-farm transport, storage, distribution, retail, consumer use, processing, and packaging end-of-life unless the study explicitly extends beyond this PCR. | `iso-14044` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -903,11 +1075,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 5380
+              offset: 5508
               line: 60
               column: 1
             end:
-              offset: 5401
+              offset: 5529
               line: 60
               column: 22
           text: "## 5. System Boundary"
@@ -923,18 +1095,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_29956"
+    - unit_id: "normative_41664"
       family: "allocation"
       span:
         start:
-          offset: 29956
-          line: 512
+          offset: 41664
+          line: 641
           column: 1
         end:
-          offset: 31883
-          line: 524
+          offset: 43969
+          line: 655
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\nAllocate orchard establishment, replacement trees, shared machinery, irrigation infrastructure, and other multi-period inputs across the declared orchard life and reporting periods using orchard area, productive years, and accepted fruit output. Do not silently annualize non-bearing years; disclose the selected productive-life horizon and replacement events. Where apricot fruit is split among fresh, processing, feed, compost, or disposal destinations, retain separate masses. Use physical mass allocation when products have comparable moisture and function; otherwise use a documented economic or quality-based allocation and report the selected basis. Avoid allocation by treating rejected fruit as a co-product unless it has a declared market or service; otherwise record it as a waste or residue flow with its destination. Do not double count orchard inputs embedded in an upstream planting-material dataset.\n\n### Allocation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_orchard_life_and_period` | establishment, replacement, and shared orchard assets | Allocate multi-period inputs to the declared orchard-year and accepted fruit output using the declared orchard life, productive years, area, and yield records. | `fao-stone-fruit-production-guide`; `iso-14067` |\n| `allocation_apricot_destinations` | fresh, processing, feed, compost, and disposal destinations | Keep destination masses separate; use documented physical or economic allocation only when more than one declared product or service shares a process. | `iso-14044` |\n| `allocation_rejects_and_residues` | rejected fruit and orchard residues | Treat material without a declared product or service as waste or residue and model its destination; do not grant a co-product credit solely because it has a possible downstream use. | `iso-14044`; `ipcc-2019-refinement` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\nAllocate orchard establishment, replacement trees, shared machinery, irrigation infrastructure, and other multi-period inputs across the declared orchard life and reporting periods using orchard area, productive years, and accepted fruit output. Do not silently annualize non-bearing years; disclose the selected productive-life horizon and replacement events. Where apricot fruit is split among fresh, processing, feed, compost, or disposal destinations, retain separate masses. Use physical mass allocation when products have comparable moisture and function; otherwise use a documented economic or quality-based allocation and report the selected basis. Avoid allocation by treating rejected fruit as a co-product unless it has a declared market or service; otherwise record it as a waste or residue flow with its destination. Do not double count orchard inputs embedded in an upstream planting-material dataset.\n\n### Allocation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_orchard_life_and_period` | establishment, replacement, and shared orchard assets | Allocate multi-period inputs to the declared orchard-year and accepted fruit output using the declared orchard life, productive years, area, and yield records. | `fao-gap-framework-2003`; `iso-14067` |\n| `allocation_apricot_destinations` | fresh, processing, feed, compost, and disposal destinations | Keep destination masses separate; use documented physical or economic allocation only when more than one declared product or service shares a process. | `iso-14044` |\n| `allocation_rejects_and_residues` | rejected fruit and orchard residues | Treat material without a declared product or service as waste or residue and model its destination; do not grant a co-product credit solely because it has a possible downstream use. | `iso-14044`; `ipcc-2019-refinement` |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -951,12 +1123,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 29956
-              line: 512
+              offset: 41664
+              line: 641
               column: 1
             end:
-              offset: 29996
-              line: 512
+              offset: 41704
+              line: 641
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -971,18 +1143,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_41185"
+    - unit_id: "normative_53255"
       family: "validation"
       span:
         start:
-          offset: 41185
-          line: 564
+          offset: 53255
+          line: 695
           column: 1
         end:
-          offset: 42516
-          line: 574
+          offset: 54567
+          line: 705
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_apricot_reference_definition` | reference flow | Require 1,000 kg accepted fresh apricot fruit, declared hand-off condition, required qualifiers, and later-resolved reference identity before publication. | `iso-14067` |\n| `validation_apricot_orchard_periods` | establishment and management | Check that orchard establishment, non-bearing periods, replacement events, productive years, and annualization basis are declared and not double counted. | `fao-stone-fruit-production-guide`; `iso-14067` |\n| `validation_apricot_mass_balance` | harvest and primary handling | Check incoming fruit = accepted fruit + rejects + measured losses within the declared tolerance and trace every rejected destination. | `fao-crop-production-methodology` |\n| `validation_apricot_flow_bindings` | all flow cards | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. | `iso-14044` |\n| `validation_apricot_evidence` | all constrained ranges and factors | Require source-backed evidence or a declared foreground collection protocol for constrained values; mark provisional guardrails as replaceable estimates. | `iso-14044` |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validation_apricot_reference_definition` | reference flow | Require 1,000 kg accepted fresh apricot fruit, declared hand-off condition, required qualifiers, and later-resolved reference identity before publication. | `iso-14067` |\n| `validation_apricot_orchard_periods` | establishment and management | Check that orchard establishment, non-bearing periods, replacement events, productive years, and annualization basis are declared and not double counted. | `fao-gap-framework-2003`; `iso-14067` |\n| `validation_apricot_mass_balance` | harvest and primary handling | Check incoming fruit = accepted fruit + rejects + measured losses within the declared tolerance and trace every rejected destination. | `fao-gap-framework-2003` |\n| `validation_apricot_flow_bindings` | all flow cards | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. | `iso-14044` |\n| `validation_apricot_evidence` | all constrained ranges and factors | Require source-backed evidence or a declared foreground collection protocol for constrained values; mark provisional guardrails as replaceable estimates. | `iso-14044` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -999,12 +1171,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 41185
-              line: 564
+              offset: 53255
+              line: 695
               column: 1
             end:
-              offset: 41207
-              line: 564
+              offset: 53277
+              line: 695
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1023,233 +1195,246 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "boundary_establishment_to_farm_gate"
       identity_kind: "explicit"
-      unit_id: "normative_5380"
+      unit_id: "normative_5508"
       source_span:
         start:
-          offset: 6711
+          offset: 6839
           line: 77
           column: 1
         end:
-          offset: 7038
+          offset: 7121
           line: 77
-          column: 328
+          column: 283
     - pointer: "/system_boundary/rules/1"
       rule_id: "boundary_perennial_orchard_disclosure"
       identity_kind: "explicit"
-      unit_id: "normative_5380"
+      unit_id: "normative_5508"
       source_span:
         start:
-          offset: 7039
+          offset: 7122
           line: 78
           column: 1
         end:
-          offset: 7364
+          offset: 7437
           line: 78
-          column: 326
+          column: 316
     - pointer: "/system_boundary/rules/2"
       rule_id: "boundary_direct_field_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_5380"
+      unit_id: "normative_5508"
       source_span:
         start:
-          offset: 7365
+          offset: 7438
           line: 79
           column: 1
         end:
-          offset: 7690
+          offset: 7763
           line: 79
           column: 326
     - pointer: "/system_boundary/rules/3"
       rule_id: "boundary_farm_gate_handling"
       identity_kind: "explicit"
-      unit_id: "normative_5380"
+      unit_id: "normative_5508"
       source_span:
         start:
-          offset: 7691
+          offset: 7764
           line: 80
           column: 1
         end:
-          offset: 7980
+          offset: 8044
           line: 80
-          column: 290
+          column: 281
     - pointer: "/system_boundary/rules/4"
       rule_id: "boundary_post_farm_gate_exclusion"
       identity_kind: "explicit"
-      unit_id: "normative_5380"
+      unit_id: "normative_5508"
       source_span:
         start:
-          offset: 7981
+          offset: 8045
           line: 81
           column: 1
         end:
-          offset: 8224
+          offset: 8288
           line: 81
           column: 244
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_29956"
+      unit_id: "normative_41664"
       source_span:
         start:
-          offset: 29998
-          line: 514
+          offset: 41706
+          line: 643
           column: 1
         end:
-          offset: 30913
-          line: 514
+          offset: 42621
+          line: 643
           column: 916
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_orchard_life_and_period"
       identity_kind: "explicit"
-      unit_id: "normative_29956"
+      unit_id: "normative_41664"
       source_span:
         start:
-          offset: 31008
-          line: 520
+          offset: 42716
+          line: 649
           column: 1
         end:
-          offset: 31316
-          line: 520
-          column: 309
+          offset: 43014
+          line: 649
+          column: 299
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_apricot_destinations"
       identity_kind: "explicit"
-      unit_id: "normative_29956"
+      unit_id: "normative_41664"
       source_span:
         start:
-          offset: 31317
-          line: 521
+          offset: 43015
+          line: 650
           column: 1
         end:
-          offset: 31583
-          line: 521
+          offset: 43281
+          line: 650
           column: 267
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_rejects_and_residues"
       identity_kind: "explicit"
-      unit_id: "normative_29956"
+      unit_id: "normative_41664"
       source_span:
         start:
-          offset: 31584
-          line: 522
+          offset: 43282
+          line: 651
           column: 1
         end:
-          offset: 31881
-          line: 522
+          offset: 43579
+          line: 651
           column: 298
+    - pointer: "/allocation_rules/4"
+      rule_id: "allocation_rule_5"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_41664"
+      source_span:
+        start:
+          offset: 43581
+          line: 653
+          column: 1
+        end:
+          offset: 43967
+          line: 653
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "validation_apricot_reference_definition"
       identity_kind: "explicit"
-      unit_id: "normative_41185"
+      unit_id: "normative_53255"
       source_span:
         start:
-          offset: 41280
-          line: 568
+          offset: 53350
+          line: 699
           column: 1
         end:
-          offset: 41513
-          line: 568
+          offset: 53583
+          line: 699
           column: 234
     - pointer: "/validation_rules/1"
       rule_id: "validation_apricot_orchard_periods"
       identity_kind: "explicit"
-      unit_id: "normative_41185"
+      unit_id: "normative_53255"
       source_span:
         start:
-          offset: 41514
-          line: 569
+          offset: 53584
+          line: 700
           column: 1
         end:
-          offset: 41791
-          line: 569
-          column: 278
+          offset: 53851
+          line: 700
+          column: 268
     - pointer: "/validation_rules/2"
       rule_id: "validation_apricot_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_41185"
+      unit_id: "normative_53255"
       source_span:
         start:
-          offset: 41792
-          line: 570
+          offset: 53852
+          line: 701
           column: 1
         end:
-          offset: 42032
-          line: 570
-          column: 241
+          offset: 54083
+          line: 701
+          column: 232
     - pointer: "/validation_rules/3"
       rule_id: "validation_apricot_flow_bindings"
       identity_kind: "explicit"
-      unit_id: "normative_41185"
+      unit_id: "normative_53255"
       source_span:
         start:
-          offset: 42033
-          line: 571
+          offset: 54084
+          line: 702
           column: 1
         end:
-          offset: 42273
-          line: 571
+          offset: 54324
+          line: 702
           column: 241
     - pointer: "/validation_rules/4"
       rule_id: "validation_apricot_evidence"
       identity_kind: "explicit"
-      unit_id: "normative_41185"
+      unit_id: "normative_53255"
       source_span:
         start:
-          offset: 42274
-          line: 572
+          offset: 54325
+          line: 703
           column: 1
         end:
-          offset: 42514
-          line: 572
+          offset: 54565
+          line: 703
           column: 241
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_5380"
+      unit_id: "normative_5508"
       source_span:
         start:
-          offset: 5380
+          offset: 5508
           line: 60
           column: 1
         end:
-          offset: 5401
+          offset: 5529
           line: 60
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_5380"
+      unit_id: "normative_5508"
       source_span:
         start:
-          offset: 5429
+          offset: 5557
           line: 64
           column: 1
         end:
-          offset: 6618
+          offset: 6746
           line: 71
           column: 279
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_29956"
+      unit_id: "normative_41664"
       source_span:
         start:
-          offset: 29956
-          line: 512
+          offset: 41664
+          line: 641
           column: 1
         end:
-          offset: 29996
-          line: 512
+          offset: 41704
+          line: 641
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_41185"
+      unit_id: "normative_53255"
       source_span:
         start:
-          offset: 41185
-          line: 564
+          offset: 53255
+          line: 695
           column: 1
         end:
-          offset: 41207
-          line: 564
+          offset: 53277
+          line: 695
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1258,5 +1443,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:b197123b42fd19f6e64f29e609ce889346bfb5daffa1552a1016f4a75a053631"
-  generated_content_sha256: "sha256:bdba9638c9b0a0651385ce0d593e46e68f0ecd1ce4879a755044c606e38e440b"
+    sha256: "sha256:63936c9fdcddec17d13016e5b01752966c75b5d0524cd7feda3284f337d9aa5b"
+  generated_content_sha256: "sha256:c321b3e99e18b292990750c30296504d97fd8be879f352d26b54e982aa45ec30"

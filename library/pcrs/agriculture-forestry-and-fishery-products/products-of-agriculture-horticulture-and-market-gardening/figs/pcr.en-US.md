@@ -44,7 +44,9 @@ The farm-gate boundary ends when the harvested fresh figs are available for tran
 | Reference unit | kg |
 | Required qualifiers | species; variety or cultivar; fresh market state; production geography; orchard age and productive status; reporting year or harvest season; irrigation status; yield basis; farm-gate condition |
 
-When constructing a foreground data package, the required qualifiers must be declared in dataset metadata, process notes, the reference-flow comment, product description, or an equivalent data package field. A fresh-fig product UUID is resolved during foreground data generation; this candidate does not assign a fixed UUID.
+When constructing a foreground data package, the required qualifiers must be declared in dataset metadata, process notes, the reference-flow comment, product description, or an equivalent data package field. The reference table binds the verified Figs UUID `f80297fb-fa6f-46e4-8da8-49f2fdcdab34`; foreground production must still verify that species, fresh state and actual gate match that identity. An incompatible output requires its own verified identity, not reuse of this UUID.
+
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
 
 ## 4. Measurement and Unit Rules
 
@@ -162,22 +164,100 @@ Raw activity or stage basis: Per 1 kg fresh figs at farm gate.
 - Collection protocol: `cp_irrigation_records`
 - Sources: `fao-crop-evapotranspiration-56-1998`; `fao-good-agricultural-practices-figs-2008`
 
-###### Agricultural nutrient and fertilizer inputs (`orchard_management_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`orchard_management_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for orchard_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: Per 1 kg fresh figs at farm gate.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_nutrient_amendment_records`
-- Sources: `fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`
+- Sources: `fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`orchard_management_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_amendment_records`
+- Sources: `fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`orchard_management_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_amendment_records`
+- Sources: `fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`orchard_management_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_amendment_records`
+- Sources: `fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`orchard_management_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_amendment_records`
+- Sources: `fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`orchard_management_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_amendment_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_amendment_records`
+- Sources: `fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`; `fao-organic-nutrients`
 
 ###### Crop-protection products applied to orchard blocks (`crop_protection_products`)
 
@@ -328,7 +408,7 @@ Raw activity or stage basis: Per 1 kg fresh figs at farm gate.
 
 This is the reference product output: whole, fresh, unprocessed figs transferred at the producing farm gate in the declared market state.
 
-- Selected flow: Fresh figs, whole, at farm gate
+- Selected flow: Figs `f80297fb-fa6f-46e4-8da8-49f2fdcdab34`
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Weighed saleable fresh figs transferred at the gate; reconcile to harvest records and declared culls
 
@@ -374,6 +454,8 @@ Raw activity or stage basis: Per 1 kg saleable fresh figs at farm gate.
 | `allocation_same_category_outputs` | multiple fresh-fig outputs | Treat fresh figs from different varieties, harvest windows, or market classes as the same reference-product category unless the dataset declares a distinct product specification; aggregate their measured burdens before normalization. | `unece-ffv-17-fresh-figs-2017`; `iso-14044-2006` |
 | `allocation_marketed_coproducts` | documented co-products | If a separate marketable co-product shares orchard or harvest operations, first subdivide where possible; otherwise allocate remaining shared burdens by economic value using reporting-period quantities and farm-gate prices, and disclose the allocation sensitivity. | `iso-14044-2006` |
 | `allocation_culls_not_coproducts` | culls and field loss | Treat unmarketed culls, field loss, and residues without a documented market as waste or retained field material, not as co-products receiving an avoided burden. | `iso-14044-2006`; `unece-ffv-17-fresh-figs-2017` |
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -450,3 +532,5 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `ipcc-2019-managed-soils-n2o` | method_factor | https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | Nitrogen-input activity data and direct, volatilization, leaching, and runoff pathways for managed-soil emissions |
 | `iso-14044-2006` | standard | https://committee.iso.org/standard/38498.html | LCA goal and scope, inventory, allocation, reporting, and review principles |
 | `iso-14067-2018` | standard | https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100271.pdf | Partial product carbon-footprint boundary and farm-gate reporting context |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

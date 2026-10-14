@@ -129,7 +129,7 @@ Denominator and scope requirements：per kg detached pulled wool
 
 Raw quantity and calculation requirements: Meter the water supplied to each relevant skin batch. Original collection denominator kind: process_output.
 
-- Selected flow: Actual skin-wash process water (conditional flow identities unresolved)
+- Selected flow: Water for raw-skin washing
 - Flow property / unit: Mass / kg
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
@@ -269,31 +269,26 @@ Raw quantity and calculation requirements: Meter each residual and retain treatm
 
 ##### Product flows
 
-###### Coarse-hair capture energy (`coarse_energy`)
+###### Electricity at the equipment supply point (`coarse_energy_electricity`)
+
+**Collection scope and applicability for coarse_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Only energy actually used in clipping, combing or collection; a live animal is an upstream stock, not consumed mass.
-
 Denominator and scope requirements：per kg captured coarse hair
-
 Raw quantity and calculation requirements: Meter or causally attribute each energy carrier. Original collection denominator kind: process_output.
 
-- Selected flow: Actual capture energy carrier (conditional flow identities unresolved)
-- Flow property / unit: Carrier-specific / measured unit
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_coarse` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_coarse`
-- Range: Provisional energy screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kWh/kg
-  - Basis: per kg captured coarse hair; provisional screening only
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -399,7 +394,7 @@ Denominator and scope requirements：per kg first-conditioned raw fibre
 
 Raw quantity and calculation requirements: Meter water and identify treated batch. Original collection denominator kind: process_output.
 
-- Selected flow: Actual first-conditioning process water (conditional flow identities unresolved)
+- Selected flow: Water for primary fibre conditioning
 - Flow property / unit: Mass / kg
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
@@ -417,31 +412,26 @@ Raw quantity and calculation requirements: Meter water and identify treated batc
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Conditioning energy (`condition_energy`)
+###### Electricity at the equipment supply point (`condition_energy_electricity`)
+
+**Collection scope and applicability for condition_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Count actual first-stage skirting, drying and cleaning services, not later textile scouring.
-
 Denominator and scope requirements：per kg first-conditioned raw fibre
-
 Raw quantity and calculation requirements: Meter actual carrier and shared dryer use once. Original collection denominator kind: process_output.
 
-- Selected flow: Actual conditioning energy carrier (conditional flow identities unresolved)
-- Flow property / unit: Carrier-specific / measured unit
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_condition` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_condition`
-- Range: Provisional energy screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kWh/kg
-  - Basis: per kg first-conditioned raw fibre; provisional screening only
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -661,31 +651,41 @@ Raw quantity and calculation requirements: Weigh batch before packaging. Origina
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Bale or bag material (`pack_material`)
+###### Polyethylene wrapping film (`pack_material_pe_film`)
+
+**Collection scope and applicability for pack_material.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Identify single-use or reusable package and its service cycles; downstream freight excluded.
-
 Denominator and scope requirements：per kg net market raw fibre
-
 Raw quantity and calculation requirements: Count or weigh packages and allocate actual reuse cycles. Original collection denominator kind: process_output.
 
-- Selected flow: Actual fibre bale, bag or wrap (conditional flow identities unresolved)
-- Flow property / unit: Package-specific / measured unit
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Polyethylene wrapping film
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_pack` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_pack`
-- Range: Provisional package screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100
-  - Unit: kg/kg
-  - Basis: per kg net market raw fibre; provisional screening only
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-package-identities`
+
+###### Woven polypropylene sack (`pack_material_pp_sack`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Record composition, net mass, reuse cycles and return losses; attribute reusable items by actual use and separate packaging from product mass. Keep distinct treatment destinations separate without assuming recycling credits.
+
+- Selected flow: Woven polypropylene sack
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_pack` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_pack`
+- Sources: `fao-package-identities`
 
 ##### Waste flows
 
@@ -735,6 +735,8 @@ Denominator and scope requirements：per reference flow
 | a_shared | both routes | Allocate shared capture tools, wash systems, dryers, sorting floor and press to actual consuming nodes and service periods by measured time, metered use or supported throughput; do not duplicate shared burden. | fao-animal-fibres-ch4 |
 | a_grades | all grades | Each accepted and downgraded sale grade has one handover and attributable service; rejects and wastewater retain actual treatment burdens, not second product credits. | fao-animal-fibres-ch4 |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -775,6 +777,7 @@ Denominator and scope requirements：per reference flow
 | v_mass | each batch | Reconcile all grades, pelt, rejects, utilities and moisture within measured uncertainty; reject undocumented raw-to-clean factors. | fao-animal-fibres-ch4 |
 | v_attribution | animal and shared services | Reject duplicate attached/detached wool, unsupported zero-burden skin, repeated animal period, pelt or shared-asset burden. | fao-animal-fibres-ch4 |
 | v_uuid | final exchanges | Unresolved cards remain semantic only; each final exchange requires one detail-verified concrete UUID and compatible property/unit group. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 
 ## 10. Published Dataset Profile
 
@@ -795,3 +798,5 @@ Denominator and scope requirements：per reference flow
 | `un-cpc-3-notes` | official_guidance | [UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | product boundary |
 | `fao-animal-fibres-ch4` | official_guidance | [FAO Harvesting of textile animal fibres, chapter 4](https://www.fao.org/4/v9384e/v9384e09.htm) | pulling, pelt, capture, first conditioning and attribution |
 | `fao-animal-fibres-ch5` | official_guidance | [FAO Harvesting of textile animal fibres, chapter 5](https://www.fao.org/4/v9384e/v9384e10.htm) | raw-fibre handling and grading |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | conditional concrete identities and method context; does not establish site use or quantities |

@@ -40,7 +40,7 @@ Seed and transplant production, nursery operations, breeding, pickling, fermenta
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Eggplants (aubergines), production mix, at farm gate, fresh and unprocessed `1380c74a-b7bd-44ef-8539-ed9578ba930d` |
+| Reference product flow | Eggplants (aubergines) `1380c74a-b7bd-44ef-8539-ed9578ba930d` |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -48,13 +48,15 @@ Seed and transplant production, nursery operations, breeding, pickling, fermenta
 
 When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference-flow comment, product description, or an equivalent data package field. Missing required qualifiers make the reference flow definition incomplete for that data package. The reference product-flow identity is platform-verified for CPC 3.0 01233; the mass property and mass unit-group references are stable support objects.
 
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
+
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `reference_eggplant_mass` | marketable fruit, harvest, culls, and residues | Mass | kg | Weigh harvested, marketable, downgraded, rejected, field-loss, and residual fruit streams separately and reconcile them before conversion to the 1,000 kg reference output. |
 | `crop_cycle_normalization` | field and protected-cultivation records | Area and mass | ha and kg | Record inputs and harvest rounds by field, bed, or protected unit and normalize them to marketable output attributed to the same declared crop cycle. |
-| `nutrient_product_basis` | mineral and organic nutrient inputs | Product and nutrient mass | kg product, kg N, kg P2O5, kg K2O | Record formulated product mass and documented nutrient concentration separately. Convert nutrient equivalents only from a supplier specification, label, nutrient plan, or laboratory result. |
+| `nutrient_product_basis` | mineral and organic nutrient inputs | Product and nutrient mass | kg product, kg N, kg P2O5, kg K2O | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `water_delivery_basis` | irrigation, fertigation, washing, and source withdrawal | Volume | m3 | Record crop irrigation, fertigation carrier water, post-harvest washing water, and natural-resource withdrawal as distinct quantities and disclose the meter or water-balance basis. |
 | `area_time_basis` | open-field beds and protected units | Area-time | ha*a | Record occupied production area and crop occupation period; durable structures and equipment require separate attribution if included. |
 | `postharvest_mass_change` | washing, cooling, grading, and packing | Mass and moisture | kg and declared fraction | Retain measured soil removal, water uptake, cooling loss, and packing loss separately from harvested crop mass and disclose the mass reconciliation. |
@@ -76,8 +78,8 @@ When constructing a foreground data package, the items listed in `Required quali
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `boundary_crop_cycle` | establishment and cultivation | Include bed preparation attributable to the crop cycle, planting, crop management, irrigation, nutrient and crop protection, and direct crop emissions; disclose prior land use and exclude unrelated infrastructure construction. | `fao-crop-evapotranspiration-56`; `fao-good-agricultural-practices` |
-| `boundary_repeated_harvest` | harvest rounds | Attribute every harvest round from one planting to the same crop cycle and reconcile marketable fruit, downgraded fruit, field losses, and residues before normalization. | `fao-eggplant-production-guide`; `usda-ams-eggplant-standard` |
+| `boundary_crop_cycle` | establishment and cultivation | Include bed preparation attributable to the crop cycle, planting, crop management, irrigation, nutrient and crop protection, and direct crop emissions; disclose prior land use and exclude unrelated infrastructure construction. | `fao-crop-evapotranspiration-56`; `fao-gap-framework-2003` |
+| `boundary_repeated_harvest` | harvest rounds | Attribute every harvest round from one planting to the same crop cycle and reconcile marketable fruit, downgraded fruit, field losses, and residues before normalization. | `fao-gap-framework-2003`; `usda-ams-eggplant-standard` |
 | `boundary_gate_preparation` | sorting, washing, cooling, and packing | End the default foreground boundary at the declared farm-gate or pack-house gate. Include sorting, washing, cooling, primary packaging, and pre-gate transport only when they occur before that gate. | `usda-ams-eggplant-standard`; `codex-fresh-produce-hygiene` |
 | `boundary_residue_fate` | fruit culls, crop residues, and packaging waste | Record field return, composting, feed use, treatment, transport, or disposal for each residue stream. Do not assign a co-product credit without a documented recipient and intended use. | `iso-14044-2006`; `mass-balance-identity` |
 
@@ -112,7 +114,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_establishment_records`
-- Sources: `fao-eggplant-production-guide`
+- Sources: `fao-gap-framework-2003`
 - Range: Planting-material screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0.1
@@ -166,7 +168,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_area_cycle_records`
-- Sources: `fao-eggplant-production-guide`
+- Sources: `fao-gap-framework-2003`
 - Range: Area-output screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0.01
@@ -190,48 +192,100 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 
 ##### Product flows
 
-###### Agricultural nutrient and fertilizer inputs (`crop_management_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`crop_management_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for crop_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_nutrient_records`
-- Sources: `fao-soil-fertilizer-plant-nutrition`; `ipcc-2019-managed-soils-n2o`
-- Range: Crop-cycle nitrogen screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 350
-  - Unit: kg N/ha
-  - Basis: total nutrient application to the represented crop cycle
-  - Basis kind: crop_cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
 
-- Range: Crop-cycle phosphorus screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 180
-  - Unit: kg P2O5/ha
-  - Basis: total nutrient application to the represented crop cycle
-  - Basis kind: crop_cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Ammonium sulfate fertilizer (`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`)
 
-- Range: Crop-cycle potassium screening interval
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 500
-  - Unit: kg K2O/ha
-  - Basis: total nutrient application to the represented crop cycle
-  - Basis kind: crop_cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`crop_management_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`crop_management_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-managed-soils-n2o`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`crop_management_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-managed-soils-n2o`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`crop_management_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `fao-gap-framework-2003`; `ipcc-2019-managed-soils-n2o`; `fao-organic-nutrients`
 
 ###### Crop-protection products (`crop_protection_input`)
 
@@ -248,7 +302,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_crop_protection_records`
-- Sources: `fao-good-agricultural-practices`
+- Sources: `fao-gap-framework-2003`
 - Range: Crop-protection product screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
@@ -298,7 +352,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_energy_records`
-- Sources: `fao-good-agricultural-practices`
+- Sources: `fao-gap-framework-2003`
 - Range: Field-electricity screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
@@ -323,7 +377,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_energy_records`
-- Sources: `fao-good-agricultural-practices`
+- Sources: `fao-gap-framework-2003`
 - Range: Mobile-fuel screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
@@ -383,7 +437,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_residue_fate_records`
-- Sources: `fao-good-agricultural-practices`
+- Sources: `fao-gap-framework-2003`
 - Range: Crop-residue screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 100
@@ -516,7 +570,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_energy_records`
-- Sources: `fao-good-agricultural-practices`
+- Sources: `fao-gap-framework-2003`
 - Range: Post-harvest electricity screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
@@ -566,7 +620,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 - Basis kind: Transport service (`transport_service`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_packaging_transport_records`
-- Sources: `fao-good-agricultural-practices`
+- Sources: `fao-gap-framework-2003`
 - Range: Pre-gate transport screening interval
   - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
@@ -588,7 +642,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 
 Record accepted fresh whole fruit after harvest, grading, and any declared washing or cooling, excluding container tare and fruit assigned to another fate.
 
-- Selected flow: Fresh marketable eggplant at declared gate
+- Selected flow: Eggplants (aubergines) `1380c74a-b7bd-44ef-8539-ed9578ba930d`
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Weigh accepted fruit at the declared gate and reconcile it with harvested fruit, culls, trim, field losses, and handling losses.
 
@@ -672,6 +726,8 @@ Raw activity or stage basis: per 1,000 kg marketable fresh eggplant output.
 | `allocation_shared_crop_inputs` | multiple crops or products sharing a field, bed, meter, or facility | Allocate shared inputs using measured crop-specific records where available. If a shared record cannot be separated, use a documented physical basis such as area-time, operating time, or mass and disclose the basis. | `iso-14044-2006` |
 | `allocation_cull_fates` | culls, downgraded fruit, and residues | Treat culls and residues as waste or residue unless a recipient, intended use, quality, and hand-off are documented. Apply a co-product allocation only when the secondary product has a defined function and the allocation basis is stated. | `iso-14044-2006`; `mass-balance-identity` |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 Retain raw site, lot, cycle and stage quantities and denominators in each collection protocol. Reconcile stocks, losses, moisture and co-product attribution first, then normalize: normalized exchange = attributable raw exchange × declared reference quantity / accepted hand-off product quantity on the same boundary and measurement basis. Apply perennial-establishment and shared-operation attribution before this normalization. Never set an internal-transfer quantity equal to the final reference quantity. Per declared reference flow means the amount, unit and product state in section 3; the data package must declare its actual route and gate.
@@ -696,10 +752,10 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `calc_area_occupation` | crop establishment | area-time = declared production area × crop occupation period; keep protected structures separate when separately attributed | area, start date, end date, protected status | ha*a or declared area-time | `fao-eggplant-production-guide` |
-| `calc_nutrient_equivalents` | nutrient inputs | nutrient mass = formulated product mass × documented nutrient fraction; retain product and nutrient bases separately | product mass, label or plan concentration | kg N, kg P2O5, and kg K2O | `fao-soil-fertilizer-plant-nutrition` |
+| `calc_area_occupation` | crop establishment | area-time = declared production area × crop occupation period; keep protected structures separate when separately attributed | area, start date, end date, protected status | ha*a or declared area-time | `fao-gap-framework-2003` |
+| `calc_nutrient_equivalents` | nutrient inputs | nutrient mass = formulated product mass × documented nutrient fraction; retain product and nutrient bases separately | product mass, label or plan concentration | kg N, kg P2O5, and kg K2O | `fao-gap-framework-2003` |
 | `calc_managed_soil_emissions` | nitrogen-related elementary outputs | apply one declared nitrogen-emission method to nutrient inputs, crop residues, and environmental factors; do not duplicate pathways | nutrient input, residue fate, method factors | declared nitrogen emission flows | `ipcc-2019-managed-soils-n2o` |
-| `calc_transport_service` | pre-gate road freight | transport service = transported mass (t) × documented distance (km); state whether return or empty-leg burden is included | mass, distance, load and route record | t*km | `fao-good-agricultural-practices` |
+| `calc_transport_service` | pre-gate road freight | transport service = transported mass (t) × documented distance (km); state whether return or empty-leg burden is included | mass, distance, load and route record | t*km | `fao-gap-framework-2003` |
 | `calc_reference_normalization` | all inventory rows | normalized value = crop-cycle quantity × 1,000 kg / accepted marketable output at the declared gate | crop-cycle quantity and accepted output mass | quantity per 1,000 kg reference flow | `mass-balance-identity` |
 | `calc_mass_reconciliation` | harvest, culls, residues, and packing | gross harvested mass = accepted output + culls and rejects + field or handling losses + declared residue streams, with measured moisture and tare treatment disclosed | harvest, grade, residue, packaging, and loss records | reconciled crop-cycle mass balance | `mass-balance-identity` |
 
@@ -721,7 +777,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `validation_reference_definition` | reference flow | Confirm the 1,000 kg functional unit, all required qualifiers, and the platform-verified reference product, mass property, and unit-group identities before foreground generation. | `mass-balance-identity` |
 | `validation_flow_identity_binding` | parameterized product inputs | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |
 | `validation_mass_reconciliation` | harvest and gate preparation | Check accepted output, culls, rejects, residues, field losses, handling losses, and packaging waste against the declared mass basis, with container tare and moisture treatment explicit. | `mass-balance-identity` |
-| `validation_boundary_disclosure` | system boundary | Reject a dataset that omits the declared gate, crop cycle, route, irrigation source, nutrient basis, residue fate, or pre-gate handling included by the scope. | `fao-good-agricultural-practices`; `usda-ams-eggplant-standard` |
+| `validation_boundary_disclosure` | system boundary | Reject a dataset that omits the declared gate, crop cycle, route, irrigation source, nutrient basis, residue fate, or pre-gate handling included by the scope. | `fao-gap-framework-2003`; `usda-ams-eggplant-standard` |
 | `validation_soil_emissions` | managed nitrogen and residues | Verify that one declared emissions method is used and that direct and indirect nitrogen pathways are not double counted. | `ipcc-2019-managed-soils-n2o` |
 | `validation_data_quality` | all foreground records | Report identity, measurement, temporal coverage, completeness, allocation, and disclosure findings separately; inconclusive or error findings fail validation by default. | `iso-14044-2006` |
 
@@ -737,16 +793,18 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | required_quality_disclosure | Measurement sources, missing or estimated fields, allocation basis, crop-cycle completeness, mass-balance result, emission method, concrete flow identity verification, and identity evidence gap findings |
 | update_trigger | New cultivation or protected-production route, material change in gate conditioning or packaging, revised emission method, changed product qualifiers, or evidence that alters the default collection and validation rules |
 
+Evidence applicability: cited general farm-record and postharvest frameworks do not supply crop-specific yields, lifetimes, gate cutoffs or LCA allocation defaults. Those are this PCR methodology decisions; qualify them by the actual species, route and period and obtain compatible agronomic evidence before asserting completeness. Provisional author ranges are screening aids, not empirical acceptance limits or substituted measurements.
+
 ## 11. Data Sources
 
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
-| `fao-eggplant-production-guide` | extension_guidance | FAO or national extension guidance for eggplant establishment, crop management, harvest rounds, and production records | crop-cycle decomposition, establishment, harvest, and residue context |
 | `fao-crop-evapotranspiration-56` | official_guidance | FAO Irrigation and drainage paper 56, Crop evapotranspiration | irrigation and water-balance method context |
-| `fao-good-agricultural-practices` | official_guidance | FAO good agricultural practices guidance for crop inputs, field operations, and harvest handling | boundary, field operations, crop protection, energy, and transport context |
-| `fao-soil-fertilizer-plant-nutrition` | official_guidance | FAO soil fertility and plant-nutrition guidance | nutrient product and nutrient-equivalent calculation |
 | `ipcc-2019-managed-soils-n2o` | method_factor | 2019 IPCC Refinement, managed soils and nitrogen emissions guidance | nitrogen emission calculation and validation |
 | `usda-ams-eggplant-standard` | official_guidance | USDA Agricultural Marketing Service grade and quality guidance for eggplant | product identity, maturity, grade, yield, cull, and gate qualifiers |
 | `codex-fresh-produce-hygiene` | standard | Codex hygiene principles for fresh fruits and vegetables | washing, handling, and pre-gate hygiene boundary |
 | `iso-14044-2006` | standard | ISO 14044 environmental management life-cycle assessment requirements | allocation and validation rules |
 | `mass-balance-identity` | method_factor | Declared crop and packaging mass-balance reconciliation method | normalization, loss, cull, residue, and packaging checks |
+| `fao-gap-framework-2003` | official_guidance | FAO Committee on Agriculture, COAG/2003/6, Development of a Framework for Good Agricultural Practices, section IV paragraphs 24–26 and Annex, https://www.fao.org/4/y8704e/y8704e.htm | Generic monitoring and farm-record context only; crop-specific routes, lifetimes, quantitative ranges and LCA allocation are PCR choices requiring separate applicable evidence. |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

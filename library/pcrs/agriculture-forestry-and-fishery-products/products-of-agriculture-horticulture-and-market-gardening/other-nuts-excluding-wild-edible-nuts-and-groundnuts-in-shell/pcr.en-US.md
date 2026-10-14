@@ -124,7 +124,7 @@ Raw activity or stage basis: per productive hectare and reporting period.
 
 ###### Agricultural nutrient and fertilizer inputs (`agricultural_nutrient_inputs`)
 
-Consolidate every mineral fertilizer, organic fertilizer, and nutrient-bearing amendment in this one card; preserve product, assay, event, and nutrient basis.
+Record each mineral fertilizer, organic fertilizer and nutrient-bearing amendment in its own concrete product card; preserve product, assay, event, and nutrient basis.
 
 - Selected flow: Agricultural nutrient and fertilizer supply
 - Flow property / unit: Product and nutrient quantity / kg product, m3 product, kg N, kg P2O5, kg K2O

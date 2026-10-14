@@ -533,29 +533,40 @@ Denominator and scope requirements：per actual recorded lot; final result norma
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Energy utility for actual chilling or drying (`preservation_energy`)
+###### Electricity at the equipment supply point (`preservation_energy_electricity`)
+
+**Collection scope and applicability for preservation_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Actual electricity, fuel or other energy carrier for preservation.
-
 Denominator and scope requirements：per actual recorded lot; final result normalized to 1 kg net as-sold raw skin
 
-- Selected flow: Actual electricity, fuel or other energy carrier for preservation (UUID unresolved)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
 - Flow property / unit: Energy / kWh
-- Amount rule: Meter by carrier and period; omit when no energy intervention occurs.
+- Amount rule: Collect raw quantities for this identity under `cp_preservation` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
-- Specificity: Route-specific (`route_specific`)
-- Normalization basis: per reference flow
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preservation`
-- Range: Provisional completeness screen, not a default yield
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000000
-  - Unit: kWh per lot
-  - Basis: actual measured lot flow or service, initial screen only
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`preservation_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_preservation` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_preservation`
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -744,6 +755,8 @@ Denominator and scope requirements：per actual recorded lot; final result norma
 | `grade_and_state` | sorting and preservation | Saleable accepted and downgraded grades are distinct products only where actual independent sales occur; rejected skin, spent brine and trims follow measured treatment. Do not credit loss as saleable output. | `fao-hides` |
 | `shared_period` | shared sites and containers | Allocate room, frame, meter and reusable-container burdens among actual consuming nodes/lots and periods by measured hours or throughput; count each service once and disclose choice. | `fao-hides` |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -781,6 +794,7 @@ Denominator and scope requirements：per actual recorded lot; final result norma
 | `route_balance` | all nodes | Match lot IDs and measured masses from removal to final single handover; reconcile accepted, downgraded, rejected, retained salt, free brine and explained moisture change. | `fao-small-ruminant` |
 | `outputs_periods` | allocation | Confirm actual meat/milk/fibre/breeding output sets, periods, shared consumers and attribution shares; prevent zero/whole-hide burden defaults and double count. | `fao-hides` |
 | `identity_resolution` | concrete dataset exchange | Resolve each unresolved product/waste/elementary identity to a detail-verified compatible flow before generating a final exchange; conditional flow scope is provisional, not a UUID. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 
 ## 10. Published Dataset Profile
 
@@ -801,3 +815,4 @@ Denominator and scope requirements：per actual recorded lot; final result norma
 | `un-cpc-3` | `official_guidance` | [UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | raw-category and processed-goods boundary |
 | `fao-small-ruminant` | `official_guidance` | [FAO, Manual for slaughter of small ruminants, chapter 10](https://www.fao.org/4/X6552E/X6552E10.htm) | actual skin separation, first curing and residues |
 | `fao-hides` | `official_guidance` | [FAO, Hides and Skins](https://www.fao.org/4/i0523e/i0523e.pdf) | hide collection, quality, grading and preservation |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

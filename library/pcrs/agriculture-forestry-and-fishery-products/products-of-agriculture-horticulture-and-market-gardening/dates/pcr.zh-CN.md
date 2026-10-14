@@ -38,7 +38,7 @@ sync_with: pcr.en-US.md
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | 枣椰果实 `bf7ddd60-c5f1-4d21-9c85-b05b93972595` |
+| 参考产品流 | 日期（平台名称；本记录指椰枣果实） `bf7ddd60-c5f1-4d21-9c85-b05b93972595` |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
@@ -46,12 +46,14 @@ sync_with: pcr.en-US.md
 
 构建前景数据包时，`Required qualifiers` 中列出的信息必须在数据集元数据、过程说明、参考流备注、产品说明或等效的数据包字段中声明。缺失必需限定信息的数据包视为参考流定义不完整。
 
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
+
 ## 4. 计量与单位规则
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `reference_fresh_mass` | 参考椰枣果实 | 质量 | kg | 按农场交付处收到状态报告合格新鲜果实质量。如果测量干物质或水分，保留收到状态基准和测量方法；不得无说明地转换为干基。 |
 | `crop_cycle_normalization` | 果园投入和排放 | 活动相关属性 | 活动相关单位 | 使用同一果园区域和采收批次的合格新鲜果实质量，将每个生产周期总量归一化到 1,000 kg 合格新鲜果实。 |
-| `nutrient_product_and_basis` | 肥料和土壤改良剂投入 | 产品质量和营养素基准 | kg 产品；kg N、kg P2O5、kg K2O，或声明的有机营养基准 | 记录实际产品名称和施用产品质量，再记录用于计算的声明营养素基准。不得从通用肥料名称推断营养素含量。 |
+| `nutrient_product_and_basis` | 肥料和土壤改良剂投入 | 产品质量和营养素基准 | kg 产品；kg N、kg P2O5、kg K2O，或声明的有机营养基准 | 每种实际肥料或改良剂产品单独列卡，保留实物质量、配方、养分组成和施用记录；养分量不是同一产品的另一次投入，不使用集合或分组标识代替具体流身份。 |
 | `water_and_energy_consistency` | 灌溉、取水、泵送电力和燃料 | 体积、能量或质量 | m3、kWh、L 或 kg | 将计量或发票活动单位与计算换算分开，并为每次换算披露来源、计量边界和换算基准。 |
 
 ## 5. 系统边界
@@ -72,7 +74,7 @@ sync_with: pcr.en-US.md
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
 | `boundary_orchard_cycle` | 枣椰果园生产 | 包括计入声明生产周期的果园建立或更新投入、果园管理、采收和新鲜果实交接前的基本农场交付处理。 | `iso-14044-2006` |
-| `boundary_fresh_unprocessed_gate` | 参考产品和农场交付输出 | 在新鲜、未加工枣椰果实交接处停止前景边界。排除清洗、干制、保藏、包装、场外储存、运输和下游加工。 | `codex-cxs-143-1985-dates`; `iso-14044-2006` |
+| `boundary_fresh_unprocessed_gate` | 参考产品和农场门输出 | 本 PCR 选择新鲜未加工农场门截止点，排除清洗、干燥、保藏、包装、场外储存、运输和下游加工。这是作者的 LCA 边界选择，不是 Codex CXS 143-1985 的禁止规定。 | `iso-14044-2006` |
 | `boundary_direct_environmental_exchanges` | 营养相关土壤和空气交换 | 使用与营养物和残余物核算相同的生产周期活动记录，并采用具有地理适用性的方法，纳入直接及适用的间接营养相关环境交换。 | `ipcc-2019-refinement-vol-4` |
 | `boundary_recursive_product_inputs` | 同类别产品投入 | 不得将新鲜枣椰果实输出回接到同一椰枣 PCR。对种植材料或其他购买投入使用不同的上游身份，并单独披露保留材料。 | `iso-14044-2006` |
 
@@ -107,21 +109,100 @@ sync_with: pcr.en-US.md
 - Collection protocol: `cp_orchard_activity_records`
 - Sources:
 
-###### 农业养分与肥料投入（`date_orchard_production_agricultural_nutrient_inputs`）
+###### 尿素肥料（`date_orchard_production_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**date_orchard_production_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：同一过程和报告期的定量参考.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_activity_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
-- 来源：
+- 采集协议：`cp_orchard_activity_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`date_orchard_production_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_activity_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_activity_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`date_orchard_production_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_activity_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_activity_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`date_orchard_production_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_activity_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_activity_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`date_orchard_production_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_activity_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_activity_records`
+- 来源：`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`date_orchard_production_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_orchard_activity_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_orchard_activity_records`
+- 来源：`fao-organic-nutrients`
 
 ###### 供应的灌溉水（`irrigation_water_input`）
 
@@ -337,7 +418,7 @@ sync_with: pcr.en-US.md
 
 记录在农场交付处转移的合格新鲜枣椰果实作为终端参考产品。保留按收到状态的质量、采收批次、成熟度、质量等级和去向，不包括农场交付后的加工。
 
-- Selected flow: 农场交付处的新鲜、未加工枣椰果实＼
+- 选定流：日期（平台名称；本记录指椰枣果实） `bf7ddd60-c5f1-4d21-9c85-b05b93972595`
 - Flow property / unit: 质量 / kg
 原始产出计量与核对要求：农场交付转移处实测的合格新鲜果实质量
 
@@ -382,6 +463,8 @@ sync_with: pcr.en-US.md
 | `allocation_single_date_output` | 仅有新鲜椰枣果实作为产品输出的果园和采收过程 | 当没有有意共产品离开边界时，将果园和采收负荷分配给合格新鲜椰枣果实。不得将归类为废物的淘汰果或残余物作为共产品。 | `iso-14044-2006` |
 | `allocation_declared_coproducts` | 有意的非椰枣产品输出 | 当有意共产品离开边界时，首先检验有文件支持的物理因果分配。如果不存在可辩护的物理关系，则使用有文件支持的经济分配，并报告质量、收入、参考期和分配因子。 | `iso-14044-2006` |
 | `allocation_perennial_establishment` | 果园建立或更新投入 | 使用有文件记录的果园寿命或生产期假设，在声明的生产期内分配建立或更新负荷，并在数据集元数据中披露该假设。 | `iso-14044-2006` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算与质量规则
 
@@ -442,8 +525,10 @@ sync_with: pcr.en-US.md
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `codex-cxs-143-1985-dates` | standard | Codex Alimentarius CXS 143-1985，Standard for Dates | 新鲜椰枣产品状态、质量限定信息和淘汰产品区分 |
+| `codex-cxs-143-1985-dates` | standard | Codex Alimentarius CXS 143-1985, Standard for Dates | 适用于商业制备、包装后即食的椰枣；仅在明确说明可迁移条件时参考质量要求。允许清洗、干燥或复水、巴氏杀菌等处理，不定义本 PCR 的新鲜农产品交接点。 |
 | `fao-56-crop-evapotranspiration-1998` | official_guidance | FAO Irrigation and drainage paper 56，Crop evapotranspiration | 灌溉活动记录、水量平衡证据和灌溉披露 |
 | `ipcc-2019-refinement-vol-4` | method_factor | 2019 Refinement to the 2006 IPCC Guidelines，Volume 4：Agriculture, Forestry and Other Land Use | 营养相关土壤和空气排放计算方法选择 |
 | `iso-14040-2006` | standard | ISO 14040:2006，Environmental management — Life cycle assessment — Principles and framework | 生命周期边界和数据解释背景 |
 | `iso-14044-2006` | standard | ISO 14044:2006，Environmental management — Life cycle assessment — Requirements and guidelines | 归一化、分配、共产品处理和数据质量规则 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

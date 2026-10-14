@@ -119,31 +119,100 @@ Raw activity or stage basis: per cultivated hectare and crop cycle.
   - Evidence kind: External source (`external_source`)
   - Sources: `nfsm-oilseeds-practices-2018`
 
-###### Fertilizer and nutrient supply (`nutrient_supply`)
+###### Urea fertilizer (`nutrient_supply_urea`)
 
-One consolidated card covers mineral and organic fertilizers and amendments; foreground composition expands concrete exchanges.
+**Collection scope and applicability for nutrient_supply.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient supply
-- Flow property / unit: Mass / kg product and kg nutrient
-- Amount rule: measured product mass multiplied by supplier nutrient composition
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
+Give each actual mineral fertilizer, organic fertilizer and amendment a separate concrete product card, retaining foreground composition.
 Raw activity or stage basis: per cultivated hectare, then per kg accepted seed.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Crop cycle (`crop_cycle`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_cultivation_records`
-- Sources: `nfsm-oilseeds-practices-2018`; `ipcc-2019-managed-soils`
-- Range: Reported nitrogen application
-  - Range role: Typical range (`typical_range`)
-  - Lower: 0
-  - Upper: 80
-  - Unit: kg N/ha
-  - Basis: per cultivated hectare; soil-test recommendation controls
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: External source (`external_source`)
-  - Sources: `nfsm-oilseeds-practices-2018`
+- Sources: `nfsm-oilseeds-practices-2018`; `ipcc-2019-managed-soils`; `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`nutrient_supply_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cultivation_records`
+- Sources: `nfsm-oilseeds-practices-2018`; `ipcc-2019-managed-soils`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`nutrient_supply_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cultivation_records`
+- Sources: `nfsm-oilseeds-practices-2018`; `ipcc-2019-managed-soils`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`nutrient_supply_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cultivation_records`
+- Sources: `nfsm-oilseeds-practices-2018`; `ipcc-2019-managed-soils`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`nutrient_supply_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cultivation_records`
+- Sources: `nfsm-oilseeds-practices-2018`; `ipcc-2019-managed-soils`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`nutrient_supply_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_cultivation_records`
+- Sources: `nfsm-oilseeds-practices-2018`; `ipcc-2019-managed-soils`; `fao-organic-nutrients`
 
 ###### Irrigation water supply (`irrigation_water`)
 
@@ -280,30 +349,55 @@ Raw activity or stage basis: per crop cycle and kg accepted seed.
 
 ##### Elementary flows
 
-###### Managed-soil elementary emissions (`managed_soil_emissions`)
+###### Nitrous oxide to air (`managed_soil_emissions_n2o`)
 
-Species- and compartment-specific emissions from fertilizer, residues, urea and lime are calculated by the declared method. This umbrella card remains unresolved because one attempted initial lookup could not be completed and a concrete dataset must expand each species before publication.
+**Collection scope and applicability for managed_soil_emissions.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Managed-soil emission, species- and compartment-specific
-- Flow property / unit: Mass / kg emission
-- Amount rule: calculated from collected nutrient, residue, urea and lime records with the declared method and factors
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
+Species- and compartment-specific emissions from fertilizer, residues, urea and lime are calculated by the declared method. Each substance and receiving compartment requires its own verified flow identity; unresolved identities remain explicit before publication.
 Raw activity or stage basis: per kg accepted mustard seed.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Calculate from the actual pathway, substance-mass basis and receiving compartment; convert N- or C-based factors to this substance mass. Include only the foreground contribution and avoid duplicating linked upstream or treatment-service emissions.
+
+- Selected flow: Nitrous oxide to air
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_cultivation_records`
-- Sources: `ipcc-2019-managed-soils`
-- Range: Managed-soil emission provisional screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 0.1
-  - Unit: kg emission/kg accepted seed
-  - Basis: per kg accepted seed; broad provisional screen, with method calculation controlling
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `ipcc-2019-managed-soils`; `ipcc-soils-n2o-2019`
+
+###### Ammonia to air (`managed_soil_emissions_nh3`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Calculate from the actual pathway, substance-mass basis and receiving compartment; convert N- or C-based factors to this substance mass. Include only the foreground contribution and avoid duplicating linked upstream or treatment-service emissions.
+
+- Selected flow: Ammonia to air
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_cultivation_records`
+- Sources: `ipcc-2019-managed-soils`; `ipcc-soils-n2o-2019`
+
+###### Nitrate to water (`managed_soil_emissions_nitrate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Calculate from the actual pathway, substance-mass basis and receiving compartment; convert N- or C-based factors to this substance mass. Include only the foreground contribution and avoid duplicating linked upstream or treatment-service emissions.
+
+- Selected flow: Nitrate to water
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_cultivation_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_cultivation_records`
+- Sources: `ipcc-2019-managed-soils`; `ipcc-soils-n2o-2019`
 
 ### Process: Harvest, threshing and field capture (`harvest_capture`)
 
@@ -723,6 +817,8 @@ Raw activity or stage basis: per grading lot.
 | `allocation_rework` | Rework and off-spec seed | Keep burdens with the originating lot, return mass to the named node, count energy/loss once, and exclude it from accepted output until acceptance. | `iso-14044-2006` |
 | `allocation_run_period` | Shared runs and changeovers | Assign once using measured run time, throughput or another causal driver and prevent duplication. | `iso-14044-2006` |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 Retain raw site, lot, cycle and stage quantities and denominators in each collection protocol. Reconcile stocks, losses, moisture and co-product attribution first, then normalize: normalized exchange = attributable raw exchange × declared reference quantity / accepted hand-off product quantity on the same boundary and measurement basis. Apply perennial-establishment and shared-operation attribution before this normalization. Never set an internal-transfer quantity equal to the final reference quantity. Per declared reference flow means the amount, unit and product state in section 3; the data package must declare its actual route and gate.
@@ -763,12 +859,12 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | --- | --- | --- | --- |
 | `validate_reference_identity` | reference flow | Require fixed UUID, Mass property/unit group, 1 kg, CPC context and all qualifiers; base name alone is insufficient. |  |
 | `validate_route_boundary` | process map | Require four parent nodes and route deltas; reject oil extraction, meal, flour or condiment manufacture. | `niphm-mustard-ipm`; `agmarknet-mustard-postharvest` |
-| `validate_nutrient_card` | cultivation | At most one agricultural-nutrient-supply@0.3.0 card per process, set-level only and without group. |  |
+| `validate_nutrient_card` | cultivation | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |  |
 | `validate_mass_balance` | harvest; conditioning; grading | Reconcile input, internal/accepted output, downgrade, rework, rejects, residues, moisture change and loss. | `iso-14044-2006` |
 | `validate_rework_rejects` | rejects | Each reject needs rework, downgrade, recovery, treatment or discard; accepted output excludes unresolved rejects and duplicated loops. | `iso-14044-2006` |
 | `validate_mode_attribution` | batch/continuous | Link inputs, outputs, cleaning and changeovers to runs or periods and prevent duplicate shared burdens. | `iso-14044-2006` |
 | `validate_stabilization` | conditioned seed | Require before/after mass, moisture, drying route and hand-off; moisture above 8% for claimed short-term storage needs reviewed evidence. | `agmarknet-mustard-postharvest` |
-| `validate_ranges` | all cards | Require exactly one Range per card in both languages and projection with matching fields. |  |
+| `validate_ranges` | all cards | Where a quantitative range is provided, match identity, bounds, unit, basis and evidence in both languages and the projection. Record missing compatible evidence rather than inventing defaults to satisfy a format. |  |
 
 ## 10. Published Dataset Profile
 
@@ -791,3 +887,6 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `agmarknet-mustard-postharvest` | `official_guidance` | Directorate of Marketing and Inspection, Post-Harvest Profile of Mustard-Rapeseed, https://www.agmarknet.gov.in/Others/mustard-rapeseed-profile.pdf | cleaning; drying; 8% moisture; hand-off |
 | `ipcc-2019-managed-soils` | `method_factor` | IPCC, 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | soil emissions; nutrient and residue accounting |
 | `iso-14044-2006` | `standard` | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | allocation; balances; calculations |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |
+| `ipcc-soils-n2o-2019` | official_guidance | IPCC 2019 Refinement, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | conditional concrete identities and method context; does not establish site use or quantities |

@@ -45,7 +45,6 @@ translation_status: aligned
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | 豌豆形态（带荚或去荚）；类型或品种组；生产地理范围；露地或设施路线；种植和采收日期；采收轮次；成熟度、嫩度、颜色、大小和等级；灌溉或雨养状态；养分基准；植保方案；去荚、清洗、冷却和包装状态；商品、降级、豆荚、残体、废水和包装废物去向；声明交付门 |
-| 绑定模式 | `fixed` |
 
 参考产品流及质量支持对象已按 CPC 3.0:01242 完成平台核验，选定 UUID 不包含数据集版本。不得用干豌豆、成熟豌豆或加工产品替代鲜青豌豆。构建前景数据包时必须披露上述限定信息，并使带荚和去荚产品的质量平衡保持一致。
 
@@ -212,57 +211,100 @@ Delivered crop water crosses the boundary when supplied to the field or protecte
   - 基准类型： Crop cycle (`crop_cycle`)
   - 证据类型： Reasoned estimate (`reasoned_estimate`)
 
-###### 农业养分与肥料投入（`crop_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`crop_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**crop_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：per 1,000 kg accepted fresh green pea output.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：Process output (`process_output`)
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_nutrient_records`
-- 来源：
-- 数量范围： Nitrogen-product screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 300
-  - 单位： kg product per 1,000 kg accepted output
-  - 基准： crop-cycle nutrient program and accepted output
-  - 基准类型： Process output (`process_output`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+- 来源：`fao-fertilizer-identities`
 
-- 数量范围： Phosphorus-product screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 250
-  - 单位： kg product per 1,000 kg accepted output
-  - 基准： crop-cycle nutrient program and accepted output
-  - 基准类型： Process output (`process_output`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+###### 硫酸铵肥料（`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`）
 
-- 数量范围： Potassium-product screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 400
-  - 单位： kg product per 1,000 kg accepted output
-  - 基准： crop-cycle nutrient program and accepted output
-  - 基准类型： Process output (`process_output`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
 
-- 数量范围： Organic-product screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 2,000
-  - 单位： kg product per 1,000 kg accepted output
-  - 基准： crop-cycle amendment program and accepted output
-  - 基准类型： Process output (`process_output`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`crop_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`crop_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`crop_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`crop_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`fao-organic-nutrients`
 
 ###### Crop-protection products (`crop_protection_input`)
 
@@ -863,7 +905,7 @@ The transport process delivers the declared reference product when purchased tra
 - 选定流：Peas, green；生产混合，在农场；鲜品、未加工
 - 流属性 / 单位：质量 / kg
 - 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -889,7 +931,7 @@ The transport process delivers the declared reference product when purchased tra
 - 选定流：Peas, green；生产混合，在农场；鲜品、未加工
 - 流属性 / 单位：质量 / kg
 - 数量规则：1000 kg
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -920,6 +962,8 @@ The transport process delivers the declared reference product when purchased tra
 | `allocation_multiple_cycles_or_types` | multiple plantings, cultivars, or harvest campaigns | Keep cycles and types separate when input regimes, route, grade, or gate differ. If aggregated, allocate shared operations by measured accepted mass or another declared physical basis. | `iso-14044-2006` |
 | `allocation_reusable_packaging` | reusable crates, pallets, and containers | Allocate packaging burdens over documented reuse cycles and declared capacity or mass basis. Include return and loss records when attributable to the declared gate. | `iso-14044-2006` |
 | `allocation_residue_use` | crop residue, shell residue, wash solids, and wastewater solids | Keep residue treatment and productive use separate from accepted product. Assign a credit only when recipient, intended use, substitution claim, and allocation method are documented. | `iso-14044-2006` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算和质量规则
 
@@ -1012,3 +1056,5 @@ The transport process delivers the declared reference product when purchased tra
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

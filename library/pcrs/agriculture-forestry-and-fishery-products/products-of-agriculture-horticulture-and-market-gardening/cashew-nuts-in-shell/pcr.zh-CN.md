@@ -136,30 +136,100 @@ translation_status: aligned
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 农业养分与肥料投入（`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**cashew_orchard_establishment_and_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每 1,000 kg 合格带壳腰果.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cashew_orchard_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_cashew_orchard_input_records`
-- 来源：`ipcc-2019-afolu`
-- 数量范围：暂定养分投入筛选范围
-  - 范围角色：QA 校验范围（`qa_guardrail`）
-  - 下限：0
-  - 上限：500
-  - 单位：每 1,000 kg 参考产品的 kg 配方产品
-  - 基准：年度果园养分和改良剂宽范围投入
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`ipcc-2019-afolu`；`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cashew_orchard_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cashew_orchard_input_records`
+- 来源：`ipcc-2019-afolu`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cashew_orchard_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cashew_orchard_input_records`
+- 来源：`ipcc-2019-afolu`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cashew_orchard_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cashew_orchard_input_records`
+- 来源：`ipcc-2019-afolu`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cashew_orchard_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cashew_orchard_input_records`
+- 来源：`ipcc-2019-afolu`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`cashew_orchard_establishment_and_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cashew_orchard_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cashew_orchard_input_records`
+- 来源：`ipcc-2019-afolu`；`fao-organic-nutrients`
 
 ###### 供应的灌溉水（`cashew_irrigation_water`）
 
@@ -668,7 +738,7 @@ translation_status: aligned
 
 - 选定流：腰果干燥释放到空气中的水
 - 流属性/单位：质量 / kg 水
-- 数量规则：根据实测批次质量和水分计算接收干物质与调制干物质差，并扣除非水损失
+- 数量规则：输入水量加额外加入的水，减去合格、降级、拒收和残余输出所保留的水、其他水去向及水库存增加；每条流的水量按湿质量乘以实测水分分数计算
 - 数值来源模式：计算值（`calculated_value`）
 - 适用范围：技术特定（`technology_specific`）
 原始活动或阶段基准：每 1,000 kg 鲜品农场门参考产品.
@@ -860,7 +930,7 @@ translation_status: aligned
 - 选定流：Cashew nuts, in shell
 - 流属性 / 单位：质量 / kg
 - 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -886,7 +956,7 @@ translation_status: aligned
 - 选定流：Cashew nuts, in shell
 - 流属性 / 单位：质量 / kg
 - 数量规则：1000 kg
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -921,6 +991,8 @@ translation_status: aligned
 
 腰果壳质量是带壳参考产品的一部分，在本 PCR 中不是单独副产品。腰果壳液、壳片、腰果仁、种皮和所有脱壳输出属于下游脱壳或腰果仁 PCR，不得引入本清单。任何输出不得同时作为腰果苹果副产品和果园残余计入。
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算和质量规则
 
 先按各采集协议保留原始场址、批次、周期及阶段数量与分母，并完成库存、损失、含水率和共产品归属核对；随后按实际归属的验收交付产品量归一化：归一化交换量 = 归属原始交换量 × 声明参考数量 / 同一边界和计量基准的验收产品量。多年生建植和共享作业先执行各自分摊规则，不得把内部转移数量设为最终参考数量。每声明的参考流指第 3 节的数量、单位和产品状态；数据包必须声明实际路线和门。
@@ -950,7 +1022,7 @@ translation_status: aligned
 | `calc_02` | 所有采收、调制和储存批次 | `期初质量 + 投入 = 合格输出 + 副产品 + 拒收物 + 残余 + 实测损失`；调查未解释差额。 | 批次质量和去向 | 核对后的质量平衡 | `mass-balance-identity` |
 | `calc_03` | 鲜品到干燥或调制批次 | 干物质 = 湿质量 ×（1 − 水分分数）；扣除非水损失后，移除水 = 输入湿质量 − 输出湿质量。 | 输入/输出质量和实测水分 | 水分修正质量和干燥水损失 | `mass-balance-identity`; `fao-cashew-minor-oil-crops` |
 | `calc_04` | 腰果苹果副产品 | 苹果有意交付时，按实测干物质质量分配共用果园和采收负荷；无意交付时建模为残余去向，不分配副产品信用。 | 腰果质量；苹果质量；水分或干物质；声明去向 | 分配后的负荷和副产品份额 | `iso-14044-2006` |
-| `calc_05` | 高等级、标准等级、降级和拒收批次 | 等级输出必须互斥；调制合格输出等于等级输出加声明的降级、返工、拒收、异物、水分损失和未解释损失项。 | 批次输入；分级和拒收记录 | 归一化输出行 | `mass-balance-identity` |
+| `calc_05` | 分级批次 | 合格输出仅等于互斥合格等级的质量之和。将批次输入、加入量和期初库存，与合格输出、单独销售的降级输出、拒收、残余物、实测水和非水损失及期末库存核对。内部返工是转移而非新增销售；调查未解释残差。 | 批次输入；加入量；库存；等级和拒收记录 | 合格输出与完整批次平衡 | `mass-balance-identity` |
 | `calc_06` | 储存 | `期初库存 + 收货 − 发货 − 期末库存 = 实测储存损失`；储存损失不属于合格交接输出。 | 库存台账；发货；期末库存；损失记录 | 按储存时间的储存损失 | `mass-balance-identity` |
 
 ### 数据质量要求
@@ -1007,3 +1079,5 @@ translation_status: aligned
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

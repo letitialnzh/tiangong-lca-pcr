@@ -9,7 +9,9 @@ sync_with: pcr.en-US.md
 
 ## 1. 范围与适用性
 
-本 PCR 覆盖 Capsicum 属和 Pimenta 属新鲜绿色辣椒、甜椒的商业生产，从直播或移栽建植开始，经作物管理、灌溉、养分和作物保护投入、采收、分级、可选清洗和冷却、初级包装，到约定农场大门或包装场大门交接。露地和保护地路线均可纳入，但必须声明生产路线、果实类型和作物周期。种子、育苗、成熟红果或其他成熟果、干辣椒、酱料、腌制品、冷冻或烹饪产品、零售、消费者储存和消费均排除在外。只有在约定大门之前发生的初级包装、清洗、冷却和外购运输才纳入。
+本 PCR 覆盖 Capsicum 属和 Pimenta 属新鲜绿色辣椒、甜椒的商业生产，从直播或移栽建植开始，经作物管理、灌溉、养分和作物保护投入、采收、分级、可选清洗和冷却、初级包装，到约定农场大门或包装场大门交接。露地和保护地路线均可纳入，但必须声明生产路线、果实类型和作物周期。种子、育苗、干燥果实、干辣椒、酱料、腌制品、冷冻或烹饪产品、零售、消费者储存和消费均排除在外。只有在约定大门之前发生的初级包装、清洗、冷却和外购运输才纳入。
+
+必须声明新鲜果实的颜色和成熟度；新鲜红色或黄色甜椒不能仅因颜色而排除。CPC 商品名称中的 green 不构成仅限未成熟绿色果实的质量条件。UNECE FFV-28 仅提供新鲜 Capsicum annuum 甜椒的质量背景，不是 Pimenta 生产方法。Pimenta dioica 为多年生乔木（Kew）；不得默认把任何纳入范围的多年生物种当成每年重新建植的作物。只有参考 UUID 的实际物种、状态和交付门与批次匹配时才能采用，否则核实兼容产品身份。
 
 ## 2. 产品类别识别
 
@@ -17,10 +19,10 @@ sync_with: pcr.en-US.md
 | --- | --- |
 | canonical_pcr_id | pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.chillies-and-peppers-green-capsicum-spp-and-pimenta-spp |
 | classification_refs | CPC 3.0:01231 Chillies and peppers, green (Capsicum spp. and Pimenta spp.); mapping relation: exact |
-| covered_products | 在约定未成熟绿色市场状态采收、并在农场大门或包装场大门交付的新鲜未加工绿色辣椒和甜椒 |
-| excluded_products | 种子和育苗材料、完全成熟红果或其他成熟果、干辣椒、酱料、腌制品、冷冻品、熟制品和其他加工产品，以及零售和消费 |
+| covered_products | 在约定声明的新鲜成熟度和颜色状态采收、并在农场大门或包装场大门交付的新鲜未加工绿色辣椒和甜椒 |
+| excluded_products | 种子和育苗材料、完全干燥果实、干辣椒、酱料、腌制品、冷冻品、熟制品和其他加工产品，以及零售和消费 |
 | representative_product | 符合约定品种、成熟度、大小、硬度、洁净度、等级、修整和包装要求的可销售绿色 Capsicum 或 Pimenta 果实 |
-| production_route | 露地或保护地直播、移栽的一年生作物，包含灌溉、养分、杂草和病虫害管理、多轮果实采收、分级、可选清洗或冷却及初级包装 |
+| production_route | 按物种区分的一年生 Capsicum 栽培或多年生 Capsicum/Pimenta 植株生产，包含实际建植或更新、灌溉、养分和植保、采收、分级、可选清洗冷却及初级包装 |
 | market_state | 约定农场或包装场大门处，以散装、周转箱、纸箱或其他声明的初级包装状态交付的新鲜未加工绿色果实 |
 
 ## 3. 参考流
@@ -29,27 +31,29 @@ sync_with: pcr.en-US.md
 | --- | --- |
 | What | 约定农场大门或包装场大门处的可销售新鲜绿色辣椒和甜椒 |
 | How much | 1,000 kg |
-| How well | 新鲜、未加工，声明 Capsicum 或 Pimenta 的物种或品种组、未成熟绿色状态、果实大小、硬度、洁净度、等级、修整、清洗和冷却状态以及包装状态 |
-| How long or cycle | 一个声明的一年生作物周期，包括归属于该作物和约定大门的全部采收轮次 |
+| How well | 新鲜、未加工，声明 Capsicum 或 Pimenta 的物种或品种组、声明的新鲜成熟度和颜色、果实大小、硬度、洁净度、等级、修整、清洗和冷却状态以及包装状态 |
+| How long or cycle | 一个声明的一年生作物周期或多年生生产期间，包括归属于该作物和约定大门的全部采收轮次 |
 | reference_flow_link | marketable_green_fruit_output |
 
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Fresh green chillies and peppers, production mix, at farm gate `f4da74e5-e255-4d9b-aa07-27796e120b87` |
+| 参考产品流 | 青辣椒和青椒（辣椒属和胡椒属） `f4da74e5-e255-4d9b-aa07-27796e120b87` |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
-| 必需限定信息 | 生产地理位置；露地或保护地路线；Capsicum 或 Pimenta 物种或品种组；种子或移栽建植；种植日期；作物周期和采收轮次；约定大门；未成熟绿色状态；果实大小、硬度和等级；灌溉来源与方式；养分产品与养分基准；作物保护方案；清洗和冷却状态；包装状态；残余物和拒收物去向 |
+| 必需限定信息 | 生产地理位置；露地或保护地路线；Capsicum 或 Pimenta 物种或品种组；种子或移栽建植；种植日期；作物周期和采收轮次；约定大门；声明的新鲜成熟度和颜色；果实大小、硬度和等级；灌溉来源与方式；养分产品与养分基准；作物保护方案；清洗和冷却状态；包装状态；残余物和拒收物去向 |
 
 构建前景数据包时，`必需限定信息` 中列出的信息应在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中明确声明。缺失必需限定信息的数据包视为参考流定义不完整。
+
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
 | --- | --- | --- | --- | --- |
 | `reference_green_pepper_mass` | 可销售果实和采收记录 | Mass | kg | 将总采收果实、可销售绿色果实、不可销售果实、修整物、异物和田间残余物作为分开的测量或计算数量。 |
 | `crop_cycle_normalization` | 田间、保护地和采收记录 | Area and mass | ha and kg | 按田块、畦或保护地单元记录投入和采收轮次，并归一化到同一声明年度作物周期的可销售产出。 |
-| `nutrient_product_basis` | 肥料、粪肥、堆肥和其他养分投入 | Mass of product and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | 保留产品质量；只有依据产品标签、供应商规格、养分计划或实验室结果时，才换算为养分基准。 |
+| `nutrient_product_basis` | 肥料、粪肥、堆肥和其他养分投入 | Mass of product and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | 每种实际肥料或改良剂产品单独列卡，保留实物质量、配方、养分组成和施用记录；养分量不是同一产品的另一次投入，不使用集合或分组标识代替具体流身份。 |
 | `water_volume_basis` | 作物灌溉和采后清洗 | Volume | m3 | 使用计量记录或有文件依据的水量平衡，分别记录作物灌溉水和采后清洗水。 |
 | `energy_service_basis` | 抽水、保护地设备、冷却和包装 | Energy and fuel | kWh and L | 按设备或作业记录电力和燃料，保留计量或发票基准，并将共享服务分配到声明作物周期和大门产出。 |
 
@@ -60,7 +64,7 @@ sync_with: pcr.en-US.md
 | 字段 | 值 |
 | --- | --- |
 | declared_starting_condition | 接收绿色辣椒或甜椒种子或移栽苗的已整备田块、畦或保护地单元，并披露既有土地利用和排除的基础设施工程 |
-| starting_condition_role | 声明的一年生作物周期起点 |
+| starting_condition_role | 声明的一年生作物周期或多年生植株核算期间起点 |
 | product_classification_scope | CPC 3.0:01231 绿色辣椒和甜椒，从生产至约定农场大门或包装场大门 |
 | recursive_input_rule | 外购种子和移栽苗作为上游产品投入只链接一次；其育苗或制种过程不在本 PCR 内，除非另有上游数据集。 |
 | upstream_dataset_requirement | 使用时应为种子或移栽苗、肥料和改良剂、作物保护产品、灌溉水、能源、包装以及外购运输或处理服务提供上游数据集。 |
@@ -82,7 +86,7 @@ sync_with: pcr.en-US.md
 | process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
 | --- | --- | --- | --- | --- | --- |
 | `crop_establishment` | 绿色辣椒和甜椒作物建植 | required | 每次有记录的直播或移栽事件 | 前景作物建植 | 已建植田块、畦或保护地单元 |
-| `crop_management` | 绿色辣椒和甜椒作物管理 | required | 每个有记录的一年生作物周期 | 前景受管理的生物生产 | 管理面积和作物周期采收量 |
+| `crop_management` | 绿色辣椒和甜椒作物管理 | required | 每个有记录的一年生作物周期或多年生生产期间 | 前景受管理的生物生产 | 管理面积和作物周期采收量 |
 | `harvest_and_gate_preparation` | 绿色辣椒和甜椒采收及大门准备 | required | 每次有记录的采收活动和约定大门 | 前景采收、处理、包装和大门交接 | 1,000 kg 可销售新鲜绿色果实 |
 
 ### 过程：绿色辣椒和甜椒作物建植（`crop_establishment`）
@@ -115,39 +119,100 @@ sync_with: pcr.en-US.md
   - 基准类型：作物周期（`crop_cycle`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 农业养分与肥料投入（`crop_establishment_agricultural_nutrient_inputs`）
+###### 尿素肥料（`crop_establishment_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**crop_establishment_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每 1,000 kg 归属于同一作物周期的可销售新鲜绿色果实.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_nutrient_records`
-- 来源：`usda-nrcs-nutrient-management-590`
-- 数量范围：建植期有机改良剂筛选范围
-  - 范围角色：典型范围（`typical_range`）
-  - 下限：0
-  - 上限：20,000
-  - 单位：kg product/ha
-  - 基准：等待田间记录和养分计划替换的宽范围改良剂筛选
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
 
-- 数量范围：建植期氮肥筛选范围
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：120
-  - 单位：kg N/ha
-  - 基准：等待养分计划和土壤检测替换的宽范围初筛
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+###### 硫酸铵肥料（`crop_establishment_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`crop_establishment_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`crop_establishment_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`crop_establishment_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`crop_establishment_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-organic-nutrients`
 
 ##### 废物流
 
@@ -157,7 +222,7 @@ sync_with: pcr.en-US.md
 
 记录作物建植期间占用的田块或保护地面积，并归属于声明作物周期。
 
-- 选定流：一年生作物生产的土地占用
+- 选定流：实际一年生或多年生路线的耕地占用
 - 流属性/单位：Area-time / m2*a
 - 数量规则：实测耕作面积乘以声明建植期，并换算为要求的面积时间单位。
 - 数值来源模式：计算值（`calculated_value`）
@@ -182,48 +247,100 @@ sync_with: pcr.en-US.md
 #### 输入
 ##### 产品流
 
-###### 农业养分与肥料投入（`crop_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`crop_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**crop_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每 1,000 kg 归属于同一作物周期的可销售新鲜绿色果实.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_nutrient_records`
-- 来源：`usda-nrcs-nutrient-management-590`
-- 数量范围：作物周期氮肥筛选范围
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：350
-  - 单位：kg N/ha
-  - 基准：等待场址养分记录替换的宽范围初筛
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
 
-- 数量范围：作物周期磷肥筛选范围
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：250
-  - 单位：kg P2O5/ha
-  - 基准：等待土壤检测和养分计划记录替换的宽范围初筛
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+###### 硫酸铵肥料（`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`）
 
-- 数量范围：作物周期钾肥筛选范围
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：500
-  - 单位：kg K2O/ha
-  - 基准：等待土壤检测和养分计划记录替换的宽范围初筛
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`crop_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`crop_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`crop_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`crop_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_records`
+- 来源：`usda-nrcs-nutrient-management-590`；`fao-organic-nutrients`
 
 ###### 作物管理期灌溉水（`irrigation_water_input`）
 
@@ -334,9 +451,9 @@ sync_with: pcr.en-US.md
 
 ###### 作物管理期土地占用（`land_occupation_management`）
 
-记录一年生绿色辣椒和甜椒在管理期占用的面积时间。
+记录实际一年生或多年生作物在管理期占用的面积时间。
 
-- 选定流：一年生作物生产的土地占用
+- 选定流：实际一年生或多年生路线的耕地占用
 - 流属性/单位：Area-time / m2*a
 - 数量规则：将实测耕作面积和作物占用期换算为面积时间，并归一化到可销售产出。
 - 数值来源模式：计算值（`calculated_value`）
@@ -571,7 +688,7 @@ sync_with: pcr.en-US.md
 
 记录通过声明成熟度、质量和大门要求的可销售绿色果实，作为 PCR 参考产出。
 
-- 选定流：Fresh green chillies and peppers, production mix, at farm gate
+- 选定流：青辣椒和青椒（辣椒属和胡椒属） `f4da74e5-e255-4d9b-aa07-27796e120b87`
 - 流属性/单位：质量 / kg
 
 原参考状态单位说明：Mass / kg fresh fruit
@@ -656,12 +773,16 @@ sync_with: pcr.en-US.md
 
 ##### 基本流
 
+多年生路线须记录建植及未产出年份、各有效采收期间、补植和终止。不得每年重复计入建植。按有记录的有效产出或服务期间归属既有建植及共享服务，并一致结转库存和未采收生产；使用实测产出和明确分配依据，不虚构通用寿命、年产量或植株质量。建植占用与维护占用对应互不重叠的期间，实际土地转化另行记录。缺少植株期间或产出证据时，不得声称多年生数据集完整。
+
 ## 7. 分配与共产品处理
 
 | rule_id | 适用对象 | 规则 | source_ids |
 | --- | --- | --- | --- |
 | `allocation_single_crop_cycle` | 田块或保护地单元之间共享的投入和排放 | 使用实测面积、运行时间或质量产出，将共享投入和排放分配到所代表作物周期；记录选定驱动因子，不得按未记录的假设分配。 | `fao-56-crop-evapotranspiration-1998` |
 | `allocation_marketable_and_reject_outputs` | 采收、分级和大门准备 | 将可销售绿色果实、不可销售果实、修整物和残余物作为分开的产出。只有拒收物有文件依据的生产性用途时才应用声明的分配或处理规则，否则保留为废物或残余物。 | `codex-fresh-fruits-vegetables-2003` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算与质量规则
 
@@ -701,7 +822,7 @@ sync_with: pcr.en-US.md
 
 | requirement_id | 适用对象 | 要求 | 证据 |
 | --- | --- | --- | --- |
-| `quality_reference_identity` | 参考流和可销售产出 | 声明物种或品种组、未成熟绿色市场状态和大门及必需限定信息；最终 TIDAS 数据集发布前解析产品 UUID。 | 参考流元数据、批次规格和后续身份核验 |
+| `quality_reference_identity` | 参考流和可销售产出 | 声明物种或品种组、声明的新鲜成熟度和颜色状态和大门及必需限定信息；最终 TIDAS 数据集发布前解析产品 UUID。 | 参考流元数据、批次规格和后续身份核验 |
 | `quality_temporal_coverage` | 所有作物周期记录 | 覆盖完整年度作物周期及参考产出所代表的每一采收轮次。 | 作物日历、田间日志和采收记录 |
 | `quality_spatial_coverage` | 田块、保护地单元和包装场记录 | 标识每个田块、畦、保护地单元和包装线；没有明确聚合规则时不得混合地点。 | 农场地图、单元登记和包装线记录 |
 | `quality_mass_completeness` | 采收和大门准备 | 在相关情况下核对采收、可销售、拒收、修整、残余物和废水记录。 | 秤量记录、分级记录和质量平衡工作表 |
@@ -712,7 +833,7 @@ sync_with: pcr.en-US.md
 
 | rule_id | 适用对象 | 规则 | source_ids |
 | --- | --- | --- | --- |
-| `validate_reference_qualifiers` | 参考流 | 若前景数据包缺少生产地理位置、路线、品种或物种组、未成熟绿色状态、作物周期、约定大门及采收或质量限定信息，则拒绝该数据包。 | `codex-fresh-fruits-vegetables-2003` |
+| `validate_reference_qualifiers` | 参考流 | 若前景数据包缺少生产地理位置、路线、品种或物种组、声明的新鲜成熟度和颜色、作物周期、约定大门及采收或质量限定信息，则拒绝该数据包。 | `codex-fresh-fruits-vegetables-2003` |
 | `validate_crop_cycle_completeness` | 过程清单 | 检查建植、管理、采收及所有代表性采收轮次是否均由同一作物周期的记录覆盖。 | `fao-56-crop-evapotranspiration-1998` |
 | `validate_flow_binding_priority` | 所有流行 | 分别核验每种实际交换的具体流 UUID、物理状态、流属性和单位；未确认时明确保留未解析身份。 |  |
 | `validate_nutrient_reconciliation` | 养分和土壤排放行 | 检查产品质量、养分浓度、养分数量、残余物去向和选定排放方法在不重复计算的情况下保持一致。 | `usda-nrcs-nutrient-management-590`; `ipcc-2019-refinement-nitrogen` |
@@ -741,3 +862,7 @@ sync_with: pcr.en-US.md
 | `ipcc-2019-refinement-nitrogen` | method_factor | 2019 Refinement to the 2006 IPCC Guidelines, Volume 4 Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html | 直接和间接氮排放计算方法 |
 | `codex-fresh-fruits-vegetables-2003` | standard | Codex Alimentarius, Code of Hygienic Practice for Fresh Fruits and Vegetables, CXC 53-2003, https://www.fao.org/fao-who-codexalimentarius/codex-texts/codes-of-practice/en/ | 新鲜农产品大门、质量、处理、拒收和质量平衡规则 |
 | `fao-good-hygiene-fresh-produce-2003` | official_guidance | FAO and WHO guidance associated with the Codex Code of Hygienic Practice for Fresh Fruits and Vegetables, CXC 53-2003, https://www.fao.org/fao-who-codexalimentarius/codex-texts/codes-of-practice/en/ | 清洗、大门准备、废水和处理记录 |
+| `kew-pimenta-dioica` | official_guidance | Royal Botanic Gardens, Kew, Plants of the World Online: Pimenta dioica, https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:196799-2/general-information | Perennial tree identity; no yield or orchard-life default |
+| `unece-sweet-peppers-ffv28-2020` | standard | UNECE Standard FFV-28 Sweet Peppers (2020), https://unece.org/sites/default/files/2020-12/28_SweetPeppers.pdf | Fresh Capsicum annuum sweet-pepper state and colour/maturity context; not Pimenta agronomy or an LCA boundary |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

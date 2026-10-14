@@ -85,6 +85,7 @@ The foreground package must carry these qualifiers. The product-flow UUID remain
 | `boundary_residue` | Slash, bark and rejects | Marketed wood is a product, exported disposal material is waste, and slash retained in forest is a disclosed on-site loss rather than fictitious exported waste. | `fao-forest-products-2020` |
 | `boundary_shared` | Roads, landings and equipment | Attribute shared services across consuming operations and periods once, using recorded hours, area, road use or volume as appropriate. |  |
 | `boundary_direct_release_coverage` | `stand_management`; `felling_removal`; `forest_extraction`; `log_preparation`; `grade_handover` | Reconcile on-site combustion, actual applications and fugitive releases/leaks at every activated node through unique activity-substance-receiving-medium records in cp_direct_release_stand_management; cp_direct_release_felling_removal; cp_direct_release_forest_extraction; cp_direct_release_log_preparation; cp_direct_release_grade_handover. Upstream production of purchased fuel or chemicals does not replace emissions from their use on site; verify coverage and avoid double counting the same activity inside a supplier service. Evidence must support non-activity; missing data are not zero. This obligation does not expand the existing product gate or downstream-use boundary and does not presume combustion, fertilization, chemicals or equipment occur. |  |
+| `boundary_forest_carbon_land_coverage` | managed stand and purchased stand/wood interfaces | Before claiming a complete stand-to-roadside LCA inventory, select the applicable product-LCA accounting method and period and record one coverage/responsibility decision for land occupation, actual land transformation, above/belowground biomass, deadwood, litter, soil carbon and harvested-carbon transfer. Each relevant item needs compatible measured/modelled evidence, a named upstream coverage owner, or a method-justified exclusion with limitations. IPCC Forest Land identifies pools; its national inventory assumptions are not automatic product-LCA defaults. Do not infer carbon neutrality, gross uptake, net stock change or an uptake credit from reference-log carbon or wet underbark volume alone. Missing relevant land history, pool/time evidence or ownership blocks completeness. | `ipcc-forest-land-2006` |
 
 Select the route from actual incoming state and ownership. Qualified purchased harvested, extracted, prepared or graded feed may enter at its real receiving node; completed upstream operations are not mandatory foreground operations and standing stock or biological resources must not be charged again. Receiving cards record actual material, grade, wet/dry basis, receipt gate, upstream dataset and process coverage; add the actual receiving exchange if none exists. Bypass does not remove upstream burdens; actual operations cannot be skipped and final reference product, quality and gate remain unchanged.
 
@@ -92,7 +93,7 @@ Select the route from actual incoming state and ownership. Qualified purchased h
 
 Inventory reporting and process measurement layers: card amounts are reported per 1 m3 reference flow; original quantities, same-lot process outputs, material states and period attribution remain individually recorded in collection protocols and calculation rules. Assign input burdens directly first and allocate shared burdens under Section 7. Preserve unallocated physical transfer and co-product ledgers, then divide each applicable lot amount by the positive final reference-product quantity of the same boundary and period; burden allocation must not shrink a material balance. Do not count internal transfers again as final outputs. Range blocks retain their explicitly declared original denominators: test process-output ranges locally before comparing any reference-normalized amount. If a Range must be converted, scale both bounds using the measured process-output/final-reference-quantity ratio and reviewed attribution factors applicable only to burdens, retaining original bounds and evidence; never assume this ratio is one. Each energy carrier, fertilizer formulation, material and substance keeps its own unit; unlike units cannot be summed. The final reference output is accepted lot quantity divided by itself; rejects, packaging and non-reference grades are excluded from its denominator.
 
-Determine activation from stand, task and lot records; distinguish unused activity from missing data. Energy, fertilizer and other common input requirements use one conditional card per process and input class; resolve actual carriers, formulations and supply specifications into verified concrete exchanges during dataset construction, without adding a PCR card per specification. Independently required product states, handoffs and destinations remain separate. Measure fuel by mass, electricity by electrical energy and services in their reference unit, retaining documented density for volume conversion; do not apply one quantity range to L, kg, kWh and h. Same-lot output/input handoffs share a compatible material identity, with process gate retained in lot records. A generic platform flow may be used where its scope is compatible and foreground records carry the required qualifiers; absence of species in a flow name or a Mass property alone is not grounds for rejection.
+Determine activation from stand, task and lot records; distinguish unused activity from missing data. Energy, fertilizer and other inputs require separate cards for distinct actual flow identities within each process. Retain carrier, formulation and supply specifications and verify each applicable identity before dataset use. Independently required product states, handoffs and destinations remain separate. Measure fuel by mass, electricity by electrical energy and services in their reference unit, retaining documented density for volume conversion; do not apply one quantity range to L, kg, kWh and h. Same-lot output/input handoffs share a compatible material identity, with process gate retained in lot records. A generic platform flow may be used where its scope is compatible and foreground records carry the required qualifiers; absence of species in a flow name or a Mass property alone is not grounds for rejection.
 ### Process Map
 
 | process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
@@ -228,38 +229,39 @@ Activate only for documented chemical vegetation control or tree protection. Rec
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Recorded establishment and tending operation — Energy supply (`stand_energy`)
+###### Electricity at the equipment supply point (`stand_energy_electricity`)
+
+**Collection scope and applicability for stand_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation.
 
-- Selected flow: Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID
-- Flow property / unit: Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately
-- Amount rule: Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_stand_at_stand_management` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
-- Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1 m3 reference flow
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_stand_at_stand_management`
-- Sources: `fao-wood-harvesting`
-- Range: Provisional QA screen for actual fuel mass
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kg/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-- Range: Provisional QA screen for actual electricity
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kWh/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
+###### Diesel fuel supplied to equipment (`stand_energy_diesel`)
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_stand_at_stand_management` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_stand_at_stand_management`
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
 ###### Recorded establishment and tending operation — Contracted operation with declared service boundary (`stand_service`)
 
@@ -342,38 +344,39 @@ The same lot stock enters felling; do not add a separate purchased-wood burden.
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Felling — Energy supply (`felling_energy`)
+###### Electricity at the equipment supply point (`felling_energy_electricity`)
+
+**Collection scope and applicability for felling_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation.
 
-- Selected flow: Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID
-- Flow property / unit: Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately
-- Amount rule: Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_felling_removal` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
-- Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1 m3 reference flow
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fuel_at_felling_removal`
-- Sources: `fao-wood-harvesting`
-- Range: Provisional QA screen for actual fuel mass
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kg/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-- Range: Provisional QA screen for actual electricity
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kWh/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
+###### Diesel fuel supplied to equipment (`felling_energy_diesel`)
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_felling_removal` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fuel_at_felling_removal`
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
 ###### Felling — Lubricant consumed by equipment (`felling_lubricant`)
 
@@ -479,37 +482,39 @@ Activate only for the shortwood route. Receive delimbed, bucked and ungraded con
   - Basis kind: Reference flow (`reference_flow`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Stump-to-landing extraction — Energy supply (`extraction_energy`)
+###### Electricity at the equipment supply point (`extraction_energy_electricity`)
+
+**Collection scope and applicability for extraction_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation.
 
-- Selected flow: Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID
-- Flow property / unit: Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately
-- Amount rule: Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_forest_extraction` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
-- Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1 m3 reference flow
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fuel_at_forest_extraction`
-- Sources: `fao-wood-harvesting`
-- Range: Provisional QA screen for actual fuel mass
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kg/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-- Range: Provisional QA screen for actual electricity
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kWh/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
+###### Diesel fuel supplied to equipment (`extraction_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_forest_extraction` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fuel_at_forest_extraction`
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
 ###### Stump-to-landing extraction — Lubricant consumed by equipment (`extraction_lubricant`)
 
@@ -592,38 +597,39 @@ Node `log_preparation` must complete the direct-release coverage reconciliation 
 
 ##### Product flows
 
-###### Delimbing and bucking at the recorded route position — Energy supply (`preparation_energy`)
+###### Electricity at the equipment supply point (`preparation_energy_electricity`)
+
+**Collection scope and applicability for preparation_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation.
 
-- Selected flow: Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID
-- Flow property / unit: Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately
-- Amount rule: Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_log_preparation` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
-- Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1 m3 reference flow
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fuel_at_log_preparation`
-- Sources: `fao-wood-harvesting`
-- Range: Provisional QA screen for actual fuel mass
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kg/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-- Range: Provisional QA screen for actual electricity
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kWh/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
+###### Diesel fuel supplied to equipment (`preparation_energy_diesel`)
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_log_preparation` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fuel_at_log_preparation`
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
 ###### Delimbing and bucking at the recorded route position — Lubricant consumed by equipment (`preparation_lubricant`)
 
@@ -754,37 +760,39 @@ Node `grade_handover` must complete the direct-release coverage reconciliation i
 
 ##### Product flows
 
-###### Roadside sorting and loading-ready handling — Energy supply (`grading_energy`)
+###### Electricity at the equipment supply point (`grading_energy_electricity`)
+
+**Collection scope and applicability for grading_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Use one conditional energy card for this process, without splitting PCR cards by fuel grade or electricity specification. During dataset construction, expand the actual recorded carriers into concrete exchanges with verified UUIDs, supply specifications and units. Do not double count energy already included in contractor services or foreground generation.
 
-- Selected flow: Actual fuel or electricity supply for this process; expand recorded carriers, no single umbrella UUID
-- Flow property / unit: Actual fuel mass / kg; electrical energy / kWh; retain native L and mass-conversion evidence separately
-- Amount rule: Attribute each recorded carrier to this process in its own amount/unit, then normalize on the basis below; never add kg to kWh or substitute zero for missing records.
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_grade_handover` and calculate the exchange per declared reference flow using the original attribution rules.
 - Value mode: Foreground record (`foreground_record`)
-- Specificity: Technology-specific (`technology_specific`)
-- Normalization basis: per 1 m3 reference flow
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fuel_at_grade_handover`
-- Sources: `fao-wood-harvesting`
-- Range: Provisional QA screen for actual fuel mass
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kg/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-- Range: Provisional QA screen for actual electricity
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 1000
-  - Unit: kWh/m3
-  - Basis: 1 m3 under-bark sawlog/veneer-log reference output; screen only for investigating exceptions, not a substitute for measurement or a universal rate. ; applies separately to each actual carrier in the stated unit, not a mixed-energy total
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
+###### Diesel fuel supplied to equipment (`grading_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_fuel_at_grade_handover` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_fuel_at_grade_handover`
+- Sources: `fao-wood-harvesting`; `fao-agricultural-energy`
 
 ###### Prepared logs entering grading (`prepared_logs_input`)
 
@@ -942,6 +950,8 @@ Activate only when this identified material is physically removed as waste to a 
 | `allocation_period_assets` | Stand phases, roads, landing and machines | Index establishment, tending, thinning and harvest activity by stand and year. Attribute shared assets to benefiting lots using actual area, machine hours, road service or measured output before the grade split. Carry only the share benefiting future harvests forward; never count one burden twice. |  |
 | `physical_ledger_before_allocation` | Physical ledgers and attributed burdens | Retain unallocated physical values for original material balances, handoffs and co-products: q_B = Q_B/R. Apply this PCR's allocation method separately to shared burdens: b_ref = B_shared * a_ref/R; assign direct burdens directly and apply each period/output share once. R is the selected final reference output, excluding internal transfers. Never apply burden share a_ref to original co-product or transfer quantities; distinguish any allocated single-product process projection from the unallocated whole-package material ledger. |  |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -969,6 +979,7 @@ Activate only when this identified material is physically removed as waste to a 
 | `cp_direct_release_forest_extraction` | `forest_extraction` | Per-node actual direct releases and coverage decisions | Activity, measurement and method-evidence ledger | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package. | kg per substance/medium; retain native activity units | Each event and lot/reporting-period reconciliation | Periods matched to node activity and final reference lots | Actual activity sites; one owner for each shared event | per 1 m3 reference flow | Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix |
 | `cp_direct_release_log_preparation` | `log_preparation` | Per-node actual direct releases and coverage decisions | Activity, measurement and method-evidence ledger | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package. | kg per substance/medium; retain native activity units | Each event and lot/reporting-period reconciliation | Periods matched to node activity and final reference lots | Actual activity sites; one owner for each shared event | per 1 m3 reference flow | Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix |
 | `cp_direct_release_grade_handover` | `grade_handover` | Per-node actual direct releases and coverage decisions | Activity, measurement and method-evidence ledger | site; process_id; lot/cohort; period; event_id; activation/evidence; carrier/formulation; activity_amount/unit; substance/species/particle_basis; receiving_medium; fossil/biogenic_origin; method/source/version/applicability; factor/value/unit; conversion; abatement_scope; measured_release; supplier_service_coverage; existing_row_id; shared_event_owner; allocation_state; reference_total | Match this node's input/application/equipment logs to release events. Determine each substance/medium amount by measurement or an applicable evidenced method and factor; retain factor provenance, unit conversions, abatement scope and uncertainty, without subtracting control twice when already included. Reconcile existing emission cards and contractor services once; create concrete output elementary exchanges for uncovered events and retain UUID verification evidence. Missing method, amount or identity prevents claiming a complete data package. | kg per substance/medium; retain native activity units | Each event and lot/reporting-period reconciliation | Periods matched to node activity and final reference lots | Actual activity sites; one owner for each shared event | per 1 m3 reference flow | Meter/test evidence; activity records; original method/factor source; service scope; deduplication and coverage matrix |
+| `cp_forest_carbon_land` | `stand_management` | land and forest-carbon coverage | stand/method coverage ledger | area; dates; land history; pool inventory; growth; removals; carbon transfer; slash fate; method; owner; exclusions; uncertainty; reference output | Inventory area and dates; pre/post land use; above/belowground biomass, deadwood, litter and soil evidence; dry mass/carbon fraction where relevant; growth/removals; slash fate; harvested-product carbon transfer; stock and period records; applicable LCA method; upstream coverage/exclusions and uncertainty. Keep occupation in area-time, transformation as from/to area events, carbon as kg C on a stated dry basis. Retained slash remains a source-pool/fate record, not automatically an exported product or waste; disclose any relevant later decomposition responsibility. | ha; ha-year; kg dry matter; kg C | inventory and event; period reconciliation | full declared accounting period | represented stand/source | attribute compatible totals once, then normalize to declared reference output | source maps; compatible pool records; original method; allocation and coverage ledger |
 
 ### Calculation Rules
 
@@ -979,6 +990,7 @@ Activate only when this identified material is physically removed as waste to a 
 | `calc_reference` | Final-reference normalization of physical ledgers and environmental burdens | R is positive accepted saw/veneer-log solid underbark volume (m3) for the same lot, boundary and period; downgraded co-products and internal transfers are excluded from that denominator. Report unallocated material, transfer and co-product totals Q as q_phys = Q/R. For environmental burdens B only, complete evidenced direct, period, output and asset attribution once, then report b_ref = B_attributed/R. Do not apply burden shares to physical ledgers or divide already final-reference amounts again. | unallocated physical ledger Q; environmental burdens B; evidenced attribution; matched reference quantity R | amount per 1 m3 reference output | `reference-normalization-identity` |
 | `calc_shared` | Management and shared assets | Attribute actual dated service to benefiting stands/lots once using measured service drivers, then split common lot burden among marketed roundwood grades by underbark volume. | dated operations, service driver, lots, grades | activity attributable to reference grade |  |
 | `calculate_direct_release_ledger` | `stand_management`; `felling_removal`; `forest_extraction`; `log_preparation`; `grade_handover` | For each unique event, substance and medium, obtain raw release E from measurement or the cited applicable method using activity A and a compatible factor EF; use E = A * EF only for a genuinely simple-factor method, after checking units and abatement scope. Do not add different substances/media; retain an unallocated raw-release ledger. Divide attributed burden totals once by matched positive final reference quantity R; do not renormalize final-reference intensities or allocate a shared event twice. Unexplained material residuals are not automatically emissions and missing factors are not zero. | cp_direct_release_stand_management; cp_direct_release_felling_removal; cp_direct_release_forest_extraction; cp_direct_release_log_preparation; cp_direct_release_grade_handover; existing emission cards; supplier coverage; reference quantity | Node/substance/medium-specific raw and attributed amounts and unresolved gaps |  |
+| `calc_forest_carbon_land` | land, pools and upstream ownership | Distinguish gross uptake, releases, harvest carbon transfer and net stock change under the chosen method; never sum stock-change and gain/loss approaches for the same pool/period. Resolve wet volume to dry mass and carbon only with compatible density/moisture/carbon-fraction evidence and correct component scope. A log carbon balance is not a whole-forest pool balance. Attribute land and carbon quantities to the declared period and output once; keep any upstream stand coverage and purchased-wood transfer ownership without double counting. No automatic sequestration credit or fixed forest-neutrality assumption. | `cp_forest_carbon_land` | method-specific land/carbon quantities and explicit completeness gaps | `ipcc-forest-land-2006` |
 
 ### Data Quality Requirements
 
@@ -1003,6 +1015,7 @@ Activate only when this identified material is physically removed as waste to a 
 | `validate_uuid` | Final TIDAS exchanges | Resolve each concrete exchange to exactly one verified flow UUID with matching flow type, direction, property, unit and use before process projection; unresolved cards are not fixed bindings. |  |
 | `validate_card_activation_units` | All refined cards | Verify activation and actual material/formulation/task/supply specification; missing records are not zero. Each amount and Range uses one compatible property/unit; retain density and wood mass/volume bridges. Check contractor-service components against fuel, equipment and emissions to avoid double burdens. | `fao-wood-harvesting` |
 | `validate_direct_release_coverage` | `stand_management`; `felling_removal`; `forest_extraction`; `log_preparation`; `grade_handover` | For every activated node, reconcile its activity list against cp_direct_release_stand_management; cp_direct_release_felling_removal; cp_direct_release_forest_extraction; cp_direct_release_log_preparation; cp_direct_release_grade_handover: each relevant event must have quantified concrete elementary exchanges, evidenced upstream-service coverage, or evidenced absence of the activity. Missing/unknown is not zero and blocks data-package completeness. Check each actual substance/medium amount, method/factor units, concrete UUID and existing-card/service coverage for omissions or duplication; empty groups, purchased-electricity upstream emissions or another node's single CO2 card do not replace this node's on-site reconciliation. Shared-asset services must not create duplicate physical release events. |  |
+| `validate_forest_carbon_land_coverage` | stand boundary and source responsibility | Require the selected LCA method/period, pool and land applicability decisions, traceable compatible evidence/exclusions and unique coverage ownership before completeness. Unknown or missing relevant pool/history/time/unit evidence fails the completeness claim; do not interpret missing data as zero or borrow national Tier-1 defaults without justified product-LCA applicability. | `ipcc-forest-land-2006` |
 
 - Reconcile required/conditional activation and upstream coverage against incoming state at each node; purchased completed-state feed must not duplicate growth, harvest or preparation. Equal classification does not replace state and gate matching.
 
@@ -1027,3 +1040,5 @@ Activate only when this identified material is physically removed as waste to a 
 | `fao-wood-harvesting` | official_guidance | https://www.fao.org/sustainable-forest-management-toolbox/modules/wood-harvesting/2/en?tabInx=0 | Felling, extraction, landing, route distinctions |
 | `reference-normalization-identity` | method_factor | PCR identity: reference output divided by itself equals 1 m3 per 1 m3 reference | Reference normalization |
 | `fao-planted-forest-management` | official_guidance | https://www.fao.org/sustainable-forest-management-toolbox/modules/management-of-planted-forests/1/en?tabInx=1; https://www.fao.org/4/AC601E/ac601e03.htm | Conditional planting stock, fertilization, protection and watering inputs; no universal application rates |
+| `ipcc-forest-land-2006` | official_guidance | IPCC 2006 Guidelines, Volume 4, Chapter 4 Forest Land, sections 4.1–4.3, https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/4_Volume4/V4_04_Ch4_Forest_Land.pdf | Forest pool and land-use accounting context only; national defaults do not independently approve product-LCA methodology |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

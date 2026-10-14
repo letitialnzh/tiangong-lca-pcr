@@ -43,7 +43,6 @@ sync_with: pcr.en-US.md
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | 甘蓝类型或品种；生产地理；栽培系统；采收成熟度；修整状态；水分基准；包装状态；农场门交接 |
-| 绑定模式 | `fixed` |
 | 流集 |  |
 | 流集版本 |  |
 | 流集分组 |  |
@@ -120,48 +119,100 @@ sync_with: pcr.en-US.md
   - 基准类型：种植周期（`crop_cycle`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 农业养分与肥料投入（`field_cultivation_agricultural_nutrient_inputs`）
+###### 尿素肥料（`field_cultivation_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**field_cultivation_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每 ha 甘蓝种植面积、每种植周期.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cultivation_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：种植周期（`crop_cycle`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_cultivation_inputs`
-- 来源：
-- 数量范围：暂定氮投入筛选估算
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：500
-  - 单位：kg N/ha
-  - 基准：每种植公顷的宽泛筛选区间；以当地养分计划证据替换
-  - 基准类型：种植周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-fertilizer-identities`
 
-- 数量范围：暂定磷投入筛选估算
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：350
-  - 单位：kg P2O5/ha
-  - 基准：每种植公顷的宽泛筛选区间；以当地养分计划证据替换
-  - 基准类型：种植周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+###### 硫酸铵肥料（`field_cultivation_agricultural_nutrient_inputs_ammonium_sulfate`）
 
-- 数量范围：暂定钾投入筛选估算
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：600
-  - 单位：kg K2O/ha
-  - 基准：每种植公顷的宽泛筛选区间；以当地养分计划证据替换
-  - 基准类型：种植周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cultivation_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cultivation_inputs`
+- 来源：`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`field_cultivation_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cultivation_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cultivation_inputs`
+- 来源：`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`field_cultivation_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cultivation_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cultivation_inputs`
+- 来源：`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`field_cultivation_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cultivation_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cultivation_inputs`
+- 来源：`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`field_cultivation_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_cultivation_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_cultivation_inputs`
+- 来源：`fao-organic-nutrients`
 
 ###### 灌溉供水（`irrigation_water_input`）
 
@@ -444,6 +495,8 @@ sync_with: pcr.en-US.md
 | `allocation_residue_classification` | 外叶和淘汰甘蓝球 | 将还田外叶归为残余物，并按实际去向分类场外淘汰甘蓝球；除非证据表明其具有有意产品功能和市场交接，不得视为有意共产品。 | `ipcc-2019-managed-soils`; `fao-postharvest-loss-manual` |
 | `allocation_intended_coproduct` | 任何额外的创收有意产出 | 若细分不能隔离额外有意产出，采用同一报告期有文件支持的农场门收入实施经济分配，并披露价格、币种、期间和敏感性。 |  |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 先按各采集协议保留原始场址、批次、周期及阶段数量与分母，并完成库存、损失、含水率和共产品归属核对；随后按实际归属的验收交付产品量归一化：归一化交换量 = 归属原始交换量 × 声明参考数量 / 同一边界和计量基准的验收产品量。多年生建植和共享作业先执行各自分摊规则，不得把内部转移数量设为最终参考数量。每声明的参考流指第 3 节的数量、单位和产品状态；数据包必须声明实际路线和门。
@@ -513,3 +566,5 @@ sync_with: pcr.en-US.md
 | `fao-irrigation-handbook` | `handbook` | FAO, Technical handbook on pressurized irrigation techniques, https://www.fao.org/4/a1336e/a1336e.pdf | 甘蓝分生育期灌溉方法背景以及有效降水与灌溉供水的区分 |
 | `ipcc-2019-managed-soils` | `method_factor` | IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4, Chapter 11, https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | 受管理土壤 N2O 计算和作物残余物氮处理 |
 | `codex-fresh-produce-hygiene` | `official_guidance` | Codex/FAO, Code of Hygienic Practice for the Primary Production, Harvesting and Packing of Fresh Fruits and Vegetables, https://www.fao.org/4/x8735e/x8735e0n.htm | 投入、施用、采收、批次、水质和包装记录要求 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

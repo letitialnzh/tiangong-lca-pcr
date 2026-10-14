@@ -46,13 +46,15 @@ Basic farm-gate handling may include weighing, lot identification, and removal o
 
 When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. Missing required qualifiers make the reference flow definition incomplete.
 
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
+
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `reference_fresh_mass` | reference date fruit | Mass | kg | Report accepted fresh fruit mass as received at the farm gate. If dry matter or moisture is measured, retain the as-received basis and measurement method; do not silently convert to a dry basis. |
 | `crop_cycle_normalization` | orchard inputs and emissions | activity-specific property | activity-specific unit | Normalize each crop-cycle total to 1,000 kg accepted fresh fruit using accepted fresh-fruit mass from the same orchard area and campaign. |
-| `nutrient_product_and_basis` | fertilizer and soil-amendment inputs | product mass and nutrient basis | kg product; kg N, kg P2O5, kg K2O, or declared organic nutrient basis | Record actual product name and applied product mass, then record the declared nutrient basis used for calculation. Do not infer nutrient content from a generic fertilizer name. |
+| `nutrient_product_and_basis` | fertilizer and soil-amendment inputs | product mass and nutrient basis | kg product; kg N, kg P2O5, kg K2O, or declared organic nutrient basis | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `water_and_energy_consistency` | irrigation, water withdrawal, pumping electricity, and fuel | volume, energy, or mass | m3, kWh, L, or kg | Keep metered or invoiced activity units separate from calculated conversions and disclose the source, meter boundary, and conversion basis for every conversion. |
 
 ## 5. System Boundary
@@ -73,7 +75,7 @@ When constructing a foreground data package, the items listed in `Required quali
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
 | `boundary_orchard_cycle` | date palm orchard production | Include orchard establishment or renewal inputs assigned to the declared productive cycle, orchard management, harvest, and basic farm-gate handling up to the fresh-fruit hand-off. | `iso-14044-2006` |
-| `boundary_fresh_unprocessed_gate` | reference product and farm-gate output | Stop the foreground boundary at transfer of fresh, unprocessed date fruit. Exclude washing, drying, preservation, packaging, off-farm storage, transport, and downstream processing. | `codex-cxs-143-1985-dates`; `iso-14044-2006` |
+| `boundary_fresh_unprocessed_gate` | reference product and farm-gate output | This PCR chooses the fresh unprocessed farm-gate cutoff: exclude washing, drying, preservation, packaging, off-farm storage, transport and downstream processing. This is an author LCA boundary decision, not a prohibition in Codex CXS 143-1985. | `iso-14044-2006` |
 | `boundary_direct_environmental_exchanges` | nutrient-related soil and air exchanges | Include direct and applicable indirect nutrient-related environmental exchanges calculated from the same crop-cycle activity records used for nutrient and residue accounting, using a geographically applicable method. | `ipcc-2019-refinement-vol-4` |
 | `boundary_recursive_product_inputs` | same-category product inputs | Do not loop a fresh date-fruit output back into the same date PCR. Use a distinct upstream identity for planting material or other purchased inputs and disclose retained material separately. | `iso-14044-2006` |
 
@@ -109,22 +111,100 @@ Raw activity or stage basis: per declared crop cycle and per 1,000 kg accepted f
 - Collection protocol: `cp_orchard_activity_records`
 - Sources:
 
-###### Agricultural nutrient and fertilizer inputs (`date_orchard_production_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`date_orchard_production_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for date_orchard_production_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per declared crop cycle and per 1,000 kg accepted fresh fruit.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_orchard_activity_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Crop cycle (`crop_cycle`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_orchard_activity_records`
-- Sources:
+- Sources: `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`date_orchard_production_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_orchard_activity_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_orchard_activity_records`
+- Sources: `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`date_orchard_production_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_orchard_activity_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_orchard_activity_records`
+- Sources: `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`date_orchard_production_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_orchard_activity_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_orchard_activity_records`
+- Sources: `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`date_orchard_production_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_orchard_activity_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_orchard_activity_records`
+- Sources: `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`date_orchard_production_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_orchard_activity_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_orchard_activity_records`
+- Sources: `fao-organic-nutrients`
 
 ###### Irrigation water supplied (`irrigation_water_input`)
 
@@ -343,7 +423,7 @@ Raw activity or stage basis: per harvest campaign and per 1,000 kg accepted fres
 
 Record accepted fresh date fruit transferred at the farm gate as the terminal reference product. Retain as-received mass, harvest lot, maturity, quality grade, and destination without post-farm-gate processing.
 
-- Selected flow: Fresh date palm fruit at farm gate, unprocessed
+- Selected flow: Dates `bf7ddd60-c5f1-4d21-9c85-b05b93972595`
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: measured accepted fresh-fruit mass at farm-gate transfer
 
@@ -388,6 +468,8 @@ Raw activity or stage basis: per harvest campaign and per 1,000 kg accepted fres
 | `allocation_single_date_output` | orchard and harvest processes with only fresh date fruit as product output | Assign orchard and harvest burdens to accepted fresh date fruit when no deliberate co-product leaves the boundary. Do not treat culls or residues classified as waste as co-products. | `iso-14044-2006` |
 | `allocation_declared_coproducts` | deliberate non-date product outputs | If a deliberate co-product leaves the boundary, first test documented physical-causality allocation. If no defensible physical relationship exists, use documented economic allocation and report mass, revenue, reference period, and allocation factor. | `iso-14044-2006` |
 | `allocation_perennial_establishment` | orchard establishment or renewal inputs | Allocate establishment or renewal burdens over the declared productive period using the documented orchard-life or productive-period assumption, and disclose the assumption in dataset metadata. | `iso-14044-2006` |
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -448,8 +530,10 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `codex-cxs-143-1985-dates` | standard | Codex Alimentarius CXS 143-1985, Standard for Dates | fresh-date product state, quality qualifiers, and rejected-product distinction |
+| `codex-cxs-143-1985-dates` | standard | Codex Alimentarius CXS 143-1985, Standard for Dates | Prepared dates packed ready for consumption; only explicitly transferable quality context. Allows processing such as washing, drying/hydration and pasteurisation; does not define this PCR fresh agricultural gate. |
 | `fao-56-crop-evapotranspiration-1998` | official_guidance | FAO Irrigation and drainage paper 56, Crop evapotranspiration | irrigation activity records, water-balance evidence, and irrigation disclosure |
 | `ipcc-2019-refinement-vol-4` | method_factor | 2019 Refinement to the 2006 IPCC Guidelines, Volume 4: Agriculture, Forestry and Other Land Use | nutrient-related soil and air emission calculation method selection |
 | `iso-14040-2006` | standard | ISO 14040:2006, Environmental management — Life cycle assessment — Principles and framework | life-cycle boundary and data interpretation context |
 | `iso-14044-2006` | standard | ISO 14044:2006, Environmental management — Life cycle assessment — Requirements and guidelines | normalization, allocation, co-product handling, and data-quality rules |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

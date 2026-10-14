@@ -706,7 +706,6 @@ Actual rejected state linked to drying/storage lot and destination; measured re-
 Conditional actual evaporated water established by matched lot moisture/stock balance or measurement, only when the receiving compartment is explicitly air unspecified. Known specific air compartments need their own verified identity. Not wastewater, volatilized organic substances or unexplained mass loss.
 
 - Selected flow: Water vapour emitted to air unspecified `fe0acd60-3ddc-11dd-ac04-0050c2490048`
-- Binding: fixed
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Measured attributable amount from cp_preservation
 - Value mode: `foreground_record`

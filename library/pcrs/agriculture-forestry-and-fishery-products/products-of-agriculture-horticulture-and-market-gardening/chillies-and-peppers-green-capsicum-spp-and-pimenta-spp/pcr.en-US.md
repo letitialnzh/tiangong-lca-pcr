@@ -9,7 +9,9 @@ sync_with: pcr.zh-CN.md
 
 ## 1. Scope and Applicability
 
-This PCR covers commercial production of fresh green chillies and peppers of Capsicum and Pimenta species from direct seeding or transplant establishment through crop management, irrigation, nutrient and crop-protection applications, harvest, grading, optional washing and cooling, primary packing, and hand-off at the declared farm gate or pack-house gate. It covers open-field and protected-cultivation routes when the production route, fruit type, and crop cycle are declared. Seeds, nursery production, mature red or dried fruit, sauces, pickles, frozen or cooked products, retail, consumer storage, and consumption are excluded. Primary packing, washing, cooling, and purchased transport are included only when they occur before the declared gate.
+This PCR covers commercial production of fresh green chillies and peppers of Capsicum and Pimenta species from direct seeding or transplant establishment through crop management, irrigation, nutrient and crop-protection applications, harvest, grading, optional washing and cooling, primary packing, and hand-off at the declared farm gate or pack-house gate. It covers open-field and protected-cultivation routes when the production route, fruit type, and crop cycle are declared. Seeds, nursery production, dried fruit, sauces, pickles, frozen or cooked products, retail, consumer storage, and consumption are excluded. Primary packing, washing, cooling, and purchased transport are included only when they occur before the declared gate.
+
+Fresh fruit colour and maturity must be declared; fresh red/yellow sweet peppers are not excluded merely by colour. The CPC commodity label green does not impose an immature-green-only quality condition. UNECE FFV-28 supplies fresh Capsicum annuum sweet-pepper quality context, not a Pimenta production method. Pimenta dioica is a perennial tree (Kew); no covered perennial species may be represented as annually re-established by default. Use the reference UUID only when its actual species/state/gate matches the chosen lot; otherwise resolve a compatible product identity.
 
 ## 2. Product Category Identity
 
@@ -17,10 +19,10 @@ This PCR covers commercial production of fresh green chillies and peppers of Cap
 | --- | --- |
 | canonical_pcr_id | pcr.agriculture-forestry-and-fishery-products.products-of-agriculture-horticulture-and-market-gardening.chillies-and-peppers-green-capsicum-spp-and-pimenta-spp |
 | classification_refs | CPC 3.0:01231 Chillies and peppers, green (Capsicum spp. and Pimenta spp.); mapping relation: exact |
-| covered_products | Fresh, unprocessed green chillies and peppers harvested at the declared immature green market state and delivered at the farm-gate or pack-house gate |
-| excluded_products | Seed and nursery planting material, fully ripe red or otherwise mature fruit, dried chillies, sauces, pickles, frozen, cooked, or other processed products, retail, and consumption |
+| covered_products | Fresh, unprocessed green chillies and peppers harvested at the declared declared fresh maturity and colour state and delivered at the farm-gate or pack-house gate |
+| excluded_products | Seed and nursery planting material, dried chillies, sauces, pickles, frozen, cooked, or other processed products, retail, and consumption |
 | representative_product | Marketable green Capsicum or Pimenta fruit meeting the declared cultivar, maturity, size, firmness, cleanliness, grade, trimming, and packaging requirements |
-| production_route | Direct-seeded or transplanted annual crop in open field or protected cultivation, with irrigation, nutrient, weed and pest management, repeated fruit harvest, grading, optional washing or cooling, and primary packing |
+| production_route | Species-specific annual Capsicum cultivation or perennial Capsicum/Pimenta stand production, with actual establishment/replacement, irrigation, nutrient and pest management, harvest, grading, optional washing/cooling and primary packing |
 | market_state | Fresh, unprocessed green fruit in loose, crate, carton, or another declared primary-packaging state at the farm or pack-house gate |
 
 ## 3. Reference Flow
@@ -29,28 +31,30 @@ This PCR covers commercial production of fresh green chillies and peppers of Cap
 | --- | --- |
 | What | Marketable fresh green chillies and peppers at the declared farm-gate or pack-house gate |
 | How much | 1,000 kg |
-| How well | Fresh and unprocessed, with declared Capsicum or Pimenta species or cultivar group, immature green maturity, fruit size, firmness, cleanliness, grade, trimming, washing and cooling state, and packaging state |
-| How long or cycle | One declared annual crop cycle, including all harvest rounds attributed to that crop and the declared gate |
+| How well | Fresh and unprocessed, with declared Capsicum or Pimenta species or cultivar group, declared fresh maturity and colour, fruit size, firmness, cleanliness, grade, trimming, washing and cooling state, and packaging state |
+| How long or cycle | One declared annual crop cycle or perennial productive period, including all harvest rounds attributed to that crop and the declared gate |
 | reference_flow_link | marketable_green_fruit_output |
 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1000 |
-| Reference product flow | Fresh green chillies and peppers, production mix, at farm gate `f4da74e5-e255-4d9b-aa07-27796e120b87` |
+| Reference product flow | Chillies and peppers, green (Capsicum spp. and Pimenta spp.) `f4da74e5-e255-4d9b-aa07-27796e120b87` |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
-| Required qualifiers | production geography; open-field or protected route; Capsicum or Pimenta species or cultivar group; seed or transplant establishment; planting date; crop cycle and harvest rounds; declared gate; immature green maturity; fruit size, firmness, and grade; irrigation source and method; nutrient product and nutrient basis; crop-protection program; washing and cooling state; packaging state; residue and reject fate |
+| Required qualifiers | production geography; open-field or protected route; Capsicum or Pimenta species or cultivar group; seed or transplant establishment; planting date; crop cycle and harvest rounds; declared gate; declared fresh maturity and colour; fruit size, firmness, and grade; irrigation source and method; nutrient product and nutrient basis; crop-protection program; washing and cooling state; packaging state; residue and reject fate |
 
 When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. Missing required qualifiers make the reference flow definition incomplete for that data package.
+
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
 
 ## 4. Measurement and Unit Rules
 
 | rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
 | `reference_green_pepper_mass` | marketable fruit and harvest records | Mass | kg | Keep gross harvested fruit, marketable green fruit, unmarketable fruit, trimming, foreign material, and field residue as separate measured or calculated quantities. |
-| `crop_cycle_normalization` | field, protected-cultivation, and harvest records | Area and mass | ha and kg | Record inputs and harvest rounds by field, bed, or protected unit and normalize them to the marketable output attributed to the same declared annual crop cycle. |
-| `nutrient_product_basis` | fertilizer, manure, compost, and other nutrient inputs | Mass of product and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | Preserve product mass and convert to nutrient basis only from the product label, supplier specification, nutrient plan, or laboratory result. |
+| `crop_cycle_normalization` | field, protected-cultivation, and harvest records | Area and mass | ha and kg | Record inputs and harvest rounds by field, bed, or protected unit and normalize them to the marketable output attributed to the same declared production period. |
+| `nutrient_product_basis` | fertilizer, manure, compost, and other nutrient inputs | Mass of product and declared nutrient | kg product, kg N, kg P2O5, or kg K2O | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. |
 | `water_volume_basis` | crop irrigation and post-harvest washing | Volume | m3 | Record delivered irrigation water and post-harvest washing water separately using meter records or a documented water balance. |
 | `energy_service_basis` | pumping, protected-cultivation equipment, cooling, and packing | Energy and fuel | kWh and L | Record electricity and fuel by equipment or operation, retain the meter or invoice basis, and allocate shared services to the declared crop cycle and gate output. |
 
@@ -61,7 +65,7 @@ When constructing a foreground data package, the items listed in `Required quali
 | Field | Value |
 | --- | --- |
 | declared_starting_condition | Prepared field, bed, or protected-cultivation unit receiving green chilli or pepper seed or transplant material, with prior land use and excluded infrastructure work disclosed |
-| starting_condition_role | Start of the declared annual crop cycle |
+| starting_condition_role | Start of the declared annual crop cycle or documented perennial stand-accounting period |
 | product_classification_scope | Fresh green chillies and peppers under CPC 3.0:01231 through the declared farm-gate or pack-house gate |
 | recursive_input_rule | Purchased seed and transplant material is an upstream product input linked once; its own nursery or seed production is outside this PCR unless a separate upstream dataset is supplied. |
 | upstream_dataset_requirement | Require upstream datasets for seed or transplants, fertilizers and amendments, crop-protection products, irrigation water, energy, packaging, and purchased transport or treatment services when used. |
@@ -83,7 +87,7 @@ When constructing a foreground data package, the items listed in `Required quali
 | process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `crop_establishment` | Green chilli and pepper crop establishment | required | every represented direct seeding or transplanting event | foreground crop establishment | established field, bed, or protected unit |
-| `crop_management` | Green chilli and pepper crop management | required | each represented annual crop cycle | foreground managed biological production | managed area and crop-cycle harvest |
+| `crop_management` | Green chilli and pepper crop management | required | each represented annual crop cycle or perennial productive period | foreground managed biological production | managed area and crop-cycle harvest |
 | `harvest_and_gate_preparation` | Green chilli and pepper harvest and gate preparation | required | each represented harvest campaign and declared gate | foreground harvest, conditioning, packing, and gate hand-off | 1,000 kg marketable fresh green fruit |
 
 ### Process: Green chilli and pepper crop establishment (`crop_establishment`)
@@ -117,39 +121,100 @@ Raw activity or stage basis: per 1,000 kg marketable fresh green fruit attribute
   - Basis kind: Crop cycle (`crop_cycle`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Agricultural nutrient and fertilizer inputs (`crop_establishment_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`crop_establishment_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for crop_establishment_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg marketable fresh green fruit attributed to the same crop cycle.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_nutrient_records`
-- Sources: `usda-nrcs-nutrient-management-590`
-- Range: Establishment organic-amendment screen
-  - Range role: Typical range (`typical_range`)
-  - Lower: 0
-  - Upper: 20,000
-  - Unit: kg product/ha
-  - Basis: broad amendment screen; replace with field records and nutrient plan
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
 
-- Range: Establishment nitrogen screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 120
-  - Unit: kg N/ha
-  - Basis: broad initial screening range pending nutrient plan and soil test
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Ammonium sulfate fertilizer (`crop_establishment_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`crop_establishment_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`crop_establishment_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`crop_establishment_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`crop_establishment_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-organic-nutrients`
 
 ##### Waste flows
 
@@ -159,7 +224,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh green fruit attribute
 
 Record the field or protected-cultivation area occupied by the crop during establishment and attribute it to the declared crop cycle.
 
-- Selected flow: Land occupation for annual crop production
+- Selected flow: Cultivated land occupation for the actual annual or perennial route
 - Flow property / unit: Area-time / m2*a
 - Amount rule: Measured cultivated area multiplied by the declared establishment period and converted to the required area-time unit.
 - Value mode: Calculated value (`calculated_value`)
@@ -186,48 +251,100 @@ Raw activity or stage basis: per 1,000 kg marketable fresh green fruit attribute
 
 ##### Product flows
 
-###### Agricultural nutrient and fertilizer inputs (`crop_management_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`crop_management_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for crop_management_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per 1,000 kg marketable fresh green fruit attributed to the same crop cycle.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_nutrient_records`
-- Sources: `usda-nrcs-nutrient-management-590`
-- Range: Crop-cycle nitrogen screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 350
-  - Unit: kg N/ha
-  - Basis: broad initial screen; replace with site nutrient records
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
 
-- Range: Crop-cycle phosphorus screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 250
-  - Unit: kg P2O5/ha
-  - Basis: broad initial screen; replace with soil-test and nutrient-plan records
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+###### Ammonium sulfate fertilizer (`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`)
 
-- Range: Crop-cycle potassium screen
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 500
-  - Unit: kg K2O/ha
-  - Basis: broad initial screen; replace with soil-test and nutrient-plan records
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`crop_management_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`crop_management_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`crop_management_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`crop_management_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_nutrient_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_nutrient_records`
+- Sources: `usda-nrcs-nutrient-management-590`; `fao-organic-nutrients`
 
 ###### Irrigation water during crop management (`irrigation_water_input`)
 
@@ -335,9 +452,9 @@ Raw activity or stage basis: per 1,000 kg marketable fresh green fruit attribute
 
 ###### Land occupied during crop management (`land_occupation_management`)
 
-Record the area-time occupied by the annual green chilli or pepper crop during the management period.
+Record the area-time occupied by the actual annual or perennial crop during the management period.
 
-- Selected flow: Land occupation for annual crop production
+- Selected flow: Cultivated land occupation for the actual annual or perennial route
 - Flow property / unit: Area-time / m2*a
 - Amount rule: Convert measured cultivated area and crop occupancy period to area-time and normalize to marketable output.
 - Value mode: Calculated value (`calculated_value`)
@@ -570,7 +687,7 @@ Raw activity or stage basis: per 1,000 kg marketable fresh green fruit at the de
 
 Record the marketable green fruit that passes the declared maturity, quality, and gate requirements and serves as the PCR reference output.
 
-- Selected flow: Fresh green chillies and peppers, production mix, at farm gate
+- Selected flow: Chillies and peppers, green (Capsicum spp. and Pimenta spp.) `f4da74e5-e255-4d9b-aa07-27796e120b87`
 - Flow property/unit: Mass / kg
 
 Original reference-state unit annotation: Mass / kg fresh fruit
@@ -655,12 +772,16 @@ Raw activity or stage basis: per 1,000 kg marketable fresh green fruit at the de
 
 ##### Elementary flows
 
+For a perennial route, record establishment and non-bearing years, each productive harvest period, replacement and termination. Do not repeat establishment each year. Allocate inherited establishment and shared services over documented productive output/service periods, carrying stock and unharvested production consistently. Use measured output and an explicit allocation key, not an invented universal lifetime, annual yield or plant mass. Link establishment land occupation and maintenance occupation to disjoint periods; document actual land transformation separately. Missing stand-period/output evidence prevents a complete perennial dataset.
+
 ## 7. Allocation and Co-product Handling
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
 | `allocation_single_crop_cycle` | inputs and emissions shared by fields or protected units | Allocate shared inputs and emissions to the represented crop cycle using measured area, operating time, or mass output; document the selected driver and do not allocate by unrecorded assumptions. | `fao-56-crop-evapotranspiration-1998` |
 | `allocation_marketable_and_reject_outputs` | harvest, grading, and gate preparation | Keep marketable green fruit, unmarketable fruit, trimming, and residue as separate outputs. Apply the declared allocation or treatment rule only when a reject has a documented productive use; otherwise retain it as waste or residue. | `codex-fresh-fruits-vegetables-2003` |
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -700,8 +821,8 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
-| `quality_reference_identity` | reference flow and marketable output | Declare species or cultivar group, immature green market state, gate, and required qualifiers; resolve the product UUID before a final TIDAS dataset is published. | reference-flow metadata, lot specification, and later identity verification |
-| `quality_temporal_coverage` | all crop-cycle records | Cover the complete annual crop cycle and every harvest round represented by the reference output. | crop calendar, field log, and harvest records |
+| `quality_reference_identity` | reference flow and marketable output | Declare species or cultivar group, declared fresh maturity and colour state, gate, and required qualifiers; resolve the product UUID before a final TIDAS dataset is published. | reference-flow metadata, lot specification, and later identity verification |
+| `quality_temporal_coverage` | all crop-cycle records | Cover the complete declared production period and every harvest round represented by the reference output. | crop calendar, field log, and harvest records |
 | `quality_spatial_coverage` | field, protected-unit, and pack-house records | Identify each field, bed, protected unit, and packing line and avoid mixing sites without an explicit aggregation rule. | farm map, unit register, and pack-house line record |
 | `quality_mass_completeness` | harvest and gate preparation | Reconcile harvested, marketable, rejected, trimmed, residue, and wastewater-related records where relevant. | weigh records, grading records, and mass-balance worksheet |
 | `quality_nutrient_traceability` | fertilizer and amendment inputs | Retain product identity, nutrient concentration, application date, area, and amount for each application. | label, supplier specification, nutrient plan, and application log |
@@ -711,7 +832,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `validate_reference_qualifiers` | reference flow | Reject a foreground package that omits production geography, route, cultivar or species group, immature green state, crop cycle, declared gate, and required harvest or quality qualifiers. | `codex-fresh-fruits-vegetables-2003` |
+| `validate_reference_qualifiers` | reference flow | Reject a foreground package that omits production geography, route, cultivar or species group, declared fresh maturity and colour, crop cycle, declared gate, and required harvest or quality qualifiers. | `codex-fresh-fruits-vegetables-2003` |
 | `validate_crop_cycle_completeness` | process inventory | Check that establishment, management, harvest, and all represented harvest rounds are covered by records for the same crop cycle. | `fao-56-crop-evapotranspiration-1998` |
 | `validate_flow_binding_priority` | all flow rows | Verify each actual exchange against its concrete flow UUID, physical state, property and unit; preserve explicit unresolved identities when confirmation is unavailable. |  |
 | `validate_nutrient_reconciliation` | nutrient and soil-emission rows | Check that product mass, nutrient concentration, nutrient amount, residue fate, and selected emission method reconcile without double counting. | `usda-nrcs-nutrient-management-590`; `ipcc-2019-refinement-nitrogen` |
@@ -740,3 +861,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | `ipcc-2019-refinement-nitrogen` | method_factor | 2019 Refinement to the 2006 IPCC Guidelines, Volume 4 Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/vol4.html | direct and indirect nitrogen emission calculation method |
 | `codex-fresh-fruits-vegetables-2003` | standard | Codex Alimentarius, Code of Hygienic Practice for Fresh Fruits and Vegetables, CXC 53-2003, https://www.fao.org/fao-who-codexalimentarius/codex-texts/codes-of-practice/en/ | fresh-produce gate, quality, handling, reject, and mass-balance rules |
 | `fao-good-hygiene-fresh-produce-2003` | official_guidance | FAO and WHO guidance associated with the Codex Code of Hygienic Practice for Fresh Fruits and Vegetables, CXC 53-2003, https://www.fao.org/fao-who-codexalimentarius/codex-texts/codes-of-practice/en/ | washing, gate-preparation, wastewater, and handling records |
+| `kew-pimenta-dioica` | official_guidance | Royal Botanic Gardens, Kew, Plants of the World Online: Pimenta dioica, https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:196799-2/general-information | Perennial tree identity; no yield or orchard-life default |
+| `unece-sweet-peppers-ffv28-2020` | standard | UNECE Standard FFV-28 Sweet Peppers (2020), https://unece.org/sites/default/files/2020-12/28_SweetPeppers.pdf | Fresh Capsicum annuum sweet-pepper state and colour/maturity context; not Pimenta agronomy or an LCA boundary |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

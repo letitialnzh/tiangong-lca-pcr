@@ -874,6 +874,7 @@ Raw quantity and calculation requirements: Record actual discarded material; mar
 | v_route | farm/wild | No farm animal input on wild route; actual co-products and source burden once; no upstream capture/slaughter duplication. | un-cpc-3-notes |
 | v_period | shared service | Source event and each shared trap, removal, cleaning or cold/dry service have one period and one attributed consumer share. | fao-hides-skins |
 | v_binding | all cards | conditional product inputs require actual concrete selection; uncovered UUIDs need detail confirmation. Mixed raw/dressed count-based candidates cannot bind a raw Mass reference. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 
 ## 10. Published Dataset Profile
 

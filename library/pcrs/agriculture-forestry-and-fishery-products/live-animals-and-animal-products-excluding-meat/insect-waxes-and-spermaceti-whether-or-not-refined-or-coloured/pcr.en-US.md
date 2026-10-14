@@ -271,31 +271,41 @@ Raw quantity and calculation requirements: Measure actual collected material for
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Conditioning energy (`energy`)
+###### Electricity at the equipment supply point (`energy_electricity`)
+
+**Collection scope and applicability for energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Meter actual carrier used in melting or separation; no default heat recipe.
-
 Denominator and scope requirements：per kg first-prepared wax
-
 Raw quantity and calculation requirements: Measure actual conditioning energy and link lot, source, state and period. Original collection denominator kind: process_output.
 
-- Selected flow: Actual energy carrier for first wax separation (UUID unresolved)
-- Flow property / unit: Energy / MJ
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_condition` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_condition`
-- Range: Provisional nonnegative ledger QA, not a yield or recipe
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100000
-  - Unit: MJ/kg
-  - Basis: per kg first-prepared wax
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_condition` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_condition`
+- Sources: `fao-agricultural-energy`
 
 ###### Conditional wash or cleaning water (`wash_water`)
 
@@ -710,6 +720,8 @@ Denominator and scope requirements：per reference flow
 | a_state | process and grades | Attribute actual wax states and disjoint saleable grades once. Colourant addition or purification does not make another original-wax output; waste is not marketed wax. | fao-beeswax |
 | a_period | source phases and shared services | Index colony/source, collection, melting, filtration, storage and packaging periods; allocate shared tanks/filters/energy and package services by observed throughput/time across actual consumers once. Record replacement/termination. | fao-beeswax |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -750,6 +762,7 @@ Denominator and scope requirements：per reference flow
 | v_balance | lot | Reconcile collected material, additions, prepared/treated wax, grades, rejects and net mass; investigate residual. | fao-beeswax |
 | v_allocation | source and shared services | Reject automatic zero/full wax burden, duplicate honey/wax or shared-asset period. | fao-beeswax |
 | v_identity | concrete exchange | Verify flow type, direction, source, state, gate, Mass property and unit group; beeswax-only flow cannot identify the broad reference. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 
 ## 10. Published Dataset Profile
 
@@ -770,3 +783,4 @@ Denominator and scope requirements：per reference flow
 | `un-cpc-3-notes` | official_guidance | [UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | wax scope and sold states |
 | `fao-beeswax` | official_guidance | [FAO beeswax production/refining](https://www.fao.org/4/i0842e/i0842e12.pdf) | bee route and separation |
 | `fao-beekeeping` | official_guidance | [FAO beekeeping wax products](https://www.fao.org/4/w0076e/w0076e12.htm) | comb/cappings and honey context |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

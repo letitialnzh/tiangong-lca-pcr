@@ -40,16 +40,17 @@ translation_status: aligned
 | 字段 | 值 |
 | --- | --- |
 | 参考数量 | 1000 |
-| 参考产品流 | Other fruit-bearing vegetables；生产混合，在农场；鲜品、未加工 `64f7d837-21f3-4a2b-ab05-94d62be3ab7f` |
+| 参考产品流 | 其他水果蔬菜 `64f7d837-21f3-4a2b-ab05-94d62be3ab7f` |
 | 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | 声明物种和品种；CPC 01239 分类依据；生产地理范围；生产年度和作物周期日期；露地或设施路线；灌溉或雨养路线；成熟度和采收窗口；大小和市场等级；整果或受损状态；清洗状态；一次包装状态；次品和作物残体去向 |
-| 绑定模式 | `fixed` |
 
 参考产品身份已按 CPC 3.0 对应产品流完成平台核验；选定 UUID 不包含数据集版本。质量属性和质量单位组是该参考流的稳定支持对象。
 
 构建前景数据包时，`必需限定信息` 中的信息应在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中声明。缺失必需限定信息的数据包视为参考流定义不完整。
+
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
 
 ## 4. 计量与单位规则
 ## 5. 系统边界
@@ -69,11 +70,11 @@ translation_status: aligned
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `boundary_declared_crop_cycle` | establishment through final harvest | Include field or protected-site establishment, planting or transplanting, crop management, and every harvest belonging to the declared species-, site-, and year-specific 作物周期. | `fao-good-agricultural-practices`; `fao-crop-production-records` |
+| `boundary_declared_crop_cycle` | establishment through final harvest | Include field or protected-site establishment, planting or transplanting, crop management, and every harvest belonging to the declared species-, site-, and year-specific 作物周期. | `fao-gap-framework-2003` |
 | `boundary_farm_gate` | harvest and conditioning | End the foreground boundary when the 商品 whole product is transferred at the declared 农场门 hand-off. Include on-farm grading, washing, cooling, and primary packaging only when they occur before that hand-off. | `fao-postharvest-handling-vegetables`; `codex-cxc-53-2003-fresh-produce` |
-| `boundary_protected_route` | greenhouse, tunnel, or other 设施栽培 | Include route-specific energy, water, consumables, and infrastructure services that are assigned to the declared 作物周期. Disclose infrastructure lifetime and allocation when the infrastructure is shared. | `fao-protected-cultivation-guidance` |
+| `boundary_protected_route` | greenhouse, tunnel, or other 设施栽培 | Include route-specific energy, water, consumables, and infrastructure services that are assigned to the declared 作物周期. Disclose infrastructure lifetime and allocation when the infrastructure is shared. | `fao-gap-framework-2003` |
 | `boundary_managed_soils` | nutrient, amendment, residue, and soil flows | Include direct and indirect managed-soil emissions attributable to applied nutrients and returned residues under one declared method. Do not double count emissions already represented by an upstream dataset. | `ipcc-2019-refinement-managed-soils`; `ipcc-2006-guidelines-agriculture` |
-| `boundary_residue_and_reject_fate` | off-grade product, rejects, residues, wastewater, and packaging waste | Record the first declared destination of every non-商品 stream: field return, feed, composting, treatment, disposal, or another documented use. An unreported destination is a data-quality gap and is not an automatic co-product. | `fao-postharvest-handling-vegetables`; `fao-crop-residue-management` |
+| `boundary_residue_and_reject_fate` | off-grade product, rejects, residues, wastewater, and packaging waste | Record the first declared destination of every non-商品 stream: field return, feed, composting, treatment, disposal, or another documented use. An unreported destination is a data-quality gap and is not an automatic co-product. | `fao-postharvest-handling-vegetables`; `fao-gap-framework-2003` |
 
 ## 6. 过程清单结构
 
@@ -105,7 +106,7 @@ Seed or transplants enter the declared field or protected site as planting mater
 - 基准类型： Crop cycle (`crop_cycle`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_planting_material_records`
-- 来源： `fao-good-agricultural-practices`
+- 来源： `fao-gap-framework-2003`
 - 数量范围： Provisional planting-material screening interval
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
@@ -130,7 +131,7 @@ Fuel, electricity, or a contracted machinery service used for soil preparation, 
 - 基准类型： Crop cycle (`crop_cycle`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_establishment_energy_records`
-- 来源： `fao-crop-production-records`
+- 来源： `fao-gap-framework-2003`
 - 数量范围： Establishment-energy screening interval
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
@@ -196,57 +197,100 @@ This internal hand-off records the accepted planted area or protected site enter
 #### 输入
 ##### 产品流
 
-###### 农业养分与肥料投入（`managed_fruiting_vegetable_production_agricultural_nutrient_inputs`）
+###### 尿素肥料（`managed_fruiting_vegetable_production_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**managed_fruiting_vegetable_production_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：per 1,000 kg 商品 农场门 output.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：Crop cycle (`crop_cycle`)
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_nutrient_input_records`
-- 来源：`fao-good-agricultural-practices`
-- 数量范围： Nitrogen-input screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 40
-  - 单位： kg N/1,000 kg 商品 output
-  - 基准： broad first-pass nutrient screen; zero is valid when no nitrogen product is applied and documented
-  - 基准类型： Crop cycle (`crop_cycle`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+- 来源：`fao-gap-framework-2003`；`fao-fertilizer-identities`
 
-- 数量范围： Phosphorus-input screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 25
-  - 单位： kg P2O5/1,000 kg 商品 output
-  - 基准： broad first-pass nutrient screen; zero is valid when no phosphorus product is applied and documented
-  - 基准类型： Crop cycle (`crop_cycle`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+###### 硫酸铵肥料（`managed_fruiting_vegetable_production_agricultural_nutrient_inputs_ammonium_sulfate`）
 
-- 数量范围： Potassium-input screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 60
-  - 单位： kg K2O/1,000 kg 商品 output
-  - 基准： broad first-pass nutrient screen; zero is valid when no potassium product is applied and documented
-  - 基准类型： Crop cycle (`crop_cycle`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
 
-- 数量范围： Organic-amendment screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 1,000
-  - 单位： kg product/1,000 kg 商品 output
-  - 基准： broad first-pass amendment screen; zero is valid when no organic amendment is applied and documented
-  - 基准类型： Crop cycle (`crop_cycle`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`fao-gap-framework-2003`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`managed_fruiting_vegetable_production_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`fao-gap-framework-2003`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`managed_fruiting_vegetable_production_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`fao-gap-framework-2003`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`managed_fruiting_vegetable_production_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`fao-gap-framework-2003`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`managed_fruiting_vegetable_production_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_input_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_input_records`
+- 来源：`fao-gap-framework-2003`；`fao-organic-nutrients`
 
 ###### Irrigation water (`irrigation_water_input`)
 
@@ -264,7 +308,7 @@ Delivered irrigation water is recorded when the crop is irrigated. Rainfall is r
 - 基准类型： Crop cycle (`crop_cycle`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_irrigation_records`
-- 来源： `fao-good-agricultural-practices`
+- 来源： `fao-gap-framework-2003`
 - 数量范围： Irrigation-water screening interval
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
@@ -289,7 +333,7 @@ Record the active substance or formulated crop-protection product used for the d
 - 基准类型： Crop cycle (`crop_cycle`)
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_crop_protection_records`
-- 来源： `fao-good-agricultural-practices`
+- 来源： `fao-gap-framework-2003`
 - 数量范围： Crop-protection screening interval
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
@@ -390,15 +434,14 @@ Report direct soil nitrous oxide attributable to nutrient and residue inputs usi
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_nutrient_and_residue_records`
 - 来源： `ipcc-2019-refinement-managed-soils`; `ipcc-2006-guidelines-agriculture`
-- 数量范围： Direct-N2O screening interval
+- 数量范围：作者暂定筛查估计；端点不是 IPCC 限值
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
   - 上限： 15
   - 单位： kg N2O/1,000 kg 商品 output
   - 基准： broad screening interval for managed-soil direct emissions pending the declared factor method
   - 基准类型： Crop cycle (`crop_cycle`)
-  - 证据类型： External source (`external_source`)
-  - Sources: `ipcc-2019-refinement-managed-soils`; `ipcc-2006-guidelines-agriculture`
+  - 证据类型：推理估计 (`reasoned_estimate`)
 
 ###### Ammonia to air from managed soil (`ammonia_emission`)
 
@@ -416,15 +459,14 @@ Record ammonia emissions attributable to nutrient applications when the selected
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_nutrient_and_residue_records`
 - 来源： `ipcc-2019-refinement-managed-soils`
-- 数量范围： Ammonia screening interval
+- 数量范围：作者暂定筛查估计；端点不是 IPCC 限值
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
   - 上限： 10
   - 单位： kg NH3/1,000 kg 商品 output
   - 基准： broad screening interval pending nutrient-form and method-specific evidence
   - 基准类型： Crop cycle (`crop_cycle`)
-  - 证据类型： External source (`external_source`)
-  - Sources: `ipcc-2019-refinement-managed-soils`
+  - 证据类型：推理估计 (`reasoned_estimate`)
 
 ###### Nitrate loss to water (`nitrate_water_emission`)
 
@@ -584,31 +626,40 @@ Electricity for pumps, washing equipment, sorting, cooling, or other primary con
   - 基准类型： Process output (`process_output`)
   - 证据类型： Reasoned estimate (`reasoned_estimate`)
 
-###### Flexible primary packaging (`flexible_primary_packaging`)
+###### 聚乙烯包装薄膜（`flexible_primary_packaging_pe_film`）
+
+**flexible_primary_packaging 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 Flexible film, bags, wraps, or similar primary packaging are included only when supplied before 农场门 transfer. The material, mass, reuse status, and packaging loss must be reported.
-
-- 选定流： Flexible primary packaging material
-- Flow property / unit: Mass / kg
-- 流集分组： `flexible-packaging`
-- 数量规则： Record packaging mass by material and batch, including reusable cycles and losses, then normalize to 商品 output.
-- 数值来源模式： Foreground record (`foreground_record`)
-- 具体性： Route-specific (`route_specific`)
 原始活动或阶段基准：per 1,000 kg 商品 农场门 output.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚乙烯包装薄膜
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型： Process output (`process_output`)
-- 证据类型： Collected record (`collected_record`)
-- 采集协议： `cp_packaging_records`
-- 来源： `fao-postharvest-handling-vegetables`
-- 数量范围： Flexible-packaging screening interval
-  - 范围角色： QA guardrail (`qa_guardrail`)
-  - 下限： 0
-  - 上限： 50
-  - 单位： kg/1,000 kg 商品 output
-  - 基准： broad first-pass primary-packaging screen; zero is valid for loose 农场门 hand-off
-  - 基准类型： Process output (`process_output`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_packaging_records`
+- 来源：`fao-postharvest-handling-vegetables`；`fao-package-identities`
+
+###### 聚丙烯编织袋（`flexible_primary_packaging_pp_sack`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 记录组成、净质量、使用次数和归还损耗；可重复使用品按实际周转归属，包装与产品质量分开。不同处理去向分别建交换，不假定回收抵扣。
+
+- 选定流：聚丙烯编织袋
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_packaging_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_packaging_records`
+- 来源：`fao-postharvest-handling-vegetables`；`fao-package-identities`
 
 ###### Rigid container or crate packaging (`rigid_primary_packaging`)
 
@@ -647,7 +698,7 @@ Rigid containers supplied before the 农场门 are recorded by material, mass, n
 
 This is the single reference product output. Report the declared species or cultivar, whole-product state, maturity, grade, moisture basis, packaging state, and 农场门 hand-off with the mass.
 
-- 选定流： Marketable 新鲜整果 other fruit-bearing vegetable at 农场门
+- 选定流：其他水果蔬菜 `64f7d837-21f3-4a2b-ab05-94d62be3ab7f`
 - Flow property / unit: Mass / kg
 原始产出计量与核对要求：Normalize the dataset to 1,000 kg of 商品 product transferred at the declared 农场门 hand-off.
 
@@ -713,7 +764,7 @@ Stems, leaves, roots, un商品 fruit, and other crop biomass leaving or remainin
 - 基准类型： Process output (`process_output`)
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_nutrient_and_residue_records`
-- 来源： `fao-crop-residue-management`
+- 来源： `fao-gap-framework-2003`
 - 数量范围： Crop-residue screening interval
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
@@ -791,15 +842,14 @@ Record carbon dioxide from fuel or electricity used before 农场门 transfer wh
 - 证据类型： Calculated from collection (`calculated_from_collection`)
 - 采集协议： `cp_energy_and_emission_records`
 - 来源： `ipcc-2006-guidelines-agriculture`
-- 数量范围： Energy-CO2 screening interval
+- 数量范围：作者暂定 CO2 筛查估计；不是从 IPCC 因子公式推导的范围
   - 范围角色： QA guardrail (`qa_guardrail`)
   - 下限： 0
   - 上限： 500
   - 单位： kg CO2/1,000 kg 商品 output
   - 基准： broad pre-gate energy-emission screen pending carrier-specific records and factors
   - 基准类型： Process output (`process_output`)
-  - 证据类型： Method formula (`method_formula`)
-  - Sources: `ipcc-2006-guidelines-agriculture`
+  - 证据类型：推理估计 (`reasoned_estimate`)
 
 ###### Pre-gate particulate matter (`pregate_particulate_emission`)
 
@@ -830,11 +880,13 @@ Report particulate matter from combustion or material handling only when the sel
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `allocation_same_species_and_route` | multiple fields, sites, cultivars, or protected routes | Keep records separate through normalization. If aggregation is necessary, allocate shared inputs and infrastructure by 商品 mass unless a more representative physical relationship is documented. | `fao-crop-production-records` |
+| `allocation_same_species_and_route` | multiple fields, sites, cultivars, or protected routes | Keep records separate through normalization. If aggregation is necessary, allocate shared inputs and infrastructure by 商品 mass unless a more representative physical relationship is documented. | `fao-gap-framework-2003` |
 | `allocation_marketable_and_off_grade` | 商品 and declared off-grade product streams | Use mass allocation when off-grade material has a declared product destination. If off-grade material is discarded or returned to soil, model its destination and do not allocate it as a 商品 co-product. | `fao-postharvest-handling-vegetables` |
 | `allocation_reusable_packaging` | reusable crates and containers | Allocate packaging production and replacement over documented service cycles and assign losses to the relevant route. A single-use packaging record is not spread over undocumented cycles. | `fao-postharvest-handling-vegetables` |
-| `allocation_shared_protected_infrastructure` | shared greenhouse, tunnel, irrigation, cooling, or conditioning equipment | Allocate shared infrastructure and energy by documented occupied area, operating time, throughput, or mass. State the selected basis and avoid assigning all shared burden to one crop without evidence. | `fao-protected-cultivation-guidance` |
-| `allocation_residue_destination` | residues and rejects with different destinations | Preserve destination-specific rows. Field return, composting, feed, treatment, and disposal are separate pathways and are not interchangeable co-products. | `fao-crop-residue-management` |
+| `allocation_shared_protected_infrastructure` | shared greenhouse, tunnel, irrigation, cooling, or conditioning equipment | Allocate shared infrastructure and energy by documented occupied area, operating time, throughput, or mass. State the selected basis and avoid assigning all shared burden to one crop without evidence. | `fao-gap-framework-2003` |
+| `allocation_residue_destination` | residues and rejects with different destinations | Preserve destination-specific rows. Field return, composting, feed, treatment, and disposal are separate pathways and are not interchangeable co-products. | `fao-gap-framework-2003` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算和质量规则
 
@@ -864,15 +916,15 @@ Report particulate matter from combustion or material handling only when the sel
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `calc_reference_normalization` | all inventory rows | `normalized amount = recorded amount / 商品 农场门 mass * 1,000 kg` | recorded amount; 商品 农场门 mass | normalized row value | `mass-balance-identity` |
-| `calc_species_route_aggregation` | mixed species, cultivars, sites, or routes | Aggregate only after each row is normalized or allocate shared inputs by the declared physical basis; retain the composition table. | site-cycle rows; allocation basis | aggregated PCR value | `fao-crop-production-records` |
-| `calc_nutrient_content` | N, P, K, and organic nutrient cards | `nutrient mass = product mass * documented nutrient fraction`; retain product mass and nutrient basis as separate metadata. | product mass; label or analysis | nutrient mass | `fao-good-agricultural-practices` |
-| `calc_irrigation_withdrawal` | irrigation source withdrawal | Calculate source withdrawal from measured source delivery and the declared conveyance or application loss; do not replace a measured value with a generic factor. | source meter; delivered irrigation; loss method | source withdrawal | `fao-good-agricultural-practices` |
+| `calc_species_route_aggregation` | mixed species, cultivars, sites, or routes | Aggregate only after each row is normalized or allocate shared inputs by the declared physical basis; retain the composition table. | site-cycle rows; allocation basis | aggregated PCR value | `fao-gap-framework-2003` |
+| `calc_nutrient_content` | N, P, K, and organic nutrient cards | `nutrient mass = product mass * documented nutrient fraction`; retain product mass and nutrient basis as separate metadata. | product mass; label or analysis | nutrient mass | `fao-gap-framework-2003` |
+| `calc_irrigation_withdrawal` | irrigation source withdrawal | Calculate source withdrawal from measured source delivery and the declared conveyance or application loss; do not replace a measured value with a generic factor. | source meter; delivered irrigation; loss method | source withdrawal | `fao-gap-framework-2003` |
 | `calc_managed_soil_emissions` | N2O, NH3, nitrate, and phosphate rows | Apply one declared site or IPCC-compatible method to nutrient, amendment, residue, soil, and drainage records; document direct and indirect pathways separately. | nutrient and residue records; method factors | elementary emissions | `ipcc-2019-refinement-managed-soils`; `ipcc-2006-guidelines-agriculture` |
 | `calc_harvest_mass_balance` | 商品, off-grade, field-loss, and residue rows | Reconcile harvested mass with 商品 output, off-grade destinations, field losses, residues, and measurement tolerance; investigate unexplained residuals. | grade records; harvest weights; loss and residue records | balanced output set | `mass-balance-identity` |
 | `calc_reusable_packaging` | reusable rigid packaging | Allocate packaging mass and replacement over verified service cycles and assign losses to the route where they occur. | packaging mass; verified cycles; loss record | per-cycle packaging input and waste | `fao-postharvest-handling-vegetables` |
 | `calc_conditioning_water_balance` | conditioning water and wastewater | `wastewater = water input + retained or released product water - reuse - evaporation - measured retained water`, using measured values where available. | water input; reuse; discharge; balance terms | wastewater volume | `fao-postharvest-handling-vegetables` |
 | `calc_energy_emissions` | energy-related CO2 and particulate matter | Multiply recorded carrier or electricity use by the declared factor and retain carrier, factor, and biogenic/fossil basis; avoid upstream double counting. | energy record; factor | elementary emissions | `ipcc-2006-guidelines-agriculture` |
-| `calc_route_specific_infrastructure` | 设施栽培 infrastructure | Allocate infrastructure and shared equipment over documented service life and occupied area, operating time, throughput, or mass; disclose the chosen basis. | infrastructure record; service life; allocation basis | route-specific burden | `fao-protected-cultivation-guidance` |
+| `calc_route_specific_infrastructure` | 设施栽培 infrastructure | Allocate infrastructure and shared equipment over documented service life and occupied area, operating time, throughput, or mass; disclose the chosen basis. | infrastructure record; service life; allocation basis | route-specific burden | `fao-gap-framework-2003` |
 
 ### 数据质量要求
 
@@ -892,15 +944,15 @@ Report particulate matter from combustion or material handling only when the sel
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
 | `validation_reference_identity` | reference flow | The dataset must identify one CPC 01239-compatible 新鲜整果 product at 农场门. An identity 证据缺口 remains a coverage issue and cannot be silently replaced by a named fruit-bearing vegetable or a processed flow. | `mass-balance-identity` |
-| `validation_required_processes` | process map and process inventory | All three required processes must be present, and every detailed process section must match one process-map id. | `fao-crop-production-records` |
-| `validation_species_route_scope` | mixed category datasets | The declared species, cultivar, site, route, and cycle must be available for every aggregated row. Products covered by CPC 01231–01235 must be excluded or separately mapped. | `fao-good-agricultural-practices` |
-| `validation_nutrient_non_double_counting` | nutrient inputs | A compound fertilizer or amendment must be represented once on the product basis and, when nutrient normalization is needed, once through its documented nutrient allocation. Do not sum product mass as if it were separate N, P, and K products. | `fao-good-agricultural-practices` |
-| `validation_water_balance` | irrigation, withdrawal, conditioning water, and wastewater | Check delivered water, source withdrawal, reuse, evaporation, and discharge for the declared route. Rainfall cannot be used to close a metered irrigation row. | `fao-good-agricultural-practices` |
+| `validation_required_processes` | process map and process inventory | All three required processes must be present, and every detailed process section must match one process-map id. | `fao-gap-framework-2003` |
+| `validation_species_route_scope` | mixed category datasets | The declared species, cultivar, site, route, and cycle must be available for every aggregated row. Products covered by CPC 01231–01235 must be excluded or separately mapped. | `fao-gap-framework-2003` |
+| `validation_nutrient_non_double_counting` | nutrient inputs | A compound fertilizer or amendment must be represented once on the product basis and, when nutrient normalization is needed, once through its documented nutrient allocation. Do not sum product mass as if it were separate N, P, and K products. | `fao-gap-framework-2003` |
+| `validation_water_balance` | irrigation, withdrawal, conditioning water, and wastewater | Check delivered water, source withdrawal, reuse, evaporation, and discharge for the declared route. Rainfall cannot be used to close a metered irrigation row. | `fao-gap-framework-2003` |
 | `validation_mass_balance` | product, waste, and residue outputs | Harvested mass, 商品 output, off-grade destinations, field losses, residues, and waste must reconcile within the declared measurement tolerance. | `mass-balance-identity` |
 | `validation_boundary_hand_off` | 农场门 preparation and transport | Conditioning, packaging, and transport are included only when they occur before the declared 农场门 hand-off; post-gate distribution is excluded. | `fao-postharvest-handling-vegetables` |
 | `validation_emission_method` | elementary emissions | Each emission row must state substance, compartment, method, factor basis, and whether the burden is already included in an upstream dataset. | `ipcc-2019-refinement-managed-soils`; `ipcc-2006-guidelines-agriculture` |
 | `validation_parameterized_identity_resolution` | parameterized rows and reference flow | During foreground dataset construction, resolve every parameterized row to a compatible UUID and retain its property, unit, geography, and intended-use checks. Uncovered rows remain unmapped until evidence supports a fixed identity. | `mass-balance-identity` |
-| `validation_quality_disclosure` | published dataset profile | Report temporal, geographic, species, route, measurement, estimate, allocation, residue-fate, and 证据缺口-identity limitations before downstream use. | `fao-good-agricultural-practices` |
+| `validation_quality_disclosure` | published dataset profile | Report temporal, geographic, species, route, measurement, estimate, allocation, residue-fate, and 证据缺口-identity limitations before downstream use. | `fao-gap-framework-2003` |
 
 ## 10. 发布数据集画像
 
@@ -914,16 +966,18 @@ Report particulate matter from combustion or material handling only when the sel
 | required_quality_disclosure | source and measurement method; temporal and geographic representativeness; species and route composition; estimated or missing values; nutrient, water, energy, and emission-factor basis; allocation decision; residue, wastewater, and packaging destinations; parameterized-flow UUID resolution; uncertainty and range treatment |
 | update_trigger | Change in CPC interpretation, species or route scope, 农场门 state, boundary or allocation method, 具体流身份核验|
 
+证据适用性：引用的一般农场记录和采后框架不提供作物特定的产量、寿命、交接截止点或 LCA 分配默认值。这些属于本 PCR 的方法选择，应按实际物种、路线和期间限定，取得兼容的农艺证据后才能声称完整。作者暂定范围仅为筛查辅助，不是经验验收限值，也不能替代实测。
+
 ## 11. 数据源
 
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
-| `fao-good-agricultural-practices` | official_guidance | FAO, Good Agricultural Practices for greenhouse vegetable crops and fresh produce production, FAO guidance portal | production records, crop inputs, irrigation, nutrient and route disclosure |
-| `fao-crop-production-records` | official_guidance | FAO, crop production and farm record guidance, FAO agriculture production resources | site, cycle, operation, completeness, and aggregation rules |
-| `fao-protected-cultivation-guidance` | official_guidance | FAO, 设施栽培 and greenhouse crop production guidance, FAO agriculture resources | protected-route energy, infrastructure, and shared-equipment allocation |
 | `fao-postharvest-handling-vegetables` | handbook | FAO, Manual for the preparation and sale of fruits and vegetables, 2004, https://www.fao.org/4/y4893e/y4893e00.htm | harvest, grading, washing, conditioning, packaging, and 农场门 boundary |
-| `fao-crop-residue-management` | extension_guidance | FAO, crop-residue and sustainable soil-management resources, FAO soils portal | residue measurement and destination disclosure |
 | `codex-cxc-53-2003-fresh-produce` | standard | Codex Alimentarius, Code of Hygienic Practice for Fresh Fruits and Vegetables (CXC 53-2003), https://www.fao.org/fao-who-codexalimentarius/codex-texts/codes-of-practice/en/ | fresh-produce state, hygiene, grading, and conditioning qualifiers |
 | `ipcc-2019-refinement-managed-soils` | method_factor | IPCC, 2019 Refinement to the 2006 IPCC Guidelines, Volume 4 Agriculture, Forestry and Other Land Use, https://www.ipcc-nggip.iges.or.jp/public/2019rf/index.html | managed-soil N2O, NH3, and nutrient-loss method basis |
 | `ipcc-2006-guidelines-agriculture` | method_factor | IPCC, 2006 Guidelines for National Greenhouse Gas Inventories, Volume 4 AFOLU, https://www.ipcc-nggip.iges.or.jp/public/2006gl/ | agricultural emissions and energy-emission factor method basis |
 | `mass-balance-identity` | method_factor | PCR mass-balance identity: declared product and process-output normalization rule | normalization, output reconciliation, and identity 证据缺口 validation |
+| `fao-gap-framework-2003` | official_guidance | FAO Committee on Agriculture, COAG/2003/6, Development of a Framework for Good Agricultural Practices, section IV paragraphs 24–26 and Annex, https://www.fao.org/4/y8704e/y8704e.htm | 仅为一般监测和农场记录背景；作物特定路线、寿命、数量范围及 LCA 分配属于 PCR 选择，须补充适用证据。 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-package-identities` | official_guidance | FAO Packaging for fruits, vegetables and root crops, section 4, https://www.fao.org/4/x5016e/X5016E04.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

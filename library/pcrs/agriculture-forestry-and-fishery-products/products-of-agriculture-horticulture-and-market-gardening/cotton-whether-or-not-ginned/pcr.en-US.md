@@ -71,11 +71,11 @@ The sole reference output is `reference_product_at_declared_handoff`, receiving 
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `boundary_field` | cultivation | Include crop-attributed preparation, planting, nutrients, protection, irrigation, energy and direct emissions. | `ipcc-2019-refinement`; `fao-cotton-guide` |
-| `boundary_harvest` | harvest | Separate harvest, grading, rejects, loss and farm hand-off from crop growth. | `fao-cotton-guide`; `mass-balance-identity` |
+| `boundary_field` | cultivation | Include crop-attributed preparation, planting, nutrients, protection, irrigation, energy and direct emissions. | `ipcc-2019-refinement`; `fao-gap-framework-2003` |
+| `boundary_harvest` | harvest | Separate harvest, grading, rejects, loss and farm hand-off from crop growth. | `fao-gap-framework-2003`; `mass-balance-identity` |
 | `boundary_gin` | ginning | Include intake, conditioning, separation, cleaning, grading and bale preparation; stop before spinning. | `usda-cotton-ginning` |
-| `boundary_routes` | alternatives | Keep rainfed/irrigated, picker/stripper and saw/roller technology strata separate before weighting. | `fao-cotton-guide`; `usda-cotton-ginning` |
-| `boundary_route_delta_evidence` | production and technology deltas | Managed cultivation is the production parent. Irrigation changes water, pumping energy and field-emission records; harvest equipment changes energy, losses and contamination; saw versus roller ginning changes conditioning, separation, cleaning and quality records. These routes coexist in the category but are mutually exclusive within one stratum. | `fao-cotton-guide`; `usda-cotton-ginning` |
+| `boundary_routes` | alternatives | Keep rainfed/irrigated, picker/stripper and saw/roller technology strata separate before weighting. | `fao-gap-framework-2003`; `usda-cotton-ginning` |
+| `boundary_route_delta_evidence` | production and technology deltas | Managed cultivation is the production parent. Irrigation changes water, pumping energy and field-emission records; harvest equipment changes energy, losses and contamination; saw versus roller ginning changes conditioning, separation, cleaning and quality records. These routes coexist in the category but are mutually exclusive within one stratum. | `fao-gap-framework-2003`; `usda-cotton-ginning` |
 | `boundary_conditioning_stabilization` | ginned route | Raw seed cotton enters ginning; drying or moisture conditioning, separation and cleaning prepare moisture-safe graded lint for bale hand-off. Conditioning energy and service inputs are recorded in gin energy; cottonseed is an intended co-product; trash, moisture change, dust, rejects and loss remain separately classified. | `usda-cotton-ginning`; `mass-balance-identity` |
 | `boundary_single_period` | all routes | Model one crop cycle and its linked harvest and gin batches in one linked accounting interval; single-period; no storage, replacement or termination is included. Temporary holding is assigned to the linked lot. | `mass-balance-identity` |
 
@@ -718,7 +718,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | --- | --- | --- | --- |
 | `validate_route` | reference | Exactly one route and gate declared. | error |
 | `validate_reference_identity` | reference | Before activation bind exact Product UUID, property and unit group. | error |
-| `validate_nutrients` | cultivation | Exactly one set-only nutrient card and no group. | error |
+| `validate_nutrients` | cultivation | Give every actual fertilizer or amendment product its own card, retaining physical product mass, formulation, nutrient composition and application records. Nutrient quantities are not additional inputs of the same product; collection or group identifiers cannot substitute for a concrete flow identity. | error |
 | `validate_balance` | harvest/gin | Close mass balance within declared uncertainty. | error |
 | `validate_states` | outputs | Every accepted, downgraded, reworked and discarded state has one destination. | error |
 | `validate_runs` | gin | Startup, cleaning and changeover are assigned once. | error |
@@ -738,11 +738,12 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | required_quality_disclosure | coverage, calibration, route weights, balance, emission tier, allocation sensitivity and unresolved identities |
 | update_trigger | changed agronomy, technology, yield, grade, markets, allocation, emission method or identity |
 
+Evidence applicability: cited general farm-record and postharvest frameworks do not supply crop-specific yields, lifetimes, gate cutoffs or LCA allocation defaults. Those are this PCR methodology decisions; qualify them by the actual species, route and period and obtain compatible agronomic evidence before asserting completeness. Provisional author ranges are screening aids, not empirical acceptance limits or substituted measurements.
+
 ## 11. Data Sources
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `fao-cotton-guide` | official guidance | FAO cotton production and crop-water guidance | cultivation, irrigation and harvest |
 | `usda-cotton-ginning` | official guidance | USDA Cotton Ginners Handbook | ginning boundary and records |
 | `ipcc-2019-refinement` | method_factor | IPCC 2019 Refinement, Volume 4 | field emissions |
 | `iso-14044` | standard | ISO 14044:2006 | allocation |
@@ -751,3 +752,4 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | This PCR, Sections 3, 6 and 8: measured net mass at the same state and gate is its own normalization denominator, giving a mass ratio of 1; handoff measurement adds no physical processing. | Same-stage and handoff measurement identities; a definition, not an observed yield, empirical default or external publication. |
+| `fao-gap-framework-2003` | official_guidance | FAO Committee on Agriculture, COAG/2003/6, Development of a Framework for Good Agricultural Practices, section IV paragraphs 24–26 and Annex, https://www.fao.org/4/y8704e/y8704e.htm | Generic monitoring and farm-record context only; crop-specific routes, lifetimes, quantitative ranges and LCA allocation are PCR choices requiring separate applicable evidence. |

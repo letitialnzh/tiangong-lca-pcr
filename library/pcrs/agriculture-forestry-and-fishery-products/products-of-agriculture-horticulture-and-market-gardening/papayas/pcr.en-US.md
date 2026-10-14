@@ -38,13 +38,15 @@ It excludes the manufacture of planting material, fertilizers, soil amendments, 
 | Field | Value |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | Fresh whole papaya at farm or first packing-site gate `5f8859fd-4690-4c28-afbe-c4846a84da32` |
+| Reference product flow | Papayas `5f8859fd-4690-4c28-afbe-c4846a84da32` |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | Papaya identity and cultivar; production country or region; open-field or protected route; field or protected-unit identifier; cycle and harvest dates; planted area; irrigation source and method; nutrient and soil-amendment product and nutrient basis; crop-protection programme; harvested mass; marketable grade and maturity; rejects and residue fate; washing; cooling; packaging; declared gate |
 
 When constructing a foreground data package, the items listed in `Required qualifiers` must be declared in dataset metadata, process notes, reference flow comment, product description, or an equivalent data package field. Missing required qualifiers make the reference flow definition incomplete for that data package.
+
+This reference UUID denotes the fresh, unprocessed farm-gate product. Verify actual species, product state and handoff before applying the binding. An independent pack-house, further-processed or otherwise incompatible output requires separately verified identity and must not inherit this UUID. Identity verification does not change the actual system boundary or quantity-normalization requirements of this PCR.
 
 ## 4. Measurement and Unit Rules
 
@@ -73,10 +75,10 @@ When constructing a foreground data package, the items listed in `Required quali
 
 | rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `boundary_crop_cycle` | establishment and crop management | Include inputs and direct cultivation exchanges from the declared starting condition through the represented harvest campaign, and allocate them to marketable output from the same declared cycle. | `fao-papaya-production-guidance` |
+| `boundary_crop_cycle` | establishment and crop management | Include inputs and direct cultivation exchanges from the declared starting condition through the represented harvest campaign, and allocate them to marketable output from the same declared cycle. | `fao-gap-framework-2003` |
 | `boundary_declared_gate` | harvest and gate handling | End at the declared farm or first packing-site gate; include sorting, trimming, washing, cooling, and primary packaging only when they occur before that hand-off. | `codex-cxc-53-2003` |
 | `boundary_soil_emissions` | managed soil and residues | Apply one declared method to nitrogen emissions and avoid double counting fertilizer, amendment, and returned-residue nitrogen. | `ipcc-2019-managed-soils` |
-| `boundary_residue_fate` | field residue and rejects | Record field residue and postharvest rejects by destination; an unspecified reject or residue is not a co-product. | `fao-papaya-production-guidance` |
+| `boundary_residue_fate` | field residue and rejects | Record field residue and postharvest rejects by destination; an unspecified reject or residue is not a co-product. | `fao-gap-framework-2003` |
 
 ## 6. Process Inventory Structure
 
@@ -110,32 +112,102 @@ Raw activity or stage basis: per planted hectare or protected unit, then per 1,0
 - Basis kind: Crop cycle (`crop_cycle`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_papaya_establishment_records`
-- Sources: `fao-papaya-production-guidance`
+- Sources: `fao-gap-framework-2003`
 
-###### Agricultural nutrient and fertilizer inputs (`papaya_crop_establishment_agricultural_nutrient_inputs`)
+###### Urea fertilizer (`papaya_crop_establishment_agricultural_nutrient_inputs_urea`)
 
-Record all mineral fertilizers, organic fertilizers, and nutrient-bearing amendments used by this process in this one consolidated card. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
+**Collection scope and applicability for papaya_crop_establishment_agricultural_nutrient_inputs.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
-- Selected flow: Agricultural nutrient and fertilizer supply
-- Flow property / unit: Product quantity and nutrient content / kg product, m3 product, kg N, kg P2O5, and kg K2O as applicable
-- Amount rule: Collect each actual product quantity once, retain its composition, and calculate declared N, P or P2O5, and K or K2O quantities without duplicating compound or organic products; foreground generation expands the records and resolves every emitted product exchange to one verified UUID.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
+Collect each fertilizer product separately. Preserve each actual product identity, quantity, formulation, nutrient composition, application event, and allocation; do not count a compound product more than once.
 Raw activity or stage basis: per crop cycle and per 1,000 kg marketable output.
 
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Urea fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_papaya_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
 - Normalization basis: per declared reference flow
-- Basis kind: Crop cycle (`crop_cycle`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_papaya_input_records`
-- Sources: `fao-papaya-production-guidance`
-- Range: Provisional establishment nutrient screen
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 600
-  - Unit: kg product/ha or protected-unit cycle
-  - Basis: broad screening interval pending product invoices, soil tests, and nutrient declarations
-  - Basis kind: Crop cycle (`crop_cycle`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-gap-framework-2003`; `fao-fertilizer-identities`
+
+###### Ammonium sulfate fertilizer (`papaya_crop_establishment_agricultural_nutrient_inputs_ammonium_sulfate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Ammonium sulfate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_papaya_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_papaya_input_records`
+- Sources: `fao-gap-framework-2003`; `fao-fertilizer-identities`
+
+###### Triple superphosphate fertilizer (`papaya_crop_establishment_agricultural_nutrient_inputs_triple_superphosphate`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Triple superphosphate fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_papaya_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_papaya_input_records`
+- Sources: `fao-gap-framework-2003`; `fao-fertilizer-identities`
+
+###### Potassium chloride fertilizer (`papaya_crop_establishment_agricultural_nutrient_inputs_potassium_chloride`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Potassium chloride fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_papaya_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_papaya_input_records`
+- Sources: `fao-gap-framework-2003`; `fao-fertilizer-identities`
+
+###### Cattle manure applied as fertilizer (`papaya_crop_establishment_agricultural_nutrient_inputs_cattle_manure`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Cattle manure applied as fertilizer
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_papaya_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_papaya_input_records`
+- Sources: `fao-gap-framework-2003`; `fao-organic-nutrients`
+
+###### Composted plant residues applied to soil (`papaya_crop_establishment_agricultural_nutrient_inputs_plant_compost`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Count physical product mass once and retain moisture, N/P/K composition and application events; nutrient quantities are calculated attributes, not additional purchases of the same product. Give unlisted compound and organic fertilizers separate cards identified by formulation or feedstock.
+
+- Selected flow: Composted plant residues applied to soil
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_papaya_input_records` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_papaya_input_records`
+- Sources: `fao-gap-framework-2003`; `fao-organic-nutrients`
 
 ##### Waste flows
 
@@ -156,7 +228,7 @@ Raw activity or stage basis: per crop cycle and per 1,000 kg marketable output.
 - Basis kind: Crop cycle (`crop_cycle`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_papaya_establishment_records`
-- Sources: `fao-papaya-production-guidance`
+- Sources: `fao-gap-framework-2003`
 
 #### Outputs
 
@@ -212,7 +284,7 @@ Raw activity or stage basis: per crop cycle and per 1,000 kg marketable output.
 - Basis kind: Crop cycle (`crop_cycle`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_papaya_input_records`
-- Sources: `fao-papaya-production-guidance`
+- Sources: `fao-gap-framework-2003`
 
 ###### Crop-protection products (`papaya_crop_protection`)
 
@@ -229,7 +301,7 @@ Raw activity or stage basis: per crop cycle and per 1,000 kg marketable output.
 - Basis kind: Crop cycle (`crop_cycle`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_papaya_input_records`
-- Sources: `fao-papaya-production-guidance`
+- Sources: `fao-gap-framework-2003`
 
 ##### Waste flows
 
@@ -319,7 +391,7 @@ Raw activity or stage basis: per crop cycle and per 1,000 kg marketable output.
 - Basis kind: Crop cycle (`crop_cycle`)
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_papaya_harvest_records`
-- Sources: `fao-papaya-production-guidance`
+- Sources: `fao-gap-framework-2003`
 
 #### Outputs
 
@@ -340,7 +412,7 @@ Raw activity or stage basis: per harvest campaign and per 1,000 kg marketable ou
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_papaya_harvest_records`
-- Sources: `fao-papaya-production-guidance`
+- Sources: `fao-gap-framework-2003`
 
 ##### Waste flows
 
@@ -360,7 +432,7 @@ Raw activity or stage basis: per harvest campaign and per 1,000 kg marketable ou
 - Basis kind: Process output (`process_output`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_papaya_harvest_records`
-- Sources: `fao-papaya-production-guidance`
+- Sources: `fao-gap-framework-2003`
 
 
 ##### Elementary flows
@@ -434,7 +506,7 @@ Raw activity or stage basis: per 1,000 kg marketable output packed before the de
 
 Record the accepted marketable output after the declared grading, optional washing, cooling, and primary packing steps.
 
-- Selected flow: Fresh whole papaya at farm or first packing-site gate
+- Selected flow: Papayas `5f8859fd-4690-4c28-afbe-c4846a84da32`
 - Flow property / unit: Mass / kg
 Raw output measurement and reconciliation: Sum accepted lot weights after grade, maturity, and presentation decisions at the declared gate.
 
@@ -492,8 +564,10 @@ Raw activity or stage basis: per 1,000 kg marketable output.
 ## 7. Allocation and Co-product Handling
 
 - `allocation_marketable_output`: Allocate crop-cycle inputs and direct cultivation exchanges to marketable fresh papaya using marketable mass as the primary output basis. `source_ids`: `iso-14044-2006`.
-- `allocation_rejects`: Treat field and gate rejects as waste unless a documented receiving route creates a separately specified co-product. Do not assign avoided-product credit within this PCR. `source_ids`: `iso-14044-2006`, `fao-papaya-production-guidance`.
+- `allocation_rejects`: Treat field and gate rejects as waste unless a documented receiving route creates a separately specified co-product. Do not assign avoided-product credit within this PCR. `source_ids`: `iso-14044-2006`, `fao-gap-framework-2003`.
 - `allocation_reusable_containers`: Model reusable harvest containers and crates by recorded service cycles; assign their production burden across documented uses and retain consumed packaging as a separate input. `source_ids`: `iso-14044-2006`, `codex-cxc-53-2003`.
+
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
 
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
@@ -514,7 +588,7 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `calc_marketable_normalization` | all processes | Normalize each collected quantity to the accepted marketable papaya mass at the declared gate: `quantity / marketable_gate_mass`. | field, cycle, lot, and gate records | quantity per kg or 1,000 kg marketable papaya | `iso-14044-2006` |
-| `calc_nutrient_equivalent` | fertilizer and soil amendments | `product_mass × declared nutrient fraction`; retain product mass and nutrient-equivalent result as separate fields. | product invoice, formulation, and declared N/P2O5/K2O fraction | product mass and nutrient mass | `fao-papaya-production-guidance` |
+| `calc_nutrient_equivalent` | fertilizer and soil amendments | `product_mass × declared nutrient fraction`; retain product mass and nutrient-equivalent result as separate fields. | product invoice, formulation, and declared N/P2O5/K2O fraction | product mass and nutrient mass | `fao-gap-framework-2003` |
 | `calc_soil_nitrogen_emissions` | managed soil emissions | Apply one selected IPCC-compatible factor method to documented nitrogen inputs and returned residue nitrogen, with no duplicate upstream emission. | nutrient records, residue basis, method factor | declared soil-emission flows | `ipcc-2019-managed-soils` |
 | `calc_mass_balance` | harvest and gate preparation | `gross harvested mass = marketable output + rejects + residue or process loss`, with any documented stock change shown separately. | harvest lots, gate batches, reject and residue records | reconciled mass-balance check | `codex-cxc-53-2003` |
 | `calc_reusable_container_burden` | harvest containers and crates | Divide container production burden by documented service cycles and assign the used-cycle share to the represented papaya output. | container mass, material, expected or observed service cycles | container burden per declared output | `iso-14044-2006` |
@@ -531,11 +605,11 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 
 ## 9. Validation Rules
 
-- `validation_identity`: The dataset must identify papaya cultivar or product category, field or protected unit, production route, cycle, declared gate, and all evidence gap input or output identities. `source_ids`: `fao-papaya-production-guidance`.
+- `validation_identity`: The dataset must identify papaya cultivar or product category, field or protected unit, production route, cycle, declared gate, and all evidence gap input or output identities. `source_ids`: `fao-gap-framework-2003`.
 - `validation_mass_balance`: For every harvest and gate batch, gross harvested or received mass must reconcile to marketable output, rejects, residue, wastewater or wash loss, packaging loss, and any disclosed stock change. `source_ids`: `codex-cxc-53-2003`.
 - `validation_normalization`: Every normalized inventory value must use the same declared marketable gate mass and must not mix farm-gate and first-packing-site outputs. `source_ids`: `iso-14044-2006`.
 - `validation_nutrient_emissions`: Nutrient-equivalent inputs and managed-soil emissions must identify their basis and use one non-duplicative calculation method. `source_ids`: `ipcc-2019-managed-soils`.
-- `validation_temporal`: The dataset must cover the represented production cycle and harvest campaign or explicitly disclose missing records and substitutions. `source_ids`: `fao-papaya-production-guidance`.
+- `validation_temporal`: The dataset must cover the represented production cycle and harvest campaign or explicitly disclose missing records and substitutions. `source_ids`: `fao-gap-framework-2003`.
 
 ## 10. Published Dataset Profile
 
@@ -549,12 +623,16 @@ Retain raw site, lot, cycle and stage quantities and denominators in each collec
 | required_quality_disclosure | Measurement basis, collection period, completeness, mass-balance result, allocation rule, provisional ranges, data substitutions, uncertainty, and evidence gap UUID or flow identities |
 | update_trigger | Change in cultivation route, irrigation system, nutrient or crop-protection programme, harvest or gate handling, packaging, accepted product definition, method factors, or resolved identity mappings |
 
+Evidence applicability: cited general farm-record and postharvest frameworks do not supply crop-specific yields, lifetimes, gate cutoffs or LCA allocation defaults. Those are this PCR methodology decisions; qualify them by the actual species, route and period and obtain compatible agronomic evidence before asserting completeness. Provisional author ranges are screening aids, not empirical acceptance limits or substituted measurements.
+
 ## 11. Data Sources
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `fao-papaya-production-guidance` | extension_guidance | FAO crop-production and good-agricultural-practice guidance for tropical fruit production | production-route decomposition, planting, crop management, harvest records, residue handling, and data collection |
 | `fao-irrigation-drainage-paper-56` | handbook | FAO Irrigation and drainage paper 56, *Crop evapotranspiration* | irrigation measurement and water-delivery distinction |
 | `ipcc-2019-managed-soils` | method_factor | IPCC 2019 Refinement to the 2006 IPCC Guidelines, managed soils and nitrogen emissions | managed-soil nitrogen calculation and non-duplication rule |
 | `codex-cxc-53-2003` | official_guidance | Codex Alimentarius CXC 53-2003, Code of hygienic practice for fresh fruits and vegetables | harvest, washing, packing, hygiene, batch reconciliation, and gate handling |
 | `iso-14044-2006` | standard | ISO 14044:2006, environmental management—life cycle assessment—requirements and guidelines | normalization, allocation, reusable-container treatment, and validation principles |
+| `fao-gap-framework-2003` | official_guidance | FAO Committee on Agriculture, COAG/2003/6, Development of a Framework for Good Agricultural Practices, section IV paragraphs 24–26 and Annex, https://www.fao.org/4/y8704e/y8704e.htm | Generic monitoring and farm-record context only; crop-specific routes, lifetimes, quantitative ranges and LCA allocation are PCR choices requiring separate applicable evidence. |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | conditional concrete identities and method context; does not establish site use or quantities |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | conditional concrete identities and method context; does not establish site use or quantities |

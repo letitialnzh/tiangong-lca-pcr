@@ -44,7 +44,9 @@ sync_with: pcr.en-US.md
 | 参考单位 | kg |
 | 必需限定信息 | 物种；品种或栽培品种；新鲜市场状态；生产地理位置；果园年龄和生产状态；报告年度或采收季；灌溉状态；产量基准；农场大门状态 |
 
-构建前景数据包时，必需限定信息必须在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中声明。新鲜无花果产品 UUID 应在前景数据生成期间解析；本候选不指定固定 UUID。
+构建前景数据包时，必需限定信息必须在数据集元数据、过程说明、参考流备注、产品说明或等效数据包字段中声明。参考表绑定已核实的无花果 UUID `f80297fb-fa6f-46e4-8da8-49f2fdcdab34`；前景生产仍须核实物种、新鲜状态和实际交付门与该身份匹配。不兼容输出应核实独立身份，不能复用此 UUID。
+
+本参考 UUID 表示新鲜、未加工的农场门产品。使用该绑定前须核对实际物种、产品状态及交接门；独立包装站、进一步加工或不兼容状态的输出必须单独核实身份，不得直接继承此 UUID。身份核实不改变本 PCR 的实际系统边界或数量归一化要求。
 
 ## 4. 计量与单位规则
 | rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
@@ -158,21 +160,100 @@ sync_with: pcr.en-US.md
 - Collection protocol: `cp_irrigation_records`
 - Sources: `fao-crop-evapotranspiration-56-1998`; `fao-good-agricultural-practices-figs-2008`
 
-###### 农业养分与肥料投入（`orchard_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`orchard_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**orchard_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：同一过程和报告期的定量参考.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
-- 来源：`fao-good-agricultural-practices-figs-2008`; `ipcc-2019-managed-soils-n2o`
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-good-agricultural-practices-figs-2008`；`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`orchard_management_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-good-agricultural-practices-figs-2008`；`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`orchard_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-good-agricultural-practices-figs-2008`；`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`orchard_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-good-agricultural-practices-figs-2008`；`ipcc-2019-managed-soils-n2o`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`orchard_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-good-agricultural-practices-figs-2008`；`ipcc-2019-managed-soils-n2o`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`orchard_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-good-agricultural-practices-figs-2008`；`ipcc-2019-managed-soils-n2o`；`fao-organic-nutrients`
 
 ###### 施用于果园区块的植物保护产品（`crop_protection_products`）
 
@@ -320,7 +401,7 @@ sync_with: pcr.en-US.md
 
 这是参考产品产出：在声明市场状态下，于生产农场大门交付的完整、新鲜、未经加工的无花果。
 
-- Selected flow: 农场大门的完整新鲜无花果
+- 选定流：无花果 `f80297fb-fa6f-46e4-8da8-49f2fdcdab34`
 - Flow property / unit: 质量 / kg
 原始产出计量与核对要求：称量农场大门交付的可销售新鲜无花果；与采收记录和声明次品进行核对
 
@@ -366,6 +447,8 @@ sync_with: pcr.en-US.md
 | `allocation_same_category_outputs` | 多种新鲜无花果产出 | 不同品种、采收窗口或市场等级的新鲜无花果，除非数据集声明了不同的产品规格，否则视为同一参考产品类别；在归一化前汇总其计量负荷。 | `unece-ffv-17-fresh-figs-2017`; `iso-14044-2006` |
 | `allocation_marketed_coproducts` | 有证据的可销售共产品 | 如果单独的可销售共产品与果园或采收作业共享过程，首先尽可能细分；否则按报告期数量和农场大门价格以经济价值分配剩余共享负荷，并披露分配敏感性。 | `iso-14044-2006` |
 | `allocation_culls_not_coproducts` | 次品和田间损失 | 没有有记录市场的未销售次品、田间损失和残体作为废物或保留在田间的材料处理，不作为获得避免负荷的共产品。 | `iso-14044-2006`; `unece-ffv-17-fresh-figs-2017` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算与质量规则
 
@@ -442,3 +525,5 @@ sync_with: pcr.en-US.md
 | `ipcc-2019-managed-soils-n2o` | method_factor | https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/4_Volume4/19R_V4_Ch11_Soils_N2O_CO2.pdf | 受管理土壤排放的氮投入活动数据以及直接、挥发、淋失和径流路径 |
 | `iso-14044-2006` | standard | https://committee.iso.org/standard/38498.html | LCA 目标与范围、清单、分配、报告和评审原则 |
 | `iso-14067-2018` | standard | https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100271.pdf | 产品部分碳足迹边界和农场大门报告背景 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

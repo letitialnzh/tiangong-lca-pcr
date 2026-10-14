@@ -283,32 +283,44 @@ process_inventory:
                 basis_kind: "process_output"
                 evidence_kind: "reasoned_estimate"
                 source_ids: []
-        - row_id: conditioning_energy
-          role: "Conditional conditioning energy"
-          name: "Site-specific energy carrier (UUID unresolved)"
+        - row_id: conditioning_energy_electricity
+          role: "Electricity at the equipment supply point"
+          name: "Electricity at the equipment supply point"
           flow_type: "product"
-          property_unit: "Energy / MJ"
-          description: "Expand actual electricity, thermal energy or fuel by carrier only for powered operations performed. Denominator and scope requirements：per kg raw fibre received Raw quantity and calculation requirements: Meter actual carrier; allocate shared use by service record. Original collection denominator kind: process_output."
+          property_unit: "Energy / kWh"
+          description: "**Collection scope and applicability for conditioning_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services. Expand actual electricity, thermal energy or fuel by carrier only for powered operations performed. Denominator and scope requirements：per kg raw fibre received Raw quantity and calculation requirements: Meter actual carrier; allocate shared use by service record. Original collection denominator kind: process_output. Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
           amount:
-            expression: "Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records."
-            value_mode: "calculated_value"
+            expression: "Collect raw quantities for this identity under cp_utility and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per reference flow"
+              text: "per declared reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
+              kind: "collected_record"
               collection_protocol_id: cp_utility
-              source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "100000"
-                unit: "MJ/kg"
-                basis: "per kg raw fibre received; zero for documented manual operation"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+              source_ids:
+                - fao-agricultural-energy
+            ranges: []
+        - row_id: conditioning_energy_diesel
+          role: "Diesel fuel supplied to equipment"
+          name: "Diesel fuel supplied to equipment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again."
+          amount:
+            expression: "Collect raw quantities for this identity under cp_utility and calculate the exchange per declared reference flow using the original attribution rules."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per declared reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_utility
+              source_ids:
+                - fao-agricultural-energy
+            ranges: []
       waste:
         []
       elementary:
@@ -600,6 +612,10 @@ allocation_rules:
     rule: "Register each shared asset or utility meter, its harvest/condition/grade/present consumers and service periods; apportion by measured hours, throughput or justified proxy once."
     source_ids:
       - fao-animal-fibre-harvesting
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness."
+    source_ids: []
 dataset_production:
   collection_protocols:
     - protocol_id: cp_animal_service
@@ -758,6 +774,10 @@ validation_rules:
     applies_to: "generated exchanges"
     rule: "Resolve conditional product inputs to exact verified UUIDs from foreground records; other UUIDs remain unresolved until detail/property/unit-group confirmation."
     source_ids: []
+  - rule_id: v_foreground_emission_responsibility
+    applies_to: "Actual operated nodes and linked services"
+    rule: "Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Species- and grade-specific fine-hair foreground data package, not a PCR release claim."
   downstream_use: "Secondary/background dataset for later textile chains and flow/process/lifecyclemodel projections after UUID resolution."
@@ -775,9 +795,13 @@ data_sources:
     type: "handbook"
     reference: "[FAO, Harvesting of textile animal fibres, chapter 5](https://www.fao.org/4/v9384e/v9384e10.htm)"
     used_for: "Sorting, first preparation, grade states and downstream textile-processing distinction."
+  - id: "fao-agricultural-energy"
+    type: "official_guidance"
+    reference: "FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm"
+    used_for: "conditional concrete identities and method context; does not establish site use or quantities"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:4d252f80a7dca7c91e2929b5250adc2dd8d3b5efb0849cf8187cd8acef7f8778"
+  source_sha256: "sha256:33c4c7bda6bad1712ed9986100b27f2be4f59eac89c84a43dd95a3db52b46e7b"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6893"
@@ -828,18 +852,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_31189"
+    - unit_id: "normative_32683"
       family: "allocation"
       span:
         start:
-          offset: 31189
-          line: 551
+          offset: 32683
+          line: 561
           column: 1
         end:
-          offset: 32665
-          line: 560
+          offset: 34547
+          line: 572
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_outputs | fibre and other animal products | Subdivide animal service by actual species, animal, phase and independently sold outputs: fine hair, coarse/guard hair if marketed, milk, offspring or meat only when actually produced. Never invent slaughter co-product for fibre-only route. Prefer measured causal service allocation; if inseparable, disclose justified physical or economic allocation, price period and sensitivity. Rejects are not automatically co-products. | fao-animal-fibre-harvesting |\n| a_grades | accepted and other sold grades | Split grade-specific operations where recorded. For jointly graded saleable outputs assign shared burden by causal use if measured, otherwise disclose allocation and uncertainty. One lot has one output handover. | fao-animal-fibre-processing |\n| a_period | repeat harvests and animal phases | Carry husbandry inputs, animal replacement and stock changes through actual periods; attribute one service to relevant fibre events and other actual outputs once, never using universal animal lifetime or fibre yield. | fao-animal-fibre-harvesting |\n| a_shared | shears, combs, cleaning, graders and storage | Register each shared asset or utility meter, its harvest/condition/grade/present consumers and service periods; apportion by measured hours, throughput or justified proxy once. | fao-animal-fibre-harvesting |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| a_outputs | fibre and other animal products | Subdivide animal service by actual species, animal, phase and independently sold outputs: fine hair, coarse/guard hair if marketed, milk, offspring or meat only when actually produced. Never invent slaughter co-product for fibre-only route. Prefer measured causal service allocation; if inseparable, disclose justified physical or economic allocation, price period and sensitivity. Rejects are not automatically co-products. | fao-animal-fibre-harvesting |\n| a_grades | accepted and other sold grades | Split grade-specific operations where recorded. For jointly graded saleable outputs assign shared burden by causal use if measured, otherwise disclose allocation and uncertainty. One lot has one output handover. | fao-animal-fibre-processing |\n| a_period | repeat harvests and animal phases | Carry husbandry inputs, animal replacement and stock changes through actual periods; attribute one service to relevant fibre events and other actual outputs once, never using universal animal lifetime or fibre yield. | fao-animal-fibre-harvesting |\n| a_shared | shears, combs, cleaning, graders and storage | Register each shared asset or utility meter, its harvest/condition/grade/present consumers and service periods; apportion by measured hours, throughput or justified proxy once. | fao-animal-fibre-harvesting |\n\nConcrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -856,12 +880,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 31189
-              line: 551
+              offset: 32683
+              line: 561
               column: 1
             end:
-              offset: 31229
-              line: 551
+              offset: 32723
+              line: 561
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -876,18 +900,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_39245"
+    - unit_id: "normative_41127"
       family: "validation"
       span:
         start:
-          offset: 39245
-          line: 591
+          offset: 41127
+          line: 603
           column: 1
         end:
-          offset: 40433
-          line: 601
+          offset: 42916
+          line: 614
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_identity | reference/output | Reject attached pelt, ordinary wool, coarse-only hair, textile-carded/combed fibre or species/grade/gate-free mass as reference; animal combing at harvest remains eligible. | fao-animal-fibre-harvesting;fao-animal-fibre-processing |\n| v_balance | material nodes | Check lot continuity, net mass, sampled moisture and accepted/downgraded/waste destinations; one lot has one handover. | fao-animal-fibre-processing |\n| v_allocation | animal periods/shared services | Check actual animal output set, period attribution and shared-asset consumers; reject missing upstream burden and duplicated service. | fao-animal-fibre-harvesting |\n| v_route | optional condition | Require operation evidence for washing, dehairing or drying and class confirmation for sold state; reject default yield or obligatory processing across species. | fao-animal-fibre-processing |\n| v_binding | generated exchanges | Resolve conditional product inputs to exact verified UUIDs from foreground records; other UUIDs remain unresolved until detail/property/unit-group confirmation. | |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| v_identity | reference/output | Reject attached pelt, ordinary wool, coarse-only hair, textile-carded/combed fibre or species/grade/gate-free mass as reference; animal combing at harvest remains eligible. | fao-animal-fibre-harvesting;fao-animal-fibre-processing |\n| v_balance | material nodes | Check lot continuity, net mass, sampled moisture and accepted/downgraded/waste destinations; one lot has one handover. | fao-animal-fibre-processing |\n| v_allocation | animal periods/shared services | Check actual animal output set, period attribution and shared-asset consumers; reject missing upstream burden and duplicated service. | fao-animal-fibre-harvesting |\n| v_route | optional condition | Require operation evidence for washing, dehairing or drying and class confirmation for sold state; reject default yield or obligatory processing across species. | fao-animal-fibre-processing |\n| v_binding | generated exchanges | Resolve conditional product inputs to exact verified UUIDs from foreground records; other UUIDs remain unresolved until detail/property/unit-group confirmation. | |\n| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -904,12 +928,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 39245
-              line: 591
+              offset: 41127
+              line: 603
               column: 1
             end:
-              offset: 39267
-              line: 591
+              offset: 41149
+              line: 603
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -980,120 +1004,146 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "a_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_31189"
+      unit_id: "normative_32683"
       source_span:
         start:
-          offset: 31302
-          line: 555
+          offset: 32796
+          line: 565
           column: 1
         end:
-          offset: 31806
-          line: 555
+          offset: 33300
+          line: 565
           column: 505
     - pointer: "/allocation_rules/1"
       rule_id: "a_grades"
       identity_kind: "explicit"
-      unit_id: "normative_31189"
+      unit_id: "normative_32683"
       source_span:
         start:
-          offset: 31807
-          line: 556
+          offset: 33301
+          line: 566
           column: 1
         end:
-          offset: 32096
-          line: 556
+          offset: 33590
+          line: 566
           column: 290
     - pointer: "/allocation_rules/2"
       rule_id: "a_period"
       identity_kind: "explicit"
-      unit_id: "normative_31189"
+      unit_id: "normative_32683"
       source_span:
         start:
-          offset: 32097
-          line: 557
+          offset: 33591
+          line: 567
           column: 1
         end:
-          offset: 32394
-          line: 557
+          offset: 33888
+          line: 567
           column: 298
     - pointer: "/allocation_rules/3"
       rule_id: "a_shared"
       identity_kind: "explicit"
-      unit_id: "normative_31189"
+      unit_id: "normative_32683"
       source_span:
         start:
-          offset: 32395
-          line: 558
+          offset: 33889
+          line: 568
           column: 1
         end:
-          offset: 32663
-          line: 558
+          offset: 34157
+          line: 568
           column: 269
+    - pointer: "/allocation_rules/4"
+      rule_id: "allocation_rule_5"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_32683"
+      source_span:
+        start:
+          offset: 34159
+          line: 570
+          column: 1
+        end:
+          offset: 34545
+          line: 570
+          column: 387
     - pointer: "/validation_rules/0"
       rule_id: "v_identity"
       identity_kind: "explicit"
-      unit_id: "normative_39245"
+      unit_id: "normative_41127"
       source_span:
         start:
-          offset: 39340
-          line: 595
+          offset: 41222
+          line: 607
           column: 1
         end:
-          offset: 39606
-          line: 595
+          offset: 41488
+          line: 607
           column: 267
     - pointer: "/validation_rules/1"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_39245"
+      unit_id: "normative_41127"
       source_span:
         start:
-          offset: 39607
-          line: 596
+          offset: 41489
+          line: 608
           column: 1
         end:
-          offset: 39788
-          line: 596
+          offset: 41670
+          line: 608
           column: 182
     - pointer: "/validation_rules/2"
       rule_id: "v_allocation"
       identity_kind: "explicit"
-      unit_id: "normative_39245"
+      unit_id: "normative_41127"
       source_span:
         start:
-          offset: 39789
-          line: 597
+          offset: 41671
+          line: 609
           column: 1
         end:
-          offset: 40004
-          line: 597
+          offset: 41886
+          line: 609
           column: 216
     - pointer: "/validation_rules/3"
       rule_id: "v_route"
       identity_kind: "explicit"
-      unit_id: "normative_39245"
+      unit_id: "normative_41127"
       source_span:
         start:
-          offset: 40005
-          line: 598
+          offset: 41887
+          line: 610
           column: 1
         end:
-          offset: 40230
-          line: 598
+          offset: 42112
+          line: 610
           column: 226
     - pointer: "/validation_rules/4"
       rule_id: "v_binding"
       identity_kind: "explicit"
-      unit_id: "normative_39245"
+      unit_id: "normative_41127"
       source_span:
         start:
-          offset: 40231
-          line: 599
+          offset: 42113
+          line: 611
           column: 1
         end:
-          offset: 40431
-          line: 599
+          offset: 42313
+          line: 611
           column: 201
+    - pointer: "/validation_rules/5"
+      rule_id: "v_foreground_emission_responsibility"
+      identity_kind: "explicit"
+      unit_id: "normative_41127"
+      source_span:
+        start:
+          offset: 42314
+          line: 612
+          column: 1
+        end:
+          offset: 42914
+          line: 612
+          column: 601
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -1121,27 +1171,27 @@ normative_context:
           column: 175
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_31189"
+      unit_id: "normative_32683"
       source_span:
         start:
-          offset: 31189
-          line: 551
+          offset: 32683
+          line: 561
           column: 1
         end:
-          offset: 31229
-          line: 551
+          offset: 32723
+          line: 561
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_39245"
+      unit_id: "normative_41127"
       source_span:
         start:
-          offset: 39245
-          line: 591
+          offset: 41127
+          line: 603
           column: 1
         end:
-          offset: 39267
-          line: 591
+          offset: 41149
+          line: 603
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1150,5 +1200,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:4d252f80a7dca7c91e2929b5250adc2dd8d3b5efb0849cf8187cd8acef7f8778"
-  generated_content_sha256: "sha256:6792dbd8ccdfc38616b67a107e0b26ca01958a38914442dbe1a5c5349ec58f5d"
+    sha256: "sha256:33c4c7bda6bad1712ed9986100b27f2be4f59eac89c84a43dd95a3db52b46e7b"
+  generated_content_sha256: "sha256:071b4e8b2da204cf96f2e9dcf748a987b251f192b147b56d2cee285ed99b3a5f"

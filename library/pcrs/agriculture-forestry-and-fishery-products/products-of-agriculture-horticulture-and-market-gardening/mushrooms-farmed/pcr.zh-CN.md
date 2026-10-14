@@ -46,7 +46,6 @@ sync_with: pcr.en-US.md
 | Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | 生产地理位置；蘑菇物种或物种组；相关时的菌株或品种；基质或段木路线；基质配方和含水基准；菌种来源和批次；调理、巴氏处理或灭菌方法；接种日期；培养和出菇气候制度；覆土或覆盖材料使用；生产周期和潮次日期；合格及降级产出；成熟度、尺寸、修整、洁净度和等级；清洗和冷却状态；包装状态；废菌糠和废弃物去向；声明门 |
-| 绑定模式 | `fixed` |
 
 构建前景数据包时，所有 `Required qualifiers` 必须在元数据、过程注释、参考流注释、产品描述或等效字段中声明。其他未映射的产品和过程流身份仍须在最终发布 TIDAS 过程数据集前完成前景绑定。
 
@@ -122,7 +121,7 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_substrate_batch_records`
-- 范围：湿基原料暂定筛查
+- 数量范围：湿基原料暂定筛查
   - 范围角色：默认估计（`default_estimate`）
   - 下限：1,500
   - 上限：12,000
@@ -147,8 +146,15 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_substrate_batch_records`
-- 范围：基质用水 QA 筛查；下限：0.1；上限：8；单位：每 1,000 kg 合格新鲜蘑菇 m3；依据：待实测平衡确认的批次润湿和调理用水；范围角色：QA guardrail（`qa_guardrail`）；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`fao-make-money-growing-mushrooms-2010`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0.1
+  - 上限：8
+  - 单位：m3 /1,000 kg 合格新鲜蘑菇
+  - 基准：批次润湿和调理用水，须以实测水平衡确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：基质调理用电（`substrate_conditioning_electricity`）
 
@@ -165,8 +171,15 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_substrate_energy_records`
-- 范围：调理用电 QA 筛查；下限：5；上限：500；单位：每 1,000 kg 合格新鲜蘑菇 kWh；依据：待计量记录确认的混合、泵送和电调理；范围角色：QA guardrail（`qa_guardrail`）；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`robinson-2018-mushroom-lca`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：5
+  - 上限：500
+  - 单位：kWh /1,000 kg 合格新鲜蘑菇
+  - 基准：混合、泵送和电力调理，须以计量记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：基质调理燃料或热量（`substrate_conditioning_fuel`）
 
@@ -183,33 +196,110 @@ sync_with: pcr.en-US.md
 - 基准类型：燃料清单（`fuel_inventory`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_substrate_energy_records`
-- 范围：调理燃料 QA 筛查；下限：0；上限：3,000；单位：每 1,000 kg 合格新鲜蘑菇 MJ；依据：待记录确认的蒸汽、热水或直接加热调理；范围角色：QA guardrail（`qa_guardrail`）；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`robinson-2018-mushroom-lca`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：3,000
+  - 单位：MJ /1,000 kg 合格新鲜蘑菇
+  - 基准：蒸汽、热水或直接加热调理，须以记录确认
+  - 基准类型：fuel_inventory（`fuel_inventory`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
-###### 农业养分与肥料投入（`substrate_preparation_and_conditioning_agricultural_nutrient_inputs`）
+###### 尿素肥料（`substrate_preparation_and_conditioning_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**substrate_preparation_and_conditioning_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：接收该投入的批次每 1,000 kg 合格新鲜蘑菇.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_nutrient_amendment_records`
-- 来源：`fao-make-money-growing-mushrooms-2010`
-- 数量范围：Conditional amendment screen
-  - 范围角色：Default estimate (`default_estimate`)
-  - 下限：0
-  - 上限：500
-  - 单位：kg product per 1,000 kg accepted fresh mushrooms
-  - 基准：optional product outside the substrate recipe pending actual route records
-  - 基准类型：Process output (`process_output`)
-  - 证据类型：Reasoned estimate (`reasoned_estimate`)
+- 来源：`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`substrate_preparation_and_conditioning_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`substrate_preparation_and_conditioning_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`substrate_preparation_and_conditioning_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`substrate_preparation_and_conditioning_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`substrate_preparation_and_conditioning_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_nutrient_amendment_records` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_nutrient_amendment_records`
+- 来源：`fao-organic-nutrients`
 
 ###### 流：基质袋、块、盘或支撑材料（`substrate_container_material_input`）
 
@@ -226,6 +316,14 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_container_material_records`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：100
+  - 单位：kg 材料 /1,000 kg 合格新鲜蘑菇
+  - 基准：一次性或可重复使用支撑物，须以质量与使用周期记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 废物流
 
@@ -247,6 +345,14 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_substrate_batch_records`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1,500
+  - 上限：12,000
+  - 单位：kg 调理基质 /1,000 kg 合格新鲜蘑菇
+  - 基准：合格调理批次与最终新鲜产出之间的关系
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 废物流
 
@@ -258,15 +364,22 @@ sync_with: pcr.en-US.md
 - 选定流：基质制备残余物＼
 - 流属性/单位：质量 / kg 湿基及可得时干物质
 - 数量规则：按批次称量或由质量平衡计算，标记废物状态和接收方。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_substrate_batch_records`
-
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：20
+  - 单位：占记录原料质量的百分比
+  - 基准：批次层面的基质对账
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 基本流
 
@@ -277,7 +390,7 @@ sync_with: pcr.en-US.md
 - 选定流：环境空气中的氨＼
 - 流属性/单位：质量 / kg NH3
 - 数量规则：根据批次气体平衡或已声明因子计算，避免与通风或燃料路径重复计量。
-- 数值来源模式：从采集计算（`calculated_from_collection`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：物质特定（`substance_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
@@ -304,7 +417,7 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输入（`process_input`）
+- 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_inoculation_records`
 
@@ -320,11 +433,18 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输入（`process_input`）
+- 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_inoculation_records`
-- 范围：接种物暂定筛查；范围角色：默认估计（`default_estimate`）；下限：1；上限：250；单位：每 1,000 kg 合格新鲜蘑菇 kg；依据：待菌种形式、路线和批次记录确认；基准类型：过程输出（`process_output`）；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`fao-make-money-growing-mushrooms-2010`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0.5
+  - 上限：25
+  - 单位：占调理基质质量或路线声明基准的百分比
+  - 基准：物种及路线特定的菌种添加量，须以记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：培养用水或加湿供水（`incubation_water_input`）
 
@@ -341,7 +461,7 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_incubation_climate_records`
-- 范围：下限：0；上限：8；单位：每 1,000 kg 合格新鲜蘑菇 m3；范围角色：QA guardrail（`qa_guardrail`）；依据：待房间记录和水量平衡确认；证据类型：推理估计（`reasoned_estimate`）
+- 数量范围：下限：0；上限：8；单位：每 1,000 kg 合格新鲜蘑菇 m3；范围角色：QA guardrail（`qa_guardrail`）；依据：待房间记录和水量平衡确认；证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：培养用电（`incubation_electricity`）
 
@@ -358,8 +478,15 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_incubation_climate_records`
-- 范围：下限：10；上限：1,500；单位：每 1,000 kg 合格新鲜蘑菇 kWh；范围角色：QA guardrail（`qa_guardrail`）；依据：待房间计量和周期记录确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`robinson-2018-mushroom-lca`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：10
+  - 上限：600
+  - 单位：kWh /1,000 kg 合格新鲜蘑菇
+  - 基准：培养室公用工程，须以计量记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：培养用燃料或热量（`incubation_fuel`）
 
@@ -376,7 +503,7 @@ sync_with: pcr.en-US.md
 - 基准类型：燃料清单（`fuel_inventory`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_incubation_climate_records`
-- 范围：下限：0；上限：2,000；单位：每 1,000 kg 合格新鲜蘑菇 MJ；范围角色：QA guardrail（`qa_guardrail`）；依据：待房间燃料记录确认；证据类型：推理估计（`reasoned_estimate`）
+- 数量范围：下限：0；上限：2,000；单位：每 1,000 kg 合格新鲜蘑菇 MJ；范围角色：QA guardrail（`qa_guardrail`）；依据：待房间燃料记录确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`robinson-2018-mushroom-lca`
 
 ##### 废物流
@@ -410,15 +537,22 @@ sync_with: pcr.en-US.md
 - 选定流：污染培养批次废物＼
 - 流属性/单位：质量 / kg 湿基
 - 数量规则：按批次称量并连接处理或接收记录。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_incubation_climate_records`
-
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：25
+  - 单位：占接种基质或原木投入的百分比
+  - 基准：生产周期与批次对账
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 基本流
 
@@ -429,7 +563,7 @@ sync_with: pcr.en-US.md
 - 选定流：环境空气中的二氧化碳＼
 - 流属性/单位：质量 / kg CO2
 - 数量规则：按房间通风、气体平衡或已声明因子计算，并执行重复核算检查。
-- 数值来源模式：从采集计算（`calculated_from_collection`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：物质特定（`substance_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
@@ -456,7 +590,7 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输入（`process_input`）
+- 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fruiting_climate_records`
 
@@ -472,10 +606,18 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输入（`process_input`）
+- 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fruiting_climate_records`
 - 来源：`fao-make-money-growing-mushrooms-2010`；`robinson-2018-mushroom-lca`
+- 数量范围：默认估计
+  - 范围角色：默认估计（`default_estimate`）
+  - 下限：0
+  - 上限：5,000
+  - 单位：kg 湿覆土或覆盖物 /1,000 kg 合格新鲜蘑菇
+  - 基准：路线特定的覆土，须以配方和施用记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：出菇用水和加湿供水（`fruiting_water_input`）
 
@@ -492,8 +634,15 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fruiting_climate_records`
-- 范围：下限：0.2；上限：15；单位：每 1,000 kg 合格新鲜蘑菇 m3；范围角色：QA guardrail（`qa_guardrail`）；依据：待水表和房间平衡确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`fao-make-money-growing-mushrooms-2010`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0.1
+  - 上限：15
+  - 单位：m3 /1,000 kg 合格新鲜蘑菇
+  - 基准：加湿、喷雾和培养基用水，须以记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：出菇气候控制用电（`fruiting_electricity`）
 
@@ -510,8 +659,15 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fruiting_climate_records`
-- 范围：下限：20；上限：3,000；单位：每 1,000 kg 合格新鲜蘑菇 kWh；范围角色：QA guardrail（`qa_guardrail`）；依据：待房间电表和潮次记录确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`robinson-2018-mushroom-lca`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：50
+  - 上限：2,000
+  - 单位：kWh /1,000 kg 合格新鲜蘑菇
+  - 基准：室内环境控制，须以计量记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：出菇气候控制燃料或热量（`fruiting_fuel`）
 
@@ -528,7 +684,7 @@ sync_with: pcr.en-US.md
 - 基准类型：燃料清单（`fuel_inventory`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fruiting_climate_records`
-- 范围：下限：0；上限：4,000；单位：每 1,000 kg 合格新鲜蘑菇 MJ；范围角色：QA guardrail（`qa_guardrail`）；依据：待燃料和供热记录确认；证据类型：推理估计（`reasoned_estimate`）
+- 数量范围：下限：0；上限：4,000；单位：每 1,000 kg 合格新鲜蘑菇 MJ；范围角色：QA guardrail（`qa_guardrail`）；依据：待燃料和供热记录确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`robinson-2018-mushroom-lca`
 
 ###### 流：清洁或卫生产品（`cleaning_sanitation_product_input`）
@@ -543,7 +699,7 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输入（`process_input`）
+- 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fruiting_climate_records`
 
@@ -559,7 +715,7 @@ sync_with: pcr.en-US.md
 - 选定流：出菇设施土地或面积占用
 - 流属性/单位：面积时间 / m2*a
 - 数量规则：以实测面积和周期占用天数计算面积时间，并按共享排程分配。
-- 数值来源模式：从采集计算（`calculated_from_collection`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：场址特定（`site_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
@@ -567,7 +723,14 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：从采集计算（`calculated_from_collection`）
 - 采集协议：`cp_facility_area_records`
-
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：5
+  - 上限：500
+  - 单位：m2*a /1,000 kg 合格新鲜蘑菇
+  - 基准：归属于该生产周期的种植及服务占地
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 基本流
 
@@ -587,11 +750,18 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 声明门合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_cropping_records`
 - 来源：`robinson-2018-mushroom-lca`；`usda-ams-mushroom-grade-standard`
-
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：1,000
+  - 上限：20,000
+  - 单位：kg 新鲜作物/1,000 kg 合格交接产出
+  - 基准：分级和损失前的收获作物
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 废物流
 
@@ -605,15 +775,22 @@ sync_with: pcr.en-US.md
 - 选定流：出菇损失或污染材料＼
 - 流属性/单位：质量 / kg fresh 或湿基
 - 数量规则：按潮次或周期末记录，不把无接收方的材料作为副产品。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_cropping_records`
-
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：30
+  - 单位：占收获及拒收新鲜作物质量的百分比
+  - 基准：出菇潮次与生产周期对账
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：废菌糠（`spent_mushroom_substrate_output`）
 
@@ -627,11 +804,18 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_cropping_records`
 - 来源：`robinson-2018-mushroom-lca`
-
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：500
+  - 上限：12,000
+  - 单位：kg 湿废基质 /1,000 kg 合格新鲜蘑菇
+  - 基准：栽培结束后的最终培养基
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 基本流
 
@@ -642,7 +826,7 @@ sync_with: pcr.en-US.md
 - 选定流：环境空气中的二氧化碳＼
 - 流属性/单位：质量 / kg CO2
 - 数量规则：根据房间通风、气体平衡或已声明因子计算，执行重复核算检查。
-- 数值来源模式：从采集计算（`calculated_from_collection`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：物质特定（`substance_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
@@ -664,7 +848,7 @@ sync_with: pcr.en-US.md
 - 选定流：采收箱或托盘包装功能
 - 流属性/单位：包装服务质量 / kg 或 item
 - 数量规则：按实际装载服务和记录周转次数分摊箱或托盘质量，考虑返还和损失。
-- 数值来源模式：从采集计算（`calculated_from_collection`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 声明门合格新鲜蘑菇.
 
@@ -672,7 +856,7 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：从采集计算（`calculated_from_collection`）
 - 采集协议：`cp_packaging_records`
-- 范围：下限：0；上限：150；单位：每 1,000 kg 合格新鲜蘑菇包装 kg；范围角色：QA guardrail（`qa_guardrail`）；依据：待包装清单和周转记录确认；证据类型：推理估计（`reasoned_estimate`）
+- 数量范围：下限：0；上限：150；单位：每 1,000 kg 合格新鲜蘑菇包装 kg；范围角色：QA guardrail（`qa_guardrail`）；依据：待包装清单和周转记录确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`iso-14044-2006`
 
 ###### 流：硬质初级包装（`rigid_primary_packaging_input`）
@@ -722,8 +906,15 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_wash_water_records`
-- 范围：下限：0；上限：10；单位：每 1,000 kg 合格新鲜蘑菇 m3；范围角色：QA guardrail（`qa_guardrail`）；依据：待水表和排水记录确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`fao-make-money-growing-mushrooms-2010`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：5
+  - 单位：m3 /1,000 kg 合格新鲜蘑菇
+  - 基准：按实际发生计入的产品清洗及设备清洁
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：采收和冷却用电（`harvest_cooling_electricity`）
 
@@ -740,8 +931,15 @@ sync_with: pcr.en-US.md
 - 基准类型：过程输出（`process_output`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest_grade_records`
-- 范围：下限：0；上限：500；单位：每 1,000 kg 合格新鲜蘑菇 kWh；范围角色：QA guardrail（`qa_guardrail`）；依据：待冷却和包装电表确认；证据类型：推理估计（`reasoned_estimate`）
 - 来源：`robinson-2018-mushroom-lca`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：500
+  - 单位：kWh /1,000 kg 合格新鲜蘑菇
+  - 基准：分级、冷却和包装设备，须以计量记录确认
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 废物流
 
@@ -784,10 +982,18 @@ sync_with: pcr.en-US.md
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest_grade_records`
 - 来源：`usda-ams-mushroom-grade-standard`；`iso-14044-2006`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：30
+  - 单位：占进入分级蘑菇质量的百分比
+  - 基准：等级与去向对账
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 废物流
 
@@ -798,15 +1004,23 @@ sync_with: pcr.en-US.md
 - 选定流：蘑菇分级拒收废物＼
 - 流属性/单位：质量 / kg fresh
 - 数量规则：用分级前后质量平衡核对，并记录去向。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_harvest_grade_records`
 - 来源：`usda-ams-mushroom-grade-standard`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：30
+  - 单位：占进入分级蘑菇质量的百分比
+  - 基准：分级前投入与合格产出的对账
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ###### 流：废弃包装材料（`packaging_waste_output`）
 
@@ -815,13 +1029,13 @@ sync_with: pcr.en-US.md
 - 选定流：包装废物＼
 - 流属性/单位：质量 / kg
 - 数量规则：以领用、装填、返还和损失记录核对包装废物。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_packaging_records`
 
 ###### 流：采收和分级废水（`harvest_wastewater_output`）
@@ -831,14 +1045,22 @@ sync_with: pcr.en-US.md
 - 选定流：采收分级废水＼
 - 流属性/单位：体积 / m3
 - 数量规则：用供水、循环水、产品带出和排放记录进行平衡。
-- 数值来源模式：前景记录（`foreground_record`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：场址特定（`site_specific`）
 原始活动或阶段基准：每 1,000 kg 合格新鲜蘑菇.
 
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
+- 证据类型：根据采集计算（`calculated_from_collection`）
 - 采集协议：`cp_wash_water_records`
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：5
+  - 单位：m3 /1,000 kg 合格新鲜蘑菇
+  - 基准：清洗及清洁供水扣除滞留或循环回用量
+  - 基准类型：过程输出（`process_output`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 基本流
 
@@ -855,7 +1077,7 @@ sync_with: pcr.en-US.md
 - 选定流：至声明门的公路货运服务
 - 流属性/单位：运输服务 / t*km
 - 数量规则：运输吨数乘路线 km，并核对装载、温控、返程和收货损失。
-- 数值来源模式：从采集计算（`calculated_from_collection`）
+- 数值来源模式：计算值（`calculated_value`）
 - 特异性：路线特定（`route_specific`）
 原始活动或阶段基准：每 1,000 kg 声明门合格新鲜蘑菇.
 
@@ -863,8 +1085,14 @@ sync_with: pcr.en-US.md
 - 基准类型：运输服务（`transport_service`）
 - 证据类型：从采集计算（`calculated_from_collection`）
 - 采集协议：`cp_transport_records`
-- 范围：下限：0；上限：2,000；单位：每 1,000 kg 合格新鲜蘑菇 t*km；范围角色：QA guardrail（`qa_guardrail`）；依据：声明路线和运输质量；证据类型：推理估计（`reasoned_estimate`）
-
+- 数量范围：QA 校验
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：2,000
+  - 单位：t*km /1,000 kg 合格新鲜蘑菇
+  - 基准：声明的路线及运输质量
+  - 基准类型：transport_service（`transport_service`）
+  - 证据类型：推理估计（`reasoned_estimate`）
 
 ##### 废物流
 
@@ -908,7 +1136,7 @@ sync_with: pcr.en-US.md
 - 选定流：声明门的新鲜栽培蘑菇
 - 流属性 / 单位：质量 / kg
 - 数量规则：实际交接门的实测合格产品净质量，按参考数量归一化；不得汇总前序各阶段数量，不得计入其他路线或联产品。
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -934,7 +1162,7 @@ sync_with: pcr.en-US.md
 - 选定流：声明门的新鲜栽培蘑菇
 - 流属性 / 单位：质量 / kg
 - 数量规则：1000 kg
-- 数值模式：前景记录（`foreground_record`）
+- 数值来源模式：前景记录（`foreground_record`）
 - 特异性：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：过程输出（`process_output`）
@@ -966,6 +1194,8 @@ sync_with: pcr.en-US.md
 | `allocation_mushroom_and_spent_substrate` | 可销售蘑菇和废菌糠 | 可销售蘑菇作为参考产品。废菌糠作为废物，除非有记录的接收方将其有意转移为产品或副产品。可销售的次级产品必须声明物理或经济分配基准、敏感性和接收方证据。 | `robinson-2018-mushroom-lca`；`iso-14044-2006` |
 | `allocation_multiple_flushes` | 同一周期的连续潮次 | 将共享基质、培养和房间负荷归属于同一周期的所有潮次，并按合格产出汇总。 | `robinson-2018-mushroom-lca` |
 | `allocation_downgraded_mushrooms` | 降级蘑菇和分级拒收物 | 只有有记录的接收方和预期用途时，降级蘑菇才作为副产品。没有接收方或进入处置的材料保持为废物，不产生替代产品抵扣。 | `iso-14044-2006`；`usda-ams-mushroom-grade-standard` |
+
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
 
 ## 8. 前景数据采集、计算和质量规则
 
@@ -1010,7 +1240,7 @@ sync_with: pcr.en-US.md
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
-| `dq_identity_and_route` | 产品、物种、基质、菌种和门 | 识别物种或物种组、相关时菌株、路线、设施类型和门；在绑定前保留身份证据缺口缺口。 | `fao-make-money-growing-mushrooms-2010`；`usda-ams-mushroom-grade-standard` |
+| `dq_identity_and_route` | 产品、物种、基质、菌种和门 | 识别物种或物种组、相关时菌株、路线、设施类型和门；在绑定前保留身份证据缺口。 | `fao-make-money-growing-mushrooms-2010`；`usda-ams-mushroom-grade-standard` |
 | `dq_batch_traceability` | 全部批次和房间记录 | 将基质、菌种、房间、潮次、包装、拒收物、废菌糠和运输连接到共同周期标识。 | `robinson-2018-mushroom-lca` |
 | `dq_moisture_and_mass_basis` | 基质、覆土、作物和废菌糠 | 声明湿基或干基，对重要材料测量含水量，并保留方法和取样记录。 | `robinson-2018-mushroom-lca` |
 | `dq_metered_water_and_energy` | 水、电力、燃料和热量 | 优先使用专用表或原始记录；披露共享公用工程分配、电表状态和换算因子。 | `robinson-2018-mushroom-lca` |
@@ -1062,3 +1292,5 @@ sync_with: pcr.en-US.md
 | source_id | type | reference | used_for |
 | --- | --- | --- | --- |
 | `declared-handoff-measurement-definition` | `method_factor` | 本 PCR 第 3、6、8 节的净质量归一化定义：同一状态、同一交接门的实测净质量作为自身归一化分母，质量比为 1；交接计量不增加物理工序。 | 同阶段和交接计量恒等式；属于定义，不是实测产率、经验默认值或外部文献。 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

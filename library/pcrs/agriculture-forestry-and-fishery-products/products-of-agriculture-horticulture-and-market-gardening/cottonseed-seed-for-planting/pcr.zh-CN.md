@@ -43,7 +43,6 @@ sync_with: pcr.en-US.md
 | 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | 参考单位 | kg |
 | 必需限定信息 | 品种/种子级别；地理位置/季节；纯度和发芽率检测；水分；脱绒路线；种子处理状态；生产和调制场址；交接所有权 |
-| 绑定模式 | `fixed` |
 
 已核实的平台流指农场门的清洁种子级生产组合。前景数据包须说明农场与承包轧花/调制厂的空间差异，并计入交接前服务。本规则不预设通用纯度、发芽率或水分数值；应报告适用种子标准和实测批次结果。[来源：`usda-aphis-cotton-seed-2012`]
 
@@ -126,30 +125,100 @@ sync_with: pcr.en-US.md
   - 基准类型：作物周期（`crop_cycle`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 农业养分与肥料投入（`crop_management_agricultural_nutrient_inputs`）
+###### 尿素肥料（`crop_management_agricultural_nutrient_inputs_urea`）
 
-本过程使用的全部矿质肥料、有机肥料和含养分改良剂统一记录在此卡。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
+**crop_management_agricultural_nutrient_inputs 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
-- 选定流：农业养分与肥料供应
-- 流属性/单位：产品数量和养分含量 / 视情况采用 kg 产品、m3 产品、kg N、kg P2O5 和 kg K2O
-- 数量规则：每种实际产品仅采集一次数量并保留其组成；计算声明的 N、P 或 P2O5、K 或 K2O 数量，不重复计算复合或有机产品；生成前景数据时展开记录，并将每个输出的产品交换解析到一个经核实 UUID。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
+逐一采集每种肥料产品。保留每种实际产品的身份、数量、配方、养分组成、施用事件和分配关系；复合产品不得重复计数。
 原始活动或阶段基准：每 1 kg 合格播种用棉籽.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：尿素肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_field_inputs`
-- 来源：`usda-aphis-cotton-seed-2012`
-- 数量范围：暂定肥料产品 QA 筛选范围
-  - 范围角色：QA 筛查界限（`qa_guardrail`）
-  - 下限：0
-  - 上限：50000
-  - 单位：kg/ha
-  - 基准：每公顷分别记录的肥料和粪肥产品质量总和；仅用于筛查，不是默认值、强制限值或实测记录替代值
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-fertilizer-identities`
+
+###### 硫酸铵肥料（`crop_management_agricultural_nutrient_inputs_ammonium_sulfate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：硫酸铵肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_inputs`
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-fertilizer-identities`
+
+###### 重过磷酸钙肥料（`crop_management_agricultural_nutrient_inputs_triple_superphosphate`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：重过磷酸钙肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_inputs`
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-fertilizer-identities`
+
+###### 氯化钾肥料（`crop_management_agricultural_nutrient_inputs_potassium_chloride`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：氯化钾肥料
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_inputs`
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-fertilizer-identities`
+
+###### 作为肥料施用的牛粪（`crop_management_agricultural_nutrient_inputs_cattle_manure`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：作为肥料施用的牛粪
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_inputs`
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-organic-nutrients`
+
+###### 施入土壤的植物残体堆肥（`crop_management_agricultural_nutrient_inputs_plant_compost`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 按产品实物质量计一次，并保留含水率、N/P/K 配方及施用事件；养分量是计算属性，不得另计同一产品。未列出的复合肥和有机肥须按配方或原料单独建卡。
+
+- 选定流：施入土壤的植物残体堆肥
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_field_inputs` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_field_inputs`
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-organic-nutrients`
 
 ###### 植保产品（`field_crop_protection_products`）
 
@@ -267,30 +336,40 @@ sync_with: pcr.en-US.md
 #### 输入
 ##### 产品流
 
-###### 采收能耗（`harvest_energy`）
+###### 设备供电点的电力（`harvest_energy_electricity`）
+
+**harvest_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 按田块和采收事件记录实际摘棉或拔棉路线的燃料或电力。
-
-- 选定流：Harvest fuel or electricity
-- 流属性/单位：已声明流属性 / MJ
-- 数量规则：按田块和采收事件记录实际摘棉或拔棉路线的燃料或电力。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每 1 kg 合格播种用棉籽.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_harvest` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_harvest`
-- 来源：usda-aphis-cotton-seed-2012
-- 数量范围：临时 QA 宽区间；超界须核查，不能替代实测值
-  - 范围角色：QA 筛查界限（`qa_guardrail`）
-  - 下限：0
-  - 上限：10000
-  - 单位：MJ/ha
-  - 基准：按 measured harvest fuel and electricity converted to energy per harvested hectare 及所列单位作宽区间筛查；逐批使用实测与计算记录，超界须说明；该值不是默认值或合规限值
-  - 基准类型：作物周期（`crop_cycle`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`harvest_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_harvest` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_harvest`
+- 来源：`usda-aphis-cotton-seed-2012`；`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -384,30 +463,40 @@ sync_with: pcr.en-US.md
   - 基准类型：参考流（`reference_flow`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 轧花电力和燃料（`gin_energy`）
+###### 设备供电点的电力（`gin_energy_electricity`）
+
+**gin_energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 记录轧花厂实测能耗，并把共享计量时段归入已追踪的籽棉作业。
-
-- 选定流：Gin electricity or fuel
-- 流属性/单位：已声明流属性 / MJ
-- 数量规则：记录轧花厂实测能耗，并把共享计量时段归入已追踪的籽棉作业。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
 原始活动或阶段基准：每 1 kg 合格播种用棉籽.
 
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_shared_services` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
 - 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_shared_services`
-- 来源：usda-ars-ginning-2015
-- 数量范围：临时 QA 宽区间；超界须核查，不能替代实测值
-  - 范围角色：QA 筛查界限（`qa_guardrail`）
-  - 下限：0
-  - 上限：100
-  - 单位：MJ/kg gin intake
-  - 基准：按 fuel and electricity converted to energy per kilogram seed cotton entering gin 及所列单位作宽区间筛查；逐批使用实测与计算记录，超界须说明；该值不是默认值或合规限值
-  - 基准类型：过程产出（`process_output`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`usda-ars-ginning-2015`；`fao-agricultural-energy`
+
+###### 供应设备的柴油（`gin_energy_diesel`）
+
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：供应设备的柴油
+- 流属性 / 单位：质量 / kg
+- 数量规则：依 `cp_shared_services` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每声明的参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_shared_services`
+- 来源：`usda-ars-ginning-2015`；`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -1037,6 +1126,8 @@ sync_with: pcr.en-US.md
 
 干质量规则是本 PCR 对共同物料分离服务作出的归属决定，须明确披露，并非声称质量与经济功能等同。记录收货水分及换算基准。输出所有权或计量不完整时，将分配标为无法判定，不得把全部轧花负担归于种子。[来源：`usda-ars-ginning-2015`、`usda-ams-acid-delinting`]
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算与质量规则
 
 先按各采集协议保留原始场址、批次、周期及阶段数量与分母，并完成库存、损失、含水率和共产品归属核对；随后按实际归属的验收交付产品量归一化：归一化交换量 = 归属原始交换量 × 声明参考数量 / 同一边界和计量基准的验收产品量。多年生建植和共享作业先执行各自分摊规则，不得把内部转移数量设为最终参考数量。每声明的参考流指第 3 节的数量、单位和产品状态；数据包必须声明实际路线和门。
@@ -1114,3 +1205,6 @@ sync_with: pcr.en-US.md
 | `usda-ars-gin-stand` | official_guidance | https://www.ars.usda.gov/southeast-area/stoneville-ms/cotton-ginning-research/docs/overview-of-a-cotton-gin/page-7/ | 轧花时棉纤维与种子的实体分离。 |
 | `iso-14044-lci` | `standard` | https://www.iso.org/standard/38498.html | 生命周期清单定量参考与投入/产出核算框架；本文 0–1 物料份额及 1 kg 参考产出界限来自代数关系，并非 ISO 给出的经验率。 |
 | `usda-ars-cotton-yield-2004` | `literature` | https://www.ars.usda.gov/research/publications/publication/?seqNo115=138898 | 已发表田间研究籽棉产量的最小值与最大值；仅对应所研究地区、品种和年度，并非通用产量限值。 |
+| `fao-fertilizer-identities` | official_guidance | FAO Fertilizer Specifications, https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/plantnutrition/fertspecs/en/ | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-organic-nutrients` | official_guidance | FAO How to Make and Use Compost, https://www.fao.org/4/i2230e/i2230e.pdf | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

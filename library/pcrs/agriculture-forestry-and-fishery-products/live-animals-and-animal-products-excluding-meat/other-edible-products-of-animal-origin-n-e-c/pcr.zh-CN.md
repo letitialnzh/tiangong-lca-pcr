@@ -343,31 +343,26 @@ sync_with: pcr.en-US.md
   - 基准类型：过程输出（`process_output`）
   - 证据类型：推理估算（`reasoned_estimate`）
 
-###### 实际保藏能源（`energy`）
+###### 设备供电点的电力（`energy_electricity`）
+
+**energy 的采集范围与适用性。** 下列具体身份分别列卡，仅在原有过程范围内有实际使用或产生记录时启用；不是必用材料清单或默认配方。未发生须有依据，缺少记录不得记为零。其他实际材料必须另建具体身份卡，不能套用以下名称或 UUID。保留原有归属和边界，避免与包含这些投入的外包服务双计。
 
 计量真实冷却、干燥或其他合法稳定化所用能源载体。
-
 分母与范围要求：每 kg 对应过程产出
-
 原始数量及计算要求：按来源、批次和期间计量真实交换；跳过的条件节点不建模。 原始采集分母类型：process_output。
 
-- 选定流：实际能源载体（UUID 未解析）
-- 流属性/单位：Energy / MJ
-- 数量规则：依 inventory_reference_normalization 与 stage_throughput_linkage，使用已匹配原始记录计算可归属的最终数据包交换量。
-- 数值来源模式：计算值（`calculated_value`）
+用设备、供应商及同期计量记录确认身份、等级、状态和单位；UUID 尚未确认。 电力记录供应点；燃料保留品种、密度和热值口径；外购热量与本地燃料产热互斥核算，禁止把供热燃料再计一次。
+
+- 选定流：设备供电点的电力
+- 流属性 / 单位：能源 / kWh
+- 数量规则：依 `cp_stabilize` 采集本卡身份的原始数量，按原有归属规则计算每声明参考流的交换量。
+- 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
+- 归一化基准：每声明的参考流
 - 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
+- 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_stabilize`
-- 数量范围：暂定非负台账校验界限；非产率或配方
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：100000
-  - 单位：MJ/kg
-  - 基准：每 kg 对应过程产出
-  - 基准类型：过程输出（`process_output`）
-  - 证据类型：推理估算（`reasoned_estimate`）
+- 来源：`fao-agricultural-energy`
 
 ##### 废物流
 
@@ -661,6 +656,8 @@ sync_with: pcr.en-US.md
 | a_grade | 等级与残余 | 接受品和独立销售的降级品须有互斥质量及去向；不可食剔除物和附带残余不是额外可食产品。 | un-cpc-3 |
 | a_period | 阶段及共用服务 | 标记来源建立/生产/替换/终止期间；依观测服务时间或吞吐量将共用服务一次性分配给消费节点/批次并保留证据。 |  |
 
+具体身份卡不继承原集合卡的数量范围。实际数量由原始记录、库存/计量对账及声明参考流计算；在取得对应身份、单位、期间和边界一致的证据前，不提供默认量或数值筛查范围。缺少范围是质量披露项，并非零投入或完整性证明。
+
 ## 8. 前景数据采集、计算和质量规则
 
 ### 数据采集协议
@@ -701,6 +698,7 @@ sync_with: pcr.en-US.md
 | v_balance | 每批 | 核对实际节点状态、增减量、等级/剔除去向和净交付。 |  |
 | v_allocation | 期间/产出 | 排除漏记真实联产品、重复等级、自动零/全额负担及重复共用服务。 |  |
 | v_identity | 最终交换 | 核实已命名商品、来源、状态、门槛、方向/类型及属性/单位支持。 |  |
+| `v_foreground_emission_responsibility` | 实际运行节点及链接服务 | 适用时记录现场燃料燃烧及制冷剂泄漏的核算责任：须为量化前景排放，或明确覆盖它们的具名链接过程，不能仅凭燃料供应或电力生产投入视为已包含。特殊类群生物及残余物排放须依物种/路线证据评估，不套通用畜牧因子。标明尚未落实的路径，不宣称清单完整；记录有依据的不存在结论并防止上/下游重复核算。 | |
 
 ## 10. 发布数据集画像
 
@@ -720,3 +718,4 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- |
 | `un-cpc-3` | official_guidance | [联合国 CPC 3.0 说明](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | 残余类别及相邻排除项。 |
 | `eu-residual` | official_guidance | [欧盟动物源食品规则及残余商品示例](https://eur-lex.europa.eu/legal-content/EN/TXT/?qid=1744429744827&uri=CELEX%3A02021R0632-20220818) | 候选示例及食用核查，非通用 CPC 归类。 |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | 条件性具体身份和方法依据；不证明场址使用，也不设定用量 |

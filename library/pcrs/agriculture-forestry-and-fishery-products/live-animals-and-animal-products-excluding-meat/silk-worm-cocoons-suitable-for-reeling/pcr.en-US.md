@@ -128,15 +128,15 @@ Raw quantity and calculation requirements: Record purchased count, stage, measur
 
 ###### Host leaves and supplemental feed (`host_leaves`)
 
-Record consumed purchased leaves or leaves harvested from an attributed on-site crop; do not assign zero burden to on-site leaves.
+Record purchased or attributed on-site leaves supplied, retaining consumed leaves and leftovers separately; do not assign zero burden to on-site leaves.
 
 Denominator and scope requirements：per kg spun cocoons from identified cohort
 
-Raw quantity and calculation requirements: Weighed issue less measured leftovers and stock change by cohort and host source. Original collection denominator kind: process_output.
+Raw quantity and calculation requirements: Use separate feed-supply, intake and loss ledgers under calc_feed_supply_and_intake. The quantity carrying feed-production burden includes in-boundary refusals, spoilage and uneaten feed; it is not reduced to animal intake. Retain source, species/cohort, phase and original mass/moisture basis. Calculate the final contribution with inventory_reference_normalization and stage_throughput_linkage exactly once. Original collection denominator kind: process_output.
 
 - Selected flow: Species-suitable host leaves and evidenced supplemental feed (UUID unresolved)
 - Flow property / unit: Mass / kg
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
+- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using reconciled feed-supply records that retain in-boundary losses and their production burden.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per reference flow
@@ -178,31 +178,56 @@ Raw quantity and calculation requirements: Metered or logged water, net of separ
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Rearing energy supply (`rear_energy`)
+###### Electricity at the equipment supply point (`rear_energy_electricity`)
+
+**Collection scope and applicability for rear_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Expand actual electricity, heat and fuel into concrete exchanges from records; the set is not a single energy commodity.
-
 Denominator and scope requirements：per kg spun cocoons from identified cohort
-
 Raw quantity and calculation requirements: Metered energy by carrier, cohort, room and period. Original collection denominator kind: process_output.
 
-- Selected flow: Site-specific energy carrier (UUID unresolved)
-- Flow property / unit: Energy / MJ
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_utilities` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_utilities`
-- Range: Provisional completeness screen, not an efficiency factor
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100000
-  - Unit: MJ/kg
-  - Basis: per kg spun cocoons; investigate outliers
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`rear_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_utilities` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_utilities`
+- Sources: `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`rear_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_utilities` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_utilities`
+- Sources: `fao-agricultural-energy`
 
 ###### Tray and mountage service (`tray_service`)
 
@@ -543,31 +568,56 @@ Raw quantity and calculation requirements: Weigh fresh inlet, sample moisture an
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Collected record (`collected_record`)
 
-###### Stifling and drying energy supply (`dry_energy`)
+###### Electricity at the equipment supply point (`dry_energy_electricity`)
+
+**Collection scope and applicability for dry_energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Record actual fuel, heat or electricity by carrier; do not infer energy from fresh-to-dry mass difference.
-
 Denominator and scope requirements：per kg fresh cocoon mass received by drying
-
 Raw quantity and calculation requirements: Meter or allocate carrier-specific energy to batch and period. Original collection denominator kind: process_output.
 
-- Selected flow: Actual drying energy carrier (UUID unresolved)
-- Flow property / unit: Energy / MJ
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_utilities` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_utilities`
-- Range: Provisional completeness screen, not a dryer factor
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100000
-  - Unit: MJ/kg
-  - Basis: per kg fresh cocoon mass received by drying; investigate outliers
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
+
+###### Diesel fuel supplied to equipment (`dry_energy_diesel`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Diesel fuel supplied to equipment
+- Flow property / unit: Mass / kg
+- Amount rule: Collect raw quantities for this identity under `cp_utilities` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_utilities`
+- Sources: `fao-agricultural-energy`
+
+###### Purchased heat at the process inlet (`dry_energy_heat`)
+
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Purchased heat at the process inlet
+- Flow property / unit: Energy / MJ
+- Amount rule: Collect raw quantities for this identity under `cp_utilities` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per declared reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_utilities`
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -711,7 +761,6 @@ Producer-handover linkage: Only when selected as the actual terminal source for 
 
 - Selected flow: Silk-worm cocoons suitable for reeling `2e62f60f-611b-4e07-bc8a-958260a9cba1`
 - Flow property / unit: Mass / kg
-- Binding: Fixed (`fixed`)
 - Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
 - Value mode: Calculated value (`calculated_value`)
 - Specificity: Site-specific (`site_specific`)
@@ -846,13 +895,15 @@ Required product-instance qualifiers: species/strain; host-leaf source; cohort; 
 | a_period | cohorts and host-crop phases | Attribute leaf inputs, rearing operations and cocoon outputs to actual cohort and reporting period; carry opening/closing stock and unfinished cohorts across calendar cut-offs. | fao-cocoon-quality |
 | a_shared | shared infrastructure | Record host plots, rearing rooms, trays, mountages, graders and dryers with actual consuming nodes, cohorts and service periods; allocate manufacture, repair and utilities by observed use or justified disclosed proxy only once. | fao-cocoon-quality;fao-cocoon-drying |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_cohort_inputs` | rear | seed and host feed | purchase and issue logs | cohort; species; larval stage; seed count; host species; leaf mass; stock change; supplier | count and weigh issue; Raw aggregation requirements: sum net inputs by cohort. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | item;kg | each issue | full cohort | each rearer | per reference flow | receipt and scale ticket; traceable numerator, accepted reference-output denominator and normalization worksheet |
+| `cp_cohort_inputs` | rear | seed and host feed | purchase and issue logs | cohort; species; larval stage; seed count; host species; leaf mass; stock change; supplier | count and weigh issue; Raw aggregation requirements: Use calc_feed_supply_and_intake to distinguish supplied feed carrying production burden, actual intake and losses; preserve all native stock and period records, then normalize the attributable quantity once to accepted final output. | item;kg | each issue | full cohort | each rearer | per reference flow | receipt and scale ticket; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_utilities` | rear;dry | water and energy | meter and fuel log | meter; carrier; start/end reading; batch; room; period; allocation key | meter or fuel receipt; Raw aggregation requirements: allocate shared meter once. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;MJ | batch or monthly | full active periods | every site | per reference flow | meter image and invoice; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_assets` | rear;dry;present | shared service | asset register | asset; acquisition; repair; service dates; consumers; use hours or batches | asset and service log; Raw aggregation requirements: allocate once by observed use. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;hour | each service event | service life | each site | per reference flow | purchase and repair record; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_cocoon_mass` | rear;collect;grade | cocoon transfer | cohort batch ticket | cohort; transfer time; incoming mass; outgoing mass; debris; sampling | calibrated scale and lot labels; Raw aggregation requirements: reconcile one transfer between nodes. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg | each lot | harvest through grading | every lot | per reference flow | calibration and tickets; traceable numerator, accepted reference-output denominator and normalization worksheet |
@@ -861,6 +912,7 @@ Required product-instance qualifiers: species/strain; host-leaf source; cohort; 
 | `cp_drying_batch` | dry | fresh-to-dry state | dryer batch record | lot; inlet/outlet mass and moisture; energy; time; reject mass; outlet grade | weigh and moisture sample; Raw aggregation requirements: balance dry solids and rejects. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;kg/kg;MJ | each batch | inlet to dry handoff | all dried lots | per reference flow | scale, sample and dryer log; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_handover` | present | final state and pack | sale and packaging record | lot; fresh/dried; grade; moisture; gross/tare; package; reuse; gate; buyer; time | scale, pack count and receipt; Raw aggregation requirements: net cocoon mass by state/gate. Apply the existing route, period, conversion and allocation rules; retain raw totals and the measured accepted reference-output denominator for the same scope. Perform final normalization exactly once; do not divide an already normalized amount again. | kg;item | each handover | pre-gate | every sale lot | per reference flow | calibration and signed receipt; traceable numerator, accepted reference-output denominator and normalization worksheet |
 | `cp_reference_handover` | `reference_handover` | accepted product and matched internal source transfer | producer handover ledger | lot_id, species, state, grade, route_id, gate, period, accepted_quantity, native_unit, source_row_id, source_lot_id, allocation_link | Measure accepted net product at the same actual gate; reconcile the listed state/gate-specific source rows and the linked input with this single physical output. Keep rejects, stock changes and other sales separate. No additional handling or transport is imputed. | kg; native source quantities | each actual handover | matched source and handover periods | declared producer gate only | per reference flow | traceable acceptance record, same-lot source-to-output ledger, calibrated quantity method and normalization worksheet |
+| `cp_feed_supply_and_intake` | `rear` | Feed supply, intake and loss | stock, receipt, issue and loss ledger | feed identity/source; cohort/phase; period; opening/closing stock; receipts; on-site provision; unused returns/transfers; uneaten/spoiled mass and destination; as-fed/DM; actual intake; burden owner; accepted final output | Reconcile matched stock, scales, ration/forage estimates and disposal records under calc_feed_supply_and_intake. Keep raw totals and stage denominators; assign production and treatment burden once, then normalize to accepted final output. | kg as-fed; kg DM | each issue and period close | complete represented cohort/period | actual operated feeding nodes | per reference flow | stock and supplier records; moisture evidence; loss and no-duplication reconciliation |
 
 ### Calculation Rules
 
@@ -870,6 +922,7 @@ Required product-instance qualifiers: species/strain; host-leaf source; cohort; 
 | c_dry | paired fresh/dried batch | Dry solids = state-specific wet mass × (1 - measured moisture fraction); compare states on dry solids and account for sampled and rejected solids; no assumed conversion. | inlet/outlet mass, moisture, rejects | measured dry-solids balance | fao-cocoon-characteristics;fao-cocoon-drying |
 | c_grade | sorting | Accepted + separately marketed downgraded + waste + samples reconcile to graded input, allowing documented moisture timing difference. | input and output masses | lot balance and defect fractions | fao-cocoon-quality |
 | c_intensity | every node | Divide attributed process quantities by its declared output mass, then normalize final dataset to one kg at one state-specific gate. | attributed inputs, output mass, state | per-kg inventory | fao-cocoon-characteristics |
+| `calc_feed_supply_and_intake` | `host_leaves` | Feed supply used by the represented operation = opening feed stock + receipts + on-site feed entering the operation - closing feed stock - documented unused returns or transfers out. Retain in-boundary spoilage, refusals and discarded leftovers in that supply. Actual intake = that supply - measured uneaten/discarded losses, after matching moisture/DM and period; use intake only for nutrition/metabolism. Opening stock retains its prior burden and is not another purchase. Trace any unused return or transfer and its burden destination; no automatic substitution credit. Attribute production once, through either the purchased-feed dataset or the represented on-site crop/collection node, never both for the same feed. Include actual waste treatment and manure contributions once, not as a second feed-production burden. | `cp_feed_supply_and_intake` | separate feed supply, intake and loss quantities, in matched as-fed/DM units | `fao-feed-loss-accounting-2018` |
 
 ### Data Quality Requirements
 
@@ -889,6 +942,8 @@ Required product-instance qualifiers: species/strain; host-leaf source; cohort; 
 | v_routes | route deltas | Accept host, climate or mounting variant only with changed inventory, calculation, quality or validation evidence relative to managed parent; reject label-only route. | fao-cocoon-quality |
 | v_attribution | multi-output and multi-period | Verify separately marketed outputs, waste, unfinished cohorts, shared assets and service periods; one cocoon mass and shared burden may have only one attributed handover. | fao-cocoon-quality |
 | v_binding | flow cards | Resolve unresolved inputs to evidenced concrete UUIDs before TIDAS process exchange; leave other UUIDs unresolved until detail-confirmed. | |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
+| `v_feed_supply_intake_separation` | All feed inputs | Reject an upstream feed inventory reduced by in-boundary refusal, spoilage or discarded leftovers without retaining their production burden. Reconcile supply, intake, stock, transfers and loss destinations under calc_feed_supply_and_intake. Do not reuse intake as supplied feed, assume zero-burden on-site feed or grant automatic avoided-product credits. | `fao-feed-loss-accounting-2018` |
 
 ## 10. Published Dataset Profile
 
@@ -909,3 +964,5 @@ Required product-instance qualifiers: species/strain; host-leaf source; cohort; 
 | `fao-cocoon-characteristics` | handbook | [FAO, Silk reeling and testing manual, chapter 2](https://www.fao.org/4/x2099e/x2099e03.htm) | Cocoon composition, weight/moisture states and dry-matter comparison. |
 | `fao-cocoon-quality` | handbook | [FAO, Silk reeling and testing manual, chapter 3](https://www.fao.org/4/x2099e/x2099e04.htm) | Rearing/mounting quality, collection, grading and pierced/unreelable distinction. |
 | `fao-cocoon-drying` | handbook | [FAO, Silk reeling and testing manual, chapter 4](https://www.fao.org/4/x2099e/x2099e05.htm) | Optional producer stifling/drying, storage and state measurement. |
+| `fao-feed-loss-accounting-2018` | official_guidance | [FAO 2018, Environmental performance of pig supply chains, section 11.2.2](https://www.fao.org/4/i8686en/I8686EN.pdf) | Feed supply versus intake and waste burden, not animal parameters. Applying this accounting principle to the declared taxon is this PCR's methodological choice; no pig diet or emission factor is transferred. |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |

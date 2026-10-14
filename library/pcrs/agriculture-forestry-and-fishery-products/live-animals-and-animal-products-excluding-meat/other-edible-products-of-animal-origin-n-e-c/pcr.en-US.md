@@ -343,31 +343,26 @@ Raw quantity and calculation requirements: Measure the actual flow by source, lo
   - Basis kind: Process output (`process_output`)
   - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Actual preservation energy (`energy`)
+###### Electricity at the equipment supply point (`energy_electricity`)
+
+**Collection scope and applicability for energy.** The following concrete identities have separate cards and apply only when use or generation is evidenced inside the original process scope. They are not mandatory inputs or a default recipe. Document non-use; missing records are not zero. Add a separate concrete card for any other actual material instead of substituting one of these names or UUIDs. Preserve attribution and boundaries and avoid double counting components included in outsourced services.
 
 Meter actual energy carrier for performed chilling, drying or other lawful stabilization.
-
 Denominator and scope requirements：per kg output of the corresponding process
-
 Raw quantity and calculation requirements: Measure the actual flow by source, lot and period; bypassed conditional nodes are not modelled. Original collection denominator kind: process_output.
 
-- Selected flow: Actual energy carrier (UUID unresolved)
-- Flow property / unit: Energy / MJ
-- Amount rule: Calculate the attributable final-package exchange under inventory_reference_normalization and stage_throughput_linkage using the matched raw records.
-- Value mode: Calculated value (`calculated_value`)
+Confirm identity, grade, state and unit from equipment, supplier and contemporaneous measurements; the UUID remains unverified. Retain the electricity supply point, fuel grade, density and heating-value basis. Distinguish purchased heat from on-site fuel conversion without counting its input fuel again.
+
+- Selected flow: Electricity at the equipment supply point
+- Flow property / unit: Energy / kWh
+- Amount rule: Collect raw quantities for this identity under `cp_stabilize` and calculate the exchange per declared reference flow using the original attribution rules.
+- Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
+- Normalization basis: per declared reference flow
 - Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_stabilize`
-- Range: Provisional nonnegative ledger QA, not a yield or recipe
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 100000
-  - Unit: MJ/kg
-  - Basis: per kg output of corresponding process
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Sources: `fao-agricultural-energy`
 
 ##### Waste flows
 
@@ -661,6 +656,8 @@ Denominator and scope requirements：per reference flow
 | a_grade | grades and residue | Accepted and separately saleable downgraded goods have disjoint masses/destinations; non-food rejects and incidental residue are not extra edible products. | un-cpc-3 |
 | a_period | phases and shared service | Index source establishment/productive/replacement/termination periods; assign observed shared-service time or throughput to consuming nodes/lots once with evidence. |  |
 
+Concrete cards do not inherit numerical ranges from the former aggregate card. Determine quantities from original records, stock/meter reconciliation and the declared reference flow; no default quantity or numeric screen is supplied without evidence matching the identity, unit, period and boundary. Missing range evidence is a quality disclosure, not zero use or proof of completeness.
+
 ## 8. Foreground Data Collection, Calculation, and Quality Rules
 
 ### Data Collection Protocols
@@ -701,6 +698,7 @@ Denominator and scope requirements：per reference flow
 | v_balance | each lot | Reconcile performed states, additions/removals, grade/reject destinations and net dispatch. |  |
 | v_allocation | periods/outputs | Reject omitted real co-products, duplicate grades, zero/full automatic burden and duplicate shared service. |  |
 | v_identity | final exchange | Verify named good, source, state, gate, direction/type and property/unit support. |  |
+| `v_foreground_emission_responsibility` | Actual operated nodes and linked services | Record responsibility for on-site fuel combustion and refrigerant leakage when applicable: either quantified foreground emissions or a named linked process explicitly covering them, never merely a fuel-supply or electricity-production input. Assess special-taxon biological and residue emissions using species/route evidence, without a generic livestock factor. Identify any unresolved pathway and withhold a completeness claim; document supported absence and prevent duplicate upstream/downstream accounting. | |
 
 ## 10. Published Dataset Profile
 
@@ -720,3 +718,4 @@ Denominator and scope requirements：per reference flow
 | --- | --- | --- | --- |
 | `un-cpc-3` | official_guidance | [UN CPC 3.0 explanatory notes](https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf) | Residual class and adjacent exclusions. |
 | `eu-residual` | official_guidance | [EU animal-origin food rules and residual examples](https://eur-lex.europa.eu/legal-content/EN/TXT/?qid=1744429744827&uri=CELEX%3A02021R0632-20220818) | Candidate examples and food-use checks, not universal CPC classification. |
+| `fao-agricultural-energy` | official_guidance | FAO Energy demand and consumption in African agriculture, Annex C case-study results, https://www.fao.org/4/v9766e/v9766e08.htm | conditional concrete identities and method context; does not establish site use or quantities |
