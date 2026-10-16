@@ -35,18 +35,20 @@ A conforming dataset must retain species or commercial grade, harvest area, coll
 | How much | 1 kg |
 | How well | declared species or commercial grade, natural animal origin, harvest area, collection method, wet or dry mass basis, cleaning/drying state, packaging state, and gate |
 | How long or cycle | one harvest trip, collection lot, landing lot, handling lot, sales lot, or reporting period normalized to marketable sponge output |
-| reference_flow_link | Reference amount and product flow below |
+| reference_flow_link | `declared_gate_product` |
 
 | Field | Value |
 | --- | --- |
-| Reference amount | 1 kg |
-| Reference product flow | Natural sponges of aquatic animal origin `972e9d63-d123-4b6e-ad97-5b72d0735453` |
+| Reference amount | 1 |
+| Reference product flow | Natural aquatic-animal sponge |
 | Reference flow property | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |
 | Required qualifiers | species or commercial grade; natural aquatic animal origin; harvest or collection area; collection method; permit or access right where relevant; wet, drained, dry, cleaned, or simply prepared mass basis; drying or preservation state; quality grade; packaging state; declared gate; habitat, protected-area, bed regeneration, and unresolved Tiangong UUID substitutions |
 
 Mass is the primary reference basis. Piece, bundle, sack, basket, crate, diver lot, or trip records may be used only when net mass, wet or dry basis, grade, tare, and sampling method are retained.
+
+Before collection each dataset must fix one physical reference object: one species or an evidenced single physical commercial species-group product, one source/production route, form, actual life/preparation state, moisture/drainage basis, grade and unique gate location/time/acceptance condition. Do not combine different species, live/dead, fresh/chilled, raw/prepared states or different gates in one reference exchange; unresolved specifications make the dataset incomplete. Each stage is the measured state of that same lot and is not automatically the final 1 kg.
 
 ## 4. Measurement and Unit Rules
 
@@ -83,253 +85,290 @@ Capital goods and long-lived vessels, diving equipment, air compressors, gear, t
 
 ## 6. Process Inventory Structure
 
+Actual route follows event and transfer records. The final declared-gate node owns the sole reference output and receives the actual last predecessor: bypass preparation/delivery for a landing gate, bypass delivery for a pack-out gate, and measure delivery receipt before gate acceptance for a delivered gate. Unknown actual route or gate is not a default choice.
+
 ### Process Map
 
 | process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
-| harvest_collection_and_landing | Harvest, Collection, and Landing | required | harvest or collection lot must be declared | foreground production | landed natural sponge entering primary preparation |
-| primary_preparation_drying_and_packout | Primary Preparation, Drying, and Pack-out | required | include cleaning, trimming, drying, or simple preservation when performed before declared gate | foreground conditioning and gate release | marketable natural sponge |
-| delivery_to_declared_gate | Delivery to Declared Gate | conditional | include when the reference flow is delivered product beyond landing, drying, dispatch, or packhouse gate | foreground transport | delivered natural sponge at declared gate |
+| `harvest_collection_and_landing` | Harvest, collection and landing | required | Actual source/production route is evidenced | Actual event/transfer and resource ownership | per 1 kg reference flow |
+| `primary_preparation_drying_and_packout` | Primary preparation, drying and pack-out | conditional | Only actual pre-gate preparation; bypass for a landing gate or absent preparation | Actual event/transfer and resource ownership | per 1 kg reference flow |
+| `delivery_to_declared_gate` | Delivery to declared gate | conditional | Only actual delivery before the chosen gate; unknown choice fails | Actual event/transfer and resource ownership | per 1 kg reference flow |
+| `declared_gate_release` | Final declared-gate acceptance and release | required | One declared gate receives the actual final predecessor; exactly one reference output | Actual event/transfer and resource ownership | per 1 kg reference flow |
 
-### Process: Harvest, Collection, and Landing (`harvest_collection_and_landing`)
+### Process: Harvest, collection and landing (`harvest_collection_and_landing`)
 
 #### Inputs
 
 ##### Product flows
 
-###### Harvest fuel, diving, gear, and collection inputs (`harvest_fuel_diving_gear_and_collection_inputs`)
+###### Conditional diesel input (`source_diesel`)
 
-This row records the selected exchange within the declared process and system boundary.
+Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. This UUID establishes a mass-based diesel identity only, with no grade, provider, density, heating value or emission factor; L-to-kg conversion requires matching density evidence.
 
-- Selected flow: Diesel oil `9d258d75-6792-4f1c-9856-81602ed8f816`; Electricity `f872677d-2f66-428a-a94e-f0fba61231df`; route-specific diving service, compressed air, gear, basket, vessel service, seawater, or collection input selected from foreground records
-- Flow property / unit: Fuel, energy, mass, volume, item, time, or service quantity / L, kWh, MJ, kg, m3, item, h, or service unit
-- Amount rule: measured or allocated vessel fuel, air compression, diving service, gear use, collection inputs, and landing support by trip or lot
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per harvest trip or landing lot and per 1,000 kg marketable reference product after normalization
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
+- Selected flow: Diesel fuel `9d258d75-6792-4f1c-9856-81602ed8f816`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_harvest_collection_and_landing_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
 - Collection protocol: `cp_harvest_collection_and_landing_records`
-- Sources: `fao-sponge-production`, `martinangeli-commercial-sponges-2022`
-- Range: Provisional harvest input screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 10000
-  - Unit: L, kWh, MJ, kg, m3, item, h, or service unit/1,000 kg marketable product
-  - Basis: broad first-pass vessel, diver, gear, air compression, and landing support input check
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-##### Waste flows
+###### Conditional electricity input (`source_electricity`)
 
-###### Damaged sponges, non-target material, and landing residues (`damaged_sponges_non_target_material_and_landing_residues`)
+Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive.
 
-This row records the selected exchange within the declared process and system boundary.
-
-- Selected flow: Sludge `725c8f6e-7975-4155-a250-1f95ef70c508`; route-specific damaged sponge, rejected sponge, non-target material, tissue residue, wastewater, and disposal flow selected from site records
-- Flow property / unit: Mass, volume, or count / kg, m3, or item
-- Amount rule: measured rejected or damaged sponge, non-target material, residue mass, fate, disposal route, recovery route, and receiving environment
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per harvest trip or landing lot and per 1,000 kg marketable reference product after normalization
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_reject_residue_and_discharge_records`
-- Range: Provisional landing residue screening estimate
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10
-  - Unit: kg residue/kg accepted landed sponge
-  - Basis: broad reject, damaged sponge, tissue, and residue check at harvest and landing
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+- Selected flow: Electricity
+- Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / kWh
+- Amount rule: Collect this exchange’s own quantity under cp_harvest_collection_and_landing_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_harvest_collection_and_landing_records`
 
 #### Outputs
 
 ##### Product flows
 
-###### Accepted landed natural sponge (`accepted_landed_natural_sponge`)
+###### Accepted source lot to the next actual responsibility (`accepted_landed_natural_sponge`)
 
-This row records the selected exchange within the declared process and system boundary.
+Record species, origin, original form/state and accepted net mass by lot; independently measure this source-stage quantity and pair the actual next receipt. A landing UUID applies only with matching unprocessed-catch/landing-quality qualifiers and cannot substitute for later preparation or final-delivery identities.
 
 - Selected flow: Natural sponges of aquatic animal origin `972e9d63-d123-4b6e-ad97-5b72d0735453`
-- Flow property / unit: Mass / kg
-- Amount rule: calculated accepted landed sponge after sorting, rejection, drainage, and lot identification
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: accepted landed sponge entering primary preparation
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_harvest_collection_and_landing_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
 - Collection protocol: `cp_harvest_collection_and_landing_records`
-- Range: Accepted landing mass-balance QA guardrail
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 1
-  - Upper: 20
-  - Unit: kg accepted landed sponge/kg marketable product
-  - Basis: broad landing-to-marketable mass-balance check before cleaning and drying
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-### Process: Primary Preparation, Drying, and Pack-out (`primary_preparation_drying_and_packout`)
+##### Elementary flows
+
+###### Actual foreground fossil CO2 to unspecified air (`source_fossil_co2`)
+
+Include only actual direct fossil-fuel combustion to air owned by this node, using measurement or an explicitly sourced factor compatible with fuel/engine/units; retain oxidation, controls and uncertainty. Exclude animal respiration, dissolved carbon to water and supplier-covered emissions; add each other actual pollutant separately by substance/medium.
+
+- Selected flow: Carbon dioxide (fossil) `08a91e70-3ddc-11dd-923d-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_harvest_collection_and_landing_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_harvest_collection_and_landing_records`
+
+
+### Process: Primary preparation, drying and pack-out (`primary_preparation_drying_and_packout`)
 
 #### Inputs
 
 ##### Product flows
 
-###### Accepted sponge entering primary preparation (`accepted_sponge_entering_primary_preparation`)
+###### Source lot received for preparation (`accepted_sponge_entering_primary_preparation`)
 
-This row records the selected exchange within the declared process and system boundary.
+Pair the actual upstream transfer, retaining original receipt state and independently measured mass; activate only when this pre-gate node actually occurs.
 
 - Selected flow: Natural sponges of aquatic animal origin `972e9d63-d123-4b6e-ad97-5b72d0735453`
-- Flow property / unit: Mass / kg
-- Amount rule: measured accepted sponge entering washing, rinsing, trimming, drying, simple preservation, grading, or packing
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg marketable reference product
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_preparation_product_state_and_mass_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
 - Collection protocol: `cp_preparation_product_state_and_mass_records`
-- Sources: `fao-sponge-production`, `martinangeli-commercial-sponges-2022`
-- Range: Primary preparation input QA guardrail
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 1
-  - Upper: 20
-  - Unit: kg accepted sponge/kg marketable product
-  - Basis: broad wet-to-cleaned or wet-to-dry product-yield check
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
-###### Water, chemicals, energy, drying, and packaging inputs (`water_chemicals_energy_drying_and_packaging_inputs`)
+###### Conditional electricity input (`preparation_electricity`)
 
-This row records the selected exchange within the declared process and system boundary.
+Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive.
 
-- Selected flow: Process water `ec205030-248c-496f-9cf2-06d9d26dc6ff`; Electricity `f872677d-2f66-428a-a94e-f0fba61231df`; Packaging, unspecified `7336a8ee-9e4d-49a6-9fe5-ce285f613245`; route-specific seawater, disinfectant, bleaching agent, preservation input, drying fuel, sack, bale, carton, or pallet selected from site records
-- Flow property / unit: Mass, volume, energy, concentration, or item count / kg, L, m3, kWh, MJ, %, or item
-- Amount rule: measured washing water, cleaning or preservation chemicals, drying energy, electricity, packaging, storage, and dispatch preparation quantities
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg marketable reference product
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
+- Selected flow: Electricity
+- Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / kWh
+- Amount rule: Collect this exchange’s own quantity under cp_preparation_packaging_and_storage_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
 - Collection protocol: `cp_preparation_packaging_and_storage_records`
-- Sources: `fao-sponge-production`
-- Range: Provisional preparation input screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 5000
-  - Unit: kg, L, m3, kWh, MJ, %, or item/1,000 kg marketable product
-  - Basis: broad first-pass cleaning, drying, packaging, and storage input check
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
-
-##### Waste flows
-
-###### Trimming residues, wash water, and packaging waste (`trimming_residues_wash_water_and_packaging_waste`)
-
-This row records the selected exchange within the declared process and system boundary.
-
-- Selected flow: Sludge `725c8f6e-7975-4155-a250-1f95ef70c508`; route-specific trimming residue, tissue residue, wash water, chemical bath, wastewater, packaging waste, and disposal flow selected from site records
-- Flow property / unit: Mass or volume / kg, L, or m3
-- Amount rule: measured trimming residues, wash water, spent bath, wastewater, packaging waste, disposal route, recovery route, and receiving environment
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1,000 kg marketable reference product
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_reject_residue_and_discharge_records`
-- Range: Primary preparation residue QA guardrail
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 10
-  - Unit: kg or m3/kg marketable product
-  - Basis: broad reject, trimming, wash water, spent bath, packaging waste, and residue check
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 #### Outputs
 
 ##### Product flows
 
-###### Marketable natural sponge (`marketable_natural_sponge`)
+###### Prepared product transfer to the actual next node (`marketable_natural_sponge`)
 
-This row records the selected exchange within the declared process and system boundary.
+Use independently measured same-lot output mass, form, life/preparation state and moisture basis, retaining rejection, tissue/water changes and losses. This is not fixed to reference 1 kg; transfer to the final gate if delivery is absent and to delivery when present.
 
-- Selected flow: Natural sponges of aquatic animal origin `972e9d63-d123-4b6e-ad97-5b72d0735453`
-- Flow property / unit: Mass / kg
-- Amount rule: fixed reference output after declared cleaning, trimming, drying, packaging tare exclusion, and product-state normalization
-- Value mode: Fixed value (`fixed_value`)
-- Specificity: Product-specific (`product_specific`)
-- Normalization basis: 1 kg reference product
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Identity reference (`identity_reference`)
-- Range: Fixed reference output QA guardrail
-  - Range role: QA guardrail (`qa_guardrail`)
-  - Lower: 1
-  - Upper: 1
-  - Unit: kg/kg reference product
-  - Basis: fixed reference flow output
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Identity reference (`identity_reference`)
+- Selected flow: Natural aquatic-animal sponge
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_preparation_product_state_and_mass_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_preparation_product_state_and_mass_records`
 
-### Process: Delivery to Declared Gate (`delivery_to_declared_gate`)
+##### Elementary flows
+
+###### Actual foreground fossil CO2 to unspecified air (`preparation_fossil_co2`)
+
+Include only actual direct fossil-fuel combustion to air owned by this node, using measurement or an explicitly sourced factor compatible with fuel/engine/units; retain oxidation, controls and uncertainty. Exclude animal respiration, dissolved carbon to water and supplier-covered emissions; add each other actual pollutant separately by substance/medium.
+
+- Selected flow: Carbon dioxide (fossil) `08a91e70-3ddc-11dd-923d-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_preparation_packaging_and_storage_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_preparation_packaging_and_storage_records`
+
+
+### Process: Delivery to declared gate (`delivery_to_declared_gate`)
 
 #### Inputs
 
 ##### Product flows
 
-###### Delivery fuel, electricity, and packaging support (`delivery_fuel_electricity_and_packaging_support`)
+###### Product received for delivery (`delivery_product_receipt`)
 
-This row records the selected exchange within the declared process and system boundary.
+Collect only when this concrete exchange actually occurs under this node’s foreground responsibility; exclude components already covered by an inclusive supplier service. Retain its own unallocated raw quantity/native unit and never inherit a collection total or range.
 
-- Selected flow: Diesel oil `9d258d75-6792-4f1c-9856-81602ed8f816`; Electricity `f872677d-2f66-428a-a94e-f0fba61231df`; route-specific transport service, storage, drying protection, reusable packaging, or pallet support selected from site records
-- Flow property / unit: Fuel, energy, mass, or transport service / L, MJ, kWh, kg, or tonne-km
-- Amount rule: include only when the declared reference flow is delivered beyond landing, drying yard, dispatch, or packhouse gate; record distance, mode, load factor, moisture-protection condition, and return logistics where relevant
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Route-specific (`route_specific`)
-- Normalization basis: per 1,000 kg delivered reference product or tonne-km
-- Basis kind: Transport service (`transport_service`)
-- Evidence kind: Collected record (`collected_record`)
+- Selected flow: Natural aquatic-animal sponge
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
 - Collection protocol: `cp_delivery_records`
-- Range: Provisional delivery screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 5000
-  - Unit: tonne-km/1,000 kg reference product
-  - Basis: broad first-pass delivery activity check when delivery is in scope
-  - Basis kind: Transport service (`transport_service`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
+
+###### Conditional diesel input (`delivery_diesel`)
+
+Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. This UUID establishes a mass-based diesel identity only, with no grade, provider, density, heating value or emission factor; L-to-kg conversion requires matching density evidence.
+
+- Selected flow: Diesel fuel `9d258d75-6792-4f1c-9856-81602ed8f816`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_delivery_records`
+
+###### Conditional electricity input (`delivery_electricity`)
+
+Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive.
+
+- Selected flow: Electricity
+- Flow property / unit: Net calorific value `93a60a56-a3c8-11da-a746-0800200c9a66` / kWh
+- Amount rule: Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_delivery_records`
 
 #### Outputs
 
 ##### Product flows
 
-###### Delivered natural sponge at declared gate (`delivered_natural_sponge_at_declared_gate`)
+###### Delivered product transfer to final gate acceptance (`delivered_natural_sponge_at_declared_gate`)
 
-This row records the selected exchange within the declared process and system boundary.
+Independently weigh delivered product per actual route, excluding separable cargo water, ice and package tare; retain transit loss, state and moisture changes before final gate acceptance. This internal handoff is not a fixed reference output.
 
-- Selected flow: Natural sponges of aquatic animal origin `972e9d63-d123-4b6e-ad97-5b72d0735453`
-- Flow property / unit: Mass / kg
-- Amount rule: delivered mass at the declared gate, excluding transport packaging tare unless contractually part of the product basis
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Route-specific (`route_specific`)
-- Normalization basis: delivered reference product
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Selected flow: Natural aquatic-animal sponge
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
 - Collection protocol: `cp_delivery_records`
-- Range: Delivered product mass QA guardrail
-  - Range role: QA guardrail (`qa_guardrail`)
+
+##### Elementary flows
+
+###### Actual foreground fossil CO2 to unspecified air (`delivery_fossil_co2`)
+
+Include only actual direct fossil-fuel combustion to air owned by this node, using measurement or an explicitly sourced factor compatible with fuel/engine/units; retain oxidation, controls and uncertainty. Exclude animal respiration, dissolved carbon to water and supplier-covered emissions; add each other actual pollutant separately by substance/medium.
+
+- Selected flow: Carbon dioxide (fossil) `08a91e70-3ddc-11dd-923d-0050c2490048`
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_delivery_records`
+
+
+### Process: Final declared-gate acceptance and release (`declared_gate_release`)
+
+#### Inputs
+
+##### Product flows
+
+###### Product receipt from the actual final predecessor (`declared_gate_receipt`)
+
+Receive only the actual final predecessor, determined by the real gate: landing/receipt, pack-out or delivery. Record predecessor transfer ID, net product mass, state and losses without adding alternative routes together.
+
+- Selected flow: Natural aquatic-animal sponge
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: Collect this exchange’s own quantity under cp_declared_gate and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_declared_gate`
+
+#### Outputs
+
+##### Product flows
+
+###### Sole declared-gate reference product (`declared_gate_product`)
+
+The sole final reference output uses positive measured same-lot accepted net mass Q at the declared gate, excluding separate package tare and free carrier water/ice. This identity establishes neither life condition, yield nor upstream internal throughput.
+
+- Selected flow: Natural aquatic-animal sponge
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Amount rule: 1 kg
+- Value mode: `fixed_value`
+- Specificity: `product_specific`
+- Normalization basis: per 1 kg reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `identity_reference`
+- Collection protocol: `cp_declared_gate`
+- Range: Final reference normalization identity, not a yield or empirical interval
+  - Range role: `qa_guardrail`
   - Lower: 1
   - Upper: 1
-  - Unit: kg/kg delivered reference product
-  - Basis: delivered reference product mass after route allocation and product-state normalization
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: Calculated from collection (`calculated_from_collection`)
+  - Unit: kg
+  - Basis: per 1 kg reference flow
+  - Basis kind: `reference_flow`
+  - Evidence kind: `method_formula`
+  - Sources: `mass-balance-identity`
 
 ## 7. Allocation and Co-product Handling
 
 | allocation_id | Applies to | Rule | Required data | Source |
 | --- | --- | --- | --- | --- |
-| `single_reference_product_default` | marketable natural sponge output | Treat the declared reference product as the single reference product unless trimming residues, damaged sponge, or non-target material are intentionally recovered as co-products. | marketable mass, rejected mass, recovered co-product mass, destination, and revenue or physical relation where co-products are claimed | `mass-balance-identity` |
+| `single_reference_product_default` | sole declared-gate reference and all other intended outputs | The final reference output remains unique. Enumerate other actually intended and accepted products by species, form, state, destination and separate handoff; bycatch, mortality or residue does not automatically establish a coproduct. Subdivide/directly assign measured activities first; attribute residual shared burdens by an evidenced causal physical relationship, or a justified economic relationship with sensitivity when a physical basis is unsupported. Allocation does not alter physical mass. | Intended outputs, actual acceptance/market, handoffs, dedicated/shared activities, driver and price/period evidence | `mass-balance-identity` |
 | `habitat_and_reject_handling` | damaged sponge, non-target material, residues, and protected habitat disclosure | Do not allocate away rejected sponge, damaged material, or habitat disturbance by excluding them from the foreground package. Record fate and disclose bed or protected-area status where relevant. | damaged mass, reject mass, non-target material, harvest area, disposal or recovery route, permit, and habitat disclosure | `fao-sponge-production` |
 | `shared_trip_and_preparation_allocation` | multi-product trips or shared preparation services | Allocate shared vessel fuel, diving support, electricity, water, drying, storage, and packaging by direct measurement, trip log, accepted mass, dry-mass output, holding or drying time, package count, or another declared physical driver before economic allocation. | trip records, landed mass, accepted mass, dry mass, service logs, package counts, drying time, and allocation driver | `mass-balance-identity` |
 
@@ -339,40 +378,48 @@ This row records the selected exchange within the declared process and system bo
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_harvest_collection_and_landing_records` | `harvest_collection_and_landing` | harvest or collection, accepted landing, fuel, diver, gear, landing inputs | vessel log, diver log, collector log, landing note, catch ticket, fuel invoice, gear log, permit | species or grade, harvest area, method, diver, vessel or collector, trip, date, fuel, air compression, gear, gross sponge, rejected mass, accepted landed mass, landing site, permit | trip records, landing records, weigh tickets, diver logs, and permit or traceability documents | kg, L, kWh, MJ, item, h, date, area | each trip or landing lot | full reporting period or declared season | diver, vessel, collector, harvest area, landing site, or supplier | reconcile collected mass plus purchases minus rejects and losses to accepted landed sponge; normalize to marketable output | landing tickets, scale records, trip logs, diver logs, permits, invoices, and operator sign-off |
-| `cp_preparation_product_state_and_mass_records` | `primary_preparation_drying_and_packout` | cleaning, drying, trimming, product state, marketable output | wash log, drying log, trimming record, grade sheet, packout record, sales note | accepted mass, wet/dry/cleaned basis, washing, drying time, drying temperature where relevant, rejected mass, grade, marketable mass, package count, destination | calibrated scales, handling logs, drying records, packout records, and sales reconciliation | kg, %, item, h, date | each preparation or packing lot | full handling and dispatch period | landing site, drying yard, packhouse, dispatch gate | reconcile accepted landed mass minus rejects, trimming, moisture loss, and handling losses to marketable output; normalize all flows to 1 kg reference product | scale calibration, drying logs, packout sheets, sales records, and supervisor review |
-| `cp_preparation_packaging_and_storage_records` | `primary_preparation_drying_and_packout` | water, chemicals, electricity, drying fuel, packaging, storage | water meter, chemical invoice, electricity meter, drying fuel record, packaging invoice, storage log, dispatch sheet | water, chemical type, concentration, electricity, fuel, drying time, packaging material, item count, tare, lot, destination | invoices, meters, drying logs, and dispatch records | kg, L, m3, kWh, MJ, %, item, h | each preparation lot and monthly reconciliation | handling, storage, and dispatch period | preparation site, drying yard, storage room, dispatch gate | allocate to product lots by measured lot, product mass, dry-mass output, drying time, or package count | invoices, meter readings, drying logs, dispatch sheets, and operator review |
-| `cp_reject_residue_and_discharge_records` | `harvest_collection_and_landing`; `primary_preparation_drying_and_packout` | damaged sponge, rejected sponge, trimming residue, wash water, wastewater, packaging waste | reject log, residue record, wastewater record, disposal note, waste ticket | date, species or material, count, mass, volume, cause, fate, disposal route, recovery route, receiving environment | landing records, handling records, waste tickets, and discharge records | kg, L, m3, item, date | each event and monthly reconciliation | full reporting period or season | vessel, landing site, preparation site, discharge route, or waste route | sum by material and fate; reconcile to collected mass, accepted mass, marketable output, and disposal route | reject logs, waste transfer notes, discharge records, and supervisor review |
-| `cp_delivery_records` | `delivery_to_declared_gate` | delivered product, transport energy, moisture-protection condition | delivery note, transport invoice, fuel record, route plan, storage or moisture log | origin, destination, distance, mode, load mass, fuel, electricity, packaging support, moisture protection, return logistics | carrier documents, vehicle logs, meter records, and dispatch reconciliation | kg, km, tonne-km, L, kWh, h | each delivery route | delivery period in declared scope | delivery route, vehicle, vessel, or carrier | calculate tonne-km and allocate fuel or service by load mass, distance, storage condition, and return logistics where relevant | carrier invoice, route record, storage log, and dispatch sign-off |
+| `cp_harvest_collection_and_landing_records` | `harvest_collection_and_landing` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | species/commercial grade, natural animal origin, harvest area/bed/habitat, actual diver/collector/vessel/gear method and trip/date, diving-air/compression where used, gross/tare/accepted mass, damaged/rejected sponge and non-target fates, cutting/regeneration practice and permit/traceability evidence where applicable; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_preparation_product_state_and_mass_records` | `primary_preparation_drying_and_packout` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | actual washing/rinsing, removal of non-skeletal organic tissue, trimming, drying and permitted primary preparation, own water/chemical composition and concentration, input/output moisture/solids, temperature/duration where relevant, cleaning/tissue/moisture losses and fates, package count/tare/reuse and storage protection; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_preparation_packaging_and_storage_records` | `primary_preparation_drying_and_packout` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | actual washing/rinsing, removal of non-skeletal organic tissue, trimming, drying and permitted primary preparation, own water/chemical composition and concentration, input/output moisture/solids, temperature/duration where relevant, cleaning/tissue/moisture losses and fates, package count/tare/reuse and storage protection; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_delivery_records` | `delivery_to_declared_gate` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | origin/destination, leg distance/mode/actual cargo including water/ice/containers, temperature/oxygen control, loaded/empty returns, service scope, receipt and losses; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_declared_gate` | `declared_gate_release` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | unique declared gate location/time/recipient, predecessor route, actual acceptance, species/form/state/moisture basis, same-lot final accepted net mass Q, gross/tare/free water/ice and refusal; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_harvest_collection_and_landing_outputs` | `harvest_collection_and_landing` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | species/commercial grade, natural animal origin, harvest area/bed/habitat, actual diver/collector/vessel/gear method and trip/date, diving-air/compression where used, gross/tare/accepted mass, damaged/rejected sponge and non-target fates, cutting/regeneration practice and permit/traceability evidence where applicable; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_primary_preparation_drying_and_packout_outputs` | `primary_preparation_drying_and_packout` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | actual washing/rinsing, removal of non-skeletal organic tissue, trimming, drying and permitted primary preparation, own water/chemical composition and concentration, input/output moisture/solids, temperature/duration where relevant, cleaning/tissue/moisture losses and fates, package count/tare/reuse and storage protection; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_delivery_outputs` | `delivery_to_declared_gate` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | origin/destination, leg distance/mode/actual cargo including water/ice/containers, temperature/oxygen control, loaded/empty returns, service scope, receipt and losses; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
+| `cp_gate_outputs` | `declared_gate_release` | Concrete node exchanges, stocks and per-flow extension duties | Weighing, metering, activity, supplier, transfer and recipient records | unique declared gate location/time/recipient, predecessor route, actual acceptance, species/form/state/moisture basis, same-lot final accepted net mass Q, gross/tare/free water/ice and refusal; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence | Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults | kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately | Each event/lot; monthly/period reconciliation | Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods | Actual node sites/equipment/providers/recipients and shared consumers | per 1 kg reference flow | Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence |
 
 ### Calculation Rules
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `normalize_to_reference_product` | all inventory rows | normalized amount = collected amount / marketable reference product mass, with unit and product-state basis retained | collected amount, marketable product mass, product basis | kg, kWh, L, item, m3, or tonne-km per kg reference product | `mass-balance-identity` |
-| `accepted_landing_balance` | harvest and landing | accepted landed sponge = gross collected or received mass - rejected sponge - documented onboard or landing losses | gross collection, received mass, rejects, loss | accepted landed sponge | `mass-balance-identity` |
-| `wet_to_dry_or_cleaned_yield` | cleaning, trimming, drying, and packout | marketable product mass = accepted landed mass - rejected mass - trimming - moisture loss according to declared wet, cleaned, or dry basis | accepted mass, rejected mass, trimming, moisture or drying records, packout records | marketable natural sponge mass | `fao-sponge-production` |
-| `delivery_tonne_kilometres` | delivered reference product | tonne-km = delivered product mass in tonnes x one-way or contract-declared route distance; allocate storage or protection inputs by load share | delivered mass, distance, route, load factor, moisture-protection condition | tonne-km and delivered product inventory | `mass-balance-identity` |
+| `normalize_to_reference_product` | all inventory rows | normalized amount = actual same-lot exchange quantity / positive same-lot declared-gate accepted net product mass Q; retain raw trip/lot/reporting-period numerators and units. Apply evidenced shares only to genuinely shared LCA burdens in a separate attribution view, keeping the physical ledger unallocated. Link intermediate process yields through measured stage masses and Q; local output cannot replace Q or imply a 1:1 yield. The sole final reference output is Q/Q = 1 kg. | Node raw quantities; Q; measured intermediate yields; attribution decisions | Quantity per 1 kg reference flow and separate physical ledger | `mass-balance-identity` |
+| `material_state_balance` | all material stages and stocks | Record opening stocks, receipts/collection, observed biological/material changes without assuming managed production, actual water/material additions, internal handoffs, closing stocks, accepted products, rejection, mortality, tissue removal, trimming, drainage/evaporation and other losses separately; reconcile on matching species/form/moisture basis with unexplained residual retained. Do not deduct package tare or free ice again from already net product masses. | Node mass/moisture/stock and fate records | Measured stage yields and balance differences | `mass-balance-identity` |
+| `delivery_tonne_kilometres` | delivered reference product | For each actual route leg, multiply the mass in tonnes of the consignment actually carried by that leg distance in km, then normalize to matched final reference-product output. The load includes carrier water, ice and packaging actually transported and is not the net reference-product mass. For shared loads use a justified mass, occupied-volume or other causal attribution key. Record empty-return, cooling, oxygenation and holding coverage; zero payload on an empty return does not imply zero transport burden. Do not double-count a transport service that covers the same fuel/direct emissions already modelled explicitly. | delivered mass, distance, route, load factor, moisture-protection condition | tonne-km and delivered product inventory | `mass-balance-identity` |
+| `direct_emissions` | all actual direct releases | Use measurements or a sourced factor compatible with actual fuel/substance/units/receiving medium; retain original factor evidence, applicability, controls and uncertainty. No generic diesel factor is prescribed, and a water-body balance is not automatically a negative emission or credit. | Node activity, measurement or sourced factor, medium | Substance-specific direct release quantity | `mass-balance-identity` |
 
 ### Data Quality Requirements
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
-| `dq_identity` | reference product and harvest lot | Species or commercial grade, CPC category, natural aquatic animal origin, harvest area, method, wet/dry/cleaned basis, and declared gate must be explicit. | reference flow metadata, landing records, product-state logs, packout records, and sales or dispatch records |
-| `dq_origin_and_habitat` | harvest or collection | Dataset must retain permit, access right, bed, habitat, protected-area, and regeneration or cutting practice disclosure where applicable. | permits, harvest logs, management records, area maps, and traceability documents |
-| `dq_mass_balance` | harvest, landing, cleaning, drying, trimming, and packout | Collected mass, accepted landed mass, rejects, trimming, moisture loss, residues, and marketable product records must reconcile within declared tolerance; unexplained gaps require disclosure. | mass-balance worksheet, scale tickets, landing records, drying records, packout records, and supervisor review |
-| `dq_temporal_coverage` | all foreground rows | Data must cover the declared harvest season, trip set, handling lots, drying lots, and dispatch period, or disclose partial-season, partial-lot, or proxy coverage. | reporting calendar, trip logs, handling logs, dispatch records, and coverage statement |
-| `dq_boundary_disclosure` | all datasets | The dataset must disclose whether collection, landing, cleaning, drying, packaging, delivery, capital goods, and infrastructure are foreground, linked upstream datasets, or excluded by scope. | dataset boundary statement, supplier records, upstream dataset links, and scope declaration |
+| `collect_harvest_fuel_diving_gear_and_collection_inputs` | `harvest_collection_and_landing` | Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Fuel, energy, mass, volume, item, time, or service quantity / L, kWh, MJ, kg, m3, item, h, or service unit; Amount rule: measured or allocated vessel fuel, air compression, diving service, gear use, collection inputs, and landing support by trip or lot; Sources: `fao-sponge-production`, `martinangeli-commercial-sponges-2022` Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range. | `cp_harvest_collection_and_landing_records`; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support |
+| `collect_damaged_sponges_non_target_material_and_landing_residues` | `harvest_collection_and_landing` | Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Mass, volume, or count / kg, m3, or item; Amount rule: measured rejected or damaged sponge, non-target material, residue mass, fate, disposal route, recovery route, and receiving environment; Sources:  Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range. | `cp_harvest_collection_and_landing_outputs`; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support |
+| `collect_water_chemicals_energy_drying_and_packaging_inputs` | `primary_preparation_drying_and_packout` | Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Mass, volume, energy, concentration, or item count / kg, L, m3, kWh, MJ, %, or item; Amount rule: measured washing water, cleaning or preservation chemicals, drying energy, electricity, packaging, storage, and dispatch preparation quantities; Sources: `fao-sponge-production` Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range. | `cp_preparation_packaging_and_storage_records`; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support |
+| `collect_trimming_residues_wash_water_and_packaging_waste` | `primary_preparation_drying_and_packout` | Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Mass or volume / kg, L, or m3; Amount rule: measured trimming residues, wash water, spent bath, wastewater, packaging waste, disposal route, recovery route, and receiving environment; Sources:  Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range. | `cp_primary_preparation_drying_and_packout_outputs`; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support |
+| `collect_delivery_fuel_electricity_and_packaging_support` | `delivery_to_declared_gate` | Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Fuel, energy, mass, or transport service / L, MJ, kWh, kg, or tonne-km; Amount rule: include only when the declared reference flow is delivered beyond landing, drying yard, dispatch, or packhouse gate; record distance, mode, load factor, moisture-protection condition, and return logistics where relevant; Sources:  Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range. | `cp_delivery_records`; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support |
+| `dq_unique_object_gate` | reference object and every stage | Before collection each dataset must fix one physical reference object: one species or an evidenced single physical commercial species-group product, one source/production route, form, actual life/preparation state, moisture/drainage basis, grade and unique gate location/time/acceptance condition. Do not combine different species, live/dead, fresh/chilled, raw/prepared states or different gates in one reference exchange; unresolved specifications make the dataset incomplete. Each stage is the measured state of that same lot and is not automatically the final 1 kg. | Species/origin/state/moisture/grade specification, actual gate and lot transfer/acceptance records |
+| `dq_ranges_uncertainty` | every actual individual exchange | Verify each range basis against its concrete flow, real unit, same-lot final Q denominator and representative conditions; retain independent source/historical-batch evidence, observed variation and uncertainty without treating unknown as zero. A mixed-unit collection screen is not an individual-flow range; no universal initial upper bound spans different moisture, yield, gate or taxa. Do not self-validate against the tested batch maximum or clip actual outliers. | Independent original evidence, calibration, method and uncertainty records |
+| `dq_period_ownership` | all nodes, periods, assets and inclusive services | Cover complete actual trip/production/handling/holding/transport periods, return, idle/failed duty, maintenance/cleaning and asset replacement/retirement; reconcile unique ownership and carried stock burdens across shared consumers. Zero output or unknown Q cannot justify division by zero or erased burdens; exclude duplicate components according to inclusive service scope. Disclose actual applicability of natural origin/habitat/permit, n.e.c. justification, temporal/technology/geographic representativeness and exclusions. | Period calendars, resource/asset/service/stock ledgers and origin/scope evidence |
+| `collect_declared_gate_handling` | `declared_gate_release` | The final gate is the actual boundary responsibility interface, not presumed extra processing. Collect each actual pre-gate acceptance/weighing/handling event’s own electricity, material, service, rejection and release; carry the original record when the same event is already owned by a predecessor, without duplicate measurement. Every applicable concrete exchange needs its own native quantity/unit, same-Q normalization, destination and verified identity; missing data is not zero. | `cp_declared_gate`; `cp_gate_outputs`; actual event/ownership/transfer/acceptance and independent range/uncertainty records |
 
 ## 9. Validation Rules
 
-| rule_id | Rule | Severity | Failure message |
+| rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `val_reference_flow_uuid` | Reference product flow UUID equals `972e9d63-d123-4b6e-ad97-5b72d0735453` unless a more specific Tiangong natural sponge product flow is documented. | error | Reference flow must use the natural sponges of aquatic animal origin product identity or document a reviewed replacement. |
-| `val_natural_origin` | Product is natural aquatic animal sponge and not synthetic, plastic, shaped manufactured, chemically finished, or composite sponge article. | error | Product identity is outside the natural aquatic animal sponge PCR scope. |
-| `val_mass_basis` | Product mass basis is declared as wet, drained, cleaned, dried, or another stated basis. | error | Product mass basis is missing or ambiguous. |
-| `val_required_qualifiers` | Required qualifiers are present in metadata or process notes. | warning | Reference flow qualifiers are incomplete. |
-| `val_structured_sync` | `structured.yaml` is regenerated from the bilingual Markdown after edits. | error | Structured projection is out of sync with authored PCR Markdown. |
+| `validate_scope` | reference object | Verify this PCR scope, single species/physical commercial product, actual source/route, life/preparation state, form/moisture/grade and unique declared gate. Classification labels or generic landing UUIDs cannot replace actual gate/state. Explain more-specific-PCR nonapplicability for n.e.c. products and animal origin for natural sponges. | |
+| `validate_gate_quantity` | reference output and all quantities | declared_gate_product is the sole final 1 kg reference output, and Q must be positive measured same-lot accepted net mass. Retain all raw batch quantities, actual intermediate yields, refusal/transit loss/moisture changes and paired transfers. Pack-out and delivery receipts are independently measured, not competing reference outputs. | |
+| `validate_atomic_completion` | all collection duties and actual exchanges | Resolve every applicable section-8 duty into specific physical/chemical exchanges with independent quantities, native units, range/uncertainty evidence, composition/state, same-Q normalization, destination/medium and verified compatible UUIDs. Any unresolved applicable duty makes the final dataset incomplete and validation fails; unknown is not zero and collection amounts/ranges/UUIDs are never copied. | |
+| `validate_fates_ownership` | outputs, resources, services and periods | Check intended products, managed wastes, environmental releases and stocks by actual fate; generated wastes/releases cannot be inputs. Inclusive services exclude overlapping owned fuel/electricity/assets/releases; transport cargo includes accompanying water/ice/containers and empty return is not zero burden. All actual nodes/periods/shared consumers and carried burdens must be complete. | |
+| `validate_projection` | bilingual content and structured projection | English/Chinese must align on reference object, exchange IDs, rules, units/denominators and duties; UUID-bearing Chinese displays use official baseName and unresolved identities remain explicit. Normally regenerate and verify structured Schema/fingerprints; structural pass does not prove identity, yield, numerical ranges or actual data completeness. | |
 
 ## 10. Published Dataset Profile
 
@@ -390,6 +437,6 @@ This row records the selected exchange within the declared process and system bo
 
 | Source id | Type | Reference | Used for |
 | --- | --- | --- | --- |
-| `fao-sponge-production` | official_guidance | FAO, Sponge production chapter, https://www.fao.org/4/ac286e/AC286E02.htm | sponge fishery route, production context, harvest and handling boundary |
+| `fao-sponge-production` | official_guidance | FAO, Sponge production chapter, https://www.fao.org/4/ac286e/AC286E02.htm | Historical qualitative capture and primary-preparation interfaces, distinguishing raw collection from non-skeletal tissue removal; not evidence of current practices, quantities, gear impacts, permits or product state. |
 | `martinangeli-commercial-sponges-2022` | literature | Martinangeli et al., The global catch of commercial sponges (1950 to 2019), Sea Around Us PDF, https://s3.us-west-2.amazonaws.com/legacy.seaaroundus/researcher/dpauly/PDF/2022/Book%2C%2Bchapters%2C%2Breports/Martinangeli%2C%2BL.%2C%2BM.%2BFourt%2C%2BM.%2BButler%2C%2BA.%2BC.%2BTsikliras%2C%2BN.%2BSmith%2C%2BM.L.D.%2BPalomares%2C%2BB.%2BDerrick%2C%2BE.%2BChu%2Band%2BD.%2BPauly.%2B2022.%2B2022.%2BThe%2Bglobal%2Bcatch%2Bof%2Bcommercial%2Bsponges.pdf | commercial sponge catch context, species and fishery documentation uncertainty |
-| `mass-balance-identity` | method_factor | PCR internal mass-balance identity: output equals measured inputs minus rejects, trimming, moisture loss, and losses under declared product basis | normalization, allocation, landing balance, yield, and delivery calculations |
+| `mass-balance-identity` | method_factor | Declared conservation/stock ledger and same-lot final-gate normalization method in PCR sections 4, 7 and 8, including measured receipts, stocks, water/tissue changes and all actual fates; no empirical yield or factor is supplied. | normalization, allocation, landing balance, yield, and delivery calculations |
