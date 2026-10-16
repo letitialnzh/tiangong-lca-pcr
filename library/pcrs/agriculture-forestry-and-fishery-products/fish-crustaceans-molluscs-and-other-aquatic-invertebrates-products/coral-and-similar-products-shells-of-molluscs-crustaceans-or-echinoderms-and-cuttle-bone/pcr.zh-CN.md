@@ -2,668 +2,579 @@
 pcr_id: pcr.agriculture-forestry-and-fishery-products.fish-crustaceans-molluscs-and-other-aquatic-invertebrates-products.coral-and-similar-products-shells-of-molluscs-crustaceans-or-echinoderms-and-cuttle-bone
 language: zh-CN
 status: candidate
+content_maturity: authored_methodology
+translation_status: aligned
 sync_with: pcr.en-US.md
 ---
 
-# 珊瑚及类似产品、软体动物、甲壳动物或棘皮动物外壳和乌贼骨
+# 经水洗沥水的未煅烧贻贝壳碎片
 
-## 1. 范围与适用性
+## 1. 适用范围
 
-本 PCR 适用于下列产品的前景数据包：未经加工或仅经简单制备、未切割成型的珊瑚及类似材料，软体动物、甲壳动物或棘皮动物外壳，以及乌贼骨；也包括在所声明产品类别内销售的碎片、粉末或废料。适用工序可包括来源资格确认、直接控制的采集或交付、接收、清洗或脱盐、去除残余有机物、干燥、分选、破碎或研磨、分级、包装、储存和出厂。
+本 PCR 仅适用于来自贻贝加工、按来源分离的贻贝壳碎片，经淡水清洗和沥水，不进行热干燥、煅烧或研磨。最终参考为最终沥水/储存后、进入窑炉前独立定义的中间物料交接，不是对外销售的制造碳酸盐产品。Barros 等（2009）第 2.1 节定性支持可适用路线，但当前来源分离及真实操作仍须有证据。
 
-使用者应按具体路线选择过程，不得假定所有产品都经过全部制备步骤。经转化形成氧化钙、沉淀碳酸钙、甲壳素、壳聚糖、羟基磷灰石、配制型建筑产品、珠宝、雕刻或切割成型制品、食品、饲料或其他化学或功能上不同产品的路线不适用本 PCR。数据集必须识别来源材料族，不得在未披露的情况下把软体动物壳证据泛化到珊瑚、甲壳动物壳、棘皮动物壳或乌贼骨。
+排除珊瑚、其他软体/甲壳/棘皮动物壳、乌贼骨、未分离混合壳进料、活体整动物、壳粉、成形制品及化学转化衍生物。历史设施主要处理贻贝壳，不证明目标纯来源配方；不由此认定特定 Mytilus 物种、当前数量、本中间物料销售、法定废物终止、纯度或安全用途。
 
 ## 2. 产品类别识别
 
-| 字段 | 值 |
+| Field | Value |
 | --- | --- |
 | canonical_pcr_id | pcr.agriculture-forestry-and-fishery-products.fish-crustaceans-molluscs-and-other-aquatic-invertebrates-products.coral-and-similar-products-shells-of-molluscs-crustaceans-or-echinoderms-and-cuttle-bone |
-| classification_refs | CPC 3.0 `04911`（已接受的精确映射）；HS 2022 `050800`（仅用于辅助界定范围） |
-| covered_products | 未加工或仅简单制备的珊瑚及类似材料；软体动物、甲壳动物或棘皮动物外壳；乌贼骨；以及在所声明类别内销售的未成型碎片、粉末或废料。 |
-| excluded_products | 活体水生生物；可食用产品；切割成型、雕刻、抛光、珠宝或其他成品；煅烧氧化钙；沉淀或化学纯化碳酸钙；甲壳素、壳聚糖、羟基磷灰石及其他化学转化衍生物；配制型建筑、农业、食品、饲料、化妆品或医疗产品。 |
-| representative_product | 在制备设施门口的已清洁、干燥、未成型外壳、乌贼骨或珊瑚类材料，或其机械破碎和分级部分。 |
-| production_route | 来源资格确认；有条件的采集和交付；接收；按路线进行清洗、脱盐、去除有机残留和干燥；有条件的粒径减小和分级；有条件的包装和储存；出厂。 |
-| market_state | 散装或包装的完整未成型材料、碎片、颗粒、粉末或所声明废料级，且声明材料族、来源路线、含水基准、等级或粒径类别以及法律和来源证明状态。 |
+| classification_refs | CPC 3.0 04911; 更窄产品/路线边界，不声称覆盖整个叶类 |
+| covered_products | 经水洗沥水的未煅烧贻贝壳碎片 |
+| excluded_products | 其他全部物料族，以及未清洗、热干燥/煅烧/研磨参考产品、制造碳酸盐及下游应用。 |
+| representative_product | 在水洗沥水、煅烧前接口的单一来源已核实贻贝壳碎片批次。 |
+| production_route | 有记录贻贝加工残余物；真实运输；接收；淡水清洗及初步沥水；真实废水管理；最终沥水/储存及煅烧前交接。 |
+| market_state | 湿态、水洗沥水未煅烧碎片，具有实测残余含水率和真实规格；中间接口，不预设对外商品。 |
 
 ## 3. 参考流
 
-| 字段 | 值 |
+| Field | Value |
 | --- | --- |
-| What | 在制备设施门口提供本 PCR 范围内所声明的珊瑚类材料、软体动物壳、甲壳动物壳、棘皮动物壳或乌贼骨产品。 |
-| How much | 1 kg 所声明产品质量。 |
-| How well | 产品满足所声明的材料族、来源路线、制备状态、含水基准、等级或粒径类别以及适用的法律和来源证明要求。 |
-| How long or cycle | 一个可识别的生产批次，或归一化至参考数量的所声明报告期。 |
+| what | 经水洗沥水的未煅烧贻贝壳碎片; 在煅烧前中间交接点 |
+| how_much | 1 kg 水洗沥水碎片净质量，包含实测残余水分，排除游离渗滤液及包装。 |
+| how_well | 记录真实贻贝来源/分类、分离、碎片状态、残余水分、等级及验收规格，不预设矿物纯度或废物终止。 |
+| how_long_or_cycle | 匹配进料批次、清洗运行、沥水/储存区间、库存及实测最终验收交接批次。 |
 | reference_flow_link | `reference_product_flow` |
 
-| 字段 | 值 |
+| Field | Value |
 | --- | --- |
-| 参考数量 | 1 kg |
-| 参考产品流 | 珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906` |
-| 参考流属性 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` |
-| 参考单位组 | Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66` |
-| 参考单位 | kg |
-| 必需限定信息 | 材料族及已知分类单元；来源路线；来源地理；采集、打捞、养殖或加工残余物状态；制备状态；含水基准；等级或粒径类别；法律和来源证明状态；包装状态 |
-
-构建前景数据包时，`必需限定信息` 中列出的信息必须在数据集元数据、过程说明、参考流备注、产品说明或等效字段中声明。缺失必需限定信息即表示参考流不完整。
+| Reference amount | 1 |
+| Reference product flow | 经水洗沥水的未煅烧贻贝壳碎片 |
+| Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
+| Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
+| Reference unit | kg |
+| Required qualifiers | 真实贻贝分类; 来源加工场及地域; 分离证据; 废物/法律状态及供应方负荷处理; 原料及最终含水率; 碎片形态/等级; 清洗/沥水操作; 批次/时段/库存; 精确煅烧前交接地点/时间; 验收; 包装/游离水排除。 |
 
 ## 4. 计量与单位规则
 
-| rule_id | 适用对象 | 必需流属性 | 必需单位 | 规则 |
+| rule_id | Applies to | Required property | Required unit | Rule |
 | --- | --- | --- | --- | --- |
-| `reference_mass` | 参考产品以及带质量的产品流或废物流行 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | 将所声明产品及所有可比材料输出归一化至 1 kg 参考产品，同时保留未归一化的报告期总量。 |
-| `moisture_basis` | 接收、制备和最终材料 | Mass `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | 声明每项质量是接收态、风干态、烘干态或其他测定含水基准。仅可根据实测含水率或固含量换算。 |
-| `water_record` | 清洗、脱盐和洗涤用水 | 质量或体积 | kg 或 m3 | 保留计量或发票中的原始单位。进行质量和体积换算时，记录实测或有文件依据的密度及换算过程。 |
-| `energy_and_fuel_record` | 采集、搬运、干燥、研磨、分级、包装和储存能源 | 能量、质量或体积 | kWh、MJ、kg 或 L | 归一化前保留电表、发票或燃料记录的原始单位和能源载体标识。存在供应商特定值时不得采用通用换算因子。 |
-| `transport_service` | 直接控制的采集和交付 | 质量-距离 | tkm | 使用实际运输质量和路线距离计算运输服务，并保留车辆或船舶方式、载荷基准和空驶处理。 |
-| `particle_size_and_grade` | 机械破碎、研磨或分级产品 | 所声明粒径或等级 | mm、µm 或所声明类别 | 粒径或等级是必需限定信息，不能替代质量参考流属性。 |
-| `transformation_scope` | 经热处理或化学处理的材料 | 所声明成分和工艺条件 | 按实测 | 若处理使材料转化为 CaO、沉淀碳酸钙、甲壳素、壳聚糖、羟基磷灰石或其他化学上不同的产品，本 PCR 不再提供其参考流规则。 |
+| `reference_mass` | 全部壳及残余物质量 | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` | kg | 保留原始湿态批次/时段质量和实测含水率/固含量。Q 是唯一最终接口正值验收净质量，逐项真实物料数量 q/Q 按该基准报告；物理转移不分配、不固定 1 kg。 |
+| `moisture_basis` | 接收、清洗及最终沥水 | Mass | kg | 记录各阶段含水率及抽样方法，仅按匹配实测固含量/含水量换算干湿基准；水、组织、盐及壳移除分别平衡。不提供通用干基收率、矿物组成或单调湿质量收率。 |
+| `water_units` | 每个水及水性废物流 | Mass | kg | 保留实际使用的原生体积计量；换算为声明质量须有来源特定实测/文件密度及温度/盐度、不确定性。最终核实流若采用另一原生属性，保留并显式核对支持单位；不得把资源 UUID 借给外购水。 |
+| `energy_units` | 电力及真实燃料 | Net calorific value / Mass | kWh / kg | 电力 kWh 是能量（1 kWh = 3.6 MJ），柴油 kg 是燃料质量，不是电能。原生 L 至 kg 或质量至能量换算须有匹配密度/热值证据，不由数据库名称默认。 |
+| `transport_load` | controlled_collection_and_delivery | Mass-distance | tkm | 使用购入运输服务时按真实湿货载质量及路线距离计算 tkm，包括实际随行水/容器；保留空返及服务覆盖证据。同一包含服务不得重复计自有燃料/燃烧。 |
 
 ## 5. 系统边界
 
-| rule_id | 适用对象 | 规则 | 来源 |
+| rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `system_boundary_rule_1` | 来源资格确认和采集 | 声明材料是直接采集、打捞、来自养殖、从水产品加工回收、作为副产品购买，还是作为废物接收。纳入报告经营者直接控制的采集、生境相互作用和交付活动。 | `unsd-cpc3-hs-scope`; `cites-current-coral-controls` |
-| `system_boundary_rule_2` | 购买或供应的来源材料 | 链接具有代表性的上游数据集，或披露来源地理、供应商过程、先前产品或废物状态以及上游负荷分配规则。仅有废物或副产品标签不能证明上游负荷为零。 | `eu-pef-method-2021` |
-| `system_boundary_rule_3` | 前景制备 | 纳入经营者控制且适用的接收、清洗、脱盐、去除有机残留、干燥、分选、破碎或研磨、分级、包装、储存、内部搬运、废水管理、固体残余物管理和直接释放。 | `eu-pef-method-2021`; `shell-waste-management-2023`; `bivalve-shell-valorization-2022` |
-| `system_boundary_rule_4` | 前景输出 | 识别所有共产品、副产品、废物流、废水流和直接基本流。任何排除都必须说明理由并披露其可能重要性。 | `eu-pef-method-2021` |
-| `system_boundary_rule_5` | 设施门口数据集 | 从本门口参考流中排除下游分销、产品使用、并入其他产品及生命末期，除非所声明数据集范围明确延伸至门口以外。 | `eu-pef-method-2021` |
+| `boundary_source` | source_qualification_and_receipt | 从可交付的来源已分离贻贝加工壳碎片残余物起算，保留真实上游养殖/加工负荷处理、归属、废物状态及供应方数据集；废物名称本身不是零负荷规则。 | `eu-pef-method-2021` |
+| `boundary_route` | 前景路线 | 纳入真实运输覆盖、接收、淡水清洗/沥水、最终储存/沥水、纳入公用工程/资产及真实残余物/水处理。唯一最终 gate 为煅烧前中间交接；窑炉能耗及煅烧后产品均在边界外。 | `barros-mussel-shell-2009` |
+| `boundary_interface` | packaging_storage_and_gate_release | 此处产品流术语仅识别物理单元过程中间物料，不证明商品销售、所有权转移、废物分类或法定废物终止。保留真实法律状态，逐交换绑定前核实技术流类型/状态。 |  |
+| `boundary_water` | 清洗、处理及储存 | 内部废水/回用转移仅成对计一次。新增外部供水/取水单列，内部总循环不是新增输入且不再扣减一次。管理废水交接为废物流，直接排水须有真实返回水及物质/介质记录。 |  |
+| `boundary_exclusions` | 下游及非目标物料 | 排除珊瑚、其他壳/乌贼骨、未分离混料、研磨、热干燥/煅烧、制造碳酸盐、接口后分销及下游用途；不得为保留无关操作而扩大本 PCR。 |  |
 
 ### 边界概化
 
-| 字段 | 值 |
+| Field | Value |
 | --- | --- |
-| declared_starting_condition | `qualified_source_material_at_collection_or_receipt` |
-| starting_condition_role | 第一个前景状态为在采集或接收时已经核验材料族、来源路线、地理、先前产品或废物状态、含水基准以及法律或来源证明的来源材料。 |
-| product_classification_scope | CPC 3.0 `04911`，并限定为未加工或仅简单制备、未成型材料以及所声明的粉末或废料部分。 |
-| recursive_input_rule | 对已属于本产品类别的输入，按同类别产品输入记录，并声明其来源路线、质量、含水基准、等级、上游数据集和分配状态；不得隐藏为通用矿物或废物投入。 |
-| upstream_dataset_requirement | 对购买或供应的材料使用供应商或路线代表性数据集。若不可得，披露数据缺口和先前负荷处理；不得默认为零负荷。 |
-| disclosure | 报告纳入和排除的单元操作；采集和运输控制；材料分类单元或材料族；来源地理；珊瑚适用的许可证或 CITES 状态；先前废物或副产品状态；含水率和等级；清洗、干燥和研磨路线；包装；废水和残余物去向；直接释放；分配方法；背景数据替代。 |
+| declared_starting_condition | 有记录贻贝加工场产生、按来源分离的未清洗壳碎片废物 |
+| starting_condition_role | 真实上游残余物交接，不是天然珊瑚采集或新增海洋资源取用 |
+| product_classification_scope | CPC 3.0 04911; narrower; 经水洗沥水的未煅烧贻贝壳碎片 |
+| recursive_input_rule | 仅一次引用真实供应方准备及原有负荷，受控送达与接收成对关联，不新增一次外部供应。 |
+| upstream_dataset_requirement | 真实贻贝加工残余物及运输、公用工程/材料供应和接收处理；缺少供应方证据阻碍完整性，不等于零。 |
+| disclosure | 物种/来源分离、原料/最终含水率、真实操作、接口、时段/库存、物理平衡、运输覆盖、水拓扑、处理、资产、法律状态、分配和不确定性。 |
 
 ## 6. 过程清单结构
 
+每卡为一个具体物理或化学交换。每数据包须明确一个真实贻贝来源/分类和碎片规格；不同来源、水等级、废物或物质分别建卡和记录。有条件卡仅适用真实操作，第 8 节强制补充义务不能替代交换绑定。
+
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
-| `source_qualification_and_receipt` | 来源资格确认和接收 | `required` | 始终纳入。 | 确立产品身份、路线、来源证明、进料质量、含水率、接收质量和拒收材料。 | 进入制备或出厂处理的已接收来源材料。 |
-| `controlled_collection_and_delivery` | 受控采集和交付 | `conditional` | 当采集、打捞、船舶活动、装载或交付由报告经营者控制时纳入。 | 记录路线距离、运输方式、燃料或能源以及直接控制的采集相互作用。 | 已运输接收材料及运输服务。 |
-| `cleaning_drying_and_sorting` | 清洗、干燥和分选 | `conditional` | 发生洗涤、脱盐、去除有机残留、灭菌、干燥、分选或类似简单制备时纳入。 | 生产清洁制备材料并记录水、能源、试剂、残余物、废水和直接释放。 | 按所声明含水基准计的制备材料输出。 |
-| `size_reduction_and_grading` | 粒径减小和分级 | `conditional` | 发生破碎、研磨、筛分、过筛或分级时纳入。 | 生产所声明的碎片、颗粒、粉末或等级，并记录能源、规格外材料和粉尘。 | 合格分级材料输出。 |
-| `packaging_storage_and_gate_release` | 包装、储存和出厂 | `required` | 始终纳入出厂；仅在实际发生时纳入包装和储存行。 | 确立最终参考产品质量、包装状态、储存条件和出厂输出。 | 设施门口 1 kg 所声明产品。 |
+| `source_qualification_and_receipt` | 来源核实与接收 | `required` | 接收有真实来源及废物状态记录、已按来源分离的贻贝加工壳碎片废物。 | unit operation | actual measured native throughput |
+| `controlled_collection_and_delivery` | 受控接收前运输 | `conditional` | 从贻贝加工场至接收点的真实前景受控运输；否则关联购入运输服务。 | unit operation | actual measured native throughput |
+| `cleaning_drying_and_sorting` | 淡水清洗与初步沥水 | `required` | 清洗目标壳碎片并初步沥水；不包括热干燥、煅烧或研磨。 | unit operation | actual measured native throughput |
+| `onsite_wastewater_management` | 场内废水管理 | `conditional` | 仅实际由运营方控制的清洗废水或储存渗滤液处理；场外处理保留有证据接收服务。 | unit operation | actual measured native throughput |
+| `packaging_storage_and_gate_release` | 储存、最终沥水及煅烧前交接 | `required` | 交接实测水洗沥水、未煅烧壳碎片中间物料；不包括后续窑炉或制造碳酸盐产品。 | final intermediate handover | 1 kg accepted washed/drained fragments |
 
-### 过程：来源资格确认和接收（`source_qualification_and_receipt`）
-
-#### 输入
-
-##### 产品流
-
-###### 接收来源材料（`source_material_received`）
-
-本行记录接收和制备前的珊瑚类材料、外壳或乌贼骨，包括其先前产品、副产品或废物状态。
-
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：按批次或报告期计量进料毛质量和净质量，并记录含水率或固含量基准。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：路线特定（`route_specific`）
-- 归一化基准：进料质量和接收质量归一化至 1 kg 最终参考产品。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_source_receipt`
-
-##### 废物流
-
-不规定默认废物输入。若设施接收法律上归类为废物的材料，应在来源记录中保留该状态，同时把材料作为本 PCR 选定的同类别输入建模。
-
-##### 基本流
-
-不规定默认基本流输入。
-
-#### 输出
-
-##### 产品流
-
-###### 已接收来源材料（`accepted_source_material`）
-
-已接收材料是去除接收拒收物后转入简单制备或直接转入最终出厂处理的数量。
-
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：在相同含水基准下，用实测进料质量减去实测接收拒收物计算接收质量。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 最终参考产品的接收质量。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集数据计算（`calculated_from_collection`）
-- 采集协议：`cp_source_receipt`
-
-##### 废物流
-
-###### 接收拒收物（`receipt_rejects`）
-
-记录接收时去除的非目标生物材料、沉积物、异物、受污染材料和不合格来源材料，并记录实际去向。
-
-- 选定流：选择与材料和处理去向相匹配的路线特定 Tiangong 废物流。
-- 流属性/单位：Mass / kg
-- 数量规则：按批次计量拒收质量并记录再利用、回收、处理或处置去向。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 最终参考产品的拒收质量。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_waste_and_wastewater`
-
-##### 基本流
-
-接收过程不规定默认基本流输出。存在直接释放时添加实测行。
-
-### 过程：受控采集和交付（`controlled_collection_and_delivery`）
+### 过程： 来源核实与接收 (`source_qualification_and_receipt`)
 
 #### 输入
 
 ##### 产品流
 
-###### 采集或交付的材料（`material_collected_or_delivered`）
+###### 接收操作用电 (`receipt_electricity`)
 
-对于报告经营者控制的采集或交付活动，使用已通过资格确认的来源材料记录。
+仅实际接收/输送用电时适用；匹配供应商、地域、电压及计量时段。
 
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：采用实测装载和交付质量，并声明含水基准和损失。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：路线特定（`route_specific`）
-- 归一化基准：与 1 kg 最终参考产品相关的运输质量。
-- 基准类型：运输服务（`transport_service`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_collection_transport`
-
-###### 采集或交付柴油（`collection_or_delivery_diesel`）
-
-仅当柴油为实际受前景控制的能源载体时使用本行；其他载体应选择其他 Tiangong 流。
-
-- 选定流：柴油 `9d258d75-6792-4f1c-9856-81602ed8f816`
-- 流属性/单位：Mass / kg
-- 数量规则：依据加油、油箱、发票或设备日志记录燃料，并关联到采集或交付路线。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：路线特定（`route_specific`）
-- 归一化基准：与 1 kg 最终参考产品相关运输服务所用燃料。
-- 基准类型：运输服务（`transport_service`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_collection_transport`
+- 选定流： 电力
+- 流属性/单位： 净热值 `93a60a56-a3c8-11da-a746-0800200c9a66`; 单位组 能量单位组 `93a60a57-a3c8-11da-a746-0800200c9a66` / kWh
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_source_receipt`
 
 ##### 废物流
 
-不规定默认废物输入。
+###### 接收的未清洗贻贝壳碎片废物 (`source_material_received`)
+
+须有真实分离/来源证据证明进料为贻贝壳，不能把历史设施未明混料视为目标纯来源。称量接收净料，声明附着水分/残余物，排除车辆、容器和可分离游离水皮重；保留真实废物状态及供应方负荷记录。
+
+- 选定流： 贻贝加工产生的未清洗壳碎片废物
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 实测未分配物料质量和阶段含水率，保留原始批次数量，按每 1 kg 参考流报告；不得固定内部转移为 1 kg。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_source_receipt`
 
 ##### 基本流
-
-###### 直接采集相互作用或释放（`collection_direct_releases`）
-
-仅对受控采集造成且有实测或许可证报告的资源开采、生境相互作用或直接排放实例化本行。
-
-- 选定流：为实测资源或排放选择适用的 Tiangong 基本流。
-- 流属性/单位：使用所选 Tiangong 流属性和单位。
-- 数量规则：使用直接监测、许可证记录或依据所采集活动数据的批准计算。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：路线特定（`route_specific`）
-- 归一化基准：每 1 kg 最终参考产品的直接相互作用或释放。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_direct_releases`
 
 #### 输出
 
 ##### 产品流
 
-###### 已交付来源材料（`delivered_source_material`）
-
-本输出把实测交付质量传递至接收或制备过程，不改变材料身份。
-
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：在相同含水基准下，用装载质量减去实测运输损失计算交付质量。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：路线特定（`route_specific`）
-- 归一化基准：每 1 kg 最终参考产品的交付质量。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集数据计算（`calculated_from_collection`）
-- 采集协议：`cp_collection_transport`
-
 ##### 废物流
 
-###### 采集或交付损失（`collection_or_delivery_losses`）
+###### 验收的未清洗贻贝壳碎片废物 (`accepted_source_material`)
 
-仅在实际发生时记录遗失、溢洒、损坏或拒收材料，并指定实际去向。
+实测实际验收并转入清洗的湿进料；与清洗输入按批次/质量/状态成对关联。分别记录接收拒料、库存及游离水分离，不预设来源至产品收率。
 
-- 选定流：选择与材料和去向相匹配的路线特定 Tiangong 废物流。
-- 流属性/单位：Mass / kg
-- 数量规则：计量或核算装载质量与交付质量之差，排除实测含水变化。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：路线特定（`route_specific`）
-- 归一化基准：每 1 kg 最终参考产品的损失质量。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集数据计算（`calculated_from_collection`）
-- 采集协议：`cp_collection_transport`
+- 选定流： 贻贝加工产生的未清洗壳碎片废物
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 实测未分配物料质量和阶段含水率，保留原始批次数量，按每 1 kg 参考流报告；不得固定内部转移为 1 kg。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_source_receipt`
 
 ##### 基本流
 
-直接释放记录在 `collection_direct_releases` 中；不得重复计入已由燃料燃烧或运输过程表示的排放。
-
-### 过程：清洗、干燥和分选（`cleaning_drying_and_sorting`）
+### 过程： 受控接收前运输 (`controlled_collection_and_delivery`)
 
 #### 输入
 
 ##### 产品流
 
-###### 进入制备的已接收材料（`material_for_preparation`）
+###### 受控运输实际消耗柴油 (`collection_or_delivery_diesel`)
 
-本输入是进入适用清洗、脱盐、去除有机残留、干燥或分选步骤的已接收材料。
+仅真实自有柴油消耗适用，不重复购入运输服务。该质量基准身份不提供默认配方、供应商、密度、热值或排放因子；体积换算须有匹配密度。
 
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：使用实测接收投入质量和含水率或固含量。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：每 1 kg 制备材料输出和每 1 kg 最终参考产品的制备投入。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_preparation_material`
-
-###### 工艺用水（`preparation_water`）
-
-使用淡水、海水、回用水或其他水进行清洗或脱盐时分别记录。
-
-- 选定流：工艺用水 `94a04f7e-2d5c-41f0-b182-d54a3b373a02`
-- 流属性/单位：Mass / kg；当体积是原始记录时保留实测 m3
-- 数量规则：使用水表、水箱、发票或批次记录，并区分淡水、海水和回用水。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每吨进入适用清洗步骤的壳料用水，并归一化至每 1 kg 最终参考产品。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_preparation_water`
-- 来源：`shell-waste-management-2023`
-- 数量范围：文献报告的壳料降盐清洗用水量
-  - 范围角色：典型范围（`typical_range`）
-  - 下限：0.2
-  - 上限：0.8
-  - 单位：m3/t 壳料
-  - 基准：用于降低壳料盐含量的淡水；仅作为筛查证据，不是符合性限值
-  - 基准类型：过程输出（`process_output`）
-  - 证据类型：外部来源（`external_source`）
-  - 来源：`shell-waste-management-2023`
-
-###### 制备能源（`preparation_energy`）
-
-记录清洗设备、加热、灭菌、干燥、通风和分选实际使用的电力、热能或燃料。
-
-- 选定流：选择场址和载体特定的 Tiangong 电力、热力或燃料流。
-- 流属性/单位：能量、质量或体积 / 按记录使用 kWh、MJ、kg 或 L
-- 数量规则：使用分表、设备表、燃料、发票或经分配的公用工程记录，并保留载体和地理信息。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：技术特定（`technology_specific`）
-- 归一化基准：每 1 kg 制备材料输出的制备能源。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_preparation_energy_and_agents`
-- 来源：`shell-waste-management-2023`
-
-###### 清洗或加工试剂（`cleaning_agents`）
-
-仅在实际使用时记录洗涤剂、酶、消毒剂、溶剂、酸、碱或其他试剂；形成化学上不同输出的处理不适用本 PCR。
-
-- 选定流：为所用每种试剂选择实际 Tiangong 产品流。
-- 流属性/单位：质量或体积 / 按记录使用 kg 或 L
-- 数量规则：采用采购、投加或批次配方记录，并保留浓度和回收信息。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：技术特定（`technology_specific`）
-- 归一化基准：每 1 kg 制备材料输出的试剂用量。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_preparation_energy_and_agents`
-- 来源：`shell-waste-management-2023`
+- 选定流： 柴油 `9d258d75-6792-4f1c-9856-81602ed8f816`
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_collection_transport`
 
 ##### 废物流
 
-不规定默认废物输入。
+###### 装运的未清洗壳碎片废物 (`material_collected_or_delivered`)
+
+仅真实受控运输适用。记录进料、附着水分、容器及另行随车水的实际货载；本壳交换排除容器皮重。
+
+- 选定流： 贻贝加工产生的未清洗壳碎片废物
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 实测未分配物料质量和阶段含水率，保留原始批次数量，按每 1 kg 参考流报告；不得固定内部转移为 1 kg。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_collection_transport`
 
 ##### 基本流
-
-不规定默认基本流输入。
 
 #### 输出
 
 ##### 产品流
 
-###### 已清洁和干燥材料（`cleaned_and_dried_material`）
-
-本输出是经过适用清洗、脱盐、干燥和分选后、可选粒径减小之前的简单制备材料。
-
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：按批次计量输出质量和含水率或固含量基准；需要时计算归一化干质量。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：每 1 kg 最终参考产品的制备输出质量。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_preparation_material`
-
 ##### 废物流
 
-###### 清洗和分选残余物（`cleaning_and_sorting_residues`）
+###### 交至接收点的未清洗壳碎片废物 (`delivered_source_material`)
 
-当处理方式不同时，分别记录去除的有机物、沉积物、盐、破碎非产品部分和分选拒收物。
+实测送达湿进料并关联接收事件；不得将送达及接收计为两次外部供料。独立记录损失及库存或水分变化。
 
-- 选定流：为每种残余物和处理去向选择路线特定 Tiangong 废物流。
-- 流属性/单位：Mass / kg
-- 数量规则：按所声明含水基准计量残余物质量，并记录回收、处理或处置去向。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 制备材料输出及每 1 kg 最终参考产品的残余物质量。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_waste_and_wastewater`
-
-###### 清洗废水（`cleaning_wastewater`）
-
-在废水或废盐水离开前景过程去往场内处理、场外处理、回用或排放的位置记录。
-
-- 选定流：选择与废水组成及实际处理或排放去向相匹配的 Tiangong 废物流。
-- 流属性/单位：质量或体积 / kg 或 m3
-- 数量规则：使用排放表、水箱记录或有文件依据的水平衡；在实测或法规要求时保留盐度、悬浮固体、有机负荷和处理去向。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 制备材料输出和每 1 kg 最终参考产品的废水量。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_waste_and_wastewater`
+- 选定流： 贻贝加工产生的未清洗壳碎片废物
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 实测未分配物料质量和阶段含水率，保留原始批次数量，按每 1 kg 参考流报告；不得固定内部转移为 1 kg。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_collection_transport`
 
 ##### 基本流
 
-###### 制备直接释放（`preparation_direct_releases`）
+###### 自有运输燃烧向空气排放的化石源二氧化碳 (`delivery_fossil_co2`)
 
-对未由废物处理或能源供应过程表示的实测粉尘、挥发性释放、燃烧排放或直接水排放分别实例化行。
+仅真实前景化石燃料燃烧向空气排放时适用。用真实实测化石燃料活动及独立支持的燃料/发动机/碳来源因子计算化石 CO2，保留量纲单位及不确定性；不得设通用因子或重复已包含运输/燃烧服务。其他物质须独立落实。 有可用监测时仅作独立 QA 对照，不另计第二笔 CO2 清单数量。
 
-- 选定流：选择每个适用的 Tiangong 基本流和接收环境介质。
-- 流属性/单位：使用所选 Tiangong 流属性和单位。
-- 数量规则：使用直接监测，或基于采集活动数据和有引用因子的批准计算。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 制备材料输出及每 1 kg 最终参考产品的直接释放。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：由采集数据计算（`calculated_from_collection`）
-- 采集协议：`cp_direct_releases`
+- 选定流： 二氧化碳（化石源） `08a91e70-3ddc-11dd-923d-0050c2490048`
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 用真实燃烧活动乘以独立有证据的兼容因子计算化石 CO2 质量；保留来源活动及因子单位、计算和不确定性，按每 1 kg 参考流报告。
+- 数值来源模式： `calculated_value`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `calculated_from_collection`
+- 采集协议： `cp_collection_transport`
 
-### 过程：粒径减小和分级（`size_reduction_and_grading`）
+### 过程： 淡水清洗与初步沥水 (`cleaning_drying_and_sorting`)
 
 #### 输入
 
 ##### 产品流
 
-###### 进入粒径减小的制备材料（`prepared_material_for_size_reduction`）
+###### 清洗壳碎片的外部淡水供水 (`preparation_freshwater`)
 
-当清洁材料被破碎、研磨、筛分、过筛或分级为所声明产品形态时使用本输入。
+仅真实外部淡水产品供水适用，记录水源和水质；直接天然取水另行采集。内部回用水不是新增供水；保留 kg 或仅按匹配温度/盐度的密度证据换算原始体积。
 
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：为每次分级作业计量制备投入质量和含水基准。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：每 1 kg 合格分级输出的制备投入。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_size_reduction_and_grading`
+- 选定流： 贻贝壳清洗用外部淡水
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_preparation`
 
-###### 粒径减小能源（`size_reduction_energy`）
+###### 场内处理回送的清洗回用水 (`washing_reclaimed_water`)
 
-记录破碎机、磨机、筛网、除尘和物料搬运实际使用的电力或燃料。
+仅实际内部处理水转移时适用，每卡为一种有记录组成/盐度的水，与处理输出成对关联。保留总回用量用于单元平衡，在系统供水总量中抵消内部转移，不再从新增进水扣一次。
 
-- 选定流：选择场址和载体特定的 Tiangong 能源流。
-- 流属性/单位：能量、质量或体积 / 按记录使用 kWh、MJ、kg 或 L
-- 数量规则：使用设备表、公用工程表、生产日志或有文件依据的共享能源分配。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：技术特定（`technology_specific`）
-- 归一化基准：每 1 kg 合格分级输出的能源。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_size_reduction_and_grading`
-- 来源：`bivalve-shell-valorization-2022`
+- 选定流： 贻贝壳废水处理回用水
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_preparation`
+
+###### 清洗和沥水用电 (`preparation_energy_electricity`)
+
+计量实际清洗、输送及沥水设备，明确供电身份，仅按有记录使用证据分配共用公用工程负荷。
+
+- 选定流： 电力
+- 流属性/单位： 净热值 `93a60a56-a3c8-11da-a746-0800200c9a66`; 单位组 能量单位组 `93a60a57-a3c8-11da-a746-0800200c9a66` / kWh
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_preparation`
 
 ##### 废物流
 
-不规定默认废物输入。
+###### 进入清洗的未清洗壳碎片废物 (`material_for_preparation`)
+
+真实验收的同批湿进料。保留残余组织、盐分、异物和水分观察，不能混淆所识别壳对象；不虚构组成或干湿换算因子。
+
+- 选定流： 贻贝加工产生的未清洗壳碎片废物
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 实测未分配物料质量和阶段含水率，保留原始批次数量，按每 1 kg 参考流报告；不得固定内部转移为 1 kg。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_preparation`
 
 ##### 基本流
-
-不规定默认基本流输入。
 
 #### 输出
 
 ##### 产品流
 
-###### 合格完整、碎片、颗粒或粉末产品（`on_spec_graded_product`）
+###### 水洗湿态未煅烧壳碎片 (`washed_wet_shell_fragments`)
 
-本输出保留产品类别身份和质量参考流属性，同时携带最终机械等级。
+实测未经热干燥、送入最终沥水/储存的湿态中间物料。保留实测残余含水率及物料变化，不声称高纯 CaCO3、干壳或灭菌状态。
 
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：按所声明等级和含水基准计量合格输出。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：传递至最终参考流的合格输出。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_size_reduction_and_grading`
+- 选定流： 水洗湿态未煅烧贻贝壳碎片
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 实测未分配物料质量和阶段含水率，保留原始批次数量，按每 1 kg 参考流报告；不得固定内部转移为 1 kg。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_preparation`
 
 ##### 废物流
 
-###### 规格外分级部分（`off_spec_grading_fraction`）
+###### 交付真实处理的清洗废水 (`washing_wastewater`)
 
-按再利用或处理去向记录规格外细料、超尺寸部分、异物和控制设备收集粉尘。
+仅实际交给场内或场外管理处理时适用。记录本水流真实盐度/组成、数量、接收方及去向。直接环境排水须另列返回水和每种真实物质/介质，不能沿用本废物流绑定。
 
-- 选定流：若内部循环或作为所声明等级销售，使用同类别产品流；否则选择路线特定 Tiangong 废物流。
-- 流属性/单位：Mass / kg
-- 数量规则：计量每个部分，并识别内部循环、共产品销售、回收或废物去向。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：每 1 kg 合格分级输出及每 1 kg 最终参考产品的规格外部分。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_size_reduction_and_grading`
+- 选定流： 贻贝壳清洗废水
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_preparation`
 
 ##### 基本流
 
-###### 未捕集颗粒物释放（`uncaptured_particulate_release`）
-
-仅当实测或批准计算的释放跨越环境边界时记录基本流输出；收集粉尘仍属于废物流或可回收产品流。
-
-- 选定流：选择与粒径和接收环境介质相匹配的 Tiangong 颗粒物基本流。
-- 流属性/单位：Mass / kg
-- 数量规则：使用烟道或工作场所至环境的监测记录，或带引用计算方法的控制效率记录。
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：技术特定（`technology_specific`）
-- 归一化基准：每 1 kg 合格分级输出的未捕集颗粒物。
-- 基准类型：过程输出（`process_output`）
-- 证据类型：由采集数据计算（`calculated_from_collection`）
-- 采集协议：`cp_direct_releases`
-
-### 过程：包装、储存和出厂（`packaging_storage_and_gate_release`）
+### 过程： 场内废水管理 (`onsite_wastewater_management`)
 
 #### 输入
 
 ##### 产品流
 
-###### 进入出厂处理的产品（`product_entering_gate_handling`）
+###### 场内废水处理用电 (`wastewater_treatment_electricity`)
 
-本输入是进入最终称量和出厂处理的所声明完整、碎片、颗粒、粉末或废料级材料。
+仅实际处理泵送、分离及相关用电时适用；保留计量时段、使用者及有支持份额，不预设处理工艺列。
 
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：在增加包装皮重之前，使用所声明含水基准下的最终批次或批号质量。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：传递至 1 kg 最终参考产品的产品质量。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_packaging_and_gate_release`
-
-###### 包装材料（`packaging_materials`）
-
-记录随参考产品供应或为其消耗的袋、内衬、桶、纸箱、托盘、薄膜、标签和可重复使用容器。
-
-- 选定流：选择每种实际 Tiangong 包装材料流。
-- 流属性/单位：质量或数量 / 按记录使用 kg 或 item
-- 数量规则：使用采购、物料清单或包装线记录，并在适用时声明可重复使用容器循环次数。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：每 1 kg 最终参考产品供应或消耗的包装材料。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_packaging_and_gate_release`
-
-###### 包装和储存能源（`packaging_and_storage_energy`）
-
-在实际发生时记录出厂搬运、通风、湿度控制、储存和包装能源。
-
-- 选定流：选择场址和载体特定的 Tiangong 能源流。
-- 流属性/单位：能量、质量或体积 / 按记录使用 kWh、MJ、kg 或 L
-- 数量规则：使用电表、设备日志或在所声明储存时长内有文件依据的共享公用工程分配。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 最终参考产品的能源。
-- 基准类型：储存时长（`storage_duration`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_packaging_and_gate_release`
+- 选定流： 电力
+- 流属性/单位： 净热值 `93a60a56-a3c8-11da-a746-0800200c9a66`; 单位组 能量单位组 `93a60a57-a3c8-11da-a746-0800200c9a66` / kWh
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_onsite_water_treatment`
 
 ##### 废物流
 
-不规定默认废物输入。
+###### 场内处理接收的清洗废水 (`washing_wastewater_received`)
+
+仅运营方控制处理时适用，与清洗出口按同一事件及数量成对关联；处理资源及输出归属本节点，不计为第二次外部废水供应。
+
+- 选定流： 贻贝壳清洗废水
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_onsite_water_treatment`
+
+###### 场内处理接收的壳碎片储存渗滤液 (`storage_leachate_received`)
+
+仅实际场内接收时适用，与储存出口按真实水质及质量成对关联。不得与清洗废水混并，除非另行识别并计量合并处理水流。
+
+- 选定流： 湿贻贝壳碎片储存渗滤液
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_onsite_water_treatment`
 
 ##### 基本流
-
-不规定默认基本流输入。
 
 #### 输出
 
 ##### 产品流
 
-###### 设施门口所声明产品（`reference_product_flow`）
+###### 回送清洗的回用水 (`reclaimed_water_output`)
 
-这是完成最终质量、含水率、等级、来源证明、包装和质量检查后的参考输出。
+仅实际达到有记录回用规格的水适用，与清洗输入成对关联；内部回收不是外部用水抵扣，也不得第二次减少进水。
 
-- 选定流：珊瑚及类似产品，软体动物、甲壳动物或棘皮动物的贝壳，以及墨鱼骨 `9d3c928f-f381-4d92-8452-944adaf37906`
-- 流属性/单位：Mass / kg
-- 数量规则：将定量参考设为 1 kg，并保留实测批次或报告期输出作为归一化分母。
-- 数值来源模式：固定值（`fixed_value`）
-- 适用范围：产品特定（`product_specific`）
-- 归一化基准：1 kg 所声明出厂产品。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：身份引用（`identity_reference`）
+- 选定流： 贻贝壳废水处理回用水
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_onsite_water_treatment`
 
 ##### 废物流
 
-###### 包装和出厂处理废物（`packaging_and_gate_handling_waste`）
+##### 基本流
 
-按实际处理去向记录损坏包装、标签、薄膜、托盘损失、清扫物和拒收成品。
+### 过程： 储存、最终沥水及煅烧前交接 (`packaging_storage_and_gate_release`)
 
-- 选定流：选择每种路线特定 Tiangong 废物流。
-- 流属性/单位：Mass / kg
-- 数量规则：使用报告期废物票据、数量或物料平衡记录。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 kg 最终参考产品的废物质量。
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_waste_and_wastewater`
+#### 输入
+
+##### 产品流
+
+###### 进入最终沥水的水洗湿壳碎片 (`product_entering_gate_handling`)
+
+实测湿态中间物料，保留批次、残余含水率及储存/结转记录；因沥水、物料损失或库存变化，其质量可不同于最终验收质量。
+
+- 选定流： 水洗湿态未煅烧贻贝壳碎片
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 实测未分配物料质量和阶段含水率，保留原始批次数量，按每 1 kg 参考流报告；不得固定内部转移为 1 kg。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_packaging_and_gate_release`
+
+###### 最终储存和交接用电 (`packaging_and_storage_energy_electricity`)
+
+仅本节点实际储存、通风、沥水、内部操作或交接称量用电适用；不设默认储存时长。
+
+- 选定流： 电力
+- 流属性/单位： 净热值 `93a60a56-a3c8-11da-a746-0800200c9a66`; 单位组 能量单位组 `93a60a57-a3c8-11da-a746-0800200c9a66` / kWh
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_packaging_and_gate_release`
+
+##### 废物流
 
 ##### 基本流
 
-仅添加未由上游能源、包装或废物处理数据集表示的实测或批准计算直接释放。
+#### 输出
 
-## 7. 分配与共产品处理
+##### 产品流
 
-| rule_id | 适用对象 | 规则 | 来源 |
+###### 煅烧前交接的水洗沥水未煅烧壳碎片 (`reference_product_flow`)
+
+在任何窑炉前、最终沥水/储存交接的单一明确物理中间物料。参考质量包括实测残余水分，排除另行游离渗滤液及包装；不表示对外销售、化学纯度或法定废物终止。
+
+- 选定流： 经水洗沥水的未煅烧贻贝壳碎片
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 1 kg
+- 数值来源模式： `fixed_value`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `method_formula`
+- 采集协议： `cp_packaging_and_gate_release`
+- 来源： `mass-balance-identity`
+- 数量范围： 定义的参考归一化
+  - 范围角色： `qa_guardrail`
+  - 下限： 1
+  - 上限： 1
+  - 单位： kg
+  - 基准： 每 1 kg 参考流
+  - 基准类型： `reference_flow`
+  - 证据类型： `method_formula`
+  - 来源： `mass-balance-identity`
+
+##### 废物流
+
+###### 交付真实处理的壳碎片储存渗滤液 (`storage_leachate`)
+
+实际交给管理处理的水性沥出液，记录组成、质量及接收方；仅真实场内路线时与场内接收成对关联。直接排放须另列介质特定交换。
+
+- 选定流： 湿贻贝壳碎片储存渗滤液
+- 流属性/单位： 质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- 数量规则： 在所属节点协议下以原生单位独立实测本交换；保留原始批次/时段数量并按每 1 kg 参考流报告。
+- 数值来源模式： `foreground_record`
+- 适用范围： `site_specific`
+- 归一化基准： 每 1 kg 参考流
+- 基准类型： `reference_flow`
+- 证据类型： `collected_record`
+- 采集协议： `cp_packaging_and_gate_release`
+
+##### 基本流
+
+## 7. 分配与副产品处理
+
+| rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `allocation_rule_1` | 可分离的单元操作和批次 | 在记录允许时，通过细分过程、计量表、批次、等级和材料族避免分配。 | `eu-pef-method-2021` |
-| `allocation_rule_2` | 进入系统的加工残余物、副产品或废物 | 保留供应商所记录的产品或废物状态及上游负荷规则。不得仅因进入材料被称为废物就分配零上游负荷。 | `eu-pef-method-2021`; `oyster-shell-lca-2012` |
-| `allocation_rule_3` | 生产多个可销售等级的共享制备过程 | 无法细分时，若实测干质量、设备时间或计量能源等因果物理关系能够解释资源使用，则使用该关系，并声明基准和公式。 | `eu-pef-method-2021` |
-| `allocation_rule_4` | 缺少可辩护物理关系的多功能过程 | 仅在证明细分和物理分配不适用后使用其他有文件依据的关系，包括适当的经济分配；披露价格、期间、地理和敏感性结果。 | `eu-pef-method-2021` |
-| `allocation_rule_5` | 回收残余物和规格外部分 | 仅当某部分具有独立参考流及有文件依据的去向或市场时，才视为共产品；否则保留为需要回收、处理或处置建模的废物。 | `eu-pef-method-2021` |
+| `allocation_subdivision` | 全部节点及批次 | 先细分独立计量操作及批次、直接归属可识别资源。物理物料/水质量及成对转移不分配；分配只改变共用 LCA 负荷分子。 | `eu-pef-method-2021` |
+| `allocation_prior_burden` | source_qualification_and_receipt | 保留供应方废物/副产品状态及上游贻贝养殖/加工负荷规则和证据。不自动假定零负荷、避免处置抵扣或销售收入。 | `eu-pef-method-2021` |
+| `allocation_shared` | 共用设备、处理及资产 | 记录使用者、服务时段及因果使用键（有支持时例如实测使用或负荷）。无法支持因果分配时披露替代关系、完整输出集合，经济分配时披露价格/时段及敏感性。不得在每个节点重复总量。 | `eu-pef-method-2021` |
+| `allocation_residue` | 损失、拒料及内部回用 | 按有证据去向区分真实有用输出及管理废物，损失负荷保留在产品系统核算。内部壳/水转移在系统清单抵消，不从节点平衡中删除。不表示负营养盐平衡或回收抵扣。 |  |
 
-## 8. 前景数据采集、计算与质量规则
+## 8. 前景数据采集、计算及质量规则
 
 ### 数据采集协议
 
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `cp_source_receipt` | `source_qualification_and_receipt` | 来源、接收材料和接收拒收物 | 批次接收与来源证明记录 | 供应商或采集 ID；分类单元或材料族；来源路线和地理；先前产品或废物状态；适用的许可证或 CITES 引用；毛质量和净质量；含水率或固含量；拒收质量和去向 | 地磅、校准秤、供应商文件、采集日志、检验和许可证检查 | kg；质量分数 | 每批次或批号 | 数据集期间代表的全部批次 | 每个纳入来源和接收场址 | 仅在统一含水基准后汇总质量；保留来源级记录 | 秤校准；供应商文件；检验记录；适用许可证或 CITES 证据 |
-| `cp_collection_transport` | `controlled_collection_and_delivery` | 材料移动、燃料和损失 | 行程、船舶或设备活动日志 | 路线；方式；起点和终点；装载和交付质量；距离；燃料或能源；载荷率；空驶；损失质量 | 行程日志、GPS 或路线记录、燃料记录、发票和接收核验 | kg；km；tkm；kWh；MJ；L | 每次受控行程或作业 | 数据集代表的全部受控采集和交付 | 每条受控路线和车辆或船舶类别 | 按行程计算质量-距离；汇总燃料和损失；归一化至接收材料和最终产品 | 路线证据；燃料发票；计量记录；装载票据 |
-| `cp_preparation_material` | `cleaning_drying_and_sorting` | 材料投入和制备输出 | 批次生产和含水记录 | 投入质量；输出质量；含水率或固含量；材料族；清洗路线；干燥路线；等级；时间戳 | 校准秤、含水试验、批次单和生产日志 | kg；质量分数 | 每个制备批次 | 包括正常路线变化的代表性运营期 | 每条制备线和材料族 | 合并批次前计算干质量；报告加权含水率和总输出 | 秤和含水方法记录；批次核算 |
-| `cp_preparation_water` | `cleaning_drying_and_sorting` | 淡水、海水、回用水和废水 | 计量或批次用水记录 | 水源；表计起止；水箱补充；回用体积；排放体积；盐度；要求时的悬浮固体或有机负荷 | 校准水表、水箱记录、发票或有文件依据的水平衡 | kg 或 m3 | 每批次或表计区间 | 与制备生产相同期间 | 每个水源和制备线 | 分开保留水源；按水源汇总并归一化至制备和最终产品 | 水表校准；发票；实验室或排放记录 |
-| `cp_preparation_energy_and_agents` | `cleaning_drying_and_sorting` | 能源载体和清洗试剂 | 计量、发票、燃料和投加记录 | 载体或试剂；Tiangong 流；数量；单位；浓度；设备；批次或期间；回收 | 分表、公用工程账单、燃料日志、采购记录和投加系统 | kWh；MJ；kg；L | 每批次或账单区间 | 与制备生产相同期间 | 每条过程线和公用工程或试剂 | 优先直接计量；否则使用有文件依据的因果驱动因素分配共享用量 | 计量校准；发票；投加日志；分配记录 |
-| `cp_waste_and_wastewater` | `source_qualification_and_receipt`; `cleaning_drying_and_sorting`; `packaging_storage_and_gate_release` | 固体拒收物、残余物、废水和包装废物 | 废物票据、排放或内部回收记录 | 废物身份；质量或体积；含水率；来源过程；内部循环；运输方；处理或排放去向 | 秤、容器计数、转移联单、排放表、实验室记录或核算平衡 | kg 或 m3 | 每次运输、排放或报告区间 | 与关联生产相同期间 | 每个前景废物和废水去向 | 分开保留去向和处理路线；汇总经核验记录后归一化 | 废物联单；处理收据；排放许可或试验；平衡核算 |
-| `cp_size_reduction_and_grading` | `size_reduction_and_grading` | 材料、能源、等级、规格外部分和收集粉尘 | 作业生产和设备记录 | 投入与输出质量；含水率；目标粒径；筛分结果；设备时间；能源；循环料；规格外和粉尘质量 | 秤、筛分分析、设备表和生产日志 | kg；mm 或 µm；kWh；MJ | 每次作业 | 数据集代表的全部作业 | 每条线、材料族和等级 | 核算等级部分和循环料；按因果设备记录分配共享能源 | 秤、筛网和计量校准；作业平衡 |
-| `cp_packaging_and_gate_release` | `packaging_storage_and_gate_release` | 最终产品、包装、储存和出厂输出 | 批号、物料清单、公用工程和发运记录 | 产品质量和含水率；包装材料和质量；重复使用次数；储存时长；储存能源；发运 ID | 最终秤、包装 BOM、库存、计量表和发运文件 | kg；item；day；kWh；MJ | 每批号和公用工程区间 | 与最终生产相同期间 | 每种包装形式和储存条件 | 将包装和分配的储存能源归一化至发运参考产品 | 最终秤核验；BOM；计量和发运记录 |
-| `cp_direct_releases` | `controlled_collection_and_delivery`; `cleaning_drying_and_sorting`; `size_reduction_and_grading` | 直接资源使用和基本流释放 | 监测、许可证或计算记录 | 流 UUID；环境介质；实测浓度或数量；气体或水体积；采样期；因子及来源；控制效率 | 直接监测或依据采集活动数据的批准计算 | 所选 Tiangong 参考单位 | 每次监测或规定报告区间 | 与产生过程相同期间 | 每个受控排放点或采集区域 | 在期间内积分实测值；避免与供应或处理数据集重复 | 校准；实验室样品链；许可证报告；有引用的因子和公式 |
+| `cp_source_receipt` | source_qualification_and_receipt | 来源核实与接收 | 归属节点事件及计量台账 | 供应方；真实贻贝分类；分离/来源证据；先前废物状态；接收毛重/皮重/净料；附着/游离水；含水率；验收进料；各拒料/去向；用电；事件号；归属节点；关联批次/时段；原始数量/单位；同一最终 Q；阶段收率；库存；纳入资产/材料/使用者/服务时段及归属键 | 在本节点用经校准秤/仪表、库存及凭证逐项实测真实交换。保留原生原始数量和含水率/密度证据，关联成对转移及唯一共用台账。用同一正值真实最终 Q 汇总可归属交换数量，按每 1 kg 参考流报告；不得重复共用总量或固定中间质量为 1 kg。 | kg; kWh; native measured units | 每批次、操作和计量区间 | 匹配完整批次、结转及资产服务时段 | source_qualification_and_receipt | 每 1 kg 参考流 | 校准；原始仪表/发票；来源及水质证据；接收方记录；成对转移；平衡及不确定性 |
+| `cp_collection_transport` | controlled_collection_and_delivery | 受控接收前运输 | 归属节点事件及计量台账 | 装载/送达湿料；真实随行水及容器；路线/距离；方式；供应服务覆盖；燃料身份/用量；用电；发动机/因子证据；实测化石燃料活动及单位；支持因子数值/单位/来源；碳来源/氧化或发动机适用性；因子/活动不确定性；可用监测 QA；空返；损失；事件号；归属节点；关联批次/时段；原始数量/单位；同一最终 Q；阶段收率；库存；纳入资产/材料/使用者/服务时段及归属键 | 在本节点用经校准秤/仪表、库存及凭证逐项实测真实交换。保留原生原始数量和含水率/密度证据，关联成对转移及唯一共用台账。用同一正值真实最终 Q 汇总可归属交换数量，按每 1 kg 参考流报告；不得重复共用总量或固定中间质量为 1 kg。 | kg; kWh; native measured units | 每批次、操作和计量区间 | 匹配完整批次、结转及资产服务时段 | controlled_collection_and_delivery | 每 1 kg 参考流 | 校准；原始仪表/发票；来源及水质证据；接收方记录；成对转移；平衡及不确定性 |
+| `cp_preparation` | cleaning_drying_and_sorting | 淡水清洗与初步沥水 | 归属节点事件及计量台账 | 湿进料/输出及含水率；分水源新增供水/取水；原始仪表；密度/温度/盐度；成对回用；用电；真实试剂/其他公用工程；独立固体/废水/出口；事件号；归属节点；关联批次/时段；原始数量/单位；同一最终 Q；阶段收率；库存；纳入资产/材料/使用者/服务时段及归属键 | 在本节点用经校准秤/仪表、库存及凭证逐项实测真实交换。保留原生原始数量和含水率/密度证据，关联成对转移及唯一共用台账。用同一正值真实最终 Q 汇总可归属交换数量，按每 1 kg 参考流报告；不得重复共用总量或固定中间质量为 1 kg。 | kg; kWh; native measured units | 每批次、操作和计量区间 | 匹配完整批次、结转及资产服务时段 | cleaning_drying_and_sorting | 每 1 kg 参考流 | 校准；原始仪表/发票；来源及水质证据；接收方记录；成对转移；平衡及不确定性 |
+| `cp_onsite_water_treatment` | onsite_wastewater_management | 场内废水管理 | 归属节点事件及计量台账 | 各进出口数量及组成；成对清洗水/渗滤液/回用事件；真实处理工艺列；用电；各试剂/燃料；污泥/固体及含水率；直接返回水/物质；接收方/介质；事件号；归属节点；关联批次/时段；原始数量/单位；同一最终 Q；阶段收率；库存；纳入资产/材料/使用者/服务时段及归属键 | 在本节点用经校准秤/仪表、库存及凭证逐项实测真实交换。保留原生原始数量和含水率/密度证据，关联成对转移及唯一共用台账。用同一正值真实最终 Q 汇总可归属交换数量，按每 1 kg 参考流报告；不得重复共用总量或固定中间质量为 1 kg。 | kg; kWh; native measured units | 每批次、操作和计量区间 | 匹配完整批次、结转及资产服务时段 | onsite_wastewater_management | 每 1 kg 参考流 | 校准；原始仪表/发票；来源及水质证据；接收方记录；成对转移；平衡及不确定性 |
+| `cp_packaging_and_gate_release` | packaging_storage_and_gate_release | 储存、最终沥水及煅烧前交接 | 归属节点事件及计量台账 | 进料水洗湿碎片；最终验收净 Q；阶段含水率/固含量；沥水/渗滤液；拒收壳/损失；期初期末库存；沥水/储存时长；验收；精确窑前接口；真实包装及用电；事件号；归属节点；关联批次/时段；原始数量/单位；同一最终 Q；阶段收率；库存；纳入资产/材料/使用者/服务时段及归属键 | 在本节点用经校准秤/仪表、库存及凭证逐项实测真实交换。保留原生原始数量和含水率/密度证据，关联成对转移及唯一共用台账。用同一正值真实最终 Q 汇总可归属交换数量，按每 1 kg 参考流报告；不得重复共用总量或固定中间质量为 1 kg。 | kg; kWh; native measured units | 每批次、操作和计量区间 | 匹配完整批次、结转及资产服务时段 | packaging_storage_and_gate_release | 每 1 kg 参考流 | 校准；原始仪表/发票；来源及水质证据；接收方记录；成对转移；平衡及不确定性 |
 
 ### 计算规则
 
 | rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
 | --- | --- | --- | --- | --- | --- |
-| `calc_accepted_mass` | 来源资格确认和接收 | 接收质量 = 进料质量 - 接收拒收物，且使用相同含水基准 | 进料质量；拒收质量；含水基准 | 已接收来源材料质量 |  |
-| `calc_dry_mass` | 含水基准换算 | 干质量 = 实测质量 × 实测固体质量分数 | 实测质量；实测含水率或固体分数 | 干质量 |  |
-| `calc_normalized_amount` | 每项清单数量 | 归一化数量 = 报告期数量 / 报告期参考产品质量 | 经核验的期间数量；经核验的参考输出 | 每 1 kg 参考产品的数量 | `eu-pef-method-2021` |
-| `calc_transport_service` | 受控采集和交付 | 运输服务 = 运输吨数 × 路线公里数；纳入空驶时单独建模 | 行程质量；路线距离；空驶处理 | tkm |  |
-| `calc_material_balance` | 接收、制备和分级 | 将干材料投入及实测添加固体与干产品、共产品、废物、收集粉尘和废水实测固体进行核算；报告未闭合差值和所用接受阈值。 | 干投入；干输出；残余物；废水固体；收集粉尘 | 质量平衡结果和闭合差值 |  |
-| `calc_shared_utility` | 共享计量或公用工程 | 仅使用所声明的因果驱动因素分配共享公用工程；保留公用工程总量、驱动因素总量和分配份额。 | 公用工程总量；过程驱动因素；驱动因素总量 | 分配至过程的公用工程 | `eu-pef-method-2021` |
+| `final_gate_normalization` | 每个具体交换 | 每个真实原始交换数量 q_i 保持自身单位，除以匹配正值最终验收湿质量 Q（kg），按每 1 kg 参考流报告。保留 q_i、Q 及批次/时段关联。物理壳/水数量不分配，只有有支持的共用 LCA 负荷分子在相除前采用分配份额。Q 为零/未知时保留原始及库存记录，不虚构归一化数据包。 | raw q_i; actual final Q; lot/period; attribution records | 每千克真实最终中间物料的各交换 | `mass-balance-identity` |
+| `stage_yields` | 真实接收、清洗和沥水阶段 | 保留各阶段实测 S_in、S_out 及含水率和库存；S_in 正值时湿态阶段收率为 S_out/S_in。它不自动等于最终收率 Q/S_in 或干壳收率。来源记录若为强度 x_i=q_i/S_stage，须保留其实测阶段分母，显式还原 q_i=x_i*S_stage，再报告 q_i/Q；不得以 1 kg 或虚构机器质量替代 S_stage。 | measured stage masses; moisture/solids; raw intensity if used; final Q | 真实阶段收率及最终基准交换 | `mass-balance-identity` |
+| `physical_balances` | 壳、水及库存台账 | 逐阶段核对期初库存、真实到料和水/物料添加，与输出、拒料、残余物、沥出液、实际已确定蒸发及期末库存对应。实测时分别追踪壳固体、附着水、组织/盐分；披露未解释残差及不确定性。不假定固定质量损失、不强令残差为零、不用分配份额闭合物理平衡。 | stage ledgers; paired transfers; raw meters; stocks | 未分配物理平衡及披露残差 | `mass-balance-identity` |
+| `emission_calculation` | 真实直接释放 | 采用实测物质排放质量或引用有支持、匹配真实活动、燃料/发动机、碳来源及受纳介质的模型。排水浓度须有匹配水流及物种形态；浓度、气味或净营养盐平衡本身不是质量交换或抵扣。 | actual activity; supported factor/model; native units; medium | 每个真实物质/介质交换 |  |
 
 ### 数据质量要求
 
 | requirement_id | Applies to | Requirement | Evidence |
 | --- | --- | --- | --- |
-| `dq_identity_and_provenance` | 每个来源批号 | 保留材料族或已知分类单元、来源路线、地理、先前产品或废物状态以及适用的法律、许可证和 CITES 证据。 | 来源和检验记录；适用时的现行 CITES 核验；`unsd-cpc3-hs-scope`; `cites-current-coral-controls` |
-| `dq_measurement` | 质量、含水率、水、能源、试剂和废物 | 使用经校准或核验的计量系统，保留原始单位，并区分计算值和实测值。 | 校准、计量、发票、实验室和计算记录；`eu-pef-method-2021` |
-| `dq_temporal` | 报告期 | 覆盖所声明的正常生产路线，并记录停机、异常批次、季节性和排除期间。 | 生产日历、批次清单、公用工程区间和异常日志 |
-| `dq_geography_and_technology` | 前景和背景数据 | 匹配来源、采集、制备技术、能源、水、包装、废物处理和运输地理，或披露替代。 | 场址和供应商元数据；背景数据集元数据 |
-| `dq_completeness` | 过程清单 | 纳入每个适用的规定行，或记录明确的不适用理由；核算产品、共产品、废物、废水和直接释放。 | 适用性矩阵及材料、水和公用工程平衡；`eu-pef-method-2021` |
-| `dq_allocation` | 共享和多输出过程 | 使用分配时保留细分证据、分配驱动因素、公式、期间和敏感性信息。 | 计量和批次记录、分配工作表及 `eu-pef-method-2021` |
-| `dq_traceability` | 发布数据包 | 每个归一化数值必须可追溯至原始记录、计算规则、Tiangong 身份和适用外部来源，且不得嵌入私密凭据或查询日志。 | 记录 ID、计算链接、UUID 和来源 ID |
+| `dq_unique_reference_object` | 每个阶段及最终参考 | 须有真实来源分离及贻贝分类/来源核实、单一碎片规格、实测阶段含水率及精确唯一煅烧前 gate。其他壳族、原始混料、粉末及窑后状态不能继承参考身份或 UUID。历史主要贻贝设施不是目标纯来源进料证据。 | 来源、分离、批次及 gate 规格 |
+| `dq_shared_ledger` | 全部协议 | 使用唯一物理事件/水/资产台账，保留唯一编号、归属节点、成对转移、原生原始数量和共用最终 Q，保留库存及延迟交接。共用总量仅记录一次、只归属可支持份额；内部回用既非新供水，也不得再次扣减。 | 事件/资产归属、成对凭证及仪表 |
+| `dq_ranges_uncertainty` | 每个重要原子交换 | 逐交换独立采集观测运行范围或有依据不确定性、单位、分母及来源适用性。本 PCR 不提供经验界限。Barros 历史 0.2–0.8 m3/t 清洗水观察以某设施壳进料为分母，不是各子流水量或最终 Q 上限；使用前须核实匹配进料/水边界、真实密度及实测进料/Q 比，并保留离群值。 | 逐流记录、不确定性及证据适用性 |
+| `dq_completion` | 全部适用采集义务 | 以下每项适用义务均须落实为独立真实物理/化学交换，明确节点、方向/类型、自身数量/原生单位、组成/形态/含水率、来源、归一化、范围/不确定性及真实去向/介质，最终数据包完成前核实兼容 UUID。不得把集合总量/范围/UUID 复制给全部子流。未知不等于零；不存在须有证据 not_applicable。任何未落实适用义务或参考身份均不能通过最终数据包验证。 | 逐义务覆盖及原始数量/身份记录 |
+| `collect_receipt_rejects` | `source_qualification_and_receipt` | 每种真实接收拒料、异物或分离液体；保留独立质量、组成、接收方及产品/废物去向。 使用所属节点协议 `cp_source_receipt`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_receipt_energy` | `source_qualification_and_receipt` | 未由电力卡表示的每种真实燃料、购热或其他接收公用工程，不得使用通用能源混合物。 使用所属节点协议 `cp_source_receipt`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_collection_energy` | `controlled_collection_and_delivery` | 柴油卡以外每种真实载能体，以及有方式/覆盖记录的购入运输服务；保留湿货载、容器、距离和有证据空返负荷，不重复服务/燃料。 使用所属节点协议 `cp_collection_transport`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_collection_losses` | `controlled_collection_and_delivery` | 每种实际运输损失或泄漏的组成、去向/介质及实测质量；库存或水分变化不自动等同壳损失。 使用所属节点协议 `cp_collection_transport`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_collection_direct_releases` | `controlled_collection_and_delivery` | 化石 CO2 卡以外每种真实燃烧物质或环境释放，须有发动机/燃料、监测质量或支持因子、原生单位和受纳介质。 使用所属节点协议 `cp_collection_transport`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_cleaning_agents` | `cleaning_drying_and_sorting` | 每种实际投加化学品或清洗/消毒产品的组成/浓度、有效成分/产品基准、实测库存变化和去向；不假定试剂或剂量。 使用所属节点协议 `cp_preparation`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_preparation_energy` | `cleaning_drying_and_sorting` | 每种尚未纳入的实际清洗/沥水燃料、热量或公用工程，须有计量/库存记录及载能体特定属性/单位；热干燥和煅烧在本边界外。 使用所属节点协议 `cp_preparation`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_preparation_water` | `cleaning_drying_and_sorting` | 每个实际直接取用淡水源的天然介质及自身数量，以及具体供水卡以外不同外部水等级。区分新增供水、内部回用及出口；保留原始计量和真实密度换算。 使用所属节点协议 `cp_preparation`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_preparation_solid_residues` | `cleaning_drying_and_sorting` | 每种实际分离残余组织、泥、异物或拒收壳，分别明确物料及含水状态、数量和有证据回收/处置去向。 使用所属节点协议 `cp_preparation`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_cleaning_wastewater` | `cleaning_drying_and_sorting` | 明确废水卡以外每个不同清洗水出口、水质或接收路线，适用时含单独直接返回水及物质释放；不得向每个出口复制水总量。 使用所属节点协议 `cp_preparation`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_preparation_direct_releases` | `cleaning_drying_and_sorting` | 每种实际跨环境边界的粉尘、挥发性物质、水蒸气或其他直接释放，明确物质/形态、质量和介质；不得以通用排放或气味总量替代。 使用所属节点协议 `cp_preparation`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_treatment_inputs` | `onsite_wastewater_management` | 每种真实废水处理试剂、燃料、水、热量或其他输入须有自身组成/形态、实测数量、原生单位及支持归属；不预设絮凝剂、设备或剂量。 使用所属节点协议 `cp_onsite_water_treatment`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_treatment_wastes` | `onsite_wastewater_management` | 每种真实筛渣、分离污泥或其他产生废物须有自身固含量/含水率、实测数量和真实处理/接收方；通用污泥身份不能代表所有残余物。 使用所属节点协议 `cp_onsite_water_treatment`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_treatment_releases` | `onsite_wastewater_management` | 每个真实返回水出口及物质特定环境释放须有受纳方/介质和数量；成对回用仍为内部转移，净营养盐平衡不是负排放或抵扣。 使用所属节点协议 `cp_onsite_water_treatment`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_packaging_materials` | `packaging_storage_and_gate_release` | 本中间接口实际使用的每个容器、衬垫、袋、标签或包装组件须有物料、实测数量、重复使用/更换及去向；散装内部交接不意味着使用包装。 使用所属节点协议 `cp_packaging_and_gate_release`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_packaging_and_storage_energy` | `packaging_storage_and_gate_release` | 尚未纳入的每种实际储存/交接燃料、热量或公用工程，须有时长、使用者、独立实测数量及支持分摊键。 使用所属节点协议 `cp_packaging_and_gate_release`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_packaging_and_gate_handling_waste` | `packaging_storage_and_gate_release` | 每种实际拒收壳、包装损失或操作废物按具体物料/形态、实测数量和接收去向独立记录，与渗滤液卡区分。 使用所属节点协议 `cp_packaging_and_gate_release`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_gate_water_and_releases` | `packaging_storage_and_gate_release` | 储存/交接每个实际冷却或冲洗水输入、额外水性出口/直接释放须有水源、水质、质量、接收方/介质及必要密度证据；不得再次扣除回用水。 使用所属节点协议 `cp_packaging_and_gate_release`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_assets_source_qualification_and_receipt` | `source_qualification_and_receipt` | 本节点拥有的每种实际纳入资产更换、清洗材料及服务终止交换须有组件物料、原始数量、使用者、服务时段、实际使用键和去向。共用唯一资产台账，不得各节点重复完整总量。 使用所属节点协议 `cp_source_receipt`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_assets_controlled_collection_and_delivery` | `controlled_collection_and_delivery` | 本节点拥有的每种实际纳入资产更换、清洗材料及服务终止交换须有组件物料、原始数量、使用者、服务时段、实际使用键和去向。共用唯一资产台账，不得各节点重复完整总量。 使用所属节点协议 `cp_collection_transport`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_assets_cleaning_drying_and_sorting` | `cleaning_drying_and_sorting` | 本节点拥有的每种实际纳入资产更换、清洗材料及服务终止交换须有组件物料、原始数量、使用者、服务时段、实际使用键和去向。共用唯一资产台账，不得各节点重复完整总量。 使用所属节点协议 `cp_preparation`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_assets_onsite_wastewater_management` | `onsite_wastewater_management` | 本节点拥有的每种实际纳入资产更换、清洗材料及服务终止交换须有组件物料、原始数量、使用者、服务时段、实际使用键和去向。共用唯一资产台账，不得各节点重复完整总量。 使用所属节点协议 `cp_onsite_water_treatment`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
+| `collect_assets_packaging_storage_and_gate_release` | `packaging_storage_and_gate_release` | 本节点拥有的每种实际纳入资产更换、清洗材料及服务终止交换须有组件物料、原始数量、使用者、服务时段、实际使用键和去向。共用唯一资产台账，不得各节点重复完整总量。 使用所属节点协议 `cp_packaging_and_gate_release`；保留原生原始数量、真实阶段收率及共用正值最终 Q。逐真实交换独立落实方向/类型、身份、数量/单位、范围/不确定性及接收方/介质，不绑定集合数量或 UUID。 | 原始仪表/库存/组成/去向记录及兼容身份 |
 
-## 9. 校验规则
+## 9. 验证规则
 
-| rule_id | 适用对象 | 规则 | 来源 |
+| rule_id | Applies to | Rule | source_ids |
 | --- | --- | --- | --- |
-| `validation_rule_1` | 产品身份和范围 | 确认输出未经加工或仅简单制备且未成型，或属于类别内所声明粉末或废料部分；拒绝化学转化产品或下游成品。 | `unsd-cpc3-hs-scope` |
-| `validation_rule_2` | 参考流 | 确认参考产品、质量流属性、质量单位组、1 kg 数量和所有必需限定信息。 |  |
-| `validation_rule_3` | 过程适用性 | 纳入每个适用过程和流行，或提供有文件依据的不适用理由；不得在未披露的情况下把软体动物壳制备假设应用于其他材料族。 | `shell-waste-management-2023`; `bivalve-shell-valorization-2022` |
-| `validation_rule_4` | 已实例化流身份 | 发布数据集前，将每个已实例化产品流、废物流和基本流解析到适用的 Tiangong UUID；路线特定占位符不构成完整流选择。 |  |
-| `validation_rule_5` | 前景记录 | 核验归一化数值可追溯至所声明采集协议，并保留未归一化总量、单位、时间范围以及场址或路线范围。 | `eu-pef-method-2021` |
-| `validation_rule_6` | 质量和含水平衡 | 在一致含水或干质量基准下核算接收、制备、分级和最终输出，并披露未闭合差值和接受阈值。 |  |
-| `validation_rule_7` | 清洗用水筛查 | 适用淡水降盐清洗时，将记录结果与文献筛查证据 0.2–0.8 m3/t 壳料比较；超出该区间需要解释，但不会自动判定不符合。 | `shell-waste-management-2023` |
-| `validation_rule_8` | 分配和先前负荷 | 核验细分或分配层级、先前产品或废物状态、公式、数据期间和敏感性；拒绝无文件依据的零负荷假设。 | `eu-pef-method-2021`; `oyster-shell-lca-2012` |
-| `validation_rule_9` | 废水、残余物和直接释放 | 确认身份、数量、环境介质或去向，并确认未与能源供应或处理数据集重复计入。 | `eu-pef-method-2021` |
-| `validation_rule_10` | 珊瑚合法性和来源证明 | 对珊瑚或珊瑚来源材料，核验现行适用 CITES 列名，并保留所需许可证、证书、来源和贸易术语，或有文件依据的豁免证据。 | `cites-current-coral-controls` |
+| `validate_scope` | 参考及全部壳阶段 | 须有来源已核实贻贝壳碎片、淡水清洗/沥水、实测残余含水率及精确煅烧前中间验收；排除其他物料、未分离混料、热干燥/煅烧、研磨及制造碳酸盐。本参考不推导商品销售/废物终止。 | `barros-mussel-shell-2009` |
+| `validate_reference` | packaging_storage_and_gate_release | 仅一个最终产品参考在声明中间接口为 1 kg；参考数量、质量属性/单位、净称重、残余含水率、最终正值 Q 及全部限定须一致。内部输入/输出保留真实实测 q/Q，不固定参考质量。 | `mass-balance-identity` |
+| `validate_measurement` | 全部交换 | 全部数量追溯至原始校准记录、单节点 CP、原生单位、真实密度/热值换算及共用 Q。核对真实阶段/最终收率和湿态/固体平衡，披露不确定性及未解释残差；不得强加上限或虚构因子。 |  |
+| `validate_water_and_fate` | 水、处理及废物 | 核对新增水、成对回用、储存沥水、真实处理及每个环境出口，不重复扣减进水。每个废物须有真实组成/含水率及接收方/处理；每个环境释放须有自身物质和介质。不得用污泥身份替代壳/组织废物，或用水中 CO2 身份替代空气排放。 |  |
+| `validate_allocation_period` | 负荷、库存及资产 | 核实上游原有负荷、全部预期输出、细分/分摊证据及敏感性。物理质量不分配，内部移动成对，事件/资产总量仅一次；匹配时段、结转、更换及服务终止交换。 | `eu-pef-method-2021` |
+| `validate_atomic_completion` | 每个真实卡及补充义务 | 逐项回读每个适用 collect_ 要求是否落实为独立真实交换，核实自身数量/单位、归一化、范围/不确定性、来源、去向/介质及语义兼容 UUID/属性/流类型/状态。任何未知适用数量、身份、去向或缺失义务使最终数据包不完整并验证失败；PCR 静态检查通过不能替代该评估。 |  |
 
 ## 10. 发布数据集画像
 
-| 字段 | 值 |
+| Field | Value |
 | --- | --- |
-| dataset_role | 所声明 CPC 04911 制备路线的前景生产数据包；经审查后可支持 `secondary_dataset` 或 `background_dataset`。 |
-| downstream_use | 为设施门口未经加工或仅简单制备的珊瑚类材料、外壳或乌贼骨构建 Tiangong `process` 数据及下游 `lifecyclemodel` 投影。 |
-| allowed_use | 用于路线、地理、材料族、含水率、等级和来源证明相匹配的建模，并声明适用过程、上游负荷处理、废物路线和背景替代。 |
-| excluded_use | 活体水生生物；可食用水产品；未由上游数据集覆盖的养殖或捕捞生产；化学转化衍生物；煅烧产品；配制型下游产品；切割成型、雕刻、珠宝或其他成品；未披露珊瑚来源证明。 |
-| required_metadata | PCR id 和版本；Tiangong 参考流 UUID；材料族或分类单元；来源路线和地理；先前产品、副产品或废物状态；制备路线；含水基准；等级或粒径；法律和来源证明状态；过程适用性；报告期；技术和场址；分配；包装；废物和废水去向；背景数据集引用。 |
-| required_quality_disclosure | 计量和校准覆盖；材料和水平衡闭合；时间、地理和技术代表性；缺失或估算记录；分配敏感性；来源和许可证限制；背景替代；校验发现。 |
-| update_trigger | 产品范围、材料族、来源或 CITES 状态、采集路线、技术、清洗或干燥方法、等级、含水基准、能源或水系统、废物处理、分配、包装、场址或地理、Tiangong 身份、外部证据或适用法律要求发生变化。 |
+| dataset_role | 水洗沥水未煅烧贻贝壳碎片中间物料的前景数据包；process/lifecyclemodel 为下游投影。 |
+| downstream_use | secondary_dataset; background_dataset |
+| allowed_use | 真实来源、物种、碎片、含水率、操作、场址及煅烧前接口相匹配，并有核实交换和完整原有负荷/废物覆盖的数据包。 |
+| excluded_use | 其他物料或混料；干态/粉末/煅烧/制造产品；法定产品/废物终止认证；对外销售断言；后续窑炉/研磨/使用。 |
+| required_metadata | 真实来源/分类/分离、进料及最终物理/法律状态、全部含水率/等级及批次/时段/库存、精确中间 gate、过程责任、运输覆盖、水拓扑、能源、资产、分配、原始记录及 UUID。 |
+| required_quality_disclosure | 测量/范围不确定性、物理残差、未知身份/数量、历史来源适用性、分配敏感性、来源分离及法律状态限制。 |
+| update_trigger | 目标物料/状态/接口、来源分离、清洗/沥水/水或处理路线、能源、库存时段、资产、分配或相关新证据改变。 |
 
 ## 11. 数据源
 
-| 来源 ID | 类型 | 引用 | 用途 |
+| source_id | type | reference | used_for |
 | --- | --- | --- | --- |
-| `unsd-cpc3-hs-scope` | 官方指南（`official_guidance`） | 联合国统计司，CPC Version 3.0 以及 subclass 04911 / subheading 050800 的 HS 2022 对应，https://unstats.un.org/unsd/classifications/Family/Detail/2100 和 https://unstats.un.org/unsd/classifications/Econ/Detail/EN/2089/050800（检索日期 2026-08-07）。 | 产品类别身份；未经加工或仅简单制备、未成型、粉末和废料范围；排除项。 |
-| `eu-pef-method-2021` | 官方指南（`official_guidance`） | 欧盟委员会，Recommendation (EU) 2021/2279，Annex I Product Environmental Footprint Method，https://eur-lex.europa.eu/eli/reco/2021/2279/2021-12-30 和 https://eplca.jrc.ec.europa.eu/permalink/PEF_method.pdf（检索日期 2026-08-07）。 | 前景原始数据、系统边界、共产品和废物可见性、分配层级、数据质量和披露。 |
-| `cites-current-coral-controls` | 官方指南（`official_guidance`） | CITES，现行 Appendices 和 Resolution Conf. 11.10 on trade in stony corals，https://cites.org/eng/app/appendices.php 和 https://cites.org/eng/imp/Exemptions_and_special_procedures（检索日期 2026-08-07）。 | 珊瑚分类单元、来源、法律和来源证明核验；适用时的许可证、证书、贸易术语或豁免证据。 |
-| `shell-waste-management-2023` | 文献（`literature`） | Topić Popović, N. 等（2023），Shell Waste Management and Utilization: Mitigating Organic Pollution and Enhancing Sustainability，Applied Sciences 13(1), 623，https://doi.org/10.3390/app13010623。 | 清洗和制备过程分解；水和能源重要性；0.2–0.8 m3/t 壳料清洗用水筛查范围。 |
-| `bivalve-shell-valorization-2022` | 文献（`literature`） | Summa, D. 等（2022），Trends and Opportunities of Bivalve Shells' Waste Valorization in a Prospect of Circular Blue Bioeconomy，Resources 11(5), 48，https://doi.org/10.3390/resources11050048。 | 洗涤、破碎、分级和路线特定制备证据；简单制备与下游增值之间的边界。 |
-| `oyster-shell-lca-2012` | 文献（`literature`） | de Alvarenga, R.A.F. 等（2012），The recycling of oyster shells: an environmental analysis using Life Cycle Assessment，Journal of Environmental Management 106, 102–109，https://doi.org/10.1016/j.jenvman.2012.04.017。 | 实际采集和运输距离、上游情景以及分配或避免处置假设的重要性；未采用通用距离阈值。 |
+| `unsd-cpc3-hs-scope` | official_guidance | UNSD CPC Version 3.0 explanatory notes (30 June 2025), subclass 04911. https://unstats.un.org/unsd/classifications/Econ/Download/In%20Text/CPC_Ver_3.0_Exp_Notes_30Jun2025.pdf | 仅分类背景；本 PCR 更窄，不作为整个叶类产品身份或数量范围来源。 |
+| `barros-mussel-shell-2009` | literature | Barros, M.C., Bello, P.M., Bao, M. and Torrado, J.J. (2009). From waste to commodity: transforming shells into high purity calcium carbonate. Journal of Cleaner Production 17, 400–407. DOI:10.1016/j.jclepro.2008.08.013. Section 2.1, pp. 401–402. https://doi.org/10.1016/j.jclepro.2008.08.013 | 原始历史证据支持壳接收、淡水清洗/沥水及煅烧前储存，仅这些接口支持选定路线；后续制造碳酸盐属性、整厂总量及法律陈述不是本中间物料默认值。 |
+| `eu-pef-method-2021` | official_guidance | European Commission Recommendation (EU) 2021/2279, Annex I, Product Environmental Footprint Method. https://eur-lex.europa.eu/eli/reco/2021/2279/2021-12-30 | 既有定性方法依据，涉及初级数据、分配、边界及披露；不证明产品特定数量或完整 PEF 符合性。 |
+| `mass-balance-identity` | method_factor | 本 PCR 第 3–9 节：实测原始/原生数量、阶段平衡/收率及真实最终 Q 归一化。 | 自定义守恒及归一化恒等式；无经验收率、机器质量、密度、排放因子或实测范围。 |

@@ -994,8 +994,8 @@ test("incremental membership records a validated canonical-id rename as remove p
         id: coralPcrId,
         path: coralPcrPath,
         title: {
-          "en-US": "Coral and similar products, shells of molluscs, crustaceans or echinoderms and cuttle-bone",
-          "zh-CN": "珊瑚及类似产品、软体动物、甲壳动物或棘皮动物外壳和乌贼骨",
+          "en-US": "Washed and drained uncalcined mussel-shell fragments",
+          "zh-CN": "经水洗沥水的未煅烧贻贝壳碎片",
         },
         status: "candidate",
         content_maturity: "authored_methodology",
@@ -2331,8 +2331,8 @@ function createViewerFixture({ includeScaffold = false, includeCoral = false } =
         id: coralPcrId,
         path: coralPcrPath,
         title: {
-          "en-US": "Coral and similar products, shells of molluscs, crustaceans or echinoderms and cuttle-bone",
-          "zh-CN": "珊瑚及类似产品、软体动物、甲壳动物或棘皮动物外壳和乌贼骨",
+          "en-US": "Washed and drained uncalcined mussel-shell fragments",
+          "zh-CN": "经水洗沥水的未煅烧贻贝壳碎片",
         },
         status: "candidate",
         content_maturity: "authored_methodology",
