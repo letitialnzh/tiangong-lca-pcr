@@ -1,7 +1,7 @@
 ---
-lastReviewedAt: 2026-10-15
-lastReviewedNote: "Reviewed bounded native inline downloads for current unpublished authored candidates: manifests up to 16384 exact bytes and required English/Chinese Markdown up to 32768 exact bytes. Same-directory manifests bind eligibility to the pinned Git source; duplicate inline bytes retain distinct source/filename identities through physical fallback. Published/history/optional-language/projection downloads and navigation payloads remain intact. Complete export and source-bound qualification remain required."
-lastReviewedCommit: 6b99296b0b935404abdf900b2566fe2ff59a966d
+lastReviewedAt: 2026-10-19
+lastReviewedNote: "Adapted Candywangx PCR #23 native-download transport for CPC 04: required English/Chinese candidate Markdown up to 65536 exact bytes, unchanged 16384-byte manifests and eligibility, and two static workers within the retained 6 GB process-tree gate. Original Unicode bytes, filenames, source bindings, page routes, chapters, languages and navigation payloads remain required. File/per-file/heap/memory gates and PCR methodology are unchanged; complete export and browser qualification remain required."
+lastReviewedCommit: f793bd03d2a9351811b9bb0259b8f5e60c12156d
 title: Generated PCR Documentation Site Contract
 docType: contract
 scope: repo
@@ -80,7 +80,7 @@ existing normalized-text projection fingerprint.
 Current candidate PCRs with authored methodology and no release history may use
 native `data:application/octet-stream;base64,` download links for `manifest.yaml`,
 `pcr.en-US.md` and `pcr.zh-CN.md`. The manifest limit is 16,384 original bytes;
-each required-language Markdown limit is 32,768 original bytes. Eligibility comes
+each required-language Markdown limit is 65,536 original bytes. Eligibility comes
 from the canonical same-directory manifest, bound to the exact pinned Git source; Markdown never supplies lifecycle or maturity policy.
 These bounded downloads preserve each original filename and work without
 JavaScript. Decode canonical base64, check the size and SHA-256, and compare every
@@ -96,6 +96,13 @@ resource. Source-relative links reuse the same source-bound download and filenam
 The exporter verifies rendered download anchors, and sealed-site qualification
 checks the largest available inline artifact per filename without
 JavaScript in Chromium, Firefox and WebKit.
+
+This extends the existing candidate-only transport rather than changing page layout,
+chapter boundaries or methodology. The CPC 04 corpus still exceeds the retained file
+gate at the 49,152-byte limit used by Candywangx PCR #23; its 65,536-byte bound must
+pass the complete export and real-browser download checks on its own pinned source.
+Moving bytes into native links can increase HTML/navigation bytes; file-count
+savings are not a claim of reduced page weight or unchanged loading performance.
 
 An independently collected source inventory accounts for every rendered block,
 rule identifier, table value, link and code block. Rendering may add navigation,
@@ -304,7 +311,7 @@ elapsed-time acceptance budget. CI bounds its instrumented documentation job to
 60 minutes; stage and total durations remain reported. The old 18-minute full-build
 cap incorrectly applied the provider deadline to this offline work. EdgeOne runs
 only the sealed-product importer, whose separate 15-minute download/materialization
-deadline, cleanup and atomic handoff remain enforced. The export uses four workers
+deadline, cleanup and atomic handoff remain enforced. The export uses two static workers
 with a 4 GB Node heap ceiling per process and retains the 6 GB process-tree memory
 guard; a heap ceiling is not proof of total resident memory.
 
