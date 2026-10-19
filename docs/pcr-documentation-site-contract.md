@@ -98,8 +98,8 @@ checks the largest available inline artifact per filename without
 JavaScript in Chromium, Firefox and WebKit.
 
 This extends the existing candidate-only transport rather than changing page layout,
-chapter boundaries or methodology. The CPC 04 corpus still exceeds the retained file
-gate at the 49,152-byte limit used by Candywangx PCR #23; its 65,536-byte bound must
+chapter boundaries or methodology. Read-only eligibility arithmetic for the CPC 04
+corpus projects 20,088 files at Candywangx PCR #23's 49,152-byte limit; its 65,536-byte bound must
 pass the complete export and real-browser download checks on its own pinned source.
 Moving bytes into native links can increase HTML/navigation bytes; file-count
 savings are not a claim of reduced page weight or unchanged loading performance.
