@@ -371,6 +371,14 @@ test("metadata summaries describe the page they belong to, and report title-only
       titles: { "en-US": "Synthetic wheat seed", "zh-CN": "合成测试小麦种子" },
     });
     fs.appendFileSync(path.join(fixture.pcrDir, "pcr.en-US.md"), "\n[Original metadata](manifest.yaml)\n[Metadata fields](manifest.yaml#fields)\n");
+    for (const language of ["en-US", "zh-CN"]) {
+      const filename = path.join(fixture.pcrDir, `pcr.${language}.md`);
+      const opening = fs.readFileSync(filename, "utf8") + "\n\n";
+      const text = language === "zh-CN" ? "原文保真🙂 " : "Original source bytes. ";
+      const repeats = Math.floor((60 * 1024 - Buffer.byteLength(opening)) / Buffer.byteLength(text));
+      fs.writeFileSync(filename, opening + text.repeat(repeats) + "\n");
+      assert.ok(fs.statSync(filename).size > 49152 && fs.statSync(filename).size <= 61441);
+    }
     syncStructured({root, pcr: fixture.libraryPath});
     lifecycle({
       root,

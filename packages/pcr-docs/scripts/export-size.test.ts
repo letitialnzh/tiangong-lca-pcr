@@ -3,6 +3,28 @@ import assert from "node:assert/strict";
 import { summarizeExportFiles } from "./export-size.ts";
 import { INLINE_MANIFEST_LIMIT, INLINE_MARKDOWN_LIMIT, inlineDownloadUrl, decodeInlineDownloadUrl } from "./raw-download.ts";
 
+test("medium required-language downloads preserve original Unicode bytes within candidate eligibility", () => {
+  const directory = "library/pcrs/domain/category/item/";
+  const manifest = Buffer.from("status: candidate\ncontent_maturity: authored_methodology\n");
+  const sibling = {path: directory + "manifest.yaml", bytes: manifest};
+  for (const name of ["pcr.en-US.md", "pcr.zh-CN.md"]) {
+    for (const size of [40 * 1024, 60 * 1024]) {
+      const opening = Buffer.from("\ufeff# Source / 原文🙂\r\n\r\n" + name + "\r\n");
+      const original = Buffer.concat([opening, Buffer.alloc(size - opening.length, 32)]);
+      const url = inlineDownloadUrl(directory + name, original, false, sibling);
+      assert.ok(url, "medium canonical Markdown should retain native inline transport");
+      assert.deepEqual(decodeInlineDownloadUrl(url), original);
+      assert.equal(inlineDownloadUrl(directory + name, original, true, sibling), undefined);
+      assert.equal(inlineDownloadUrl(directory + name, original, false,
+        {path: sibling.path, bytes: Buffer.from("status: published\ncontent_maturity: authored_methodology\n")}), undefined);
+    }
+  }
+  assert.equal(inlineDownloadUrl(directory + "manifest.yaml",
+    Buffer.concat([manifest, Buffer.alloc(60 * 1024, 32)]), false), undefined);
+  assert.equal(inlineDownloadUrl(directory + "structured.yaml", Buffer.alloc(60 * 1024), false, sibling), undefined);
+  assert.equal(inlineDownloadUrl(directory + "pcr.de-DE.md", Buffer.alloc(60 * 1024), false, sibling), undefined);
+});
+
 test("bounded candidate manifest downloads preserve exact bytes and physical release artifacts", () => {
   const source = "library/pcrs/domain/category/product/manifest.yaml";
   const bytes = Buffer.from("\ufeffstatus: candidate\r\ncontent_maturity: authored_methodology\r\ntitle: 测试\r\n");
