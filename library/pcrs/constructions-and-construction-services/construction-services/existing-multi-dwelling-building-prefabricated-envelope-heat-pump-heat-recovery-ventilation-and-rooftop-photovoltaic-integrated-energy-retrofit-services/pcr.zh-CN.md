@@ -783,7 +783,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `c_normalize` | all inventory rows | 汇总同流同单位同范围的实际归属项目量，含失败尝试，仅除 N 一次；最终服务为 1 item。已每参考的资产供应商数量不得再次归一化。 | actual job quantities; N; cp_accept | 每参考流交换数量 |  |
 | `c_stock` | all stock-linked inventory rows | S = 归属期初 + 外部扣皮总收货 - 结转期末；声明总量带出口时用 S 及实际匹配退回出口；仅消耗量减同一可用外退一次。内部安装损失废弃不变成另一采购。 | opening; external receipts; tare; closing; usable outward return; ledger view | 一种退回约定下实际原生供应 |  |
@@ -793,7 +793,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `dq_scope` | all inventory rows | 采用实际项目地域期间保留结构居住配置；仅比较范围户数面积约定相似者，不宣称不同建筑等价。 | 调查实际设计竣工及签署移交 |
 | `dq_operands` | all protocols | 保留原操作数单位因子成分归宿基准来源、不确定性校准。逐事件唯一节点责任及转移期间关联；不重复原字段名，不隐藏净扣。 | 一手计量及审计来源范围矩阵 |

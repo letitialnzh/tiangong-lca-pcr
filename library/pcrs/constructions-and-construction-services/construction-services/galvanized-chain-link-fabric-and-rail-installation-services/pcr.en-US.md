@@ -975,6 +975,35 @@ Expand actual coating or cleanup releases by the exact solvent, metal, coating c
 
 The range is provisional author reasoning, replaceable after independent review. Different actual formulations have different volatile or particulate constituents; this screening mass neither specifies VOC composition nor permits substituting a coating product flow for an emission.
 
+#### Collection requirement: Waste generated while integrating rails (`rail_waste`)
+
+Process / prospective direction / type: `rail_brace` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Record material-resolved rail cuts, failed fittings, wire remnants, captured machining particles and packaging discarded at this node. Captured particles remain waste; a collector record is not evidence of direct environmental release.
+
+- Collection subject: Waste generated while integrating rails
+- Flow property / unit: Mass / kg
+- Amount rule: actual_rail_waste/L
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_rail_brace`
+- Sources: `clfmi-product-manual-2017`; `masterhalco-galvanized-components`
+- Unverified optional screening aid: Provisional diagnostic screen
+  - Range role: qa_guardrail (`qa_guardrail`)
+  - Lower: 0
+  - Upper: 150
+  - Unit: kg
+  - Basis: per reference flow
+  - Basis kind: Reference flow (`reference_flow`)
+  - Evidence kind: reasoned_estimate (`reasoned_estimate`)
+
+The range is provisional author reasoning, replaceable after independent review. Cut patterns and rejection can raise rail-stage losses, while packaging is included only if unpacked here; compare material and waste ledgers rather than using a generic loss percentage.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -1200,31 +1229,6 @@ The range is provisional author reasoning, replaceable after independent review.
 ##### Product flows
 
 ##### Waste flows
-
-###### Waste generated while integrating rails (`rail_waste`)
-
-Record material-resolved rail cuts, failed fittings, wire remnants, captured machining particles and packaging discarded at this node. Captured particles remain waste; a collector record is not evidence of direct environmental release.
-
-- Selected flow: Waste generated while integrating rails
-- Flow property / unit: Mass / kg
-- Amount rule: actual_rail_waste/L
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_rail_brace`
-- Sources: `clfmi-product-manual-2017`; `masterhalco-galvanized-components`
-- Range: Provisional diagnostic screen
-  - Range role: qa_guardrail (`qa_guardrail`)
-  - Lower: 0
-  - Upper: 150
-  - Unit: kg
-  - Basis: per reference flow
-  - Basis kind: Reference flow (`reference_flow`)
-  - Evidence kind: reasoned_estimate (`reasoned_estimate`)
-
-The range is provisional author reasoning, replaceable after independent review. Cut patterns and rejection can raise rail-stage losses, while packaging is included only if unpacked here; compare material and waste ledgers rather than using a generic loss percentage.
 
 ##### Elementary flows
 

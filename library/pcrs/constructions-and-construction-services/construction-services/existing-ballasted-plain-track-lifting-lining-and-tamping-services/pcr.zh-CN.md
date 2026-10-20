@@ -431,11 +431,51 @@ sync_with: pcr.en-US.md
 - 证据类型：`calculated_from_collection`
 - 采集协议：`cp_emissions`
 
+#### 采集要求：实际排出的服务流体废物 (`removed_fluid_waste`)
+
+过程／待建立交换的方向／类型：`track_geometry_correction` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+分别记录液压废液、润滑剂及实际污染洗涤水。保留水／固体组成及接收处理。不重复回收泄漏废物、保留油或服务商已含维护处置。
+
+数量范围证据需求：需实际排液／维护记录、流体身份、污染及处理保管权；不假定每次作业年度换液。
+
+- 采集对象：实际排出的服务流体废物
+- 流属性/单位：质量 / kg
+- 数量规则：按准确流体／污染流实测排出废液质量并除以L。
+- 数值来源模式：`foreground_record`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`collected_record`
+- 采集协议：`cp_materials`
+
+#### 采集要求：实际移出的磨损部件废物 (`wear_parts_waste`)
+
+过程／待建立交换的方向／类型：`track_geometry_correction` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+将实际磨损捣镐、镶件、软管或密封件与更换及接收方对应。保留部件／组成区分；供应给其他方的可用再用件按真实产品保管权记录。不增加资产寿命服务已含整机报废。
+
+数量范围证据需求：需更换事件链接、材料特定移出质量及实际再用／回收／处置证据。
+
+- 采集对象：实际移出的磨损部件废物
+- 流属性/单位：质量 / kg
+- 数量规则：按不同部件／材料实测移出部件去皮废物质量并除以L。
+- 数值来源模式：`foreground_record`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`collected_record`
+- 采集协议：`cp_materials`
+
 ## 6. 过程清单结构
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | track_geometry_correction | 既有普通轨道几何整正与维修交还 | required | 符合条件的保留有砟普通轨道及批准作业；仅实际规定／使用时纳入稳定和补砟 | 含作业前测量、相互依赖循环、实际断面／稳定闭环与交还的成形责任 | 1 m验收处理中心线 |
 
@@ -571,38 +611,6 @@ sync_with: pcr.en-US.md
 
 ##### 废物流
 
-###### 实际排出的服务流体废物（`removed_fluid_waste`）
-
-分别记录液压废液、润滑剂及实际污染洗涤水。保留水／固体组成及接收处理。不重复回收泄漏废物、保留油或服务商已含维护处置。
-
-数量范围证据需求：需实际排液／维护记录、流体身份、污染及处理保管权；不假定每次作业年度换液。
-
-- 选定流：实际排出的服务流体废物
-- 流属性/单位：质量 / kg
-- 数量规则：按准确流体／污染流实测排出废液质量并除以L。
-- 数值来源模式：`foreground_record`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
-- 采集协议：`cp_materials`
-
-###### 实际移出的磨损部件废物（`wear_parts_waste`）
-
-将实际磨损捣镐、镶件、软管或密封件与更换及接收方对应。保留部件／组成区分；供应给其他方的可用再用件按真实产品保管权记录。不增加资产寿命服务已含整机报废。
-
-数量范围证据需求：需更换事件链接、材料特定移出质量及实际再用／回收／处置证据。
-
-- 选定流：实际移出的磨损部件废物
-- 流属性/单位：质量 / kg
-- 数量规则：按不同部件／材料实测移出部件去皮废物质量并除以L。
-- 数值来源模式：`foreground_record`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
-- 采集协议：`cp_materials`
-
 ##### 基本流
 
 ## 7. 分配与共产品处理
@@ -633,7 +641,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `divide_campaign` | ballast_topup; fuel_gross; electricity; hydraulic_makeup; grease; tine_components; other_spares; supplied_water; water_withdrawal; packaging_supply; spill_absorbent; ballast_return; fuel_return; other_product_returns; ballast_solid_waste; removed_fluid_waste; wear_parts_waste; packaging_waste; recovered_spill_waste | 对每种不同交换，amount_per_m = attributable_campaign_amount / L；L = cp_acceptance记录的验收唯一中心线长度，单位m。接收输入在退回净减之前；库存负荷移交另行记录。 | 实际作业数量；cp_acceptance; cp_materials; cp_energy; cp_incidents | 每1 m参考服务的实际交换单位 |  |
 | `burn_balance` | fuel_gross; exhaust_species | burned_fuel_kg = initial_tank_kg + fuel_gross_kg - final_tank_kg - fuel_return_kg - recovered_fuel_waste_kg - uncontained_fuel_kg；每个出口互斥。事故保留残留纳入最终可归属库存或另行记录未燃烧出口。不再次扣除泄漏总量。 | cp_energy; cp_incidents | 每次作业燃烧的实际燃料kg，与产品总输入分开 |  |
@@ -645,7 +653,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `survey_gate` | accepted_track_geometry_service | 轨道ID／里程、实际目标、空间基长、单位、容许偏差／温度来源、经校准测量、前后支承／稳定证据及签认限制须一致。L排除失败与重复区间。 | cp_acceptance记录及实际采用业主准则 |
 | `scope_temporal` | 所有清单行 | 覆盖每次作业／窗口／期间，包括空转／准备／转换、清理、失败、重复及闭环；每个事件对应节点和单一责任方；列明资产寿命阶段及跨期库存期间。 | 全部事件／移交ID及期间／使用方台账 |

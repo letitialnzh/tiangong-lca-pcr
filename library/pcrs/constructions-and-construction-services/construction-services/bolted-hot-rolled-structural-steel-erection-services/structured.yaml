@@ -1025,9 +1025,9 @@ process_inventory:
           flow_ref:
             uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
           property_unit: "Mass / kg"
-          description: "Record diesel actually burned by owned or separately metered equipment, including attributable idle, tests and rework, where occurrence is established. The fixed identity is generic diesel with no asserted grade, refinery or fossil fraction. A range requires calibrated stocks/meters, actual equipment and complete duty intervals with independent S. Delivered fuel, burnt fuel and stock change must be reconciled; useful lifting work is not fuel mass, and provider-included fuel is not charged again."
+          description: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty."
           amount:
-            expression: "Independently measured and attributed quantity of each actual concrete exchange divided once by S."
+            expression: "Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -1242,8 +1242,8 @@ dataset_production:
       process_id: "steel_erect"
       flow_role: "fuel, electricity and supplied water"
       record_type: "meter, stock and equipment-duty journal"
-      raw_fields: "event_id; lot/configuration; process_id; phase; timestamp/period; owner; role; actual_identity/current_state; native_amount/unit; measured_same_state_bridge; receiver/medium; evidence; uncertainty"
-      collection_method: "Read calibrated meters and opening/closing stocks with delivery, source/state and equipment duty. Include owned idle, tests and rework. Mark provider coverage and direct assignments before residual attribution. Convert liquid volume only using evidenced actual state density; preserve native kWh."
+      raw_fields: "event_id; lot/configuration; process_id; phase; timestamp/period; owner; role; actual_identity/current_state; native_amount/unit; measured_same_state_bridge; receiver/medium; evidence; uncertainty; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Read calibrated meters and opening/closing stocks with delivery, source/state and equipment duty. Include owned idle, tests and rework. Mark provider coverage and direct assignments before residual attribution. Convert liquid volume only using evidenced actual state density; preserve native kWh. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "kg; kWh; native meter units with bridge"
       frequency: "Every meter/stock interval and duty event, including interruptions"
       temporal_coverage: "Starting interface release through completed acceptance; all phases and actual reporting periods, including open periods and stock boundaries"
@@ -1318,6 +1318,21 @@ dataset_production:
       output: "fossil-carbon QA constraint"
       source_ids:
         - carbon-oxidation-identity
+    - id: fuel_supply_fate
+      applies_to: "diesel_fuel"
+      rule: "For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion."
+      inputs:
+        - "opening fuel"
+        - "external receipts"
+        - "closing intact fuel"
+        - U_fuel
+        - X_fuel
+        - W_fuel
+        - P_fuel
+        - D_fuel
+        - "actual node fuel protocol and fate evidence"
+      output: "G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets"
+      source_ids: []
   data_quality_requirements:
     - id: quality_concrete_identity
       applies_to: "all inventory rows"
@@ -1382,6 +1397,14 @@ validation_rules:
       - fhwa-inspection-steel
       - osha-steel-site
       - osha-steel-stability
+  - rule_id: validate_fuel_supply_fate
+    applies_to: "diesel_fuel"
+    rule: "Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets."
+    source_ids: []
+  - rule_id: validate_physical_slurry_stream
+    applies_to: "all collected wastewater/slurry"
+    rule: "A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Foreground data package for an actual bolted hot-rolled structural steel erection episode"
   downstream_use: "LCA process or lifecyclemodel projection and actual supply-chain linking once identity and quality conditions are met"
@@ -1413,7 +1436,7 @@ data_sources:
     used_for: "Constrains CO2 carbon from independently measured burned fossil carbon only; supplies no diesel carbon fraction, complete-oxidation assumption or emission factor"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:50231d530ae469105ff677befc3d47c0635c73da6ba761f0134a339d2f78aaaf"
+  source_sha256: "sha256:ccd6b406d1ce472ae2503341706998ec977941a7328388609036b8fb8ec55420"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6513"
@@ -1464,16 +1487,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_45506"
+    - unit_id: "normative_45447"
       family: "allocation"
       span:
         start:
-          offset: 45506
-          line: 581
+          offset: 45447
+          line: 582
           column: 1
         end:
-          offset: 47701
-          line: 590
+          offset: 47642
+          line: 591
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_direct | all inventory rows | Assign directly measured piece, connection and phase activity first. For genuinely shared crane/access/meter use, list every consuming episode/node and period, retain owned idle/tests/rework, then allocate only the unassigned residual using documented causal use or occupation evidence. Record period-specific shares and uncertainty; shares must be nonoverlapping and reconcile to observed coverage. | steel-erection-accounting-method |\n| allocation_provider | hired_equipment_services; diesel_fuel; electricity; lubricants_other_operating_products | Read each service boundary before adding owned fuel, electricity, maintenance or capital burdens. Count provider-included burdens once. For a self-owned reusable crane, tool or temporary brace, use evidenced actual service capacity/lifetime, use and damage/replacement records for manufacture attribution; unknown life or coverage remains a gap, never a default reuse count. | steel-erection-accounting-method |\n| allocation_rework | steel_erect; reference_service | Keep failed member/connection inspection, damaged coating and unaccepted assemblies linked to their original piece, node and period. Approved fitting, rebolting or touch-up retains its burdens within steel_erect. Record actual return, downgrade, recovery, waste or retained WIP destinations separately. Acceptance counts each permanent steel constituent once after successful rework; neither repeated installation nor unresolved reject mass enlarges S. | steel-erection-accounting-method |\n| allocation_exits | usable_material_exits; returnable_packaging_exit; steel_scrap_waste | An actual usable return is not an accepted erection service or an automatic avoided-product credit. Keep dispatch identity, state, ownership and receiver. Report waste treatment responsibilities and any separately reviewed recovery allocation explicitly; do not net heterogeneous returns or scrap against the reference mass. Used equipment returns are custody events rather than unused material exits. | steel-erection-accounting-method |\n\n"
       headings:
@@ -1492,12 +1515,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 45506
-              line: 581
+              offset: 45447
+              line: 582
               column: 1
             end:
-              offset: 45546
-              line: 581
+              offset: 45487
+              line: 582
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1512,18 +1535,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_58799"
+    - unit_id: "normative_61087"
       family: "validation"
       span:
         start:
-          offset: 58799
-          line: 623
+          offset: 61087
+          line: 625
           column: 1
         end:
-          offset: 61714
-          line: 635
+          offset: 64834
+          line: 639
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| validate_gate | reference_service | Require positive independently measured S and piece/connection acceptance, actual alignment and bolting inspection, stability, owned completion and controlled support release. Receipt weight or initial connection alone cannot pass. Exclude returns, scrap, temporary items and unaccepted WIP. | steel-erection-accounting-method |\n| validate_identity | all inventory rows | Resolve each concrete material/SKU/state, service and receiver or elementary substance/medium before final exchange production. Fixed generic diesel, fossil CO2 to unspecified air and H2O to unspecified air retain their actual identity limits. Verify flow-property/unit-group chains independently; no unresolved umbrella is a concrete UUID. | steel-erection-accounting-method |\n| validate_measurement | all inventory rows | Check native numerator, same-state conversion, protocol ownership, unique event and one division by S. Reference alone self-normalizes to one. Whole coated-product input mass cannot be replaced by retained net steel. Range gaps and unknown occurrence remain explicit; no arbitrary numeric bounds prove completeness. | steel-erection-accounting-method |\n| validate_phases | steel_erect | Check actual five-phase and reporting-period journal, all piece/asset/utility/output links and attribution decisions. Rework, replacement and termination require resolved state and destination. Open periods or missing release obligations prevent episode finalization and cannot be silently carried into accepted output. | steel-erection-accounting-method |\n| validate_shared | hired_equipment_services; diesel_fuel; electricity | Reconcile shared assets/services, all consumers/periods, direct assignments and residual shares. Test provider fuel/capital/maintenance against owned rows for duplicate coverage. Missing self-owned lifetime/use evidence remains a disclosed gap rather than full asset manufacture or zero burden. | steel-erection-accounting-method |\n| validate_fates | all inventory rows | Close only compatible material/state or evidenced constituent pools, including opening/closing stock. Keep water-only and fossil-carbon checks separate. Distinguish captured/uncaptured, wet/dry and product/waste/environment destinations. A residual is a finding and never a fabricated exchange; do not equate fuel kg with CO2 kg or invent oxygen. | steel-erection-accounting-method; carbon-oxidation-identity |\n| validate_scope | steel_erect | Review any separately owned handoff, structural field welding or independent fabrication/full coating before applying this category. Record actual local/project acceptance requirements; safety guidance examples supply no default final-bolt criterion, design tolerance or inventory rate. | fhwa-inspection-steel; osha-steel-site; osha-steel-stability |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| validate_gate | reference_service | Require positive independently measured S and piece/connection acceptance, actual alignment and bolting inspection, stability, owned completion and controlled support release. Receipt weight or initial connection alone cannot pass. Exclude returns, scrap, temporary items and unaccepted WIP. | steel-erection-accounting-method |\n| validate_identity | all inventory rows | Resolve each concrete material/SKU/state, service and receiver or elementary substance/medium before final exchange production. Fixed generic diesel, fossil CO2 to unspecified air and H2O to unspecified air retain their actual identity limits. Verify flow-property/unit-group chains independently; no unresolved umbrella is a concrete UUID. | steel-erection-accounting-method |\n| validate_measurement | all inventory rows | Check native numerator, same-state conversion, protocol ownership, unique event and one division by S. Reference alone self-normalizes to one. Whole coated-product input mass cannot be replaced by retained net steel. Range gaps and unknown occurrence remain explicit; no arbitrary numeric bounds prove completeness. | steel-erection-accounting-method |\n| validate_phases | steel_erect | Check actual five-phase and reporting-period journal, all piece/asset/utility/output links and attribution decisions. Rework, replacement and termination require resolved state and destination. Open periods or missing release obligations prevent episode finalization and cannot be silently carried into accepted output. | steel-erection-accounting-method |\n| validate_shared | hired_equipment_services; diesel_fuel; electricity | Reconcile shared assets/services, all consumers/periods, direct assignments and residual shares. Test provider fuel/capital/maintenance against owned rows for duplicate coverage. Missing self-owned lifetime/use evidence remains a disclosed gap rather than full asset manufacture or zero burden. | steel-erection-accounting-method |\n| validate_fates | all inventory rows | Close only compatible material/state or evidenced constituent pools, including opening/closing stock. Keep water-only and fossil-carbon checks separate. Distinguish captured/uncaptured, wet/dry and product/waste/environment destinations. A residual is a finding and never a fabricated exchange; do not equate fuel kg with CO2 kg or invent oxygen. | steel-erection-accounting-method; carbon-oxidation-identity |\n| validate_scope | steel_erect | Review any separately owned handoff, structural field welding or independent fabrication/full coating before applying this category. Record actual local/project acceptance requirements; safety guidance examples supply no default final-bolt criterion, design tolerance or inventory rate. | fhwa-inspection-steel; osha-steel-site; osha-steel-stability |\n| validate_fuel_supply_fate | diesel_fuel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n| validate_physical_slurry_stream | all collected wastewater/slurry | A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1540,12 +1563,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 58799
-              line: 623
+              offset: 61087
+              line: 625
               column: 1
             end:
-              offset: 58821
-              line: 623
+              offset: 61109
+              line: 625
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -4489,146 +4512,172 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_direct"
       identity_kind: "explicit"
-      unit_id: "normative_45506"
+      unit_id: "normative_45447"
       source_span:
         start:
-          offset: 45619
-          line: 585
+          offset: 45560
+          line: 586
           column: 1
         end:
-          offset: 46098
-          line: 585
+          offset: 46039
+          line: 586
           column: 480
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_provider"
       identity_kind: "explicit"
-      unit_id: "normative_45506"
+      unit_id: "normative_45447"
       source_span:
         start:
-          offset: 46099
-          line: 586
+          offset: 46040
+          line: 587
           column: 1
         end:
-          offset: 46624
-          line: 586
+          offset: 46565
+          line: 587
           column: 526
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rework"
       identity_kind: "explicit"
-      unit_id: "normative_45506"
+      unit_id: "normative_45447"
       source_span:
         start:
-          offset: 46625
-          line: 587
+          offset: 46566
+          line: 588
           column: 1
         end:
-          offset: 47169
-          line: 587
+          offset: 47110
+          line: 588
           column: 545
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_exits"
       identity_kind: "explicit"
-      unit_id: "normative_45506"
+      unit_id: "normative_45447"
       source_span:
         start:
-          offset: 47170
-          line: 588
+          offset: 47111
+          line: 589
           column: 1
         end:
-          offset: 47699
-          line: 588
+          offset: 47640
+          line: 589
           column: 530
     - pointer: "/validation_rules/0"
       rule_id: "validate_gate"
       identity_kind: "explicit"
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 58894
-          line: 627
+          offset: 61182
+          line: 629
           column: 1
         end:
-          offset: 59260
-          line: 627
+          offset: 61548
+          line: 629
           column: 367
     - pointer: "/validation_rules/1"
       rule_id: "validate_identity"
       identity_kind: "explicit"
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 59261
-          line: 628
+          offset: 61549
+          line: 630
           column: 1
         end:
-          offset: 59681
-          line: 628
+          offset: 61969
+          line: 630
           column: 421
     - pointer: "/validation_rules/2"
       rule_id: "validate_measurement"
       identity_kind: "explicit"
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 59682
-          line: 629
+          offset: 61970
+          line: 631
           column: 1
         end:
-          offset: 60080
-          line: 629
+          offset: 62368
+          line: 631
           column: 399
     - pointer: "/validation_rules/3"
       rule_id: "validate_phases"
       identity_kind: "explicit"
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 60081
-          line: 630
+          offset: 62369
+          line: 632
           column: 1
         end:
-          offset: 60471
-          line: 630
+          offset: 62759
+          line: 632
           column: 391
     - pointer: "/validation_rules/4"
       rule_id: "validate_shared"
       identity_kind: "explicit"
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 60472
-          line: 631
+          offset: 62760
+          line: 633
           column: 1
         end:
-          offset: 60876
-          line: 631
+          offset: 63164
+          line: 633
           column: 405
     - pointer: "/validation_rules/5"
       rule_id: "validate_fates"
       identity_kind: "explicit"
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 60877
-          line: 632
+          offset: 63165
+          line: 634
           column: 1
         end:
-          offset: 61327
-          line: 632
+          offset: 63615
+          line: 634
           column: 451
     - pointer: "/validation_rules/6"
       rule_id: "validate_scope"
       identity_kind: "explicit"
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 61328
-          line: 633
+          offset: 63616
+          line: 635
           column: 1
         end:
-          offset: 61712
-          line: 633
+          offset: 64000
+          line: 635
           column: 385
+    - pointer: "/validation_rules/7"
+      rule_id: "validate_fuel_supply_fate"
+      identity_kind: "explicit"
+      unit_id: "normative_61087"
+      source_span:
+        start:
+          offset: 64001
+          line: 636
+          column: 1
+        end:
+          offset: 64421
+          line: 636
+          column: 421
+    - pointer: "/validation_rules/8"
+      rule_id: "validate_physical_slurry_stream"
+      identity_kind: "explicit"
+      unit_id: "normative_61087"
+      source_span:
+        start:
+          offset: 64422
+          line: 637
+          column: 1
+        end:
+          offset: 64832
+          line: 637
+          column: 411
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -7248,27 +7297,27 @@ normative_context:
           column: 46
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_45506"
+      unit_id: "normative_45447"
       source_span:
         start:
-          offset: 45506
-          line: 581
+          offset: 45447
+          line: 582
           column: 1
         end:
-          offset: 45546
-          line: 581
+          offset: 45487
+          line: 582
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_58799"
+      unit_id: "normative_61087"
       source_span:
         start:
-          offset: 58799
-          line: 623
+          offset: 61087
+          line: 625
           column: 1
         end:
-          offset: 58821
-          line: 623
+          offset: 61109
+          line: 625
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -7277,5 +7326,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:50231d530ae469105ff677befc3d47c0635c73da6ba761f0134a339d2f78aaaf"
-  generated_content_sha256: "sha256:380d87875eba375c8fac7537be63c0da729a13e772a443fc61a0482b2bd1469f"
+    sha256: "sha256:ccd6b406d1ce472ae2503341706998ec977941a7328388609036b8fb8ec55420"
+  generated_content_sha256: "sha256:1885fd173fff3bf4102250307ccee4c940ccbb82a2e9dfd747676853aa7935bc"

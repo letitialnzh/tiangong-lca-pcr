@@ -556,33 +556,15 @@ sync_with: pcr.en-US.md
 
 - 来源：`cycle-normalization-method`; `compatible-pool-ledger-method`
 
-## 6. 过程清单结构
+#### 采集要求：实际消耗的新脚手架替换构件 (`replacement_kit_products`)
 
+过程／待建立交换的方向／类型：`scaffold_cycle` / `inputs` / `product`.
 
-### 过程图
-
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
-| --- | --- | --- | --- | --- | --- |
-| scaffold_cycle | 支承式模块化钢立面脚手架完整周期服务 | required | 实际完整周期及声明责任 | 单一负责的前景服务节点；阶段门控是观测 | reference_service; 1 m2 |
-
-
-可重复使用套件在发出、已搭设、使用后和归还评估阶段保留各自状态。实际搭设连接拉结和拆除依据项目设计及系统兼容要求记录，不设虚构性能值。缺陷、未验收、隔离、维修或未归还状态不进入最终已验收服务；真实独立交接须复审节点。下列条件角色由实际事件判断，零、一个或多个具体交换各自有证据；不得使用总称强行绑定 UUID。
-
-
-### 过程：脚手架完整周期（`scaffold_cycle`）
-
-
-#### 输入
-
-
-##### 产品流
-
-
-###### 实际消耗的新脚手架替换构件 (`replacement_kit_products`)
+按每个真实 SKU、组成/状态及保管关系建立独立原子交换。本要求不是通用集合流。真实完整的采购总成可采用其经核实的整包边界，已含部件不再额外采购。
 
 逐项识别本周期实际消耗的新替换构件 SKU 及其在构件台账中的去向，排除既有可复用构件的单纯部署。范围证据需求：须有构件清单、实测当前状态质量、磨损及批准维修和退役决定；库存短缺或未归还构件均不能证明消耗或废弃。
 
-- 选定流：实际消耗的新脚手架替换构件
+- 采集对象：实际消耗的新脚手架替换构件
 
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 
@@ -602,16 +584,38 @@ sync_with: pcr.en-US.md
 
 - 来源：`cycle-normalization-method`; `compatible-pool-ledger-method`
 
+## 6. 过程清单结构
+
+
+### 过程图
+
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
+| --- | --- | --- | --- | --- | --- |
+| scaffold_cycle | 支承式模块化钢立面脚手架完整周期服务 | required | 实际完整周期及声明责任 | 单一负责的前景服务节点；阶段门控是观测 | reference_service; 1 m2 |
+
+
+可重复使用套件在发出、已搭设、使用后和归还评估阶段保留各自状态。实际搭设连接拉结和拆除依据项目设计及系统兼容要求记录，不设虚构性能值。缺陷、未验收、隔离、维修或未归还状态不进入最终已验收服务；真实独立交接须复审节点。下列条件角色由实际事件判断，零、一个或多个具体交换各自有证据；不得使用总称强行绑定 UUID。
+
+
+### 过程：脚手架完整周期（`scaffold_cycle`）
+
+
+#### 输入
+
+
+##### 产品流
+
 
 ###### 柴油 (`diesel_fuel`)
 
-纳入自有设备或单独计量作业中归属本周期的实际柴油燃烧量，包括应归属的怠速、测试和返工；排除供应方服务已覆盖的燃料。范围证据需求：须有设备及区间日志、经校准库存或计量核对；有效起吊功不能替代燃料消耗质量。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 选定流：柴油 `9d258d75-6792-4f1c-9856-81602ed8f816`
 
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 
-- 数量规则：本周期每个具体身份、状态及接收方的独立实测或有依据计算分子，仅除以验收 A 一次；遵循第 8 节周期分子规则
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
 
 - 数值来源模式：`calculated_value`
 
@@ -884,14 +888,14 @@ sync_with: pcr.en-US.md
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_scaffold_cycle_material | scaffold_cycle | 配置几何；材料；产品及废物退出 | 按阶段索引的前景事件记录 | 事件/批次/配置编号；过程/阶段/时间；责任方；角色；实际身份/当前状态；原生数量/单位；实测同状态换算；接收方/介质；证据；不确定性 | 独立测量不重叠验收立面多边形并核对交接及闭合；逐项称量具体材料当前状态及外运量，不能直接称量时保留件数及可追溯同状态换算；独立观测外来沉积物和组分水分，识别实际接收方及阶段。 | kg; m2 | 每个事件及区间边界 | 完整发出至归还周期，包括不可用及返工 | 声明场址/配置及责任内场外清洁归还作业 | 每参考流 | 测量及验收记录；秤校准；构件/SKU 及外运文件；水分及组分证据 |
-| cp_scaffold_cycle_utility | scaffold_cycle | 燃料；电力；供应水 | 按阶段索引的前景事件记录 | 事件/批次/配置编号；过程/阶段/时间；责任方；角色；实际身份/当前状态；原生数量/单位；实测同状态换算；接收方/介质；证据；不确定性 | 在全部责任作业、怠速、测试及返工区间读取经校准燃料和公用设施计量及期初期末存量；记录供应身份及计量拓扑，周期归属前核对全部使用者和供应方已覆盖量；仅按独立证实的同状态换算转换原生单位。 | kg; kWh | 每个事件及区间边界 | 完整发出至归还周期，包括不可用及返工 | 声明场址/配置及责任内场外清洁归还作业 | 每参考流 | 计量校准及读数；供应文件；设备/阶段日志；分配核对 |
+| cp_scaffold_cycle_utility | scaffold_cycle | 燃料；电力；供应水 | 按阶段索引的前景事件记录 | 事件/批次/配置编号；过程/阶段/时间；责任方；角色；实际身份/当前状态；原生数量/单位；实测同状态换算；接收方/介质；证据；不确定性; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 在全部责任作业、怠速、测试及返工区间读取经校准燃料和公用设施计量及期初期末存量；记录供应身份及计量拓扑，周期归属前核对全部使用者和供应方已覆盖量；仅按独立证实的同状态换算转换原生单位。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kg; kWh | 每个事件及区间边界 | 完整发出至归还周期，包括不可用及返工 | 声明场址/配置及责任内场外清洁归还作业 | 每参考流 | 计量校准及读数；供应文件；设备/阶段日志；分配核对 |
 | cp_scaffold_cycle_asset | scaffold_cycle | 套件占用；独立辅助服务；资产观测 | 按阶段索引的前景事件记录 | 事件/批次/配置编号；过程/阶段/时间；责任方；角色；实际身份/当前状态；原生数量/单位；实测同状态换算；接收方/介质；证据；不确定性 | 按资产和构件编号追踪发出、交接、实际可用及不可用期、拆除及经评估归还维修退役；记录全部使用者、供应方边界及实际占用使用区间；自有归属须采集实际寿命或能力、使用、磨损和损伤证据，不得假定周期次数。 | h; kg observations | 每个事件及区间边界 | 完整发出至归还周期，包括不可用及返工 | 声明场址/配置及责任内场外清洁归还作业 | 每参考流 | 保管及状态台账；带日期使用者和可用状态日志；供应方合同；有证据的自有资产归属 |
 | cp_scaffold_cycle_release | scaffold_cycle | 取水；物质/区室排放 | 按阶段索引的前景事件记录 | 事件/批次/配置编号；过程/阶段/时间；责任方；角色；实际身份/当前状态；原生数量/单位；实测同状态换算；接收方/介质；证据；不确定性 | 按来源、物质及区室测量实际取水和排放；仅在观测活动、组分和不确定性支持下使用有记录且适用的排放或蒸发模型；保留原始浓度、流量及捕集记录，区分直接排水与处理废物、化石碳与水池。 | kg | 每个事件及区间边界 | 完整发出至归还周期，包括不可用及返工 | 声明场址/配置及责任内场外清洁归还作业 | 每参考流 | 采样及分析 QA；计量及模型依据；活动及组分记录；捕集和接收方证据 |
 
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | accepted_area | reference_service | A = 稳定配置各不重叠验收立面多边形面积之和。去除未服务空缺及重复重叠；不得叠加作业层、架体层、重复日或平面投影。 | survey; configuration; gate; cp_scaffold_cycle_material | A | cycle-normalization-method |
 | cycle_numerators | all inventory rows | 对每个具体身份/状态/接收方 j，N_j = 实测同状态换算及互斥归属后以声明分子单位表示的周期归属数量；E_j = N_j / A。各 j 分别保留；异质总量只检验台账完整性。 | N_j; A; cp_scaffold_cycle_material; cp_scaffold_cycle_utility; cp_scaffold_cycle_asset; cp_scaffold_cycle_release | E_j | cycle-normalization-method; asset-attribution-method |
@@ -900,11 +904,11 @@ sync_with: pcr.en-US.md
 | compatible_closure | all inventory rows | 对各兼容材料/状态/组分池，期初存量 + 观测外来增加 = 期末存量 + 独立测量留置、归还、废弃及释放组分 + 残差。评估残差不确定性，不生成配平交换；使用后套件状态与外来沉积物分开。 | state/constituent ledgers; cp_scaffold_cycle_material; cp_scaffold_cycle_release | closure findings | compatible-pool-ledger-method |
 | water_only_closure | water_supplied; direct_freshwater_abstraction; collected_wastewater_slurry; water_vapour_air; specific_direct_water_releases | 将独立观测纯水组分投入及期初水与纯水组分期末、留置、退回含量、收集液体废物、有依据蒸发及直接排放核对；内部循环抵消，固体及化学品是独立组分，残差不能证明蒸发。 | water-only measurements; cp_scaffold_cycle_utility; cp_scaffold_cycle_release; cp_scaffold_cycle_material | water closure findings | compatible-pool-ledger-method |
 | fossil_carbon_constraint | fossil_co2_air | 对独立测量的燃烧化石碳 C_f，化石 CO2 <= C_f * 44 / 12。以适用测量或模型记录实际 CO2，分别核对其他物种中的碳及残差不确定性。此上限不假定完全氧化，不是每 kg 柴油对应 kg CO2。 | C_f; actual emission evidence; cp_scaffold_cycle_utility; cp_scaffold_cycle_release | fossil-carbon QA | carbon-oxidation-identity |
-
+| fuel_supply_fate | diesel_fuel | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | configuration_gate | reference_service | 保留配置及套件编号、实测立面多边形和正值 A、高度、荷载等级、作业层和架体层及拉结布置、基底放行、交接和拆除归还恢复记录、实际注明日期的可用及不可用期和责任方；几何变更须有另行审查队列。 | 测量、设计及闭合验收日志 |
 | actual_condition | all inventory rows | 每张条件卡均须有实际是、否、未决发生状态及证据；按每个具体材料、SKU、状态、物种和接收方分别实例化原生观测、换算及 N_j/A，不得将未决发生状态设为零。 | 事件证据及具体交换登记 |
@@ -925,7 +929,8 @@ sync_with: pcr.en-US.md
 | physical_qa | all inventory rows | 按兼容材料、当前状态及组分池核对期初期末存量和独立观测增加量，分别检查纯水组分及燃料碳约束；不得将燃料 kg 与 CO2 kg 直接平衡，也不得由残差虚构氧气、废物、粉尘、水蒸气或其他交换。 | compatible-pool-ledger-method; carbon-oxidation-identity |
 | range_and_gaps | all inventory rows | 保留两个有依据范围及其他 25 行各自的范围证据需求；依据实测投入及去向检查实际物理约束。缺失范围证据、状态不确定、支持身份或资产归属缺口均须披露，不得虚构界限。 | cycle-normalization-method; compatible-pool-ledger-method |
 | report_completeness | foreground dataset | 报告接受输入、执行及跳过检查、发现、不确定性和完整性。自动结构检查通过不证明工程合规、最终 UUID 就绪或不完整周期闭合。 | cycle-normalization-method |
-
+| validate_fuel_supply_fate | diesel_fuel | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
+| validate_physical_slurry_stream | all collected wastewater/slurry | 废水/浆液卡仅表示一个接收门槛下真实未物理分离的液固混合物流。分别收集的液体、已分离固体或不同处理去向须建立独立实际交换，不能为适配本卡而重新合并。混合物总质量与所含水/固体属于不可相加的视图。 |  |
 
 ## 10. 发布数据集画像
 

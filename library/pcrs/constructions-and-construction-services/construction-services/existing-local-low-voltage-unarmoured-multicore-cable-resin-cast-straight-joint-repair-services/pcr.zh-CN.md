@@ -498,7 +498,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | material_intake | joint_kit; separate_connectors; kit_components; supplementary_materials | 按实际SKU及唯一所选上游模式，原生item或kg的作业归属供应量 = 期初归属库存加扣皮重外部总收货减期末承接库存，匹配单位、范围及上游负担承接。总投入加出口模式每参考投入 = 此供应量乘event_share除以accepted_joint_count_N，真实外部出口另列。仅消耗模式在分摊前额外排除对应实际退回供应一次，不重复给退回输出抵扣。废物和释放仍是承接负担的去向。套件组件实物子台账不构成虚构的完整套件计数等价。 | cp_materials; gross_received_count; gross_received_net_kg; event_share; accepted_joint_count_N; opening_attributable_count; closing_carried_count; opening_attributable_net_kg; closing_carried_net_kg; inventory_view; outward_return_count; outward_return_net_kg; upstream_burden_carry | 每参考实际SKU投入item或kg |  |
 | count_return | count_returns | 每参考退回item = outward_return_count乘event_share除以accepted_joint_count_N。SKU原生计数审计：opening_attributable_count加gross_received_count等于final_used_SKU_count加discarded_count加outward_return_count加closing_carried_count。不得从废物kg推断计数。 | cp_materials; opening_attributable_count; gross_received_count; final_used_SKU_count; discarded_count; outward_return_count; closing_carried_count; event_share; accepted_joint_count_N | 每参考实际匹配外退item |  |
@@ -518,7 +518,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | quality_gate | accepted_joint | 实际当前业主/套件/连接器说明和电缆适配性控制。不设通用电压、时间、绝缘电阻、固化或寿命默认值，证明实际要求完全固化状态/电气验收。 | 真实交付说明、校准、批号/固化条件、测试和交付记录 |
 | quality_scope | joint_repair | 覆盖实际全部期间、尝试、袋批次、共享事件及资源，包括真实服务商支付消耗；追溯实际无使用、不确定性和未解决缺口。明确比较配置，不把所有计数接头等同。 | 完整验收/拒收ID台账、注明日期范围及不确定性复核 |

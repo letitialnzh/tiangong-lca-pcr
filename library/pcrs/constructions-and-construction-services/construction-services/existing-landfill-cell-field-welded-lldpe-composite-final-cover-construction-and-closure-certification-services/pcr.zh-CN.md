@@ -627,6 +627,48 @@ sync_with: pcr.en-US.md
 
 数量范围证据需求：采集按来源计量的实际供水/取水、用途及废水/排放/土壤含水/蒸发去向证据和不确定性；无假定用水率或重复采购交付水分。
 
+#### 采集要求：基底准备实际分类固体施工废物 (`prepare_solid_waste`)
+
+过程／待建立交换的方向／类型：`prepare` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+识别实际土方/残渣、不合格材料、边角料、破坏试验试样、包装及受污染吸附材料，记录干湿基及实际许可去向。移出的历史废物不是负数新材料采购。保留未退回损失的上游负荷，不默认回收抵扣。
+
+- 采集对象：基底准备实际分类固体施工废物
+- 流属性/单位：Mass / kg
+- 数量规则：实际归属原生数量仅除以A一次，按关联节点协议直接记录为每参考流数量，并闭合兼容库存和物理状态。
+- 数值来源模式：`calculated_value`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`calculated_from_collection`
+- 采集协议：`cp_prepare_waste`
+- 来源：
+
+数量范围证据需求：采集实际分类残渣/边角料/试样/包装废物质量、干湿状态、称重不确定性及去向回执；无默认拒收或回收比例。
+
+#### 采集要求：覆盖施工实际分类固体施工废物 (`cap_solid_waste`)
+
+过程／待建立交换的方向／类型：`cap` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+识别实际土方/残渣、不合格材料、边角料、破坏试验试样、包装及受污染吸附材料，记录干湿基及实际许可去向。移出的历史废物不是负数新材料采购。保留未退回损失的上游负荷，不默认回收抵扣。
+
+- 采集对象：覆盖施工实际分类固体施工废物
+- 流属性/单位：Mass / kg
+- 数量规则：实际归属原生数量仅除以A一次，按关联节点协议直接记录为每参考流数量，并闭合兼容库存和物理状态。
+- 数值来源模式：`calculated_value`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`calculated_from_collection`
+- 采集协议：`cp_cap_waste`
+- 来源：
+
+数量范围证据需求：采集实际分类残渣/边角料/试样/包装废物质量、干湿状态、称重不确定性及去向回执；无默认拒收或回收比例。
+
 ## 6. 过程清单结构
 
 ### 过程图
@@ -702,23 +744,6 @@ sync_with: pcr.en-US.md
 数量范围证据需求：采集合格准备范围、拒收区面积、入场与压实土料状态及独立准入检查的不确定性；不要求等于最终A。
 
 ##### 废物流
-
-###### 基底准备实际分类固体施工废物 (`prepare_solid_waste`)
-
-识别实际土方/残渣、不合格材料、边角料、破坏试验试样、包装及受污染吸附材料，记录干湿基及实际许可去向。移出的历史废物不是负数新材料采购。保留未退回损失的上游负荷，不默认回收抵扣。
-
-- 选定流：基底准备实际分类固体施工废物
-- 流属性/单位：Mass / kg
-- 数量规则：实际归属原生数量仅除以A一次，按关联节点协议直接记录为每参考流数量，并闭合兼容库存和物理状态。
-- 数值来源模式：`calculated_value`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`calculated_from_collection`
-- 采集协议：`cp_prepare_waste`
-- 来源：
-
-数量范围证据需求：采集实际分类残渣/边角料/试样/包装废物质量、干湿状态、称重不确定性及去向回执；无默认拒收或回收比例。
 
 ##### 基本流
 
@@ -840,23 +865,6 @@ sync_with: pcr.en-US.md
 
 ##### 废物流
 
-###### 覆盖施工实际分类固体施工废物 (`cap_solid_waste`)
-
-识别实际土方/残渣、不合格材料、边角料、破坏试验试样、包装及受污染吸附材料，记录干湿基及实际许可去向。移出的历史废物不是负数新材料采购。保留未退回损失的上游负荷，不默认回收抵扣。
-
-- 选定流：覆盖施工实际分类固体施工废物
-- 流属性/单位：Mass / kg
-- 数量规则：实际归属原生数量仅除以A一次，按关联节点协议直接记录为每参考流数量，并闭合兼容库存和物理状态。
-- 数值来源模式：`calculated_value`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`calculated_from_collection`
-- 采集协议：`cp_cap_waste`
-- 来源：
-
-数量范围证据需求：采集实际分类残渣/边角料/试样/包装废物质量、干湿状态、称重不确定性及去向回执；无默认拒收或回收比例。
-
 ##### 基本流
 
 ## 7. 分配与联产品处理
@@ -888,7 +896,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_area | all inventory rows | quantity_per_reference = attributable_native_quantity / A；A为正的经认证唯一净展开最终覆盖面积，单位m2；最终验收参考输出为1 m2。 | attributable_native_quantity; A; cp_cap_gate | 每1 m2认证最终覆盖的原生数量 |  |
 | native_state | prep_soil; cap_soil; prepare_fuel; cap_fuel; erosion_vegetation | 只换算实际兼容状态：wet_mass = wet_volume * wet_density；dry_mass = wet_mass * (1 - wet_basis_water_fraction)；同一保留干固体单独记录增补与损失后，loose_volume * loose_dry_density = compacted_volume * compacted_dry_density。干基含水采用dry_mass = wet_mass / (1 + dry_basis_water_ratio)。保留实际单位、温度、密度/含水方法、批次、来源及不确定性。这些是不可相加的替代视图；不得等同松散和压实体积或重复计水。 | wet_volume; wet_density; wet_mass; wet_basis_water_fraction; dry_basis_water_ratio; loose_volume; loose_dry_density; compacted_volume; compacted_dry_density | 兼容且闭合的原生状态数量 |  |
@@ -898,7 +906,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | Requirement | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | traceability | 所有过程 | 保留批准方案、单元身份/基线、供应商/材料批次、实际验收门槛及关联时期的原始物理记录；不得编造数值或数值范围。 | 签署批准、测量与原始记录 |
 | coverage | 所有交换与资产 | 记录供应商及共享资产上游范围、所有消费者寿命分母、原生供应/退回去向、排放归属及缺失覆盖、不确定性和敏感性。实质数据缺失阻止最终生产；身份支撑不是数量证据。 | 资源覆盖矩阵及闭合物理台账 |

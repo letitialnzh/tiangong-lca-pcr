@@ -25,6 +25,8 @@ lastReviewedNote: Fork-only candidate integration; publication and complete fore
 
 # CPC54 同步分支整理与复核
 
+> 历史快照：下文记录提交 `278771c478767622e3021981b534306664a286c2` 的迁移审查、统计和局限。后续逐项复核确认并修复了额外核算与集合身份问题，故其中“未确认其他原则错误”不代表当前结论。当前方法、497/1,021结构统计、目标结果和指纹请以 [63个PCR原则性逐项复核](principle-review.md) 及其 JSON 为准。
+
 本次把既有的 63 个 CPC54 语义 PCR 整理到 `letitialnzh/tiangong-lca-pcr:codex/sync-candywangx-main-20261016`，固定基线为 `58cb897e4e2c98ffb99e1013ac982b4ad1f3fece`。每个 PCR 保留自己的产品边界、路线、验收关口和四文件目录。全部保持 `candidate / authored_methodology`，中文为 `aligned`，没有发布、创建 release 或向上游仓库写入。
 
 ## 复核结论与修复

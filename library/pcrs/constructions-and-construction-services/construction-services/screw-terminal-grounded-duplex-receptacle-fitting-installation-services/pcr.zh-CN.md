@@ -171,11 +171,30 @@ sync_with: pcr.en-US.md
 - 证据类型：由采集数据计算 (`calculated_from_collection`)
 - 采集协议：`cp_materials`
 
+#### 采集要求：实际安装废物流 (`installation_waste`)
+
+过程／待建立交换的方向／类型：`install_accept` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+按材质/状态/危险特性及获授权接收方分别确定包装、导线边角料和拆下故障部件的废物。保留原领用/返工事件。工具电子部件/电池残余仅在自有资源生命周期确实承担其处置事件时纳入；电子式插座不在范围内。 数量范围证据需求：范围及闭合审查需要废物联单、准确状态/接收方、原缺陷事件，以及任何相关实测粉尘/物种释放证据。
+
+- 采集对象：实际安装废物流
+- 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- 单位组：Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
+- 数量规则：各有证据废物流的实际归属净质量 / D；不得把未知残差等同于粉尘排放。
+- 数值来源模式：计算值 (`calculated_value`)
+- 适用范围：场址特定 (`site_specific`)
+- 归一化基准：每参考流
+- 基准类型：过程输出 (`process_output`)
+- 证据类型：由采集数据计算 (`calculated_from_collection`)
+- 采集协议：`cp_releases`
+
 ## 6. 过程清单结构
 
 ### 过程图
 
-| process_id | 过程名称 | inclusion | inclusion_condition | role | quantitative_reference |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | install_accept | 插座安装、测试和验收 | required | 已证明所选首次安装范围和准备接口。 | 将供应插座、面板和永久紧固件与准备导线集成；独立负责端接、固定、测试和验收。 | accepted_installation |
 
@@ -249,21 +268,6 @@ sync_with: pcr.en-US.md
 
 ##### 废物流
 
-###### 实际安装废物流 (`installation_waste`)
-
-按材质/状态/危险特性及获授权接收方分别确定包装、导线边角料和拆下故障部件的废物。保留原领用/返工事件。工具电子部件/电池残余仅在自有资源生命周期确实承担其处置事件时纳入；电子式插座不在范围内。 数量范围证据需求：范围及闭合审查需要废物联单、准确状态/接收方、原缺陷事件，以及任何相关实测粉尘/物种释放证据。
-
-- 选定流：实际安装废物流
-- 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- 单位组：Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- 数量规则：各有证据废物流的实际归属净质量 / D；不得把未知残差等同于粉尘排放。
-- 数值来源模式：计算值 (`calculated_value`)
-- 适用范围：场址特定 (`site_specific`)
-- 归一化基准：每参考流
-- 基准类型：过程输出 (`process_output`)
-- 证据类型：由采集数据计算 (`calculated_from_collection`)
-- 采集协议：`cp_releases`
-
 ##### 基本流
 
 不得从导线准备或未解释平衡残差推断通用排放。若有实际直接释放证据，在 cp_releases 中识别物种/粒径及接收介质、实测或有依据的方法、捕集与排放比例及原作业。添加具体交换前，此类证据须经范围/身份审查；不得以笼统粉尘或 VOC 虚构污染物 UUID。
@@ -290,7 +294,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | actual_normalization | 所有非参考清单行 | q_i = N_i / D；N_i 为独立采集的、以本行单位表示的可归属实际分子；D 为独立清点、为正的同配置完整验收安装数量。保留原始 N_i 及其协议；不得从目标参考数量反求 N_i。 | N_i; D; cp_acceptance; cp_materials; cp_energy; cp_services; cp_releases | q_i | |
 | custody_closure | receptacle; plate_and_fixings; incoming_packaging; unused_product_return; installation_waste | 对每个可识别来源池，期初库存 + 接收 = 安装保留材料 + 期末库存 + 可用退货 + 实际废物 + 已识别释放 + 残差。记录容差和残差；未解决质量是缺口而非粉尘。异质质量总量仅作诊断。 | cp_materials; cp_releases | 来源池闭合及残差 | |
@@ -298,7 +302,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | configuration_quality | install_accept | 匹配场址、期间、型号、技术说明、单路供电状态、接口、BOM 和验收。不得将示例产品规格移植到所有安装。 | cp_acceptance；实际型号/设计记录 |
 | measurement_quality | 所有清单行 | 保留校准、可追溯 SKU 特定转换、原始分子和独立正 D。缺失数据及条件性不存在均需证据；不得补零。 | 所有关联协议及不确定性台账 |

@@ -219,7 +219,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `shade_install` | 窗洞内固定、装配与验收 | required | 所有范围内作业 | 在既有窗洞处装配工厂卷帘及安装横杆、支架及固定件、把手及端盖和另需锚固件、垫片；验收前返工保留在本节点 | 1 item 已验收安装 |
 
@@ -306,7 +306,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_kit` | `shade_install` | 套件收货和覆盖 | 交付领用台账 | job_id; model; width; drop; fabric; roll_direction; kit_bom; supplied_part_counts; package_coverage; receipts; replacement_issues; return_ids | 对照实际卷帘检查订单、包装及制造商说明书；核对支架、螺钉、把手、端盖和毛收货、退回及消耗替换件。 | item | 每次收货、领用及退回 | 含整改的完整首次安装作业 | 实际地点及关联供应商 | per reference flow | 配套件覆盖清单及签署的领退记录 |
 | `cp_materials` | `shade_install` | 额外固定件及清理用品 | 材料领用台账 | job_id; substrate; fixing_spec; material; supplier; scale_id; issued_mass; consumed_mass; return_mass; water_or_wipe_identity | 记录套件以外每种额外组件或产品；用适当的校准秤称量，或使用可追溯供应商组件质量；分开未用退回。识别实际清理方法。 | kg | 每次领用及整改 | 完整作业 | 现场、仓库及关联供应商 | per reference flow | 称量证据、固定方案认可及产品收据 |
@@ -317,7 +317,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `job_reconciliation` | shade_kit; extra_fixings; cleanup_supplies; usable_returns; packaging_waste; installation_debris | 按每个实际作业及材料核对毛收货加期初库存与安装或消耗数量、供应商退回、期末库存、废物及记录损失。期初和期末库存为库存余额，不是额外采购或实物退出。保留期末余额不得同时进入 usable_returns；实际保管责任转移须有唯一接收责任且恰好一次余额处理。保留产品退回与废物交接点，不使用通用损耗系数。 | cp_kit; cp_materials; cp_exits | 已核对的每参考流交换 | `levolor-cordless-25-0040-024` |
 | `resource_attribution` | installation_power; tool_access_service; job_logistics | 每个有界时段资源总量按直接证据用量或全部使用方的文件化因果份额分配，然后将本作业份额附于已验收服务记录。明确分子单位和所有使用方分母；没有供应商定义服务单位时，不得把小时或 km 换成 item。 | cp_resources; cp_accept | 可归属的每参考流资源记录 | `levolor-cordless-25-0040-024` |
@@ -325,7 +325,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `route_identity` | 所有行 | 保留实际卷帘、套件、型号、内嵌系统、基材、宽度、垂长、织物、卷绕方向及制造商说明书版本。不得混用窗框外装或可选附件步骤。 | cp_kit; cp_accept; `levolor-cordless-25-0040-024` |
 | `measurement_completeness` | 所有清单行 | 每项启用卡须有数量、单位、日期、保管责任交接点及测量不确定性。不启用的条件性项目须有实际证据；未知使用或排放保留为缺失。本 PCR 不建立供应商定义计数单位、Energy 或任何 Duration 支持。 | cp_materials; cp_resources; cp_exits; cp_air |

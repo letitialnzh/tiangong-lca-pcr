@@ -456,7 +456,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `stock_native` | installed_supplies; trial_charge; fuel_supply; process_water; process_gases; usable_supply_returns | external_net_receipts=gross_receipts-tare_receipts; S=attributed_opening+external_net_receipts-carried_closing; gross_input=S/N; consumed_input=(S-usable_return)/N。recovered_closing含于carried_closing；return_view选择一种表达式，不得两者并用。 | cp_stock; cp_hot; cp_fuel; N | 每参考流实际原生单位供应；匹配未用向外退回台账 |  |
 | `heat_ledger` | trial_charge; trial_metal_exports; contained_wastes | 逐实际炉次采用实测charge_to_heat及关联冷料库存/炉底余料/内部转移量；外部收货不自动等于入炉量。各股原生总量保持独立。采用有据匹配的元素/金属含量基准，并记录炉料/金属/渣/尘实际组成、单位和来源；或采用包含实际添加物、炉衬转移及有据反应气体吸收的完整整流质量基准。不得以金属炉料kg直接平衡含氧化物/夹带炉衬的炉渣总kg。配对转移及期初/期末库存；调查unaccounted_difference，不据此推断排放或氧化。 | cp_hot; cp_stock; cp_residue; cp_environment; N | 可审计炉次存量/去向闭合；每参考流外部炉料及可用外移 |  |
@@ -471,7 +471,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `gate_trace` | 参考与阶段 | 每个N条目均有同一保留范围、实际土建及热态验收门槛档案、项目特定授权/准则及期间关联。缺失土建范围、炉衬要求、炉次结果或签署移交阻止最终数据。 | cp_acceptance签署记录 |
 | `quantities` | 所有流及换算 | 保留每项换算的原始操作数、原生单位、实际SKU/状态/含水率/温度/压力及来源。区间或来源实例不能替代实测。报告不确定性、检出限及核对差异。 | 节点所属协议及校准记录 |

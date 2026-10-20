@@ -379,6 +379,27 @@ Expand concrete substance/medium exchanges for actual powder handling/spray dust
 
 Range evidence need: Actual species kg/m2 by measured release or compatible activity-factor/composition-fate evidence with uncertainty; unknown species/medium is not zero.
 
+#### Collection requirement: Collected liquid repair residues (`wastewater`)
+
+Process / prospective direction / type: `lining` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Own actual dewatered sewage, contaminated cleaning/SSD runoff, startup/hose flush and collected curing/test water; physical water ledger and species views are nonadditive. Captured wastewater is waste, not a direct elementary discharge.
+
+- Collection subject: Actual collected sewage cleaning flush and curing wastewater by composition and destination
+- Flow property / unit: Volume / m3
+- Amount rule: Actual dispatched wastewater m3 / A
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per 1 m2 reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_wastewater`
+- Sources: `sika-4400-uk-pds-2021`; `sika-4400-uk-method-2025`
+
+Range evidence need: Actual stream m3/m2, suspended solids/composition and receiver evidence; no assumed dilution or wastewater fraction.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -503,23 +524,6 @@ This is the only final accepted reference output; retained host is a state inter
 Range evidence need: Exact 1 m2 is reference normalization, not empirical yield; actual positive A, measured thickness and passed gates are required.
 
 ##### Waste flows
-
-###### Collected liquid repair residues (`wastewater`)
-
-Own actual dewatered sewage, contaminated cleaning/SSD runoff, startup/hose flush and collected curing/test water; physical water ledger and species views are nonadditive. Captured wastewater is waste, not a direct elementary discharge.
-
-- Selected flow: Actual collected sewage cleaning flush and curing wastewater by composition and destination
-- Flow property / unit: Volume / m3
-- Amount rule: Actual dispatched wastewater m3 / A
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 m2 reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_wastewater`
-- Sources: `sika-4400-uk-pds-2021`; `sika-4400-uk-method-2025`
-
-Range evidence need: Actual stream m3/m2, suspended solids/composition and receiver evidence; no assumed dilution or wastewater fraction.
 
 ##### Elementary flows
 

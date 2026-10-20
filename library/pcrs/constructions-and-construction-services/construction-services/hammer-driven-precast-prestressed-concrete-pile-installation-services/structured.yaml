@@ -914,9 +914,9 @@ process_inventory:
           flow_ref:
             uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
           property_unit: "Mass / kg"
-          description: "Measure only diesel consumed by owned or separately metered equipment, retaining fuel batch and density at the observed state for any volume bridge. Include attributed setup, warmup, idle, driving, restrike, testing, head work and rework. Range evidence need: actual equipment duty, calibrated meter/stock records and independent L; useful impact or lifting energy cannot substitute for fuel. Reconcile same-fuel stock and provider coverage before normalization. The identity supplies no density, fossil fraction or heating value."
+          description: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty. Range evidence need: actual equipment duty, calibrated meter/stock records and independent L; useful impact or lifting energy cannot substitute for fuel. Reconcile same-fuel stock and provider coverage before normalization. The identity supplies no density, fossil fraction or heating value."
           amount:
-            expression: "Each actual concrete exchange attributable amount / L; collect with cp_pile_install_utility; never use a heterogeneous total."
+            expression: "Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
@@ -1155,8 +1155,8 @@ dataset_production:
       process_id: "pile_install"
       flow_role: "diesel, electricity and supplied water"
       record_type: "fuel/utility meter and stock ledger"
-      raw_fields: "event/lot/configuration; pile or asset ID; process/phase/time and reporting period; owner and role; actual identity/SKU/current state; native amount/unit; measured same-state bridge; receiver/medium; evidence and uncertainty; actual occurrence yes/no/unresolved; meter topology and reading interval; density/temperature; utility source/voltage/treatment; equipment duty/idle/test/rework; provider coverage; direct assignment and residual consumer shares"
-      collection_method: "Use calibrated readings or stock reconciliations for the full owned intervals. Convert only with actual same-fuel/state evidence; retain water circulation and shared-meter reconciliation. Distinguish useful equipment energy from purchased electricity or diesel and exclude provider-included duplicate consumption. Aggregation procedure: Assign direct use then evidenced reconciled shared residual once; each concrete attributed utility numerator / L per 1 m reference flow."
+      raw_fields: "event/lot/configuration; pile or asset ID; process/phase/time and reporting period; owner and role; actual identity/SKU/current state; native amount/unit; measured same-state bridge; receiver/medium; evidence and uncertainty; actual occurrence yes/no/unresolved; meter topology and reading interval; density/temperature; utility source/voltage/treatment; equipment duty/idle/test/rework; provider coverage; direct assignment and residual consumer shares; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Use calibrated readings or stock reconciliations for the full owned intervals. Convert only with actual same-fuel/state evidence; retain water circulation and shared-meter reconciliation. Distinguish useful equipment energy from purchased electricity or diesel and exclude provider-included duplicate consumption. Aggregation procedure: Assign direct use then evidenced reconciled shared residual once; each concrete attributed utility numerator / L per 1 m reference flow. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "kg; kWh; native volume and meter units"
       frequency: "each meter interval, fueling, stock change and wet task"
       temporal_coverage: "complete owned setup/idle/driving/restrike/test/head/rework/demobilization intervals and period cutoffs"
@@ -1251,6 +1251,21 @@ dataset_production:
       output: "fossil-carbon CO2 QA constraint"
       source_ids:
         - carbon-oxidation-identity
+    - id: fuel_supply_fate
+      applies_to: "diesel_fuel"
+      rule: "For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion."
+      inputs:
+        - "opening fuel"
+        - "external receipts"
+        - "closing intact fuel"
+        - U_fuel
+        - X_fuel
+        - W_fuel
+        - P_fuel
+        - D_fuel
+        - "actual node fuel protocol and fate evidence"
+      output: "G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets"
+      source_ids: []
   data_quality_requirements:
     - id: dq_gate
       applies_to: "reference_service"
@@ -1311,6 +1326,14 @@ validation_rules:
     rule: "Report checks performed/skipped, findings, completeness, unresolved support and card-specific range evidence. Candidate quantity warnings do not establish an active-ready methodology. A final dataset requires resolved applicable identity/quantity/ownership/terminal-fate gaps and supported uncertainty; checker pass alone proves neither external verification nor readiness."
     source_ids:
       - pile-installation-attribution-method
+  - rule_id: validate_fuel_supply_fate
+    applies_to: "diesel_fuel"
+    rule: "Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets."
+    source_ids: []
+  - rule_id: validate_physical_slurry_stream
+    applies_to: "all collected wastewater/slurry"
+    rule: "A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Foreground installation data package for the declared pile lot"
   downstream_use: "secondary_dataset; background_dataset; process and lifecyclemodel projections"
@@ -1350,7 +1373,7 @@ data_sources:
     used_for: "Fossil-carbon-based CO2 upper QA constraint only, not a complete-oxidation or fuel-consumption factor"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:929dde23a9f84c2a7ad22ab79fa8d598483ca4ea00ccb4c706e952f8bf5bf0fe"
+  source_sha256: "sha256:65ceb5923ad52ce9aecfa27354c388376c6fa4b063b0f7ef8a6343a93f4d55d2"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5582"
@@ -1401,16 +1424,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_42797"
+    - unit_id: "normative_42973"
       family: "allocation"
       span:
         start:
-          offset: 42797
-          line: 553
+          offset: 42973
+          line: 554
           column: 1
         end:
-          offset: 44729
-          line: 562
+          offset: 44905
+          line: 563
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `a_direct` | shared operating burden | Assign directly measured pile/phase use first. For shared hammer, crane, meter or test resources, list every consumer and period and attribute only the reconciled residual by documented actual duty or another evidenced causal share; shares must exhaust that residual once. Declare idle/setup/test ownership and period-cutoff treatment. | `pile-installation-attribution-method` |\n| `a_provider` | provider and reusable assets | Count provider-included fuel, capital and maintenance once; exclude duplicate own diesel/equipment entries for those same included activities. Attribute self-owned manufacture only with actual service capacity/lifetime, episode use and damage evidence, disclosing an unresolved gap otherwise. Reusable equipment mass and its used return do not constitute full consumptive material input/output. | `pile-installation-attribution-method` |\n| `a_rework` | rework and accepted length | Retain attributable failed driving, restrike, testing, removal and replacement burdens in the installing lot. Record original pile and event links and actual return/downgrade/retained/waste/abandoned fate. Rejected or open piles contribute no L; repeated passes and a production-accepted test pile cannot repeat L. Unresolved replacement/termination remains an open gap at the period cutoff. | `pile-installation-attribution-method` |\n| `a_exits` | material exits and normalization | Record real usable returns and waste dispatch by identity/state/receiver; do not assume avoided production or recovery credit. Separate any evidenced co-product responsibility by subdivision or documented causal treatment. Divide each concrete attributable numerator by the independently measured L once; heterogeneous totals serve QA only. | `pile-installation-attribution-method` |\n\n"
       headings:
@@ -1429,12 +1452,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 42797
-              line: 553
+              offset: 42973
+              line: 554
               column: 1
             end:
-              offset: 42837
-              line: 553
+              offset: 43013
+              line: 554
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1449,18 +1472,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_57682"
+    - unit_id: "normative_60205"
       family: "validation"
       span:
         start:
-          offset: 57682
-          line: 597
+          offset: 60205
+          line: 599
           column: 1
         end:
-          offset: 60147
-          line: 608
+          offset: 63502
+          line: 612
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_scope` | pile_install | Verify the actual precast prestressed impact-hammer mechanical route, owned phases and acceptance handoff. A welded or other excluded route requires scope review before applying these rules; separate handoffs require boundary reconsideration. | `pile-installation-attribution-method` |\n| `v_reference` | reference_service | Require independent positive L, actual toe/cutoff and axial/batter evidence, criteria revision, complete owned head/mechanical connection duties and required tests/acceptance. Reconcile each unique pile; reject duplicate restrike/test length and unaccepted/rejected/abandoned length. | `pile-installation-attribution-method` |\n| `v_events` | periods and rework | Reconcile every input, asset, output and rework/reject event to pile_install, its actual phase and reporting period. Verify real return/downgrade/removal/waste/retained/abandoned fates and original pile links; unresolved termination/replacement blocks finalization while burdens remain. | `pile-installation-attribution-method` |\n| `v_shared` | shared assets/services/meters | Enumerate all real hammer/crane/access/test/meter consumers and periods; reconcile direct assignments and residual shares, including owned setup/idle/rework. Reject duplicate fuel/capital/maintenance already included in the provider service. Require actual self-owned life/capacity/use/damage or report the gap. | `pile-installation-attribution-method` |\n| `v_exchanges` | all inventory rows | Verify concrete identity/SKU/state/receiver or substance/medium, conditional occurrence evidence, actual native amount and its own same-state bridge and numerator/L. Reject a heterogeneous summed exchange, borrowed UUID, unresolved final binding, duplicate constituent or unsubstantiated zero. Check water-only and fossil-carbon separately without closure-generated exchanges. | `pile-installation-attribution-method` |\n| `v_evidence` | data package completeness | Report checks performed/skipped, findings, completeness, unresolved support and card-specific range evidence. Candidate quantity warnings do not establish an active-ready methodology. A final dataset requires resolved applicable identity/quantity/ownership/terminal-fate gaps and supported uncertainty; checker pass alone proves neither external verification nor readiness. | `pile-installation-attribution-method` |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_scope` | pile_install | Verify the actual precast prestressed impact-hammer mechanical route, owned phases and acceptance handoff. A welded or other excluded route requires scope review before applying these rules; separate handoffs require boundary reconsideration. | `pile-installation-attribution-method` |\n| `v_reference` | reference_service | Require independent positive L, actual toe/cutoff and axial/batter evidence, criteria revision, complete owned head/mechanical connection duties and required tests/acceptance. Reconcile each unique pile; reject duplicate restrike/test length and unaccepted/rejected/abandoned length. | `pile-installation-attribution-method` |\n| `v_events` | periods and rework | Reconcile every input, asset, output and rework/reject event to pile_install, its actual phase and reporting period. Verify real return/downgrade/removal/waste/retained/abandoned fates and original pile links; unresolved termination/replacement blocks finalization while burdens remain. | `pile-installation-attribution-method` |\n| `v_shared` | shared assets/services/meters | Enumerate all real hammer/crane/access/test/meter consumers and periods; reconcile direct assignments and residual shares, including owned setup/idle/rework. Reject duplicate fuel/capital/maintenance already included in the provider service. Require actual self-owned life/capacity/use/damage or report the gap. | `pile-installation-attribution-method` |\n| `v_exchanges` | all inventory rows | Verify concrete identity/SKU/state/receiver or substance/medium, conditional occurrence evidence, actual native amount and its own same-state bridge and numerator/L. Reject a heterogeneous summed exchange, borrowed UUID, unresolved final binding, duplicate constituent or unsubstantiated zero. Check water-only and fossil-carbon separately without closure-generated exchanges. | `pile-installation-attribution-method` |\n| `v_evidence` | data package completeness | Report checks performed/skipped, findings, completeness, unresolved support and card-specific range evidence. Candidate quantity warnings do not establish an active-ready methodology. A final dataset requires resolved applicable identity/quantity/ownership/terminal-fate gaps and supported uncertainty; checker pass alone proves neither external verification nor readiness. | `pile-installation-attribution-method` |\n| validate_fuel_supply_fate | diesel_fuel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n| validate_physical_slurry_stream | all collected wastewater/slurry | A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1477,12 +1500,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 57682
-              line: 597
+              offset: 60205
+              line: 599
               column: 1
             end:
-              offset: 57704
-              line: 597
+              offset: 60227
+              line: 599
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -4088,133 +4111,159 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "a_direct"
       identity_kind: "explicit"
-      unit_id: "normative_42797"
+      unit_id: "normative_42973"
       source_span:
         start:
-          offset: 42910
-          line: 557
+          offset: 43086
+          line: 558
           column: 1
         end:
-          offset: 43329
-          line: 557
+          offset: 43505
+          line: 558
           column: 420
     - pointer: "/allocation_rules/1"
       rule_id: "a_provider"
       identity_kind: "explicit"
-      unit_id: "normative_42797"
+      unit_id: "normative_42973"
       source_span:
         start:
-          offset: 43330
-          line: 558
+          offset: 43506
+          line: 559
           column: 1
         end:
-          offset: 43815
-          line: 558
+          offset: 43991
+          line: 559
           column: 486
     - pointer: "/allocation_rules/2"
       rule_id: "a_rework"
       identity_kind: "explicit"
-      unit_id: "normative_42797"
+      unit_id: "normative_42973"
       source_span:
         start:
-          offset: 43816
-          line: 559
+          offset: 43992
+          line: 560
           column: 1
         end:
-          offset: 44294
-          line: 559
+          offset: 44470
+          line: 560
           column: 479
     - pointer: "/allocation_rules/3"
       rule_id: "a_exits"
       identity_kind: "explicit"
-      unit_id: "normative_42797"
+      unit_id: "normative_42973"
       source_span:
         start:
-          offset: 44295
-          line: 560
+          offset: 44471
+          line: 561
           column: 1
         end:
-          offset: 44727
-          line: 560
+          offset: 44903
+          line: 561
           column: 433
     - pointer: "/validation_rules/0"
       rule_id: "v_scope"
       identity_kind: "explicit"
-      unit_id: "normative_57682"
+      unit_id: "normative_60205"
       source_span:
         start:
-          offset: 57777
-          line: 601
+          offset: 60300
+          line: 603
           column: 1
         end:
-          offset: 58091
-          line: 601
+          offset: 60614
+          line: 603
           column: 315
     - pointer: "/validation_rules/1"
       rule_id: "v_reference"
       identity_kind: "explicit"
-      unit_id: "normative_57682"
+      unit_id: "normative_60205"
       source_span:
         start:
-          offset: 58092
-          line: 602
+          offset: 60615
+          line: 604
           column: 1
         end:
-          offset: 58456
-          line: 602
+          offset: 60979
+          line: 604
           column: 365
     - pointer: "/validation_rules/2"
       rule_id: "v_events"
       identity_kind: "explicit"
-      unit_id: "normative_57682"
+      unit_id: "normative_60205"
       source_span:
         start:
-          offset: 58457
-          line: 603
+          offset: 60980
+          line: 605
           column: 1
         end:
-          offset: 58822
-          line: 603
+          offset: 61345
+          line: 605
           column: 366
     - pointer: "/validation_rules/3"
       rule_id: "v_shared"
       identity_kind: "explicit"
-      unit_id: "normative_57682"
+      unit_id: "normative_60205"
       source_span:
         start:
-          offset: 58823
-          line: 604
+          offset: 61346
+          line: 606
           column: 1
         end:
-          offset: 59224
-          line: 604
+          offset: 61747
+          line: 606
           column: 402
     - pointer: "/validation_rules/4"
       rule_id: "v_exchanges"
       identity_kind: "explicit"
-      unit_id: "normative_57682"
+      unit_id: "normative_60205"
       source_span:
         start:
-          offset: 59225
-          line: 605
+          offset: 61748
+          line: 607
           column: 1
         end:
-          offset: 59683
-          line: 605
+          offset: 62206
+          line: 607
           column: 459
     - pointer: "/validation_rules/5"
       rule_id: "v_evidence"
       identity_kind: "explicit"
-      unit_id: "normative_57682"
+      unit_id: "normative_60205"
       source_span:
         start:
-          offset: 59684
-          line: 606
+          offset: 62207
+          line: 608
           column: 1
         end:
-          offset: 60145
-          line: 606
+          offset: 62668
+          line: 608
           column: 462
+    - pointer: "/validation_rules/6"
+      rule_id: "validate_fuel_supply_fate"
+      identity_kind: "explicit"
+      unit_id: "normative_60205"
+      source_span:
+        start:
+          offset: 62669
+          line: 609
+          column: 1
+        end:
+          offset: 63089
+          line: 609
+          column: 421
+    - pointer: "/validation_rules/7"
+      rule_id: "validate_physical_slurry_stream"
+      identity_kind: "explicit"
+      unit_id: "normative_60205"
+      source_span:
+        start:
+          offset: 63090
+          line: 610
+          column: 1
+        end:
+          offset: 63500
+          line: 610
+          column: 411
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -6546,27 +6595,27 @@ normative_context:
           column: 50
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_42797"
+      unit_id: "normative_42973"
       source_span:
         start:
-          offset: 42797
-          line: 553
+          offset: 42973
+          line: 554
           column: 1
         end:
-          offset: 42837
-          line: 553
+          offset: 43013
+          line: 554
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_57682"
+      unit_id: "normative_60205"
       source_span:
         start:
-          offset: 57682
-          line: 597
+          offset: 60205
+          line: 599
           column: 1
         end:
-          offset: 57704
-          line: 597
+          offset: 60227
+          line: 599
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -6575,5 +6624,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:929dde23a9f84c2a7ad22ab79fa8d598483ca4ea00ccb4c706e952f8bf5bf0fe"
-  generated_content_sha256: "sha256:c922ae51f41c01085ff202d5eb1688f0798d7a73f4023adc73a7ee2bd03a1485"
+    sha256: "sha256:65ceb5923ad52ce9aecfa27354c388376c6fa4b063b0f7ef8a6343a93f4d55d2"
+  generated_content_sha256: "sha256:06a6ba1f39e10dd7faa9af1c8acd03006a2664616b846479d30c588a35fd91ae"

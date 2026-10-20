@@ -307,7 +307,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `prepare` | 轻微准备及施工批次调动 | required | 每个验收施工批次 | 准备已安装母体表面；保留房间或批次及共享事件编号 | accepted_painting_service |
 | `finish` | 刷涂或滚涂、干燥、清理及验收 | required | 每个验收施工批次 | 交付验收服务；保留实际涂层、返工循环及清洗事件关联 | accepted_painting_service |
@@ -523,7 +523,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_prepare` | `prepare` | 准备工序各卡；引用finish节点签认验收面积 | 施工批次台账及验收测量 | 施工批次；房间；事件；时间；准备产品及批号；领用退回期初期末库存；湿质量；水体积；电表或功率时间；运输载荷距离；cp_finish验收净面积测量引用；准备及返工作业；废物与废水量及去向；颗粒粒径组成、介质、方法及不确定性；共享资产消费者份额 | 将准备材料、运输、电力、清洗水、收集残余物及颗粒记录与票据、库存及仪表核对。引用cp_finish签认验收面积测量作为分母，不在prepare建立验收产出。每次准备或共享事件仅归属一次。 | kg; m3; kWh; t*km; m2 | 每次领料、涂层、清洗、共享事件及验收 | 完整施工批次，包括返工及最终清理 | 所声明场址及承包商；仅prepare节点 | 每参考流 | 校准；签认面积测量；供应商密度；可追溯库存及废物记录；批准的归属依据；物种证据及不确定性 |
 | `cp_finish` | `finish` | 涂装工序各卡及验收服务产出 | 施工批次台账及验收测量 | 施工批次；房间；事件；时间；面漆底漆产品及批号；领用退回期初期末库存；湿质量；体积及密度；实际层数及各层面积；稀释清洗水；电表或功率时间；净面积及扣除；验收拒收返工面积；干燥方式；验收及缺陷闭环；废物量及去向；排放物种、介质、组成、方法及不确定性；共享资产消费者份额 | 将每次底漆或面漆领用及退库与湿质量或可追溯密度、各层面积、稀释、清理、电力和物种证据核对。干燥及缺陷闭环后测量验收净面积并签认。每次finish或共享事件仅归属一次。 | kg; m3; kWh; t*km; m2 | 每次领料、涂层、清洗、共享事件及验收 | 完整施工批次，包括返工及最终清理 | 所声明场址及承包商；仅finish节点 | 每参考流 | 校准；签认面积测量；供应商密度；可追溯库存及废物记录；批准的归属依据；物种证据及不确定性 |
@@ -532,7 +532,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `area_normalization` | 所有清单行 | 验收净面积A_accepted > 0时，对实际节点归属批总量逐项计算Q_i = Q_lot_i / A_accepted × 1 m2，保留原分子单位、原总量及节点归属。验收面积为零时不能形成验收服务数据集。参考输出采用自身cp_finish验收面积记录，归一化为1 m2。 | cp_prepare; cp_finish; 实际节点批总量; 验收净面积 | 每参考流数量 |  |
 | `stock_reconciliation` | waterborne_finish; waterborne_primer; repair_compounds; protection_consumables | 核算用量=期初库存+接收量-期末库存-转出本批次账务边界且未计入期末库存的可用退料。可用退料若已计入期末库存，不得再次扣减。将核算用量与单独追踪的实际施涂/消耗材料、废物及其他有记录去向平衡；不得仅凭采购票据确定施涂量。在area_normalization前保留账务边界、原单位及退料归属。 | cp_prepare; cp_finish; 期初库存; 接收量; 期末库存; 互斥可用退料; 施涂/消耗和废物记录 | 归一化前平衡的实际批用量 |  |
@@ -541,7 +541,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `coverage` | all processes | 覆盖批次全部投入、库存修正、返工、废物、共享负担及面积；披露缺失记录与截断，不默认为零。 | 已核对节点台账及验收记录 |
 | `representativeness` | all inventory rows | 报告场址、国家、日期、涂料配方、墙面起始状态及施工干燥技术；电力地理范围和运输选择须匹配实际供应。 | 项目及供应商记录 |

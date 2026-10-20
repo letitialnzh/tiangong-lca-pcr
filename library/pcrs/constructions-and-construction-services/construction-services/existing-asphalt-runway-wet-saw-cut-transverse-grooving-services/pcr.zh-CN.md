@@ -317,7 +317,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `groove_finish` | 湿式锯切刻槽与浆液回收耦合作业 | `required` | 经确认可刻槽的既有沥青和获批作业占用 | 从保留完好沥青至经验收清洁刻槽面积的表面加工；切割和回收物理耦合 | 1 m2 经验收不重复平面面积 |
 
@@ -475,7 +475,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `campaign_normalization` | 所有清单行 | 各独立可归属施工期交换量除以正值验收多边形并集 A，得到每 1 m2 数量。参考服务严格为 1 m2。重复锯切不扩大 A；失败/放弃区域与试验段负担按披露的因果关系保留归属。 | cp_acceptance; 相关行协议; 独立施工期交换量; A | 各独立交换的参考归一化数量 |  |
 | `burned_fuel_balance` | `fuel_supply`, `combustion_emissions`, `spent_fluids`, `unused_returns`, `liquid_release` | 逐实际牌号，燃烧燃料 = 期初库存 + 去皮领用总量 - 期末库存 - 可用对外退回 - 收集废物 - 实际释放。总泄漏量拆分为收集与释放部分，不再作为扣除项。 | cp_fuel; cp_materials; cp_residuals; cp_emissions | 用于适用因子的燃烧燃料 kg；分开的总输入与各出口每参考流数量 |  |
@@ -486,7 +486,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `dq_actual_route` | `groove_finish` | 完整占用和实际设备/刀头/日期/遍数链路、经确认沥青及采用几何；不得由 CPC 或支付单价推断数量。 | cp_acceptance; 批准方法; 来料状态与交还记录 |
 | `dq_complete_campaign` | 所有清单行 | 涵盖布置/试验段、有效切割、连续回收/清理、待机窗口、换线、更换、施工致损修复和最终处置，不设置无证据零值。 | 全部关联协议；库存与期间协调 |

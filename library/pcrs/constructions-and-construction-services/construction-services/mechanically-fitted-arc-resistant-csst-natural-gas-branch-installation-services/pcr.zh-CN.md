@@ -352,7 +352,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | branch_assembly | 支管布置、机械连接、支承与保护 | required | 始终纳入；有条件材料服务交换按实际作业启用 | 集成独立护套管材、接头端帽、支承保护及适用等电位组件；未验收隔离支管交rough_in_test；接收失败支管整改 | 按交接标识记录实际唯一已组装支管 |
 | rough_in_test | 隔离粗装压力试验、整改与交接 | required | 始终纳入；全部失败周期与复试仍归属 | 接收组装支管；隔离封帽试压检查；失败返回branch_assembly；仅在签署合格门后输出验收支管 | 1 item完整验收支管 |
@@ -556,7 +556,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用于 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | reference_attribution | 所有清单行 | 记录每参考流实际归属交换数量。合并作业保留验收支管标识及按实际配置活动支持的因果分摊，不得对不等支管盲目平均。 | 实际交换; 唯一验收支管登记; cp_assembly_gate; cp_test_gate; 分摊证据 | 每条限定参考回路交换数量 | omegaflex-tracpipe-2026 |
 | material_reconciliation | 材料与残余行 | 期初库存加毛收料与安装材料、向外退回、发运废物、实际消耗排放和留存核对；按计量不确定性调查残差，内部移交不得加入外部收料。 | cp_assembly_materials; cp_test_materials | 审计材料去向及结转负荷 | omegaflex-tracpipe-2026 |
@@ -564,7 +564,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用于 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity_configuration | 全部流卡 | 声明实际材料服务身份、供应商状态单位、实际试压介质和排放物质环境；最终过程交换前解决具体UUID与支持链。 | 部件记录、服务商范围、组成和已核实详情支持数据 |
 | full_cycle | 所有过程 | 包括初装、失败试验、整改复试、清理物流及可复用供应拆除全部责任，明确核对未完工作业。 | 有日期任务缺陷保管权记录和完整使用者总量 |

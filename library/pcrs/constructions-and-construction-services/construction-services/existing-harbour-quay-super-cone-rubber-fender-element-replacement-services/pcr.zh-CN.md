@@ -510,7 +510,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | raw_fields | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_replacement_cone | element_replacement | 供应的获批完整模制 SCN 超级锥型橡胶护舷单元 | actual_record | campaign_id;period_id;event_id;ledger_method;q_scope;quantity_unit;N;accepted_ids;sku;cone_size;grade;compound;embedded_hardware;factory_certificate;opening_count;gross_receipt_count;closing_count;installed_count;returned_count;discarded_count;other_count_destination;net_unit_mass_kg;unit_mass_source | 按实际锥体 SKU 件数台账核对出厂/保管证据及实际安装、退回、报废、库存；区分消耗法与毛投入法。 供应归属量明确从期初结转库存 + 新外部毛收货 - 期末结转库存计算，同一 SKU/单位并结转对应上游负担。毛投入含出口法保留实际对外出口；消耗量法仅扣除一次对应对外退回供应。最终安装/保留去向、报废量、对外退回与期末库存互斥；中间使用/投加活动不可相加。 q_scope 为台账及归属核对后可追溯的批次归属量；q_scope 和 N 为数值，ID/标准为类别。N 与 cp_accepted_element_replacement 核对。 | item | 每次实际收货/活动/出口及最终核对 | 准备至必要后续检查和签字交接的完整期间，包括失败/重复工作 | 申报泊位/作业及参与供应商、资产和使用者 | per reference flow | 校准仪表或可追溯原始记录、保管/验收证据、台账核对、不确定性及实际未发生证据；未知阻止最终数据集。 |
 | cp_separate_fasteners | element_replacement | 单独供应的兼容护舷紧固部件 | actual_record | campaign_id;period_id;event_id;ledger_method;q_scope;quantity_unit;N;accepted_ids;sku;interface;thread;material;bundled_scope;opening_count;gross_receipt_count;closing_count;installed_count;returned_count;discarded_count;other_count_destination;net_unit_mass_kg;unit_mass_source | 按单独供应的兼容硬件 SKU 计数，核对实际报废及保留/安装状态，排除成套/保留重复收货。 供应归属量明确从期初结转库存 + 新外部毛收货 - 期末结转库存计算，同一 SKU/单位并结转对应上游负担。毛投入含出口法保留实际对外出口；消耗量法仅扣除一次对应对外退回供应。最终安装/保留去向、报废量、对外退回与期末库存互斥；中间使用/投加活动不可相加。 q_scope 为台账及归属核对后可追溯的批次归属量；q_scope 和 N 为数值，ID/标准为类别。N 与 cp_accepted_element_replacement 核对。 | item | 每次实际收货/活动/出口及最终核对 | 准备至必要后续检查和签字交接的完整期间，包括失败/重复工作 | 申报泊位/作业及参与供应商、资产和使用者 | per reference flow | 校准仪表或可追溯原始记录、保管/验收证据、台账核对、不确定性及实际未发生证据；未知阻止最终数据集。 |
@@ -536,7 +536,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | calc_replacement_cone | replacement_cone | normalized_quantity = q_scope / N; q_scope 为台账核对后的批次归属量，单位为卡片原生单位; N 为唯一最终验收单元更换 ID。 | q_scope;N;cp_replacement_cone | 每参考流的数量，单位 item |  |
 | calc_separate_fasteners | separate_fasteners | normalized_quantity = q_scope / N; q_scope 为台账核对后的批次归属量，单位为卡片原生单位; N 为唯一最终验收单元更换 ID。 | q_scope;N;cp_separate_fasteners | 每参考流的数量，单位 item |  |
@@ -562,7 +562,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity_scope | 所有清单行 | 最终 TIDAS 投影前核验各实际具体交换及属性/单位组/单位；语义通用卡不表示已搜索或核验。 | 精确详情/支持链及实际前景身份 |
 | acceptance_completeness | accepted_element_replacement | 每个计数 ID 有适用保留接口、锥体、吊装/安装、紧固/对中/链条、后续/试验及签署关闭证据；不推断通用寿命或性能。 | 实际项目获批指令、出厂证书及签字维修档案 |

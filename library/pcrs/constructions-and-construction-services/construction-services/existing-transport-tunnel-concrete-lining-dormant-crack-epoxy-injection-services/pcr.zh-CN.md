@@ -298,7 +298,7 @@ status: candidate
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | crack_treatment | 一体化资格确认、材料处理、注浆、养护与修复验收 | required | 处于合格静止裂缝交通隧道修复边界内 | 有限作业及实际混合、注浆批次中的前景材料处理 | 验收唯一处理裂缝路径 L m |
 
@@ -473,7 +473,7 @@ status: candidate
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `accepted_union` | accepted_crack_repair | L = 验收唯一裂缝段并集的长度，单位 m；归一化参考输出量 = 1 m；排除未通过验收或不完整裂缝段及重复施工。 | cp_acceptance; 验收裂缝段图 | L m 及 1 m 参考服务 |  |
 | `job_intensity` | resin_a; hardener_b; seal_paste; injection_ports; cleaner; water; consumables; electricity; fuel; purchased_air; product_returns; port_returns; concrete_debris; epoxy_waste; wastewater; packaging_waste | 对每个单独确定身份的交换，强度 = 实际应归属作业数量 / L；L 为验收唯一裂缝路径，单位 m。分子保留作业失败或重复施工量；L 为零时不产生输出。 | cp_acceptance; cp_material; cp_utilities; cp_waste; 实际交换数量 | 各实际交换单位每 1 m 验收裂缝路径 |  |
@@ -487,7 +487,7 @@ status: candidate
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `gate_quality` | accepted_crack_repair | 追溯实际静止裂缝成因或位移评估、完好适配基层及湿度和压力施工前状态、实际封缝固化及产品适用性；记录注浆、养护、验证的单位、实际阈值和容差及注明日期的业主来源。长度签字验收前所有缺陷须闭环。 | cp_acceptance; sika-sikadur52-us-2014 |
 | `separate_identity` | 所有清单行 | 每个实际材料、公用工程、废物和排放须有具体身份、状态、供应商或接收方、实际流属性及单位和最终核实 UUID。条件适用卡在数据集定稿前须拆分；未解决不能视为证实不存在。 | 实际标签、SDS、保管权及详情和支持身份核实 |

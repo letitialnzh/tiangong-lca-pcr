@@ -568,7 +568,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | prepare_joint | 拆除失效密封并确认混凝土表面资格 | required | 每次范围内更换；轻微修补、清理、抽水资源按实际工作条件纳入 | material_treatment_responsibility | 交给 reseal_joint 的实测合格制备中心线，非最终验收输出 |
 | reseal_joint | 施用体系保护完整固化并验收接缝 | required | 每次范围内更换；所需试验检查与返工归本责任 | surface_or_property_finishing_responsibility | 来自完整验收接缝L的1m验收重密封中心线 |
@@ -843,7 +843,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | raw_fields | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_prep_material | prepare_joint | 不同材料与库存 | 实际前景记录 | job_id; joint_id; period_id; event_id; material_id; formulation; product_revision; lot_id; supplier; state; opening_stock_native; gross_receipt_native; internal_issue_native; outward_return_native; retained_closing_stock_native; native_unit; gross_weight_kg; container_tare_kg; net_content_kg; actual_volume_L; actual_density_kg_per_L; density_temperature_degC; density_state; density_source; backing_length_m; backing_diameter_mm; opening_burden; receipt_burden; closing_carried_burden; inclusion_boundary | 记录外部收货总量和内部领料，避免重复负担。先以毛重减真实皮重，再核对退回；每产品批次对应退回、留存库存、安装消耗过程及最终废物。实际体积换质量时用该配方批次在所记温度状态下密度；背衬用实际m和截面。期间库存负担与 cp_accept 的验收L链接；按归属作业原生量除L。 | kg; L; kg/L; degC; m; mm | 每事件和批次并逐报告期间核对 | 完整作业，包括失败尝试直至验收 | 实际渠道接缝及责任提供者 | per reference flow | 校准秤表；供应批次说明；签署保管责任及库存负担桥接；无名义包装密度默认值 |
 | cp_prep_utilities | prepare_joint | 电力与不同燃料 | 实际前景记录 | job_id; node_id; period_id; event_id; provider; equipment_id; energy_source; meter_start_kWh; meter_end_kWh; shared_load_driver; fuel_id; fuel_grade; opening_fuel_kg; gross_fuel_receipt_kg; closing_fuel_kg; outward_fuel_return_kg; fuel_waste_kg; recovered_spill_kg; retained_contaminated_residue_outside_stock_kg; whole_uncontained_fuel_kg; fuel_volume_L; fuel_density_kg_per_L; fuel_density_temperature_degC; fuel_density_state; runtime_h; included_service | 读取实际电表并按有依据的共享负载分摊。燃料实物台账列明互斥未燃烧出口；回收泄漏仅记最终退回、废物或留存去向一次。库存外污染滞留不得与期末库存重复扣除；单独推导燃烧燃料。体积换算用实际密度温度状态。列明全部固化、抽水和试验提供者；作业量除验收L。 | kWh; kg; L; kg/L; degC; h | 每事件和批次并逐报告期间核对 | 完整作业，包括失败尝试直至验收 | 实际渠道接缝及责任提供者 | per reference flow | 计量校准；油罐收货和保管记录；不再扣事故总量；服务包含矩阵 |
@@ -863,7 +863,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | length_intensity | 所有清单行 | 逐独立交换，强度 = 声明单位的作业归属数量 / 验收完整接缝中心线 L（m）。参考输出精确1 m；内部制备接收长度保持实测，负担只转移一次。 | 实际作业数量; L; cp_accept | 每参考流交换量 |  |
 | actual_density_conversion | preparation_water; application_test_water; preparation_cleaner; repair_mortar; sealant_supplied; concrete_primer; tooling_cleaner; prep_fuel; apply_fuel | 净内容物kg = 实称毛重kg - 真实容器皮重kg。仅实际以体积记录时，质量kg = 实际体积L × 该配方批次在记录温度状态的密度kg/L。燃料行使用所链接公用工程协议的 fuel_volume_L × fuel_density_kg_per_L 及 fuel_density_temperature_degC、fuel_density_state。名义包装数或密度不能替代证据，输入不能先扣退回。 | gross_weight_kg; container_tare_kg; actual_volume_L; actual_density_kg_per_L; density_temperature_degC; density_state; density_source; fuel_volume_L; fuel_density_kg_per_L; fuel_density_temperature_degC; fuel_density_state; cp_prep_material; cp_apply_material; cp_prep_utilities; cp_apply_utilities | 未扣退回的材料净内容物总量kg |  |
@@ -876,7 +876,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity_quality | 所有清单行 | 条件性角色展开为不同实际材料、配方、提供者、废物、物种及介质身份。最终数据集前核实UUID、类型及属性单位支持；未知身份明确未解决，不能采用最近匹配。 | 实际供应方、接收方、物种证据及核实详情和支持行 |
 | representative_range | 所有清单行 | 每卡均列实际证据需求；采集代表性重复作业不确定性、实际几何条件与完整性。制造商地坪包装覆盖、实验室固化密度及标签不构成现场消耗或释放分布。 | 采集协议记录；sika-pro3-purform-2024 |

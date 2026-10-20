@@ -459,7 +459,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `prepare_host` | 准备并确认保留管道的修补部位 | required | 声明起点的每个作业 | 独立清洁确认职责；保留管道转为清洁相容密封区并移交 | 唯一合格缺陷移交；最终负担按验收修补数N归一化 |
 | `install_accept` | 安装卡箍并完成修补验收 | required | 合格管道部位及实际相容工厂卡箍 | 安装集成、紧固、机械及卫生收尾；签署修补移交 | 已验收唯一作业数N |
@@ -722,7 +722,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `calc_normalize` | 全部清单行 | 逐行 q_ref = 实际归属数量 / N，保留原物理行单位。N为唯一最终验收修补数且必须为正；内部移交数量保留独立事件台账。 | 节点专属协议及cp_i_host; 实际归属行数量与accepted_count_N | 每1 item验收修补的行物理单位 |  |
 | `calc_mass` | `prep_supplies`; `prep_water`; `prep_fuel`; `prep_returns`; `prep_solid_waste`; `prep_wastewater`; `gasket_lubricant`; `hygiene_chemicals`; `test_flush_water`; `install_fuel`; `install_consumables`; `install_returns`; `install_solid_waste`; `install_wastewater` | 净内容kg = 总称量kg - 皮重kg。采用实测体积时 质量kg = 体积m3 * 实际密度kg/m3，或 体积L * 实际密度kg/L；记录实际温度及状态。产品计数转质量须有实际SKU 质量kg/item。未扣对外退回的收货总量或领用先于对外退回。 | 适用节点cp_materials、cp_water、cp_utilities或cp_residuals；实际原始称重、体积、密度、温度、状态及SKU净重 | 实际物理净质量kg，另除以N |  |
@@ -736,7 +736,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `quality_route` | 管道部位、组件及参考产出 | 须有实际干管、外径、缺陷、卡箍、垫片、饮用水批准和交付资格；网页与PDF板厚冲突须由实际SKU文件解决，不推断BOM。 | cp_p_host; cp_i_host; cp_i_materials; 实际制造商及供水方批准 |
 | `quality_closure` | 验收修补及有界收尾服务方 | 须有实际采用主管要求及产品版本、责任、机械卫生标准和结果；省略试验须证明不适用，未来无人负责试验阻止最终计数。 | cp_i_host; cp_i_closure; 批准程序、结果及责任方 |

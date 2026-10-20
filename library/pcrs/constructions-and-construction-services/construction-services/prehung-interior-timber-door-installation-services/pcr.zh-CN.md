@@ -771,7 +771,7 @@ PCR 机器单位 token item 表示已独立核实的平台参考单位 item，�
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `receive_condition` | 到货检查与环境调适 | required | 每项作业；动力调适/服务子流仅按实际发生 | 前景接收接口与调适责任 | 放行至定位的实际门洞和组件标识 |
 | `position_fix` | 许可修切、定位与机械固定 | required | 每项作业；仅在需要且许可时切割 | 前景成形与装配责任 | 实际固定组件交接计数 |
@@ -1085,7 +1085,7 @@ PCR 机器单位 token item 表示已独立核实的平台参考单位 item，�
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `accepted_n` | reference_service | N = 所声明同质完整作业组中启闭、局部修整干燥和交付均通过的不同 accepted_ids 数量；N 须为正数。同一验收组件/门洞配对计一次。 | cp_complete_accept_events; accepted_ids; accepted_signer; product_criteria | N | |
 | `reference_identity` | reference_service | Q_reference = N；q_reference = N / N = 1 item。仅为数学归一化。 | cp_complete_accept_events; accepted_ids; N; accepted_n | q_reference | |
@@ -1129,7 +1129,7 @@ PCR 机器单位 token item 表示已独立核实的平台参考单位 item，�
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `identity_traceability` | 全部卡片 | 实际材料/产品/服务/物质身份和状态须匹配卡片。条件集合按真实前景规格展开。固定 UUID 须有独立确认的详情/属性/单位证据。 | 规格、组成、供应商/提供方范围、经核实绑定审查 |
 | `acceptance_quality` | 参考及节点交接 | 可追溯工厂饰面、兼容完好门洞、实际调适放行、许可修切状态、校正/固定、锁具启闭、局部修整/干燥及签字最终验收。采用实际适用公差和供应商要求。 | 本节点检查/事件日志和签字验收 |

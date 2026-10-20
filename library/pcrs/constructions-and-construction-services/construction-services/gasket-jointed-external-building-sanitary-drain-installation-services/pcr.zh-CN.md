@@ -305,7 +305,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | external_drain_install | 完整室外排水安装及最终验收 | required | 选定室外密封圈支管范围 | 一个责任主体，仅记录阶段日志 | accepted_external_drain_connection |
 
@@ -458,7 +458,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_exchange | all inventory rows | 实际归属外部数量除以 D，保留其数量分子单位及换算证据。最终验收路径 D / D 得到 1 m 参考流。不重复内部转移或已含供应投入。 | 实际外部数量；D；所关联采集协议 | 每参考流数量 |  |
 | owned_asset_normalize | owned_equipment_attribution | q_asset_per_m = asset_count × job_activity / lifetime_activity / D。全部消费方用有证据同活动基准；制造分配一次，维护更换按有证据受益期间或因果作业及明确数据集负责人分配。 | asset_count；job_activity；lifetime_activity；D；cp_services | 每参考流归属 item |  |
@@ -469,7 +469,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | dq_traceability | all inventory rows | 保留事件日期、节点权责、实际 SKU 状态接收方、仪器校准、原始数量分子单位和匹配换算来源。未知发生情况为未知，不是零。分别维护实体及组分池并记录不确定性。 | cp_materials；cp_water；cp_energy；cp_services；cp_residuals；cp_acceptance |
 | dq_public_evidence | all inventory rows | 厂商运输点不是净消耗或区间。工程垫层压实建议及 Seattle 示例需按实际场址设计调整；不建立默认密度、水比、废品率、润滑剂剂量、寿命或排放拆分。 | charlotte-dr35; charlotte-plastics-manual; seattle-side-sewer-notes-2024 |

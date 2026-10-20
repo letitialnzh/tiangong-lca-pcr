@@ -255,7 +255,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | fan_installation | 风机固定、连接、验证与交接 | required | 在已验收既有接口上首次壁装基本间歇式风机 | 集成风机/背板、基材紧固件及局部连接部件；验证安装状态和排风；内部纠正失败或记录产品退回/废物出口 | `accepted_installation`: 1 item |
 
@@ -357,7 +357,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_materials | fan_installation | 设备、紧固、连接、耗材输入和产品退回 | 领用/退回记录及测量 | job_id; model; appliance_id; component_id; material; issued_count; returned_count; measured_mass; cable_length; mass_per_length; density; conversion_conditions; integrated_parts; defect_state; destination | 核对送货、领用、安装和退回记录；称量实际部件或保留可追溯供应商换算；按材料身份和关口拆分。 汇总及归属方法：每参考流的可归属数量；分别保留领用、安装、退回及废弃数量。 | item; kg; 声明的原始单位 | 每次安装或可归属作业事件 | 完整安装周期，包括纠正及复测 | 声明的安装地点和作业批 | 每参考流 | 收据、库存变动、秤校准、产品资料、换算证据和供应商退货记录 |
 | cp_energy | fan_installation | 作业电力和实际条件性现场燃料 | 计量、活动及分配记录 | job_id; device; task; meter_start; meter_end; electricity_kWh; measured_power; runtime; fuel_identity; fuel_mass; fuel_volume; density; conversion_conditions; activity_driver; job_total; allocated_share; tool_capital_policy; resource_event_id; consumer_node_or_job; service_period; allocation_denominator; allocation_rationale | 尽可能计量实际钻孔/集尘/充电/测试；保留实测功率/时长估算和燃料记录、全部使用方分配及不确定性。 汇总及归属方法：每参考流的可归属作业电能和燃料；核对整项作业总量并披露排除项。 逐共享资源事件列出全部实际使用节点/作业及相关期间，记录分配分母、理由和证据并核对总份额。 | kWh; kg; 声明的原始单位 | 每次安装或可归属作业事件 | 完整安装周期，包括纠正及复测 | 声明的安装地点和作业批 | 每参考流 | 仪表校准、时间戳、设备日志、燃料收据、密度资料和分配核对 |
@@ -368,7 +368,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | cohort_attribution | 所有清单行 | 对每项实际交换保留整项作业数量和有记录的可归属份额；用可归属总量除以同一披露作业周期内已验收安装数量。不得通过不同作业批稀释失败作业，也不得把未解决的验收计入分母。 | cp_materials; cp_energy; cp_transport; cp_waste; cp_emissions; cp_acceptance | 每参考流数量及分配和不确定性清单 |  |
 | electrical_consumption | installation_electricity | 优先采用实际电能表读数变化。估算使用实测运行功率和记录的作业时长，显式采用相容单位换算；披露方法、待机/充电覆盖及不确定性。仅有额定功率不足。 | cp_energy | 可归属安装和测试用电 |  |
@@ -376,7 +376,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | configuration_trace | 所有清单行 | 保留实际配置、时间/地点、材料身份和关口、仪表/来源及相容上游数据集。分开记录实质不同的风机和安装条件。 | cp_materials; cp_acceptance |
 | completeness | 所有清单行 | 记录所有实际必需和条件性作业。未知材料、排放、废物去向或资源归属须披露为缺口；缺少测量不能支持零值或通用默认值。 | cp_materials; cp_energy; cp_transport; cp_waste; cp_emissions |

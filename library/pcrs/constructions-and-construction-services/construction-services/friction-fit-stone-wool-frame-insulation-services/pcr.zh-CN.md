@@ -401,7 +401,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `aperture_survey` | 起始框架检查与净孔洞测量 | required | 每个纳入批次 | 声明供应框架接口并把已测量就绪空腔交予嵌装 | 通过frame_transfer关联的实际就绪空腔面积 |
 | `slab_cutting` | 岩棉取料、裁切及裁切节点清洁 | required | 每个纳入批次 | 把供应板材加工为对应孔洞裁切件；持有裁切废物和可用物料外出记录 | 通过wool_transfer交接的实际裁切件质量 |
@@ -657,7 +657,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_survey_area` | aperture_survey | 供应与已测量框架接口 | 孔洞测量和供应方验收记录 | site; lot; room/wall; aperture_id; clear_width; clear_height; irregular_geometry_dimensions; noninsulatable_area; starting_acceptance; ready_state; frame_transfer_id; timestamp | 用检查合格的卷尺或激光测距仪测量实际净孔洞，依据原始尺寸计算几何面积，保留图纸与起始验收；分别求和全部测量面积与就绪面积，除以cp_fit_area的A；未就绪/暂缓空腔不得计入就绪面积。 | m; m2 | 每个孔洞及每次更正测量 | 同批裁切与嵌装前 | 具名墙框空腔 | 每 1 m2 参考流 | 仪器检查、签字测量表、照片和交接核对 |
 | `cp_survey_energy` | aperture_survey | 条件性量孔照明 | 节点表计或共享事件记录 | site; lot; node; asset_id; period_start; period_end; meter_start; meter_end; meter_unit; multiplier; meter_to_kWh_factor; conversion_evidence; actual_runtime; observed_power; all_consumers; consumer_weights; allocation_share; billed_service_inclusions | 读取节点表计或把共享期间关联至实际量孔照明，计算分配前保留完整消费者账本；校正终值减初值，只应用量孔份额一次，求和本节点用电分子后除以A。 | kWh | 每个计量期间或共享事件 | 同批量孔期间 | 量孔用户及该共享表计全部其他用户 | 每 1 m2 参考流 | 表计校准或账单、活动日志、份额合计一、期间不重复 |
@@ -674,7 +674,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | accepted_area_calc | accepted_insulation_service | 每个最终验收孔洞的net_area = measured geometric area - recorded noninsulated deductions；A = sum(net_area)；参考量 = A / A = 1 m2；A必须为正。 | accepted_clear_dimensions; noninsulated_deductions; visible_gap_check; compression_check; rejection_area; rework_status; acceptance_date; approver; cp_fit_area | A; accepted_insulation_service |  |
 | survey_area_calc | supplied_frame_interface; prepared_frame_interface | survey_area为实测净空腔面积之和；ready_area仅对已验收就绪空腔求和；各自除以A。 | clear_width; clear_height; irregular_geometry_dimensions; noninsulatable_area; ready_state; cp_survey_area; A | survey_area / A; ready_area / A |  |
@@ -693,7 +693,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity_fit | 所有产品和废物行 | 最终数据集交换前核实实际材料/状态/去向；通用棉材、错误石棉翻译或出厂板材流不能表示施工服务。材料伞形卡须解析实际交换。 | 产品交货单、所选系统说明、实际身份核实 |
 | geometry_quality | 验收面积和交接 | 相同批次与孔洞id连接测量就绪几何、真实框架交接和最终验收面积；A不含框架构件、重复面、不合格作业或采购板面积。 | cp_survey_area; cp_fit_material; cp_fit_area |

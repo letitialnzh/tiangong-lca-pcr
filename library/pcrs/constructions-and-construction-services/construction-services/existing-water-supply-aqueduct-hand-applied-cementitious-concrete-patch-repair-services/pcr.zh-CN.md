@@ -527,7 +527,7 @@ V > 0为实际前后几何测量所得互不重叠最终验收安装修补体积
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `calc_repair_powder` | `repair_powder` | Amount = powder_supply / V；保留实际分子单位kg，每验收安装m3。 | `cp_repair_powder`; V; 实际工单账目 | 每参考流的原生交换 |  |
 | `calc_mix_water` | `mix_water` | Amount = mix_water_supply / V；保留实际分子单位m3，每验收安装m3。 | `cp_mix_water`; V; 实际工单账目 | 每参考流的原生交换 |  |
@@ -559,7 +559,7 @@ V > 0为实际前后几何测量所得互不重叠最终验收安装修补体积
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `dq_identity` | 全部实际交换 | 最终TIDAS交换前，核实每个实际SKU、组分、服务、废物、物质及受纳介质的具体流、属性和单位，不得把未知角色展开为猜测身份。 | 详情及支持身份确认；实际SKU和范围证据 |
 | `dq_gate` | `accepted_patch_repair` | 要求现行业主及产品指导，实际保留主体评定、前后测量、完整规定养护、几何、粘结和卫生结果及签署缺陷关闭；不得采用实验室宣传值验收。 | 实际批准指导、校准测量及签署工单证据 |

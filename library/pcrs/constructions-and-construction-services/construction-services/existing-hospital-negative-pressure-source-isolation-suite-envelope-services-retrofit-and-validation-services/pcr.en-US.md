@@ -655,6 +655,27 @@ Expand only actual measured substances and receiving media, or valid matched act
 
 Range evidence need: Require actual event/substance/particle fraction/receiving medium and measured species mass, or matched activity with valid factor units/source, or measured whole-fluid release with evidenced composition/fate and uncertainty. Captured waste and whole-fluid/species audit views are separate; no pathogen quantity from infection risk or default leakage/emission factor.
 
+#### Collection requirement: Actual area-supplied cleanable finish systems (`finish_area`)
+
+Process / prospective direction / type: `finishing` / `inputs` / `product`.
+
+Resolve each actual SKU, composition/state and custody into a separate atomic exchange. This requirement is not a generic pooled flow. A genuinely complete purchased assembly may use its own verified package boundary; its already included parts are not additional purchases.
+
+Record actual cleanable wall/floor/ceiling systems and their adhesive/coating packages; no universal disinfectant efficacy or coating emission factor.
+
+- Collection subject: Actual area-supplied cleanable finish systems
+- Flow property / unit: Area / m2
+- Amount rule: Actual attributed quantity / N; retain raw operands in cp_finishing
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_finishing`
+- Sources: `nhs-isolation-hbn0401-supp1-2025`
+
+Range evidence need: Record actual cleanable-finish SKU/system, native supplied versus installed surface area, substrate/first-fix release, cutting/overlap, matched returns, repairs/rejects, finish inspection and area uncertainty; no default finish thickness, biocidal efficacy or area-per-suite.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -783,23 +804,6 @@ Record metered supplied water including flushing and retests. This is a product 
 - Sources: `nhs-isolation-hbn0401-supp1-2025`
 
 Range evidence need: Record actual supplied water source/quality, calibrated node/event volumes, retained/circulated contents, contained-treatment versus direct-environmental destinations and water-balance uncertainty; supply does not establish discharge.
-
-###### Actual area-supplied cleanable finish systems (`finish_area`)
-
-Record actual cleanable wall/floor/ceiling systems and their adhesive/coating packages; no universal disinfectant efficacy or coating emission factor.
-
-- Selected flow: Actual area-supplied cleanable finish systems
-- Flow property / unit: Area / m2
-- Amount rule: Actual attributed quantity / N; retain raw operands in cp_finishing
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_finishing`
-- Sources: `nhs-isolation-hbn0401-supp1-2025`
-
-Range evidence need: Record actual cleanable-finish SKU/system, native supplied versus installed surface area, substrate/first-fix release, cutting/overlap, matched returns, repairs/rejects, finish inspection and area uncertainty; no default finish thickness, biocidal efficacy or area-per-suite.
 
 ##### Waste flows
 

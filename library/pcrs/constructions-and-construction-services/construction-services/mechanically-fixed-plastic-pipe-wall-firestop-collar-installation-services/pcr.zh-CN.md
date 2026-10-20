@@ -271,7 +271,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | collar_install | 机械防火圈安装、检查与移交 | required | 已确定兼容且验收的预先封堵接口，以及实际匹配的墙体、管道、防火圈和紧固系统 | 将工厂防火圈组件与既有客户墙体接口进行装配集成；承担返工拒收与共享基础设施责任 | 1 item 完整穿墙安装验收阶段 |
 
@@ -359,7 +359,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_acceptance | collar_install | 已验收阶段 | 工单与检查 | penetration_id; wall_config; pipe_config; annular_geometry; prior_seal_product; prior_seal_depth; prior_seal_acceptance; approval_id; approval_revision; current_instruction_version; required_faces; collar_model; hooks_anchors; initial_visit; correction_visits; accepted_stage_count; handover_date | 检查并拍照记录每个必需墙面，将所供组件规格与实际批准文件和现行说明核对，保存既有封堵验收和完整阶段移交签字。分别报告同质配置的验收阶段与待定或拒收作业。 | item | 每个穿墙部位及每次纠正 | 首次回访至签署移交 | 已声明场址与工单批次 | per reference flow | 批准与配置对照、现行文件适用性、全部墙面检查表、封堵状态记录、日期明确的验收和拒收登记 |
 | cp_materials | collar_install | 防火圈、紧固件和清洁用品 | 领用与库存记录 | part_id; package_coverage; gross_issued_count; net_unit_mass; weighed_mass; supplied_hooks; extra_fixings; cleaning_product; cleaning_mass; label_mass; stock_change; returned_id | 对实际领用防火圈型号和单独额外组件计数；对耗材称重或采用可追溯净质量记录。保存套装内容，按实际身份拆分清洁和标识投入。总领用与退回、库存变化分别记录。核对后，将可归属批次数量除以同配置完整验收阶段数。 | item; kg | 每次领用或退回及工单关闭 | 全部首次安装与纠正回访 | 工单仓库与使用点 | per reference flow | 发票、批次型号标签、校准秤或可追溯净质量、实物计数和保管责任核对 |
@@ -369,7 +369,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | lot_attribution | 所有清单行 | 对每个同质验收阶段批次，核对包含纠正作业的可归属资源总量或出口量，再除以完整验收阶段数。分别报告未解决作业及其负担；无声明等价关系时不得混合不同配置。 | cp_acceptance; cp_materials; cp_resources; cp_exits; cp_releases | 每参考流清单 |  |
 | stock_balance | collars; additional_fixings; usable_returns; component_waste; packaging_waste | 按每种材料和兼容单位，将总领用量与已安装或已消耗量、可用退回、废物和库存变化核对。件数和千克核对采用实测单位净质量；包装与组件净质量分开。 | cp_materials; cp_exits | 各材料核对结果 |  |
@@ -377,7 +377,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | q_configuration | 参考产品 | 保持实际批准、现行选用说明、材料配置和已安装墙面可追溯。产品家族宣传和历史最高耐火等级不足以支持作业验收。 | cp_acceptance 及来源适用性审查 |
 | q_completeness | 所有清单行 | 记录钻孔、抽尘和充电、清洁、共享登高、物流、包装与纠正作业；区分有记录的未使用、提供方已含覆盖和数据缺失。 | cp_materials; cp_resources; cp_exits |

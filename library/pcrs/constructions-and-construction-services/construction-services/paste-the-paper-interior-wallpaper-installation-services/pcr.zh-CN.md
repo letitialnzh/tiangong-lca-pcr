@@ -477,7 +477,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | layout_cut | 接收墙面、规划图案并裁切壁纸 | required | 所有覆盖安装 | 接收验收墙面和纸张；建立条带布局与裁切状态交接；负责干边角料和壁纸卷包装 | 实际裁切条带质量及尺寸；按最终 A 归一化 |
 | paste_book | 纸背施胶与折叠润纸 | required | 所有覆盖安装 | 接收裁切条带；涂实际相容水性胶并按实际说明折叠润纸；交接湿态润纸条带 | 实际湿态润纸条带质量及含水状态；按最终 A 归一化 |
@@ -1052,7 +1052,7 @@ sync_with: pcr.en-US.md
 
 以下公式是采集转换而非经验因子。事件求和保留真实重复工作，仅去除记录副本。节点下标表示责任过程，材料及交接编号保持明确。A 在所有节点均为相同正值 accepted_area_total。水项单位是组分 kg H2O，不是复合物总 kg。负物理领用、权重分母、水池或未解释残差均为问题，不得静默裁剪为零。
 
-| rule_id | 适用对象 | 公式或规则 | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | accepted_area_total | reference_service | A = sum(unique finally accepted net patch areas); service_ref = A / A = 1 m2。采用实际尺寸／洞口及吸水至验收状态；排除重复覆盖及未验收区域。要求 A > 0。 | accepted_patch_area_m2; wall_dimensions_m; openings_m2; patch_id; visual_result; observed_dryness; cp_dry_accept | A; service_ref |  |
 | gross_draw | paper_rolls; adhesive; wash_consumables | gross_draw_kg = opening_intact_unissued_kg + receipts_kg - closing_intact_unissued_kg; input_ref = gross_draw_kg / A。可用未用退回及外部转移离开节点保管，故包含在物理总领用中；此处不得扣除。期初／期末已加工在制品为独立状态，不是完好未发出库存。 | material_id; opening_intact_unissued_kg; receipts_kg; closing_intact_unissued_kg; A; cp_layout_cut; cp_paste_book; cp_hang_trim | gross_draw_kg; input_ref |  |
@@ -1071,7 +1071,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | dq_route | 批次边界 | 确认未预涂胶纸张／纸背施胶结构、相容预混水性胶，以及已接收干燥、牢固、适当涂底漆墙面。更宽泛或不相容交换身份不能扩大类别。 | 实际纸张／胶粘剂说明；接收墙面验收 |
 | dq_area | 参考及交接 | 采用实际区域实测几何、洞口／重叠规则及最终验收；记录水分引起的纸张尺寸变化；保留实际湿态交接，不强制等于最终 A。 | 实测；条带／区域／交接台账；含水与验收记录 |

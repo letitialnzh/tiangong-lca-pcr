@@ -171,6 +171,25 @@ Resolve each usable component/material leaving installer custody without transfo
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_materials`
 
+#### Collection requirement: Actual installation waste streams (`installation_waste`)
+
+Process / prospective direction / type: `install_accept` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Resolve separate packaging, conductor offcut and removed failed-component waste by material/state/hazard and authorised receiver. Retain original issue/rework event. Tool electronics/battery residue belongs here only where the owned resource lifecycle actually owns its disposal event; electronic receptacles are excluded. Range evidence need: Waste tickets, exact state/receiver, original defect event and any relevant measured dust/species release evidence are needed for range and closure review.
+
+- Collection subject: Actual installation waste streams
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+- Unit group: Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
+- Amount rule: Actual attributable net mass of each evidenced waste stream / D; never equate unknown residual with emitted dust.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Process output (`process_output`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_releases`
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -248,21 +267,6 @@ Only completed, tested and signed installations of the declared configuration en
 - Sources: `leviton-receptacle-installation`; `leviton-5320-product`
 
 ##### Waste flows
-
-###### Actual installation waste streams (`installation_waste`)
-
-Resolve separate packaging, conductor offcut and removed failed-component waste by material/state/hazard and authorised receiver. Retain original issue/rework event. Tool electronics/battery residue belongs here only where the owned resource lifecycle actually owns its disposal event; electronic receptacles are excluded. Range evidence need: Waste tickets, exact state/receiver, original defect event and any relevant measured dust/species release evidence are needed for range and closure review.
-
-- Selected flow: Actual installation waste streams
-- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- Unit group: Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`
-- Amount rule: Actual attributable net mass of each evidenced waste stream / D; never equate unknown residual with emitted dust.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
-- Basis kind: Process output (`process_output`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_releases`
 
 ##### Elementary flows
 

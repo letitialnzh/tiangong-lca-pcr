@@ -216,7 +216,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | island_install | 接收、四点钢丝悬吊、检查与交付 | required | 本范围内所有安装 | 将成品板、四根可调钢丝和板内吸声板锚件集成到已验收支撑上；整改保留在本节点；在本节点边界记录可用退回产品及废弃拒收品 | 1 item 已验收安装 |
 
@@ -321,7 +321,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_components | island_install | 板材、悬吊件和可用退回产品 | 接收、领用、计数、称重和退回记录 |event_id; component_id; model; material; dimensions; finish; received_count; installed_count; replaced_count; returned_count; opening_stock; closing_stock; actual_net_mass; wire_length; anchor_position; destination; transfer_id; packaging_id; packaging_count; custody_owner|清点并识别板材和每项安装悬吊件；kg 行使用经校准称重或可追溯的确切部件净质量记录；核对接收、库存和退回，单独保留已验收结构固定点证据。 汇总细则：每参考流的可归属净部件数量；可用退回只核对一次，不移除失败作业实际消耗的资源 记录重复使用包装的材质、数量、净质量、保管交接及期初期末库存。| item; kg; mm | 每次安装及退回或替换 | 完整事件直至验收及归属退回处置 | 一个声明场址及配置分层 | 每参考流 | 发票、部件资料、秤量证据、安装照片、库存和退回凭据 |
 | cp_resources | island_install | 耗材、电力、作业平台及条件性水 | 电表、设备日志、领用和清理记录 | event_id; resource_id; material; amount; unit; device; meter_start; meter_end; charging_boundary; equipment_id; service_start; service_end; service_hours; consumers; asset_id; period_start; period_end; attribution_driver; included_service_burdens; no_use_evidence |计量实际耗电及分配充电；识别工具、托举及有证据的手动替代方案；记录耗材或水供应及平台服务时长；披露供应商边界和共享事件归属。 汇总细则：按有记录物理证据一次性分配共享总量，再将可归属事件总量除以验收安装数量，获得每参考流数量| kg; kWh; h | 每次资源使用或共享事件 | 完整安装，含整改和清理 | 同一场址、事件和配置分层 | 每参考流 | 电表读数及校准、日志、领用记录、供应商范围、分配核对和实际未使用观察 |
@@ -331,7 +331,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | event_normalization | all inventory rows | 对每个配置分层，将可归属事件数量除以签字验收安装数量，得到每参考流数量；保留排除或失败作业的负担归属，不以仅供货板数作分母。验收数量为零时，不能生成已验收安装服务数据集。 | event quantities; accepted_count; cp_handover; relevant node protocol | 每 1 item 已验收安装的数量 |  |
 | component_reconciliation | panel_input; suspension_components; usable_returns; installation_waste | 在一致的数量或质量基准上，将期初库存加接收量与安装部件、可用退回、废弃部件和期末库存核对；保留替换事件关联及确切部件称量证据。不得由名义板重推断完整组件 kg。 | cp_components; cp_waste | 部件平衡及缺记录标记 |  |
@@ -339,7 +339,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | route_identity | all inventory rows | 保留玻璃棉身份、成品单块水平状态、确切型号和四点钢丝接口。不得混合其他悬吊拓扑，亦不推定其他制造商等效。 | 确切产品说明、部件记录和安装照片 |
 | support_gate | accepted_island_installation | 记录既有结构固定点验收及承载证据，并提供防脱连接和几何状态签字检查；支撑未知或防脱不合格时不能生成验收输出。 | cp_handover; 已批准项目布局; ecophon-ig402-2024 |

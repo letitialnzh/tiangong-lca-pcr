@@ -343,7 +343,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | inclusion | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `house_elevation` | 保留住宅抬升与永久重接 | required | 合格保留木框架爬行空间住宅；项目特定批准方案 | 断接、抬升/支承、基础、锚固、通行、公用设施和最终验收的一体化责任 | 1 item 验收服务 |
 
@@ -442,7 +442,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `stock_balance` | volume_materials; mass_materials; length_materials; area_materials; count_materials; fuel_supply; usable_returns | S = attributed_opening + external_net_receipts - carried_closing; 选择总投入并列退出的 S，或消耗口径 S 减匹配可用外退一次；所选数量仅除以 N 一次。 | cp_materials; cp_fuel; cp_acceptance; opening; gross; tare; closing; matched return; N | 每参考流原生单位供应和退回数量 |  |
 | `fuel_fates` | fuel_supply; contained_fluids; species_release | 采用实际计量燃烧或完整互斥原生单位去向审计，并记录不确定性和不明损失调查。退回、未燃废物、未收集损失和结转互斥；不以不明残差推断燃烧；总泄漏仅审计。 | cp_fuel; actual burn; native fate quantities; uncertainty; investigation | 各自角色的供应、燃烧和互斥流体去向 |  |
@@ -453,7 +453,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `gate_quality` | house_elevation | 实际结构资格、许可/设计、当地洪水基准及要求、最终标高测量、永久基础/锚固、安全通行、恢复设施测试及签署缺陷关闭；不完整门槛属数据缺口。 | cp_acceptance 及实际现行项目主管机关 |
 | `physical_coverage` | 全部清单 | 完整纳入直接/供应商/租赁/测试/运输/临时公用设施资源、原生单位、库存退出及失败工程；缺失数据不得用金额或零替代。 | 各协议与供应商范围核对 |

@@ -410,6 +410,27 @@ MUST expand every actual direct release by species and receiving air/water/soil 
 
 Range evidence need: Determine actual species and receiving medium with measured mass or valid matched activity-factor/whole-fluid composition-fate evidence; independently meter actual environmental water Volume and gas native quantities with their compartments and conversion conditions. Water volume never uses a pollutant species formula; no invented species, SDS emission quantity or missing-as-zero.
 
+#### Collection requirement: Actual counted base-building service assemblies (`count_components`)
+
+Process / prospective direction / type: `integration` / `inputs` / `product`.
+
+Resolve each actual SKU, composition/state and custody into a separate atomic exchange. This requirement is not a generic pooled flow. A genuinely complete purchased assembly may use its own verified package boundary; its already included parts are not additional purchases.
+
+Actual specified luminaires, distribution/control equipment, HVAC terminals or plant, wet/fire devices and mounting assemblies according to retained/replaced scope. A factory-complete package and its BOM may be one purchased view only.
+
+- Collection subject: Actual counted base-building service assemblies
+- Flow property / unit: Number of items / item
+- Amount rule: S = opening + gross_receipts - tare - closing in this SKU's native unit. Declare one view: gross-with-outlets input S / A, or consumed-only input (S - usable_outward_return) / A. Include all nonreturned loss/waste and failed-work consumption; keep matched physical return evidence without a second deduction or credit.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_integration_material`
+- Sources: `wdi-cat-a-b-fitout`; `wdi-riverside-refurbishment`
+
+Range evidence need: Collect actual component SKU/model/configuration, counted receipts/stock/installed/replaced/usable returns and whether a kit includes its BOM. No assumed luminaire/terminal count per office m2.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -472,23 +493,6 @@ Accept the internal release from stripout by the same transfer and polygon IDs, 
 - Sources: `wdi-cat-a-b-fitout`; `wdi-riverside-refurbishment`
 
 Range evidence need: Match actual received released polygons/transfer IDs, unreleased interfaces and exclusions to stripout records; investigate mismatches rather than forcing the received area to accepted A.
-
-###### Actual counted base-building service assemblies (`count_components`)
-
-Actual specified luminaires, distribution/control equipment, HVAC terminals or plant, wet/fire devices and mounting assemblies according to retained/replaced scope. A factory-complete package and its BOM may be one purchased view only.
-
-- Selected flow: Actual counted base-building service assemblies
-- Flow property / unit: Number of items / item
-- Amount rule: S = opening + gross_receipts - tare - closing in this SKU's native unit. Declare one view: gross-with-outlets input S / A, or consumed-only input (S - usable_outward_return) / A. Include all nonreturned loss/waste and failed-work consumption; keep matched physical return evidence without a second deduction or credit.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_integration_material`
-- Sources: `wdi-cat-a-b-fitout`; `wdi-riverside-refurbishment`
-
-Range evidence need: Collect actual component SKU/model/configuration, counted receipts/stock/installed/replaced/usable returns and whether a kit includes its BOM. No assumed luminaire/terminal count per office m2.
 
 #### Outputs
 

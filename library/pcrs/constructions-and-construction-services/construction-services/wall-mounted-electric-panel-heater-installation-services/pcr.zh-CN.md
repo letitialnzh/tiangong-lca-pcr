@@ -291,7 +291,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | install_test_handover | 接收、壁挂固定、接线、测试与交付 | required | 准备就绪接口获得认可的本首次安装路线 | 将电器/H 形支架与新增固定及接线部件集成；核验、节点内返工，或将拒收机分流为完好退回及废物退出；仅测试并签署交付后验收 | 1 item 验收安装 |
 
@@ -391,14 +391,14 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | job_normalization | all inventory rows | 将实际作业归属数量汇总至每参考流；多台安装作业应先记录资源分摊及失败/待定状态，再以相同配置验收服务数量归一化。没有证据时不得将不同型号视为等效。 | cp_components; cp_resources; cp_transport; cp_acceptance; cp_exits; cp_releases | 每参考流清单 |  |
 | receipt_exit_reconcile | heater_package; returned_heater; electrical_waste | 核对实物电器接收、已安装验收序列号、完好退供、报废机及作业剩余库存；返工留在同一作业内，防止重复投入/退出处理。 | cp_components; cp_acceptance; cp_exits | 按序列号的电器核对 |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | configuration | all inventory rows | 取暖器类型、型号、套件覆盖、墙体基材、固定及电源条件保持一致；制造商示例不是通用物料清单。 | cp_components; cp_acceptance; `dimplex-plxe-series-c-issue7` |
 | resource_coverage | site_electricity; material_transport; installer_travel; tool_access | 覆盖作业及纠正事件；区分安装及日常使用能耗；披露供应商门槛和共用事件分摊。 | cp_resources; cp_transport |

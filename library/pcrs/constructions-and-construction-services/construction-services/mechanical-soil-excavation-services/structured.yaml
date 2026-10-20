@@ -317,9 +317,9 @@ process_inventory:
           flow_ref:
             uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66; Units of mass 93a60a57-a4c8-11da-a746-0800200c9a66 / kg"
-          description: "Conditional on fossil-diesel-powered equipment: fossil diesel delivered to the excavator and declared on-site loading/relocation equipment. Separate any biodiesel blend and retain its composition."
+          description: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty."
           amount:
-            expression: "Collect fuel issued less returns and tank-stock increase; attribute by machine work logs."
+            expression: "Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -600,8 +600,8 @@ dataset_production:
       process_id: "excavate"
       flow_role: "fuel and electricity"
       record_type: "Fuel and meter ledger"
-      raw_fields: "asset; fuel type; meter readings; issues; returns; stocks; operating/idle/rework time; all consuming packages; period"
-      collection_method: "Use calibrated meters and delivery/stock reconciliation; partition shared equipment periods using measured activity and keep generator ownership explicit."
+      raw_fields: "asset; fuel type; meter readings; issues; returns; stocks; operating/idle/rework time; all consuming packages; period; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Use calibrated meters and delivery/stock reconciliation; partition shared equipment periods using measured activity and keep generator ownership explicit. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "kg; kWh"
       frequency: "each shift and delivery"
       temporal_coverage: "whole lot including preparation, idle, corrections and closeout"
@@ -716,6 +716,21 @@ dataset_production:
       source_ids:
         - epa-ap42-construction-dust
         - epa-nonroad-exhaust
+    - id: fuel_supply_fate
+      applies_to: "excavation_diesel"
+      rule: "For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion."
+      inputs:
+        - "opening fuel"
+        - "external receipts"
+        - "closing intact fuel"
+        - U_fuel
+        - X_fuel
+        - W_fuel
+        - P_fuel
+        - D_fuel
+        - "actual node fuel protocol and fate evidence"
+      output: "G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets"
+      source_ids: []
   data_quality_requirements:
     - id: quality_lot
       applies_to: "excavate"
@@ -760,6 +775,10 @@ validation_rules:
     applies_to: "all inventory rows"
     rule: "Require node-specific collection links, units, bilingual rule/card alignment and a current projection. Range excursions need investigation; unresolved identities and unsupported conversions require explicit incomplete coverage."
     source_ids: []
+  - rule_id: validate_fuel_supply_fate
+    applies_to: "excavation_diesel"
+    rule: "Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Foreground contractor excavation-service data package"
   downstream_use: "Construction process and lifecyclemodel projection, linked to parent work packages"
@@ -791,7 +810,7 @@ data_sources:
     used_for: "Earthwork states, geotechnical evidence, movement and survey interfaces; no fixed swell value adopted"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:9c10b031412995346c69ee3c285febfda9e23b94901f698d1cdd10a3236d5c5c"
+  source_sha256: "sha256:9d75012de431e13e4791b526fe02d3dd59db9eb0956d7f5a3aaa639cdc014c35"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_4284"
@@ -842,16 +861,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_24611"
+    - unit_id: "normative_24865"
       family: "allocation"
       span:
         start:
-          offset: 24611
-          line: 415
+          offset: 24865
+          line: 416
           column: 1
         end:
-          offset: 26191
-          line: 424
+          offset: 26445
+          line: 425
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocation_subdivide` | excavate | Subdivide by work package and measured activity first. When metering cannot separate shared fuel, water or plant periods, allocate the event using documented physical machine-hours/load or delivered water; list every consumer and ensure shares sum to one. Monetary contract value is not a default physical driver. |  |\n| `allocation_mobilization` | plant_mobilization; plant_use | Assign each plant journey and shared plant-support period once across its actual consuming nodes and jobs using the documented service-period plant-hours. A supplier plant dataset that includes fuel, transport or maintenance must be reconciled with the separate cards before linking. |  |\n| `allocation_rework` | excavate | Keep failed-geometry correction, repeated handling and idle burdens with the accepted work lot; never count a rejected pass as another accepted service. Record any separately authorized design change and its new acceptance boundary. |  |\n| `allocation_soil` | reusable_soil_handover; waste_soil_handover | This narrowed package is purchased to provide excavation service; displaced soil is an accompanying physical handover, not an automatic credited co-product. Retain excavation burdens on service with no avoided-fill/disposal credit. If evidence establishes independently marketed soil co-production, review that case explicitly and disclose an alternative allocation before use; do not silently transfer burdens. |  |\n\n"
       headings:
@@ -870,12 +889,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 24611
-              line: 415
+              offset: 24865
+              line: 416
               column: 1
             end:
-              offset: 24651
-              line: 415
+              offset: 24905
+              line: 416
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -890,18 +909,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_33701"
+    - unit_id: "normative_36308"
       family: "validation"
       span:
         start:
-          offset: 33701
-          line: 457
+          offset: 36308
+          line: 459
           column: 1
         end:
-          offset: 35290
-          line: 468
+          offset: 38324
+          line: 471
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | accepted_excavation_service | Require one accepted service output linked to the reference, 1 m3 original-position basis and all qualifiers. Neither soil mass nor loose volume substitutes for this service. |  |\n| `validate_transfers` | excavate | Reconcile every soil transfer id and destination once, retain stock change and losses, and check moisture/state conversion. Reuse and waste destinations for the same physical soil are mutually exclusive. |  |\n| `validate_mode_rework` | excavate | Check lot/shift linkage for all inputs, outputs, changeover, cleaning and maintenance; retain rework fuel/hours while excluding repeated acceptance volume and unauthorized overbreak. |  |\n| `validate_shared` | excavate | Check all consumers and periods, physical attribution shares and unique event ownership; reconcile plant-service, transport, fuel and maintenance boundaries against double counting. |  |\n| `validate_emissions` | excavate | Require pollutant species/reporting basis, receiving air, compatible activity/model and non-overlapping particle fractions. Missing data must not be replaced by zero or a generic fixed identity. | `epa-ap42-construction-dust`; `epa-nonroad-exhaust` |\n| `validate_completion` | all inventory rows | Require node-specific collection links, units, bilingual rule/card alignment and a current projection. Range excursions need investigation; unresolved identities and unsupported conversions require explicit incomplete coverage. |  |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | accepted_excavation_service | Require one accepted service output linked to the reference, 1 m3 original-position basis and all qualifiers. Neither soil mass nor loose volume substitutes for this service. |  |\n| `validate_transfers` | excavate | Reconcile every soil transfer id and destination once, retain stock change and losses, and check moisture/state conversion. Reuse and waste destinations for the same physical soil are mutually exclusive. |  |\n| `validate_mode_rework` | excavate | Check lot/shift linkage for all inputs, outputs, changeover, cleaning and maintenance; retain rework fuel/hours while excluding repeated acceptance volume and unauthorized overbreak. |  |\n| `validate_shared` | excavate | Check all consumers and periods, physical attribution shares and unique event ownership; reconcile plant-service, transport, fuel and maintenance boundaries against double counting. |  |\n| `validate_emissions` | excavate | Require pollutant species/reporting basis, receiving air, compatible activity/model and non-overlapping particle fractions. Missing data must not be replaced by zero or a generic fixed identity. | `epa-ap42-construction-dust`; `epa-nonroad-exhaust` |\n| `validate_completion` | all inventory rows | Require node-specific collection links, units, bilingual rule/card alignment and a current projection. Range excursions need investigation; unresolved identities and unsupported conversions require explicit incomplete coverage. |  |\n| validate_fuel_supply_fate | excavation_diesel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -918,12 +937,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 33701
-              line: 457
+              offset: 36308
+              line: 459
               column: 1
             end:
-              offset: 33723
-              line: 457
+              offset: 36330
+              line: 459
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1657,133 +1676,146 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_subdivide"
       identity_kind: "explicit"
-      unit_id: "normative_24611"
+      unit_id: "normative_24865"
       source_span:
         start:
-          offset: 24724
-          line: 419
+          offset: 24978
+          line: 420
           column: 1
         end:
-          offset: 25080
-          line: 419
+          offset: 25334
+          line: 420
           column: 357
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_mobilization"
       identity_kind: "explicit"
-      unit_id: "normative_24611"
+      unit_id: "normative_24865"
       source_span:
         start:
-          offset: 25081
-          line: 420
+          offset: 25335
+          line: 421
           column: 1
         end:
-          offset: 25431
-          line: 420
+          offset: 25685
+          line: 421
           column: 351
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rework"
       identity_kind: "explicit"
-      unit_id: "normative_24611"
+      unit_id: "normative_24865"
       source_span:
         start:
-          offset: 25432
-          line: 421
+          offset: 25686
+          line: 422
           column: 1
         end:
-          offset: 25704
-          line: 421
+          offset: 25958
+          line: 422
           column: 273
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_soil"
       identity_kind: "explicit"
-      unit_id: "normative_24611"
+      unit_id: "normative_24865"
       source_span:
         start:
-          offset: 25705
-          line: 422
+          offset: 25959
+          line: 423
           column: 1
         end:
-          offset: 26189
-          line: 422
+          offset: 26443
+          line: 423
           column: 485
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference"
       identity_kind: "explicit"
-      unit_id: "normative_33701"
+      unit_id: "normative_36308"
       source_span:
         start:
-          offset: 33796
-          line: 461
+          offset: 36403
+          line: 463
           column: 1
         end:
-          offset: 34030
-          line: 461
+          offset: 36637
+          line: 463
           column: 235
     - pointer: "/validation_rules/1"
       rule_id: "validate_transfers"
       identity_kind: "explicit"
-      unit_id: "normative_33701"
+      unit_id: "normative_36308"
       source_span:
         start:
-          offset: 34031
-          line: 462
+          offset: 36638
+          line: 464
           column: 1
         end:
-          offset: 34275
-          line: 462
+          offset: 36882
+          line: 464
           column: 245
     - pointer: "/validation_rules/2"
       rule_id: "validate_mode_rework"
       identity_kind: "explicit"
-      unit_id: "normative_33701"
+      unit_id: "normative_36308"
       source_span:
         start:
-          offset: 34276
-          line: 463
+          offset: 36883
+          line: 465
           column: 1
         end:
-          offset: 34501
-          line: 463
+          offset: 37108
+          line: 465
           column: 226
     - pointer: "/validation_rules/3"
       rule_id: "validate_shared"
       identity_kind: "explicit"
-      unit_id: "normative_33701"
+      unit_id: "normative_36308"
       source_span:
         start:
-          offset: 34502
-          line: 464
+          offset: 37109
+          line: 466
           column: 1
         end:
-          offset: 34721
-          line: 464
+          offset: 37328
+          line: 466
           column: 220
     - pointer: "/validation_rules/4"
       rule_id: "validate_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_33701"
+      unit_id: "normative_36308"
       source_span:
         start:
-          offset: 34722
-          line: 465
+          offset: 37329
+          line: 467
           column: 1
         end:
-          offset: 35008
-          line: 465
+          offset: 37615
+          line: 467
           column: 287
     - pointer: "/validation_rules/5"
       rule_id: "validate_completion"
       identity_kind: "explicit"
-      unit_id: "normative_33701"
+      unit_id: "normative_36308"
       source_span:
         start:
-          offset: 35009
-          line: 466
+          offset: 37616
+          line: 468
           column: 1
         end:
-          offset: 35288
-          line: 466
+          offset: 37895
+          line: 468
           column: 280
+    - pointer: "/validation_rules/6"
+      rule_id: "validate_fuel_supply_fate"
+      identity_kind: "explicit"
+      unit_id: "normative_36308"
+      source_span:
+        start:
+          offset: 37896
+          line: 469
+          column: 1
+        end:
+          offset: 38322
+          line: 469
+          column: 427
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -2399,27 +2431,27 @@ normative_context:
           column: 39
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_24611"
+      unit_id: "normative_24865"
       source_span:
         start:
-          offset: 24611
-          line: 415
+          offset: 24865
+          line: 416
           column: 1
         end:
-          offset: 24651
-          line: 415
+          offset: 24905
+          line: 416
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_33701"
+      unit_id: "normative_36308"
       source_span:
         start:
-          offset: 33701
-          line: 457
+          offset: 36308
+          line: 459
           column: 1
         end:
-          offset: 33723
-          line: 457
+          offset: 36330
+          line: 459
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -2428,5 +2460,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:9c10b031412995346c69ee3c285febfda9e23b94901f698d1cdd10a3236d5c5c"
-  generated_content_sha256: "sha256:eebcbab3597a314c225cf4813fcb732da556d46217edd64b3cd5386d2fd1f49d"
+    sha256: "sha256:9d75012de431e13e4791b526fe02d3dd59db9eb0956d7f5a3aaa639cdc014c35"
+  generated_content_sha256: "sha256:3de61e9d333602816d4451e095f7fb4c03ba9abf5215285c3b759eed79155efb"

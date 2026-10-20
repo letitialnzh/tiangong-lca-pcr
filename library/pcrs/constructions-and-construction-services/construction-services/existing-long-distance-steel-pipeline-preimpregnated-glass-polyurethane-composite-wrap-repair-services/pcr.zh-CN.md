@@ -593,7 +593,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_actual | prepreg_length; prepreg_area; prepreg_count; prepreg_mass; filler_components; primer_components; ancillary_mass; ancillary_length; ancillary_area; ancillary_count; water_supply; process_medium; electricity; fuel_supply; freight; bounded_provider; shared_assets; usable_return_mass; usable_return_length; usable_return_area; usable_return_count; repair_wastes; identified_releases | 归一数量 = 实际归属原生数量 / N；N = 声明施工批次中唯一最终验收缺陷ID。不得以尝试、包覆、层数或未验收缺陷为分母。 | 实际原始数量；N；各行关联cp | 每1 item参考修复数量 |  |
 | stock_attribution | prepreg_length; prepreg_area; prepreg_count; prepreg_mass; filler_components; primer_components; ancillary_mass; ancillary_length; ancillary_area; ancillary_count; water_supply; process_medium; fuel_supply | 供应 = 归属期初库存 + 外部去皮毛收货 - 期末结转库存。毛量附出口视图保留匹配可用退回；消耗量供应 = 供应 - 匹配可用向外退回，只扣除一次且无退回抵扣。未退回废物/损失保留供应负担。 | SKU; native_unit; opening; receipts; tare; closing; return; outlet state | 按SKU和原生单位的实际归属供应 |  |
@@ -606,7 +606,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | complete_gate | accepted_repair | 保存缺陷测绘、工程设计、技师资质、获批说明版本、压力/运行状态、准备/铺层/完整固化/试验证据和签署验收。 | cp_accepted_repair |
 | complete_inventory | all inventory rows | 从设置至最终闭环完整采集批次，包括失败作业及全部服务商支付资源；记录不存在、缺口和不确定性，不得补零。 | 事件及责任方登记 |

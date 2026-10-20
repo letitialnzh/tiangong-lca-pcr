@@ -232,7 +232,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | install_lining | 四片式炉膛衬板安装、冷态养护与交付 | required | 在已验收相容单面开口未衬里宿主中的实际首次安装 | 整合衬板及砂浆投入；包括嵌入式拌制、养护/支撑/拆除、纠正回路及最终衬里阶段交接 | 1 item accepted_lining |
 
@@ -335,13 +335,13 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | job_attribution | 全部清单行 | 采集完整已声明初始项目周期，包括纠正及留置支撑/拆除负担。每个实物事件只归属于其实际完整验收衬里输出一次；保留不合格尝试负担，单独报告库存结转。每项交换以每参考流表示，不假定衬板数量或质量等价。 | 实际节点专属协议；验收台账；事件归属 | 每参考流交换数量 |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | current_compatibility | install_lining | 检查实际宿主/衬板/砂浆说明适用性；历史来源修订号本身不足。保留型号分层，不作通用养护/时间/耐火等级换算。 | 制造商相容性及项目授权；cp_acceptance |
 | closure_quality | 全部清单行 | 保留全周期接收/发出/退回/库存、缺陷、养护延期、拆支撑及全部接收者覆盖。缺失数量、范围证据或实际身份是明确数据缺口，不得假定为零。 | 节点专属协议及保管平衡 |

@@ -107,11 +107,12 @@ sync_with: pcr.en-US.md
 
 过程／待建立交换的方向／类型：`bore_removal` / `inputs` / `product`.
 
-按实际供应门槛分别实例化燃料；以资产/事件标记计量钻机、空压机、钻进、完井、试验及运输用途。供应服务已覆盖燃料不重复加；燃油不是空气基本排放。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 采集对象：实际单独供应钻机空压机车辆及试验设备燃料
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- 数量规则：核对收货总量/期初库存、期末库存/向外退料及实测归属消耗；由 L 转 kg 保留实际密度和温度。
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -569,7 +570,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | bore_removal | 地层钻进与资源移除责任 | required | 始终；实际覆盖层/固结基岩移除及全部可归属尝试 | 独立来源/移除责任：已钻井孔及捕集岩屑/水交至完井/接收方，与组件集成分开；牵头操作者仅一次拥有全任务共享采购/资产/物流，按实际事件在三项责任分配，不设支持伪过程 | 每参考流可归属实际钻进区间/几何及残余数量 |
 | well_completion | 套管封隔及井口集成 | required | 始终；实际设计可能将套管/封隔与钻进穿插 | 独立装配/集成供应套管/接头/浆料/井帽/密封至洗井前验收完井门槛；缺陷返回此责任 | 每参考流实际安装套管/封隔/井口数量 |
@@ -777,7 +778,7 @@ sync_with: pcr.en-US.md
 | cp_test_materials | develop_accept | 样品/试验材料 | 原始记录 | job_id; sample_id; event_id; method_ref; material_id; gross_issued_kg; item_count; item_mass_kg; returned_kg; closing_stock_kg; laboratory_coverage | 采用实际样品方案及实验室/供应范围，称量或按样品数核对耗材，纳入真实重复试验，不重复已含瓶/防腐剂。 | kg; item | 每个实际事件 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 校准/可追溯原始记录、真实身份/供应方及不确定性；定稿前关闭覆盖缺口。 |
 | cp_accept | develop_accept | 验收土建服务 | 原始记录 | job_id; well_id; site; jurisdiction; geology; non_flowing_evidence; approved_design; driller_qualification; bore_attempt_ids; casing_seal_wellhead_acceptance; development_endpoint; test_protocol; test_flow_unit; test_duration_unit; drawdown_recovery_units; actual_test_results; disinfection_flush_records; sample_method_results; defect_dispositions; closure_records; accepted_count; signed_gate; later_pump_disinfection_owner; water_service_approval_owner | 独立核对施工/竣工记录及实际批准试验/取样标准和已签署无永久泵土建交接。全部可归属不足井孔/缺陷/复验关闭后才计一口；明确移交后续永久泵/系统和饮用水批准责任。 | item; 保留实际几何/试验/质量单位 | 每次验收及每个失败/修复/试验事件 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 有签署的阶段特定门槛、合格主管方/设计标准和可追溯实际结果；土建验收本身不证明可饮用或完整供水系统批准。 |
 | cp_dev_disposition | develop_accept | 水/沉积物/试验残余及排放 | 原始记录 | job_id; event_id; stream_id; substance; species_basis; medium; volume_m3; wet_mass_kg; solids_kg; entrained_water_kg; concentration_mg_L; active_chlorine_basis; sample_mass_kg; recirculation_m3; stock_kg; receiver; custody_id; release_authorization; uncertainty | 核对含水层/外供输入与受管理液体、沉积物水、循环、样品、库存及合法真实排放。称量捕集废物；按有代表性浓度/流量、单位/形态基准确定各污染物质量，不把溶液质量当活性消毒剂。 | kg; m3; mg/L | 每个实际事件 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 校准/可追溯原始记录、真实身份/供应方及不确定性；定稿前关闭覆盖缺口。 |
-| cp_energy | bore_removal | 燃料及电力 | 原始记录 | job_id; asset_id; node_id; event_id; fuel_identity; receipt_kg; opening_stock_kg; closing_stock_kg; returned_kg; consumed_kg; volume_L; density_kg_L; temperature_C; meter_start_kWh; meter_end_kWh; provider_scope; reporting_period | 按资产/任务计量或库存平衡各实际燃料/电源；保留实际体积密度转换、充电/发电机/供应覆盖。按原始任务记录分配共享使用，包括失败/复验，分开运输消耗。 | kg; L; kWh; degC | 每个实际事件 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 校准/可追溯原始记录、真实身份/供应方及不确定性；定稿前关闭覆盖缺口。 |
+| cp_energy | bore_removal | 燃料及电力 | 原始记录 | job_id; asset_id; node_id; event_id; fuel_identity; receipt_kg; opening_stock_kg; closing_stock_kg; returned_kg; consumed_kg; volume_L; density_kg_L; temperature_C; meter_start_kWh; meter_end_kWh; provider_scope; reporting_period; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 按资产/任务计量或库存平衡各实际燃料/电源；保留实际体积密度转换、充电/发电机/供应覆盖。按原始任务记录分配共享使用，包括失败/复验，分开运输消耗。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kg; L; kWh; degC | 每个实际事件 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 校准/可追溯原始记录、真实身份/供应方及不确定性；定稿前关闭覆盖缺口。 |
 | cp_assets | bore_removal | 全寿命共享资产供应 | 原始记录 | asset_id; provider; coverage_phases; consuming_node; job_id; reporting_period; task_h; idle_h; lifetime_service_h; production_record; commissioning_date; maintenance_events; replacement_events; retirement_date; removal_route; allocation_method; uncertainty | 建立跨实际任务/时期及所有责任消费者的完整资产/事件台账。核实供应覆盖，用实测任务使用及有据全寿命分母分配未覆盖资本/维护/移除，说明闲置处理。保留更换/退役证据并核对全部份额，否则披露资产覆盖不完整。 | h; 保留实际阶段数量/单位 | 每次任务及更换/移除事件；逐期核对 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 供应范围和生产/维护/移除及实际寿命服务证据；无默认寿命或零资本负担。 |
 | cp_transport | bore_removal | 实际物流 | 原始记录 | job_id; consignment_id; asset_material_id; provider; mode; leg_id; origin; destination; distance_km; payload_t; empty_leg; shared_load_fraction; trip_count; vehicle_km; supplied_service_unit; supplier_coverage | 利用运单/路线、实测载荷及服务单位核对真实送货/进退场/废物运输分段。纳入有责任的空返/共享段，避免自有车辆燃料/资产与完整购入运输重复。 | tkm; t; km; vehicle-km; 实际测量趟次 | 每个实际事件 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 校准/可追溯原始记录、真实身份/供应方及不确定性；定稿前关闭覆盖缺口。 |
 | cp_services | bore_removal | 独立按时间供应服务 | 原始记录 | job_id; node_id; event_id; provider; time_based_service_identity; delivered_h; delivery_gate; source_boundary; materials_coverage; energy_coverage; asset_phases_coverage; transport_coverage; waste_coverage; record_id | 查明真实按时间合同/交付范围、实测小时及独立责任门槛，将覆盖/排除工作关联全部三项责任。不得把实验室样品或空气量转换成小时，缺失清单阶段补一次。 | h | 每个实际事件 | 全任务，包括失败/复验；适用时关联实际资产时期 | 实际场址/任务及明确供应方和接收方 | per reference flow | 校准/可追溯原始记录、真实身份/供应方及不确定性；定稿前关闭覆盖缺口。 |
@@ -790,14 +791,15 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | job_normalization | 所有清单行 | 采集全部可归属任务事件、失败和供应/资产份额，再将每种同质交换量除以同一路线/门槛实际已验收土建井数。没有已完成水井时，不得形成归一化验收服务数据集。 | 实际事件/数量记录; accepted_count; job_id | 每参考流数量 |  |
 | physical_balance | 所有材料及水行 | 按身份将实际期初加收货总量与置入/使用、有据向外退料、废物/排放和期末留存核对；记录转换/测量不确定性及各物理去向。本平衡不为库存虚构产品输出或为废物抵扣。 | 实际总量/交接/计量/库存记录 | 已核对实际交换量及数据缺口 |  |
+| fuel_supply_fate | support_fuels | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | route_gate | accepted_civil_well | 场址/地质/非自流/空气回转路线及无永久泵门槛须符合实际许可/设计；施工出水量/取样验收是阶段特定，不是供水使用批准。 | cp_accept; 实际批准记录 |
 | identities | 所有清单行 | 条件性总括须展开为实际具体交换；最终 TIDAS 过程发布前独立核实身份、属性和单位。未核实的 Energy/Duration/Transport 支持保留未解析。 | 实际供应/接收/物质记录及核实平台链 |
@@ -819,6 +821,7 @@ sync_with: pcr.en-US.md
 | reject_closure | 所有过程 | 将失败井孔/缺陷完井/不合格洗井/出水量/样品匹配责任循环或合法封闭及残余接收方；保留全部归属负担，未关闭拒收不计验收数。 |  |
 | custody | 所有材料行 | 核对实际总收货/领用/向外退料/废物/库存平衡及供应边界；留存不是向外产品，不得先净除退料后再计一次。 |  |
 | range_quality | 所有清单行 | 满足每卡提出的实际范围证据需求，并保留实际规格/测量不确定性；来源示例不成为通用剂量/几何/出水量/时长/寿命/排放默认。 |  |
+| validate_fuel_supply_fate | support_fuels | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
 
 ## 10. 发布数据集画像
 

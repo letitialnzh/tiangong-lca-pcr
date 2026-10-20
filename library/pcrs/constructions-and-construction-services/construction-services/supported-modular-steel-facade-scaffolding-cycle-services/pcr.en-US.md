@@ -556,6 +556,34 @@ Record each actual direct release by substance and receiving water compartment; 
 
 - Sources: `cycle-normalization-method`; `compatible-pool-ledger-method`
 
+#### Collection requirement: Consumed new scaffold-component replacements (`replacement_kit_products`)
+
+Process / prospective direction / type: `scaffold_cycle` / `inputs` / `product`.
+
+Resolve each actual SKU, composition/state and custody into a separate atomic exchange. This requirement is not a generic pooled flow. A genuinely complete purchased assembly may use its own verified package boundary; its already included parts are not additional purchases.
+
+Identify each new replacement SKU actually consumed by the episode, and its destination in the component ledger. Exclude mere deployment of existing reusable components. Range evidence need: component schedule, measured current-state mass and wear, approved repair and retirement decisions; a stock shortage or unreturned component proves neither consumption nor discard.
+
+- Collection subject: Consumed new scaffold-component replacements
+
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
+
+- Amount rule: Each concrete identity/state/receiver has its independently measured or evidenced calculated episode numerator divided once by accepted A, following section 8 cycle numerator rules
+
+- Value mode: `calculated_value`
+
+- Specificity: `site_specific`
+
+- Normalization basis: per reference flow
+
+- Basis kind: `reference_flow`
+
+- Evidence kind: `calculated_from_collection`
+
+- Collection protocol: `cp_scaffold_cycle_material`
+
+- Sources: `cycle-normalization-method`; `compatible-pool-ledger-method`
+
 ## 6. Process Inventory Structure
 
 
@@ -578,40 +606,16 @@ Reusable kit retains distinct issued, erected, used and return-assessment states
 ##### Product flows
 
 
-###### Consumed new scaffold-component replacements (`replacement_kit_products`)
-
-Identify each new replacement SKU actually consumed by the episode, and its destination in the component ledger. Exclude mere deployment of existing reusable components. Range evidence need: component schedule, measured current-state mass and wear, approved repair and retirement decisions; a stock shortage or unreturned component proves neither consumption nor discard.
-
-- Selected flow: Consumed new scaffold-component replacements
-
-- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-
-- Amount rule: Each concrete identity/state/receiver has its independently measured or evidenced calculated episode numerator divided once by accepted A, following section 8 cycle numerator rules
-
-- Value mode: `calculated_value`
-
-- Specificity: `site_specific`
-
-- Normalization basis: per reference flow
-
-- Basis kind: `reference_flow`
-
-- Evidence kind: `calculated_from_collection`
-
-- Collection protocol: `cp_scaffold_cycle_material`
-
-- Sources: `cycle-normalization-method`; `compatible-pool-ledger-method`
-
-
 ###### Diesel fuel (`diesel_fuel`)
 
-Include actual diesel burned by owned equipment or separately metered duties attributable to this episode, including attributable idle, tests and rework. Exclude fuel already covered by a provider service. Range evidence need: equipment and interval logs plus calibrated stock or meter reconciliation; useful lifting work cannot substitute for consumed fuel mass.
+
+Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty. Range evidence need: equipment and interval logs plus calibrated stock or meter reconciliation; useful lifting work cannot substitute for consumed fuel mass.
 
 - Selected flow: Diesel fuel `9d258d75-6792-4f1c-9856-81602ed8f816`
 
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 
-- Amount rule: Each concrete identity/state/receiver has its independently measured or evidenced calculated episode numerator divided once by accepted A, following section 8 cycle numerator rules
+- Amount rule: Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8.
 
 - Value mode: `calculated_value`
 
@@ -881,7 +885,7 @@ Protocols below are compact node-owned event ledgers. Raw quantities are retaine
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_scaffold_cycle_material | scaffold_cycle | configuration geometry; materials; product and waste exits | phase-indexed foreground event record | event/lot/configuration ID; process/phase/time; owner; role; actual identity/current state; native amount/unit; measured same-state bridge; receiver/medium; evidence; uncertainty | Survey disjoint accepted elevation polygons independently and reconcile handover and closure. Weigh each concrete material/current state and dispatch; retain counts and traceable same-state conversion when direct weighing is unavailable. Observe outside deposits and constituent moisture independently; identify actual receiver and phase. | kg; m2 | each event and interval boundary | full issue-to-return episode, including unavailability and rework | declared site/configuration and responsible off-site cleaning/return duties | per reference flow | survey and acceptance records; scale calibration; component/SKU and dispatch documents; moisture/constituent evidence |
-| cp_scaffold_cycle_utility | scaffold_cycle | fuel; electricity; supplied water | phase-indexed foreground event record | event/lot/configuration ID; process/phase/time; owner; role; actual identity/current state; native amount/unit; measured same-state bridge; receiver/medium; evidence; uncertainty | Read calibrated fuel/utility meters and opening/closing stocks over the entire owned duty, idle, test and rework intervals. Record supply identity and meter topology; reconcile every consumer and provider-covered quantities before episode attribution. Convert native units only using an independently evidenced same-state bridge. | kg; kWh | each event and interval boundary | full issue-to-return episode, including unavailability and rework | declared site/configuration and responsible off-site cleaning/return duties | per reference flow | meter calibration and readings; supply documents; equipment/phase log; allocation reconciliation |
+| cp_scaffold_cycle_utility | scaffold_cycle | fuel; electricity; supplied water | phase-indexed foreground event record | event/lot/configuration ID; process/phase/time; owner; role; actual identity/current state; native amount/unit; measured same-state bridge; receiver/medium; evidence; uncertainty; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | Read calibrated fuel/utility meters and opening/closing stocks over the entire owned duty, idle, test and rework intervals. Record supply identity and meter topology; reconcile every consumer and provider-covered quantities before episode attribution. Convert native units only using an independently evidenced same-state bridge. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates. | kg; kWh | each event and interval boundary | full issue-to-return episode, including unavailability and rework | declared site/configuration and responsible off-site cleaning/return duties | per reference flow | meter calibration and readings; supply documents; equipment/phase log; allocation reconciliation |
 | cp_scaffold_cycle_asset | scaffold_cycle | kit occupation; distinct auxiliary services; asset observations | phase-indexed foreground event record | event/lot/configuration ID; process/phase/time; owner; role; actual identity/current state; native amount/unit; measured same-state bridge; receiver/medium; evidence; uncertainty | Follow asset and component IDs from issue through handover, actual available/unavailable periods, dismantling and assessed return/repair/retirement. Record every user, provider boundary and actual occupation/use intervals. For self-owned attribution collect actual lifetime/capacity, use, wear and damage evidence rather than assuming cycles. | h; kg observations | each event and interval boundary | full issue-to-return episode, including unavailability and rework | declared site/configuration and responsible off-site cleaning/return duties | per reference flow | custody and condition ledger; dated user/availability log; provider contract; evidenced owned-asset attribution |
 | cp_scaffold_cycle_release | scaffold_cycle | abstraction; substance/compartment releases | phase-indexed foreground event record | event/lot/configuration ID; process/phase/time; owner; role; actual identity/current state; native amount/unit; measured same-state bridge; receiver/medium; evidence; uncertainty | Measure actual abstraction and releases by source/substance/compartment; use documented applicable emission or evaporation models only with observed activity, composition and uncertainty. Preserve raw concentration/flow and capture records; separate direct discharge from treatment waste and fossil carbon from water pools. | kg | each event and interval boundary | full issue-to-return episode, including unavailability and rework | declared site/configuration and responsible off-site cleaning/return duties | per reference flow | sampling and analytical QA; meter/model provenance; activity and composition records; capture/receiver evidence |
 
@@ -897,7 +901,7 @@ Protocols below are compact node-owned event ledgers. Raw quantities are retaine
 | compatible_closure | all inventory rows | For each compatible material/state/constituent pool, opening stock + observed external additions = closing stock + independently measured retained, returned, discarded and released constituents + residual. Evaluate uncertainty in residual; do not generate a balancing exchange. Keep used kit state and external deposits distinct. | state/constituent ledgers; cp_scaffold_cycle_material; cp_scaffold_cycle_release | closure findings | compatible-pool-ledger-method |
 | water_only_closure | water_supplied; direct_freshwater_abstraction; collected_wastewater_slurry; water_vapour_air; specific_direct_water_releases | Reconcile independently observed water-only inputs and opening water against water-only closing/retained/returned content, collected liquid waste, supported evaporation and direct releases. Internal recirculation cancels; solids and chemicals are separate constituents. Residual does not establish evaporation. | water-only measurements; cp_scaffold_cycle_utility; cp_scaffold_cycle_release; cp_scaffold_cycle_material | water closure findings | compatible-pool-ledger-method |
 | fossil_carbon_constraint | fossil_co2_air | For independently measured fossil carbon burned C_f, fossil CO2 <= C_f * 44 / 12. Record actual CO2 by applicable measurement/model; account separately for carbon in other species and residual uncertainty. This upper constraint does not assume complete oxidation and is not kg CO2 per kg diesel. | C_f; actual emission evidence; cp_scaffold_cycle_utility; cp_scaffold_cycle_release | fossil-carbon QA | carbon-oxidation-identity |
-
+| fuel_supply_fate | diesel_fuel | For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion. | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### Data Quality Requirements
 
@@ -922,7 +926,8 @@ Protocols below are compact node-owned event ledgers. Raw quantities are retaine
 | physical_qa | all inventory rows | Reconcile compatible material/current-state/constituent pools with opening and closing stocks and separately observed additions. Test water-only and fuel-carbon constraints separately. Never balance fuel kg against CO2 kg or invent oxygen, waste, dust, vapour or other exchanges from residuals. | compatible-pool-ledger-method; carbon-oxidation-identity |
 | range_and_gaps | all inventory rows | Preserve the two supported ranges and each of the other 25 row-specific range evidence needs. Assess the actual physical constraint using measured inputs and fates; missing range evidence, uncertain state, support identity or asset attribution remains a disclosed gap, never an invented bound. | cycle-normalization-method; compatible-pool-ledger-method |
 | report_completeness | foreground dataset | Report accepted input, performed and skipped checks, findings, uncertainty and completeness. An automated structural pass does not certify engineering compliance, final UUID readiness or closure of an incomplete cycle. | cycle-normalization-method |
-
+| validate_fuel_supply_fate | diesel_fuel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |
+| validate_physical_slurry_stream | all collected wastewater/slurry | A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views. |  |
 
 ## 10. Published Dataset Profile
 

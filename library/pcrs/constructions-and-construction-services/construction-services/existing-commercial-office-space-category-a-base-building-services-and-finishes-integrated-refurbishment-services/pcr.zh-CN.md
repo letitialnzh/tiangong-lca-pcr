@@ -410,6 +410,27 @@ A为唯一已验收净内部办公楼面面积。关联共用核心及外部共�
 
 范围证据需求：按实测质量或有效匹配活动因子整流体组成去向证据确定实际物种及接收介质；独立计量实际环境水Volume及气体原生数量，并保留区室及换算条件。水体积不得套污染物种公式；不虚构物种、不用SDS作排放量、不将缺失当零。
 
+#### 采集要求：按件计量的实际基础服务组件 (`count_components`)
+
+过程／待建立交换的方向／类型：`integration` / `inputs` / `product`.
+
+按每个真实 SKU、组成/状态及保管关系建立独立原子交换。本要求不是通用集合流。真实完整的采购总成可采用其经核实的整包边界，已含部件不再额外采购。
+
+按既有保留和更换范围记录实际规定的灯具、配电控制设备、暖通末端或机组、给排水消防器件及安装组件。工厂完整包及其BOM只允许一种采购视图。
+
+- 采集对象：按件计量的实际基础服务组件
+- 流属性/单位：Number of items / item
+- 数量规则：S = opening + gross_receipts - tare - closing，使用本SKU的原生单位。声明唯一口径：含出口总投入为 S / A，或净消耗投入为 (S - usable_outward_return) / A。保留全部未退损失废物及失败施工耗用；匹配的实际外退证据不得再次扣减或抵扣。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_integration_material`
+- 来源：`wdi-cat-a-b-fitout`; `wdi-riverside-refurbishment`
+
+范围证据需求：采集实际组件SKU型号配置及计件收货库存安装更换可用退料，说明套件是否包含BOM。无每办公平方米灯具末端数量假设。
+
 ## 6. 过程清单结构
 
 ### 过程图
@@ -472,23 +493,6 @@ A为唯一已验收净内部办公楼面面积。关联共用核心及外部共�
 - 来源：`wdi-cat-a-b-fitout`; `wdi-riverside-refurbishment`
 
 范围证据需求：将实际接收已释放边界转移ID、未释放接口及排除项与拆除记录匹配；调查差异，不强迫接收面积等于验收A。
-
-###### 按件计量的实际基础服务组件 (`count_components`)
-
-按既有保留和更换范围记录实际规定的灯具、配电控制设备、暖通末端或机组、给排水消防器件及安装组件。工厂完整包及其BOM只允许一种采购视图。
-
-- 选定流：按件计量的实际基础服务组件
-- 流属性/单位：Number of items / item
-- 数量规则：S = opening + gross_receipts - tare - closing，使用本SKU的原生单位。声明唯一口径：含出口总投入为 S / A，或净消耗投入为 (S - usable_outward_return) / A。保留全部未退损失废物及失败施工耗用；匹配的实际外退证据不得再次扣减或抵扣。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_integration_material`
-- 来源：`wdi-cat-a-b-fitout`; `wdi-riverside-refurbishment`
-
-范围证据需求：采集实际组件SKU型号配置及计件收货库存安装更换可用退料，说明套件是否包含BOM。无每办公平方米灯具末端数量假设。
 
 #### 输出
 
@@ -639,7 +643,7 @@ A为唯一已验收净内部办公楼面面积。关联共用核心及外部共�
 
 下列代数规则为本数据包声明的前景核算协议，依据实际原始记录及单位定义；WDI仅支持Cat A实践边界及分期交接，不提供库存燃烧物种或完整寿命数学因子。
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `area_normalization` | all inventory rows | Q_norm = Q_attributed / A; A为唯一验收净内部办公面积且A>0; 每个归属实体台账仅归一化一次。 | Q_attributed; A; cp_handover | 每参考流的实体原生单位数量 |  |
 | `stock_throughput` | stripout_consumables; area_components; count_components; length_components; mass_consumables; volume_fluids; test_consumables; supplied_fuel | S = opening + gross_receipts - tare - closing; 选择含出口总投入或净消耗S - usable_outward_return仅一次; 未退回废物损失保留上游负担。 | opening; gross_receipts; tare; closing; usable_outward_return | 声明的原生单位供应周转量 |  |
@@ -649,7 +653,7 @@ A为唯一已验收净内部办公楼面面积。关联共用核心及外部共�
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `scope_trace` | all nodes | 保留实际建筑项目范围过程阶段时期事件转移ID，核对保留更换及提供方范围。 | 测绘合同库存转移记录 |
 | `actual_factors` | all calculations | 保留原始操作数兼容单位含temperature_unit、因子组成去向基准及来源。不猜寿命尺寸燃烧排放因子或数值范围。 | 实际计量校准及因子记录 |

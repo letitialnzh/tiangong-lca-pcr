@@ -504,11 +504,51 @@ sync_with: pcr.en-US.md
 
 数量范围证据需求：取得实际产品/SDS组成、干膜、物种因子/监测、捕集和接收介质证据；不从丙烯酸宣传名称推断排放。
 
+#### 采集要求：实际未燃废弃或回收燃料废物 (`prep_fuel_wastes`)
+
+过程／待建立交换的方向／类型：`prepare_host` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+按实际品级/组成分别记录不合格/未燃燃料、回收的游离泄漏液及送废物接收方的含燃料清理混合物。混合物总量与其中燃料量分开；可用燃料外退是产品，失控释放的具体物质走基本流。
+
+- 采集对象：实际未燃废弃或回收燃料废物
+- 流属性/单位：质量 / kg
+- 数量规则：按品级/组成、原事件和接收责任称量实际未燃废物，混合物保留燃料含量计量；对齐燃料衡算且不得计为燃烧量。
+- 数值来源模式：`foreground_record`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`collected_record`
+- 采集协议：`cp_prep_residuals`
+
+数量范围证据需求：取得真实事故/油箱排放、分流废物质量/组成和接收记录；无此废物须有事件证据，不设泄漏/回收比例。
+
+#### 采集要求：实际未燃废弃或回收燃料废物 (`finish_fuel_wastes`)
+
+过程／待建立交换的方向／类型：`finish_surface` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+按实际品级/组成分别记录不合格/未燃燃料、回收的游离泄漏液及送废物接收方的含燃料清理混合物。混合物总量与其中燃料量分开；可用燃料外退是产品，失控释放的具体物质走基本流。
+
+- 采集对象：实际未燃废弃或回收燃料废物
+- 流属性/单位：质量 / kg
+- 数量规则：按品级/组成、原事件和接收责任称量实际未燃废物，混合物保留燃料含量计量；对齐燃料衡算且不得计为燃烧量。
+- 数值来源模式：`foreground_record`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`collected_record`
+- 采集协议：`cp_finish_residuals`
+
+数量范围证据需求：取得真实事故/油箱排放、分流废物质量/组成和接收记录；无此废物须有事件证据，不设泄漏/回收比例。
+
 ## 6. 过程清单结构
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | prepare_host | 清洗及局部修补合格既有基面 | required | 合格密实既有基面；实际清洗和局部修补范围 | 前景处理；合格清洁齐平基面交接 | 实际验收处理面积m2，关联合同和交接编号 |
 | finish_surface | 施作兼容丙烯酸系统并验收带线标固化表面 | required | 合格准备基面；底涂仅在实际规范要求时使用 | 前景表面加工；最终修复交付 | 1 item 验收合同 |
@@ -579,22 +619,6 @@ prepare_host内实际清洗机/泵/搅拌/检验用电，保留供电电压、�
 - 采集协议：`cp_prep_residuals`
 
 数量范围证据需求：采集收集体积/密度、雨水径流流入、固液分离及处理票据和采样不确定性；不设默认捕集率或排放份额。
-
-###### 实际未燃废弃或回收燃料废物 (`prep_fuel_wastes`)
-
-按实际品级/组成分别记录不合格/未燃燃料、回收的游离泄漏液及送废物接收方的含燃料清理混合物。混合物总量与其中燃料量分开；可用燃料外退是产品，失控释放的具体物质走基本流。
-
-- 选定流：实际未燃废弃或回收燃料废物
-- 流属性/单位：质量 / kg
-- 数量规则：按品级/组成、原事件和接收责任称量实际未燃废物，混合物保留燃料含量计量；对齐燃料衡算且不得计为燃烧量。
-- 数值来源模式：`foreground_record`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
-- 采集协议：`cp_prep_residuals`
-
-数量范围证据需求：取得真实事故/油箱排放、分流废物质量/组成和接收记录；无此废物须有事件证据，不设泄漏/回收比例。
 
 ##### 基本流
 
@@ -747,22 +771,6 @@ prepare_host内实际清洗机/泵/搅拌/检验用电，保留供电电压、�
 
 数量范围证据需求：采集真实清洗/收集/雨水平衡和处理票据及组成/采样不确定性；不默认全部用水排放或固定捕集率。
 
-###### 实际未燃废弃或回收燃料废物 (`finish_fuel_wastes`)
-
-按实际品级/组成分别记录不合格/未燃燃料、回收的游离泄漏液及送废物接收方的含燃料清理混合物。混合物总量与其中燃料量分开；可用燃料外退是产品，失控释放的具体物质走基本流。
-
-- 选定流：实际未燃废弃或回收燃料废物
-- 流属性/单位：质量 / kg
-- 数量规则：按品级/组成、原事件和接收责任称量实际未燃废物，混合物保留燃料含量计量；对齐燃料衡算且不得计为燃烧量。
-- 数值来源模式：`foreground_record`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
-- 采集协议：`cp_finish_residuals`
-
-数量范围证据需求：取得真实事故/油箱排放、分流废物质量/组成和接收记录；无此废物须有事件证据，不设泄漏/回收比例。
-
 ##### 基本流
 
 ## 7. 分配与联产品处理
@@ -780,7 +788,7 @@ prepare_host内实际清洗机/泵/搅拌/检验用电，保留供电电压、�
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | raw_fields | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_prep_materials | prepare_host | 各实际供货材料、水源及配方加入物 | 批次和事件台账 | contract_id; court_id; date; period_id; run_id; event_id; lot_id; product_identity; supply_state; formulation; gross_receipt_kg; issue_kg; opening_stock_kg; closing_stock_kg; outward_return_kg; scale_tare_kg; measured_gross_load_kg; water_meter_start_m3; water_meter_end_m3; density_kg_per_m3; temperature_degC; addition_identity; actual_recipe; supplier_coverage | 逐具体身份采集送货、存量、扣皮称量及校准水表；区别收货/领用、配制品/有效含量、工厂已含/现场另加组分、购水/抽水。关联实际色浆批次/基料和涂层/运行，仅以证据记零。体积换算使用有据密度/温度，按衡器/水表/批次差异导出不确定性。 | 各具体材料/水源kg；原始m3附密度 | 每次收货、领用、加入、期末存量及用水事件 | 含失败尝试及换色的完整修复作业期；起止存量 | 实际合同球场、供应商批次及取水源 | 每参考流 | 供应商说明/SDS、校准扣皮、发票和存量/配方平衡、确切批次角色及兼容性、不确定性和覆盖。材料衡算使用实测载荷总重减车/容器皮重，未预扣退货。 |
 | cp_prep_operations | prepare_host | 实际电力、燃料、运输及完整寿命资产份额 | 设备运输和资产服务台账 | contract_id; court_id; date; period_id; run_id; event_id; asset_id; meter_start_kWh; meter_end_kWh; fuel_identity; fuel_issue_kg; fuel_density_kg_per_L; service_hours_h; cargo_t; distance_km; empty_leg_rule; provider_coverage; lifetime_service_h; other_consumers; production_burden; maintenance_event; replacement_event; termination_event; end_of_life_coverage; allocation_driver; opening_fuel_stock_kg; closing_fuel_stock_kg; gross_fuel_receipt_kg; true_fuel_outward_return_kg; fuel_transfer_boundary; unburned_fuel_waste_kg; fuel_spill_kg; actually_burned_fuel_kg; unburned_fuel_release_kg | 实际计量设备、电量、油箱/领料/运输并关联项目/运行；与运营方/供应商记录核对合用电表拆分及载荷/距离。资产账列prepare_host、finish_surface、其他项目/时期及完整制造/使用/维护/更换/终止/报废，按实测因果服务份额分配并披露已含/未含负荷。每个共享事件唯一归属。已结束寿命用实测历史，在役剩余服务/更换/终止/报废可用有依据前瞻情景，标明预测、总服务分母/来源、不确定性/敏感性及实际事件更新。燃料投入记录跨入节点总量，期初期末/总投入与可用真实外退/外转、未燃废物、未回收真实排放和燃烧量闭合；事故总泄漏含回收部分，不再次相减。边界内转油不是消耗，燃烧因子只用实际烧油；未燃燃料按实际产品/废物/基本流责任及状态出场。 | kWh；各燃料kg；各路段t.km；各资产h | 每运行、领油、运输及资产事件；作业期/时期末核对 | 完整作业期及包括其他项目的完整资产寿命时期 | 实际节点设备、供应商、供货路线及完整寿命台账 | 每参考流 | 校准计量、油箱/运输依据、实测驱动量及份额和、资产更换/终止及覆盖、不确定性、无重复供应商负荷 |
@@ -793,7 +801,7 @@ prepare_host内实际清洗机/泵/搅拌/检验用电，保留供电电压、�
 
 ### 计算规则
 
-| rule_id | 适用于 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | contract_attribution | 所有清单行 | 逐项汇总归属实际验收合同的已识别事件量，多合同事件仅按有据实测因果驱动量共享；全部清单为每参考流。在最终验收前保留未完成/不合格尝试负荷。 | 节点专属协议；球场/运行/事件编号；实测驱动量；签署验收合同 | 每1 item验收修复合同的各交换数量 |  |
 | lot_reconciliation | 全部材料、存量、退回及残余行 | 期初可用存量+收货总量=实际施用/使用+真实可用外退+废物/残余损失+期末可用存量；按批次/状态披露实际过程内转化和计量差。涂布湿料须有留存干膜及真实挥发/其他损失证据，湿质量不等于干膜。 | 节点材料/残余协议；供货状态；批次；实际膜和物种证据 | 湿料和存量闭合；携带结转负荷及未解决差值 |  |
@@ -805,7 +813,7 @@ prepare_host内实际清洗机/泵/搅拌/检验用电，保留供电电压、�
 
 ### 数据质量要求
 
-| requirement_id | 适用于 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity_gate | 全部交换 | 建立具体数据集交换前须确定各实际材料/供应商/废物/物质身份及兼容支持/属性/单位。各条件总括角色按实际身份展开独立交换；参考候选是确切验收修复，非通用墙漆或完整新球场。 | 实际供应商/SDS/服务方和责任/物种数据；已验证详情及支持链 |
 | host_scope | 基面及验收服务 | 实际密实兼容基面须结构和排水合格，既有丙烯酸不能证明底层完好。记录修复限度及实际现行系统兼容性。 | 检验/缺陷/排水和基面涂层兼容记录；现行产品说明 |

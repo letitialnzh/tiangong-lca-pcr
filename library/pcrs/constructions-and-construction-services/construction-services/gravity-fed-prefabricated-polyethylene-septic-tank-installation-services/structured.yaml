@@ -314,11 +314,11 @@ system_boundary:
       source_ids: []
     - rule_id: system_boundary_rule_74
       applies_to: "foreground_system_boundary"
-      rule: "Fuel use follows actual machine/task records; supplier fuel properties and measured volume/density support any conversion to mass."
+      rule: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty."
       source_ids: []
     - rule_id: system_boundary_rule_75
       applies_to: "foreground_system_boundary"
-      rule: "Collection subject: Actual machinery fuels consumed by installation"
+      rule: "Collection subject: Actual machinery fuel supplied to installation"
       source_ids: []
     - rule_id: system_boundary_rule_76
       applies_to: "foreground_system_boundary"
@@ -326,7 +326,7 @@ system_boundary:
       source_ids: []
     - rule_id: system_boundary_rule_77
       applies_to: "foreground_system_boundary"
-      rule: "Amount rule: Record each actual fuel consumed during excavation, lifting, compaction, handling, repairs and retests, excluding provider-included fuel already counted. Keep unused fuel stock and real returned unconsumed fuel outside this consumed-fuel exchange, with quantities reconciled in the stock/custody ledger; do not count them as consumed."
+      rule: "Amount rule: Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
       source_ids: []
     - rule_id: system_boundary_rule_78
       applies_to: "foreground_system_boundary"
@@ -821,7 +821,7 @@ allocation_rules:
     source_ids: []
   - rule_id: custody_attribution
     applies_to: "usable_product_returns; solid_waste; imported_support_fill"
-    rule: "Maintain gross opening stock/receipts/issues/installed or consumed disposition/real outward returns/waste/closing stock balance by actual identity. All material input cards use gross job receipts/issues; placement or consumption is a disposition, not an alternate input basis. Consumed-fuel exchanges exclude unused/returned fuel reconciled separately. Retained stock carries a declared unconsumed burden forward and is not a product output. Returned products have original-lot burden custody and do not earn automatic substitution credit. Native soil reused onsite has handling burdens and no purchased-production burden. Any genuine coproduct outside this scope requires explicit separate allocation review."
+    rule: "Maintain gross opening stock/receipts/issues/installed or consumed disposition/real outward returns/waste/closing stock balance by actual identity. All material input cards use gross job receipts/issues; placement or consumption is a disposition, not an alternate input basis. Fuel product inputs and actual burned activity follow fuel_supply_fate; usable exits remain separately recorded. Retained stock carries a declared unconsumed burden forward and is not a product output. Returned products have original-lot burden custody and do not earn automatic substitution credit. Native soil reused onsite has handling burdens and no purchased-production burden. Any genuine coproduct outside this scope requires explicit separate allocation review."
     source_ids: []
 dataset_production:
   collection_protocols:
@@ -853,8 +853,8 @@ dataset_production:
       process_id: "tank_installation"
       flow_role: "fuels and electricity"
       record_type: "meter and fuel stock/task logs"
-      raw_fields: "job_id; task_id; asset_id; period_id; fuel_identity; fuel_mass_kg; fuel_volume; fuel_volume_unit; density_value; density_unit; density_temperature; density_temperature_unit; electricity_kWh; charging_boundary; provider_inclusion"
-      collection_method: "Reconcile actual task fuel and metered electricity including rework. Any activity allocation uses recorded tasks and a documented denominator; identify provider included use and future operating-energy exclusion. Reconcile unused stock and unconsumed fuel returns outside the consumed-fuel exchange. Preserve each physical unit and conversion evidence."
+      raw_fields: "job_id; task_id; asset_id; period_id; fuel_identity; fuel_mass_kg; fuel_volume; fuel_volume_unit; density_value; density_unit; density_temperature; density_temperature_unit; electricity_kWh; charging_boundary; provider_inclusion; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Reconcile actual task fuel and metered electricity including rework. Any activity allocation uses recorded tasks and a documented denominator; identify provider included use and future operating-energy exclusion. Reconcile unused stock and unconsumed fuel returns outside the consumed-fuel exchange. Preserve each physical unit and conversion evidence. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "kg; kWh"
       frequency: "Each task/refuel/meter interval"
       temporal_coverage: "Preparation through repair/retest/handover"
@@ -949,6 +949,21 @@ dataset_production:
         - "verified provider scope"
       output: "Attributed asset provision and explicit uncovered phase requirements"
       source_ids: []
+    - id: fuel_supply_fate
+      applies_to: "installation_fuels"
+      rule: "For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion."
+      inputs:
+        - "opening fuel"
+        - "external receipts"
+        - "closing intact fuel"
+        - U_fuel
+        - X_fuel
+        - W_fuel
+        - P_fuel
+        - D_fuel
+        - "actual node fuel protocol and fate evidence"
+      output: "G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets"
+      source_ids: []
   data_quality_requirements:
     - id: route_identity
       applies_to: "tank_installation"
@@ -997,6 +1012,10 @@ validation_rules:
     applies_to: "tank_installation"
     rule: "Preserve damaged/off-spec materials, repair/replacement and repeated tests in the producing node, with actual internal loop, product return or waste exit. No discarded tank or unresolved failure enters accepted count."
     source_ids: []
+  - rule_id: validate_fuel_supply_fate
+    applies_to: "installation_fuels"
+    rule: "Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Foreground data package for one qualified stub-bounded gravity tank installation; process/lifecyclemodel are downstream projections"
   downstream_use: "secondary_dataset; background_dataset"
@@ -1016,7 +1035,7 @@ data_sources:
     used_for: "Classification scope of septic-system and leach/drainfield installation; narrower tank-only semantic boundary"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:3db6ffbbf3dccc78f769acae1d6ecea817fb8bf258d982e77040fbd56a2783eb"
+  source_sha256: "sha256:564c5ecaead810cd6dff50307d60e98ecf09203c2d437c319cafe59017ac4c94"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5448"
@@ -1027,10 +1046,10 @@ normative_context:
           line: 57
           column: 1
         end:
-          offset: 24371
-          line: 294
+          offset: 24444
+          line: 295
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | An approved qualified nontraffic site and an upstream factory tank at its declared supply gate. In-situ native soil is environmental starting stock; job-specific excavation, soil handling, support and reinstatement are foreground responsibilities. |\n| starting_condition_role | Declared site condition and upstream purchased-product gate; neither zero-burden new excavation nor a complete operating septic installation |\n| product_classification_scope | Semantic tank-installation subset of CPC3.0 54342, with inlet/outlet stub limits |\n| recursive_input_rule | Do not recursively consume this same accepted final service for the same job. An independently supplied excavation/support service is a distinct bounded provider input only when its real work, quantities, responsibility and acceptance handoff exist; otherwise its operations stay inside tank_installation. |\n| upstream_dataset_requirement | Factory tank and actual separate materials require cradle-to-supply datasets. Machinery/provider coverage must state production, use/maintenance and removal coverage and fill real gaps once; delivery/packaging included upstream must not be added twice. |\n| disclosure | Declare actual scope owner, supply-kit bill, soil custody, field methods, all site work, installation acceptance, failures/retests, stock carry-forward and machinery service-period attribution. Future wastewater operation and downstream drains remain separately owned. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| site_fit | tank_installation | Require approved actual utilities/soil/groundwater/nontraffic assessment. Include excavation and level compacted support. Unsuitable soil removal and suitable replacement are measured. Reject route use when excluded buoyancy/traffic works are actually necessary. | `ads-septic-tank-installation-2024` |\n| complete_assembly | tank_installation | Reconcile factory bill of supply against vessel, gaskets, compatible stubs/tees, screws, lids and risers; record only genuine additional components separately. Lower undamaged tank, connect per actual permitted arrangement, support haunches, alternate sidewall backfill before top cover, compact and finish with drainage grading and erosion-resistant vegetation. | `ads-septic-tank-installation-2024` |\n| water_and_tests | tank_installation | Require only actual manufacturer/jurisdiction installation inspection/test obligations with recorded units and limits. The source does not require universal pre-backfill water filling; protective filling applies to an excavation at risk of filling with rain/other water. Record actual protection/test water and destination. Oregon riser test figures and vacuum warnings are not universal defaults. | `ads-septic-tank-installation-2024` |\n| period_assets | tank_installation | Index job phases preparation, lowering/connections, backfill/finish, inspection, repair/retest and handover. Link each shared excavator/compactor/tool asset to all consuming jobs and reporting periods, including production, service/maintenance/replacement and termination. Actual bounded provider coverage or evidence-based complete-life asset attribution must include capital and removal burdens without duplicating fuel/materials. |  |\n| soil_custody | tank_installation | Track excavated native soil, onsite reused backfill, imported fill, closing stock and actual export by source/destination and actual product or waste status. Onsite transfer is a balance, not a new purchased soil input or co-product credit. Waste handoffs and characterized direct releases remain distinct. |  |\n| `boundary_atomic_completion` | all processes | Section 5 collection requirements are mandatory collection and applicability instructions, not aggregate inventory exchanges. Instantiate a distinct atomic flow card/exchange for every actual product, waste stream, substance and environmental compartment before completing a foreground dataset. Preserve every actual event, upstream burden, return and native unit; apply the linked formula to each compatible identity separately. Record environmental withdrawals as inputs and releases as outputs. Never sum unlike native units, substitute one UUID for a pool, infer zero from missing records, or duplicate an existing concrete card. Documentary retained-host interfaces carry state only and create no new purchased asset. Quantified completion is blocked until applicable members are resolved or evidenced absent; nonbinding screening aids do not supply missing amounts or chemistry. |  |\n\n### Conditional inventory completion requirements\n\nThe following identifiers denote collection pools or documentary state ledgers. A pool may have zero, one or several actual members. Determine applicability from real records; retain the original quantity method and collection protocol for each member. Only compatible quantities may be reconciled together. Any old optional screening interval below remains a provisional aid for review and must not be imposed on a different material or on a mixed pool.\n\n#### Collection requirement: Separately supplied short pipe stubs and allowed tees (`extra_pipe_tees`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nInlet/outlet stub endpoints and actual code-approved tee arrangement define this component boundary; building drain and drainfield pipe are excluded.\n\n- Collection subject: Separately supplied short pipe stubs and allowed tees\n- Flow property / unit: Mass / kg\n- Amount rule: Record mass for each actual distinct pipe/tee material and dimension outside the factory kit, retaining length/count and traceable mass conversion records.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual stub endpoint/length/diameter/wall thickness units, pipe/tee bill, measured mass or verified linear mass and local configuration are required.\n\n#### Collection requirement: Separately supplied access risers lids and fasteners (`extra_access_parts`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nAccess components required by the actual cover/model and local approval are integrated into the installed tank.\n\n- Collection subject: Separately supplied access risers lids and fasteners\n- Flow property / unit: Mass / kg\n- Amount rule: Record each actual distinct riser/lid/fastener component mass outside factory supply; identify replacement separately.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual compatible model/material/dimensions, quantities and measured or supplier-certified mass are required; no universal riser height or screw mass.\n\n#### Collection requirement: Actual separately consumed joint and connection products (`joint_consumables`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nJoinery consumables depend on the actual connection; supplied factory seals are not counted again. Chemical composition is recorded for any actual direct release.\n\n- Collection subject: Actual separately consumed joint and connection products\n- Flow property / unit: Mass / kg\n- Amount rule: Record actual gross job receipts/issues for each distinct product identity; separately reconcile installed/consumed disposition, real outward returns, waste and retained closing stock. Consumption or placement is a disposition, never an alternate net input basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual approved connection method, product composition, issued/remaining quantities and waste records are required; no blanket adhesive or solvent dosage. Gross receipt/issue and all custody dispositions must close for the same lot/state.\n\n#### Collection requirement: Actual imported bedding and backfill products (`imported_support_fill`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nSuitable native support may avoid imported bedding; imported material is included when actual soil support/backfill requires it. In-situ native soil movement remains in the soil ledger.\n\n- Collection subject: Actual imported bedding and backfill products\n- Flow property / unit: Mass / kg\n- Amount rule: Record actual gross job receipts/issues for each distinct product identity; separately reconcile installed/consumed disposition, real outward returns, waste and retained closing stock. Consumption or placement is a disposition, never an alternate net input basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_soil`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual excavation/support design, native-soil suitability, imported material weigh tickets/moisture, and field placed/stock balance are required; model examples do not prescribe universal volume or density. Gross receipt/issue and all custody dispositions must close for the same lot/state.\n\n#### Collection requirement: Actual separately supplied erosion-resistant finish materials (`finish_products`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nSurface finish is part of the actual installation; record supplied seed, matting or other required materials only when actually used.\n\n- Collection subject: Actual separately supplied erosion-resistant finish materials\n- Flow property / unit: Mass / kg\n- Amount rule: Record actual gross job receipts/issues for each distinct product identity; separately reconcile installed/consumed disposition, real outward returns, waste and retained closing stock. Consumption or placement is a disposition, never an alternate net input basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_soil`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual approved finish specification, distinct product identities and weighed issues/stock are required; no universal seeding or matting rate. Gross receipt/issue and all custody dispositions must close for the same lot/state.\n\n#### Collection requirement: Actual machinery fuels consumed by installation (`installation_fuels`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nFuel use follows actual machine/task records; supplier fuel properties and measured volume/density support any conversion to mass.\n\n- Collection subject: Actual machinery fuels consumed by installation\n- Flow property / unit: Mass / kg\n- Amount rule: Record each actual fuel consumed during excavation, lifting, compaction, handling, repairs and retests, excluding provider-included fuel already counted. Keep unused fuel stock and real returned unconsumed fuel outside this consumed-fuel exchange, with quantities reconciled in the stock/custody ledger; do not count them as consumed.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_energy`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual equipment/task meter records, fuel type, refuelling and stock logs, density/temperature and provider coverage are required; no generic excavator consumption factor.\n\n#### Collection requirement: Actual reusable excavator compactor and tool provision (`equipment_provision`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nExcavator, compactor, lifting gear, hole saw and hand/test tools may be shared across other jobs/periods. Provider-supplied services and owned assets need explicit nonduplicated coverage; service identity is not machine mass.\n\n- Collection subject: Actual reusable excavator compactor and tool provision\n- Flow property / unit: Duration / h\n- Amount rule: Record each distinct actual asset/service in its contract or measured service unit; h applies only to true duration-based provision. Link complete-life attributable production/maintenance/removal and actual service coverage.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_assets`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual asset id, installation task hours, all lifetime service periods/jobs, replacement/termination records and verified provider coverage are required; no universal lifetime, hours or ownership allocation.\n\n#### Collection requirement: Actual external transport and waste haulage services (`transport_service`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nVehicle loading and actual empty/repositioning legs follow the chosen documented transport dataset; onsite earthmoving remains the installation task.\n\n- Collection subject: Actual external transport and waste haulage services\n- Flow property / unit: Transport work / t km\n- Amount rule: Record each actual route/provider mass and distance including tank/material delivery, actual return and waste movements; add only transport outside upstream/service coverage.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_transport`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual consignment route, payload, distance, vehicle/provider and dataset included-leg boundaries are required; no generic kilometres or count conversion for freight.\n\n#### Collection requirement: Actual usable products returned out of job custody (`usable_product_returns`)\n\nProcess / prospective direction / type: `tank_installation` / `outputs` / `product`.\n\nUsable components, packaging or legally transferred clean soil leave as product only with actual accepted custody and intended-use evidence; retained closing stock is not an outward exchange. For native-origin clean-soil export, preserve site/excavation provenance in cp_soil and the same transfer_id in cp_components outward-custody records; no original purchased-product lot or upstream soil production burden is required. For counted tank/gasket returns measured in kg, retain the matching item/serial count and actual measured or traceable product-specific mass for the same transfer_id; no default count-to-mass conversion.\n\n- Collection subject: Actual usable products returned out of job custody\n- Flow property / unit: Mass / kg\n- Amount rule: Record each distinct usable returned product at gross outward quantity with original incoming lot OR native-site excavation provenance and the same transfer_id. Pair native-origin soil with cp_soil. For counted vessel/gasket returns in kg, require actual measured or traceable product-specific mass and matched item count; no default count-to-mass conversion. Never net input then count the same return again.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual receiving-party acceptance, usable condition, component identity/mass and transfer/return note are required; no assumed reuse credit or recovery fraction. Native soil needs cp_soil source-state/provenance and actual mass evidence. Returned counted vessels/gaskets need matching actual mass evidence and transfer_id.\n\n#### Collection requirement: Actual discarded components packaging and excavated material (`solid_waste`)\n\nProcess / prospective direction / type: `tank_installation` / `outputs` / `waste`.\n\nWaste custody includes rejected vessels and unsuitable/exported soil that actually has waste status. Supplier-managed packaging/waste already covered upstream is reconciled; usable returns are separate.\n\n- Collection subject: Actual discarded components packaging and excavated material\n- Flow property / unit: Mass / kg\n- Amount rule: Record each distinct discarded tank/part, offcut, packaging or actual waste soil by mass, composition/contamination and authorized receiving route.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_waste`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual waste classification, weigh/destination tickets and included-service evidence are required for each stream; no generic all-soil waste label or displaced-production credit.\n\n#### Collection requirement: Actual characterized releases to the environment (`direct_releases`)\n\nProcess / prospective direction / type: `tank_installation` / `outputs` / `elementary`.\n\nPotential machine exhaust, dust, joint-product release or lawful direct water release requires actual substance/media evidence. Waste shipments are not elementary emissions; background/provider-covered emissions are not added twice.\n\n- Collection subject: Actual characterized releases to the environment\n- Flow property / unit: Mass / kg\n- Amount rule: Record each actual emitted substance and receiving medium separately from measured activity or a compatible documented factor; retain dust size/speciation and original factor basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_waste`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual substance identity, medium, measured or sourced factor and activity, abatement and uncertainty are required; broad exhaust/dust or discharged water mass cannot stand in for a pollutant UUID.\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | An approved qualified nontraffic site and an upstream factory tank at its declared supply gate. In-situ native soil is environmental starting stock; job-specific excavation, soil handling, support and reinstatement are foreground responsibilities. |\n| starting_condition_role | Declared site condition and upstream purchased-product gate; neither zero-burden new excavation nor a complete operating septic installation |\n| product_classification_scope | Semantic tank-installation subset of CPC3.0 54342, with inlet/outlet stub limits |\n| recursive_input_rule | Do not recursively consume this same accepted final service for the same job. An independently supplied excavation/support service is a distinct bounded provider input only when its real work, quantities, responsibility and acceptance handoff exist; otherwise its operations stay inside tank_installation. |\n| upstream_dataset_requirement | Factory tank and actual separate materials require cradle-to-supply datasets. Machinery/provider coverage must state production, use/maintenance and removal coverage and fill real gaps once; delivery/packaging included upstream must not be added twice. |\n| disclosure | Declare actual scope owner, supply-kit bill, soil custody, field methods, all site work, installation acceptance, failures/retests, stock carry-forward and machinery service-period attribution. Future wastewater operation and downstream drains remain separately owned. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| site_fit | tank_installation | Require approved actual utilities/soil/groundwater/nontraffic assessment. Include excavation and level compacted support. Unsuitable soil removal and suitable replacement are measured. Reject route use when excluded buoyancy/traffic works are actually necessary. | `ads-septic-tank-installation-2024` |\n| complete_assembly | tank_installation | Reconcile factory bill of supply against vessel, gaskets, compatible stubs/tees, screws, lids and risers; record only genuine additional components separately. Lower undamaged tank, connect per actual permitted arrangement, support haunches, alternate sidewall backfill before top cover, compact and finish with drainage grading and erosion-resistant vegetation. | `ads-septic-tank-installation-2024` |\n| water_and_tests | tank_installation | Require only actual manufacturer/jurisdiction installation inspection/test obligations with recorded units and limits. The source does not require universal pre-backfill water filling; protective filling applies to an excavation at risk of filling with rain/other water. Record actual protection/test water and destination. Oregon riser test figures and vacuum warnings are not universal defaults. | `ads-septic-tank-installation-2024` |\n| period_assets | tank_installation | Index job phases preparation, lowering/connections, backfill/finish, inspection, repair/retest and handover. Link each shared excavator/compactor/tool asset to all consuming jobs and reporting periods, including production, service/maintenance/replacement and termination. Actual bounded provider coverage or evidence-based complete-life asset attribution must include capital and removal burdens without duplicating fuel/materials. |  |\n| soil_custody | tank_installation | Track excavated native soil, onsite reused backfill, imported fill, closing stock and actual export by source/destination and actual product or waste status. Onsite transfer is a balance, not a new purchased soil input or co-product credit. Waste handoffs and characterized direct releases remain distinct. |  |\n| `boundary_atomic_completion` | all processes | Section 5 collection requirements are mandatory collection and applicability instructions, not aggregate inventory exchanges. Instantiate a distinct atomic flow card/exchange for every actual product, waste stream, substance and environmental compartment before completing a foreground dataset. Preserve every actual event, upstream burden, return and native unit; apply the linked formula to each compatible identity separately. Record environmental withdrawals as inputs and releases as outputs. Never sum unlike native units, substitute one UUID for a pool, infer zero from missing records, or duplicate an existing concrete card. Documentary retained-host interfaces carry state only and create no new purchased asset. Quantified completion is blocked until applicable members are resolved or evidenced absent; nonbinding screening aids do not supply missing amounts or chemistry. |  |\n\n### Conditional inventory completion requirements\n\nThe following identifiers denote collection pools or documentary state ledgers. A pool may have zero, one or several actual members. Determine applicability from real records; retain the original quantity method and collection protocol for each member. Only compatible quantities may be reconciled together. Any old optional screening interval below remains a provisional aid for review and must not be imposed on a different material or on a mixed pool.\n\n#### Collection requirement: Separately supplied short pipe stubs and allowed tees (`extra_pipe_tees`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nInlet/outlet stub endpoints and actual code-approved tee arrangement define this component boundary; building drain and drainfield pipe are excluded.\n\n- Collection subject: Separately supplied short pipe stubs and allowed tees\n- Flow property / unit: Mass / kg\n- Amount rule: Record mass for each actual distinct pipe/tee material and dimension outside the factory kit, retaining length/count and traceable mass conversion records.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual stub endpoint/length/diameter/wall thickness units, pipe/tee bill, measured mass or verified linear mass and local configuration are required.\n\n#### Collection requirement: Separately supplied access risers lids and fasteners (`extra_access_parts`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nAccess components required by the actual cover/model and local approval are integrated into the installed tank.\n\n- Collection subject: Separately supplied access risers lids and fasteners\n- Flow property / unit: Mass / kg\n- Amount rule: Record each actual distinct riser/lid/fastener component mass outside factory supply; identify replacement separately.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual compatible model/material/dimensions, quantities and measured or supplier-certified mass are required; no universal riser height or screw mass.\n\n#### Collection requirement: Actual separately consumed joint and connection products (`joint_consumables`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nJoinery consumables depend on the actual connection; supplied factory seals are not counted again. Chemical composition is recorded for any actual direct release.\n\n- Collection subject: Actual separately consumed joint and connection products\n- Flow property / unit: Mass / kg\n- Amount rule: Record actual gross job receipts/issues for each distinct product identity; separately reconcile installed/consumed disposition, real outward returns, waste and retained closing stock. Consumption or placement is a disposition, never an alternate net input basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual approved connection method, product composition, issued/remaining quantities and waste records are required; no blanket adhesive or solvent dosage. Gross receipt/issue and all custody dispositions must close for the same lot/state.\n\n#### Collection requirement: Actual imported bedding and backfill products (`imported_support_fill`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nSuitable native support may avoid imported bedding; imported material is included when actual soil support/backfill requires it. In-situ native soil movement remains in the soil ledger.\n\n- Collection subject: Actual imported bedding and backfill products\n- Flow property / unit: Mass / kg\n- Amount rule: Record actual gross job receipts/issues for each distinct product identity; separately reconcile installed/consumed disposition, real outward returns, waste and retained closing stock. Consumption or placement is a disposition, never an alternate net input basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_soil`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual excavation/support design, native-soil suitability, imported material weigh tickets/moisture, and field placed/stock balance are required; model examples do not prescribe universal volume or density. Gross receipt/issue and all custody dispositions must close for the same lot/state.\n\n#### Collection requirement: Actual separately supplied erosion-resistant finish materials (`finish_products`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nSurface finish is part of the actual installation; record supplied seed, matting or other required materials only when actually used.\n\n- Collection subject: Actual separately supplied erosion-resistant finish materials\n- Flow property / unit: Mass / kg\n- Amount rule: Record actual gross job receipts/issues for each distinct product identity; separately reconcile installed/consumed disposition, real outward returns, waste and retained closing stock. Consumption or placement is a disposition, never an alternate net input basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_soil`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual approved finish specification, distinct product identities and weighed issues/stock are required; no universal seeding or matting rate. Gross receipt/issue and all custody dispositions must close for the same lot/state.\n\n#### Collection requirement: Actual machinery fuel supplied to installation (`installation_fuels`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\n\nActual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty.\n\n- Collection subject: Actual machinery fuel supplied to installation\n- Flow property / unit: Mass / kg\n- Amount rule: Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_energy`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual equipment/task meter records, fuel type, refuelling and stock logs, density/temperature and provider coverage are required; no generic excavator consumption factor.\n\n#### Collection requirement: Actual reusable excavator compactor and tool provision (`equipment_provision`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nExcavator, compactor, lifting gear, hole saw and hand/test tools may be shared across other jobs/periods. Provider-supplied services and owned assets need explicit nonduplicated coverage; service identity is not machine mass.\n\n- Collection subject: Actual reusable excavator compactor and tool provision\n- Flow property / unit: Duration / h\n- Amount rule: Record each distinct actual asset/service in its contract or measured service unit; h applies only to true duration-based provision. Link complete-life attributable production/maintenance/removal and actual service coverage.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_assets`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual asset id, installation task hours, all lifetime service periods/jobs, replacement/termination records and verified provider coverage are required; no universal lifetime, hours or ownership allocation.\n\n#### Collection requirement: Actual external transport and waste haulage services (`transport_service`)\n\nProcess / prospective direction / type: `tank_installation` / `inputs` / `product`.\n\nVehicle loading and actual empty/repositioning legs follow the chosen documented transport dataset; onsite earthmoving remains the installation task.\n\n- Collection subject: Actual external transport and waste haulage services\n- Flow property / unit: Transport work / t km\n- Amount rule: Record each actual route/provider mass and distance including tank/material delivery, actual return and waste movements; add only transport outside upstream/service coverage.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_transport`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual consignment route, payload, distance, vehicle/provider and dataset included-leg boundaries are required; no generic kilometres or count conversion for freight.\n\n#### Collection requirement: Actual usable products returned out of job custody (`usable_product_returns`)\n\nProcess / prospective direction / type: `tank_installation` / `outputs` / `product`.\n\nUsable components, packaging or legally transferred clean soil leave as product only with actual accepted custody and intended-use evidence; retained closing stock is not an outward exchange. For native-origin clean-soil export, preserve site/excavation provenance in cp_soil and the same transfer_id in cp_components outward-custody records; no original purchased-product lot or upstream soil production burden is required. For counted tank/gasket returns measured in kg, retain the matching item/serial count and actual measured or traceable product-specific mass for the same transfer_id; no default count-to-mass conversion.\n\n- Collection subject: Actual usable products returned out of job custody\n- Flow property / unit: Mass / kg\n- Amount rule: Record each distinct usable returned product at gross outward quantity with original incoming lot OR native-site excavation provenance and the same transfer_id. Pair native-origin soil with cp_soil. For counted vessel/gasket returns in kg, require actual measured or traceable product-specific mass and matched item count; no default count-to-mass conversion. Never net input then count the same return again.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual receiving-party acceptance, usable condition, component identity/mass and transfer/return note are required; no assumed reuse credit or recovery fraction. Native soil needs cp_soil source-state/provenance and actual mass evidence. Returned counted vessels/gaskets need matching actual mass evidence and transfer_id.\n\n#### Collection requirement: Actual discarded components packaging and excavated material (`solid_waste`)\n\nProcess / prospective direction / type: `tank_installation` / `outputs` / `waste`.\n\nWaste custody includes rejected vessels and unsuitable/exported soil that actually has waste status. Supplier-managed packaging/waste already covered upstream is reconciled; usable returns are separate.\n\n- Collection subject: Actual discarded components packaging and excavated material\n- Flow property / unit: Mass / kg\n- Amount rule: Record each distinct discarded tank/part, offcut, packaging or actual waste soil by mass, composition/contamination and authorized receiving route.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_waste`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual waste classification, weigh/destination tickets and included-service evidence are required for each stream; no generic all-soil waste label or displaced-production credit.\n\n#### Collection requirement: Actual characterized releases to the environment (`direct_releases`)\n\nProcess / prospective direction / type: `tank_installation` / `outputs` / `elementary`.\n\nPotential machine exhaust, dust, joint-product release or lawful direct water release requires actual substance/media evidence. Waste shipments are not elementary emissions; background/provider-covered emissions are not added twice.\n\n- Collection subject: Actual characterized releases to the environment\n- Flow property / unit: Mass / kg\n- Amount rule: Record each actual emitted substance and receiving medium separately from measured activity or a compatible documented factor; retain dust size/speciation and original factor basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_waste`\n- Sources: `ads-septic-tank-installation-2024`\n\nRange evidence need: Actual substance identity, medium, measured or sourced factor and activity, abatement and uncertainty are required; broad exhaust/dust or discharged water mass cannot stand in for a pollutant UUID.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1067,18 +1086,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_31724"
+    - unit_id: "normative_31797"
       family: "allocation"
       span:
         start:
-          offset: 31724
-          line: 424
+          offset: 31797
+          line: 425
           column: 1
         end:
-          offset: 33495
-          line: 433
+          offset: 33605
+          line: 434
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| job_attribution | tank_installation | Attribute direct actual job materials/energy/site work including failures, repair and retest to the finally accepted job. Internal repair loops do not create another accepted output. Incompatible configurations or incomplete jobs are separated and disclosed, never denominator dilution. |  |\n| asset_attribution | equipment_provision | For each asset index production, each service/reporting period and consumer job, maintenance/replacement and final removal. Use actual documented service activity shares against complete supported service coverage, with residual/unused capacity explained. Retain capital/maintenance/removal burdens or verified provider inclusion once; fill missing provider phases explicitly and avoid duplicating included operational fuel. Do not assume universal lifetime or amortization. |  |\n| custody_attribution | usable_product_returns; solid_waste; imported_support_fill | Maintain gross opening stock/receipts/issues/installed or consumed disposition/real outward returns/waste/closing stock balance by actual identity. All material input cards use gross job receipts/issues; placement or consumption is a disposition, not an alternate input basis. Consumed-fuel exchanges exclude unused/returned fuel reconciled separately. Retained stock carries a declared unconsumed burden forward and is not a product output. Returned products have original-lot burden custody and do not earn automatic substitution credit. Native soil reused onsite has handling burdens and no purchased-production burden. Any genuine coproduct outside this scope requires explicit separate allocation review. |  |\n\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| job_attribution | tank_installation | Attribute direct actual job materials/energy/site work including failures, repair and retest to the finally accepted job. Internal repair loops do not create another accepted output. Incompatible configurations or incomplete jobs are separated and disclosed, never denominator dilution. |  |\n| asset_attribution | equipment_provision | For each asset index production, each service/reporting period and consumer job, maintenance/replacement and final removal. Use actual documented service activity shares against complete supported service coverage, with residual/unused capacity explained. Retain capital/maintenance/removal burdens or verified provider inclusion once; fill missing provider phases explicitly and avoid duplicating included operational fuel. Do not assume universal lifetime or amortization. |  |\n| custody_attribution | usable_product_returns; solid_waste; imported_support_fill | Maintain gross opening stock/receipts/issues/installed or consumed disposition/real outward returns/waste/closing stock balance by actual identity. All material input cards use gross job receipts/issues; placement or consumption is a disposition, not an alternate input basis. Fuel product inputs and actual burned activity follow fuel_supply_fate; usable exits remain separately recorded. Retained stock carries a declared unconsumed burden forward and is not a product output. Returned products have original-lot burden custody and do not earn automatic substitution credit. Native soil reused onsite has handling burdens and no purchased-production burden. Any genuine coproduct outside this scope requires explicit separate allocation review. |  |\n\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1095,12 +1114,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 31724
-              line: 424
+              offset: 31797
+              line: 425
               column: 1
             end:
-              offset: 31764
-              line: 424
+              offset: 31837
+              line: 425
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1115,18 +1134,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_45003"
+    - unit_id: "normative_47467"
       family: "validation"
       span:
         start:
-          offset: 45003
-          line: 467
+          offset: 47467
+          line: 469
           column: 1
         end:
-          offset: 46780
-          line: 479
+          offset: 49671
+          line: 481
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| validate_fit | tank_installation | Fail route fit for unqualified soil/groundwater/traffic, missing actual excavation/support ownership, unclear stubs or excluded equipment/works. | `ads-septic-tank-installation-2024` |\n| validate_gate | accepted_tank_installation | Require one complete accepted installation, actual model/site/parts, backfill/compaction/finish and applicable test/inspection criteria with original units; close failed states before counting the output. Do not assert treatment performance. | `ads-septic-tank-installation-2024` |\n| validate_kit_balance | all inventory rows | Reject duplicate kit component, supplier included packaging/freight, netted-plus-outward returns, untyped soil export or retained stock counted as an output. Expand variable umbrellas to actual distinct exchange identities. |  |\n| validate_assets | equipment_provision | Require all consuming jobs/periods and complete production/service/maintenance/replacement/removal scope, actual share basis and single ownership per shared event; unresolved lifetime/termination or provider gaps block completion. |  |\n| validate_bindings | all inventory rows | Every final TIDAS exchange requires exact actual flow, property/unitgroup and destination support; unresolved semantic identities and unsupported Energy/Duration/Transport chains remain explicit data requirements. No near-match or count conversion for convenience. |  |\n| validate_rework | tank_installation | Preserve damaged/off-spec materials, repair/replacement and repeated tests in the producing node, with actual internal loop, product return or waste exit. No discarded tank or unresolved failure enters accepted count. |  |\n\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| validate_fit | tank_installation | Fail route fit for unqualified soil/groundwater/traffic, missing actual excavation/support ownership, unclear stubs or excluded equipment/works. | `ads-septic-tank-installation-2024` |\n| validate_gate | accepted_tank_installation | Require one complete accepted installation, actual model/site/parts, backfill/compaction/finish and applicable test/inspection criteria with original units; close failed states before counting the output. Do not assert treatment performance. | `ads-septic-tank-installation-2024` |\n| validate_kit_balance | all inventory rows | Reject duplicate kit component, supplier included packaging/freight, netted-plus-outward returns, untyped soil export or retained stock counted as an output. Expand variable umbrellas to actual distinct exchange identities. |  |\n| validate_assets | equipment_provision | Require all consuming jobs/periods and complete production/service/maintenance/replacement/removal scope, actual share basis and single ownership per shared event; unresolved lifetime/termination or provider gaps block completion. |  |\n| validate_bindings | all inventory rows | Every final TIDAS exchange requires exact actual flow, property/unitgroup and destination support; unresolved semantic identities and unsupported Energy/Duration/Transport chains remain explicit data requirements. No near-match or count conversion for convenience. |  |\n| validate_rework | tank_installation | Preserve damaged/off-spec materials, repair/replacement and repeated tests in the producing node, with actual internal loop, product return or waste exit. No discarded tank or unresolved failure enters accepted count. |  |\n| validate_fuel_supply_fate | installation_fuels | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1143,12 +1162,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 45003
-              line: 467
+              offset: 47467
+              line: 469
               column: 1
             end:
-              offset: 45025
-              line: 467
+              offset: 47489
+              line: 469
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -2106,11 +2125,11 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16592
+          offset: 16591
           line: 182
           column: 1
         end:
-          offset: 16675
+          offset: 16674
           line: 182
           column: 84
     - pointer: "/system_boundary/rules/73"
@@ -2120,37 +2139,37 @@ normative_context:
       source_span:
         start:
           offset: 16677
-          line: 184
+          line: 185
           column: 1
         end:
-          offset: 16807
-          line: 184
-          column: 131
+          offset: 16967
+          line: 185
+          column: 291
     - pointer: "/system_boundary/rules/74"
       rule_id: "system_boundary_rule_75"
       identity_kind: "snapshot_local"
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16809
-          line: 186
+          offset: 16969
+          line: 187
           column: 1
         end:
-          offset: 16878
-          line: 186
-          column: 70
+          offset: 17037
+          line: 187
+          column: 69
     - pointer: "/system_boundary/rules/75"
       rule_id: "system_boundary_rule_76"
       identity_kind: "snapshot_local"
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16879
-          line: 187
+          offset: 17038
+          line: 188
           column: 1
         end:
-          offset: 16912
-          line: 187
+          offset: 17071
+          line: 188
           column: 34
     - pointer: "/system_boundary/rules/76"
       rule_id: "system_boundary_rule_77"
@@ -2158,25 +2177,25 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16913
-          line: 188
+          offset: 17072
+          line: 189
           column: 1
         end:
-          offset: 17262
-          line: 188
-          column: 350
+          offset: 17335
+          line: 189
+          column: 264
     - pointer: "/system_boundary/rules/77"
       rule_id: "system_boundary_rule_78"
       identity_kind: "snapshot_local"
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17263
-          line: 189
+          offset: 17336
+          line: 190
           column: 1
         end:
-          offset: 17296
-          line: 189
+          offset: 17369
+          line: 190
           column: 34
     - pointer: "/system_boundary/rules/78"
       rule_id: "system_boundary_rule_79"
@@ -2184,12 +2203,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17297
-          line: 190
+          offset: 17370
+          line: 191
           column: 1
         end:
-          offset: 17327
-          line: 190
+          offset: 17400
+          line: 191
           column: 31
     - pointer: "/system_boundary/rules/79"
       rule_id: "system_boundary_rule_80"
@@ -2197,12 +2216,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17328
-          line: 191
+          offset: 17401
+          line: 192
           column: 1
         end:
-          offset: 17369
-          line: 191
+          offset: 17442
+          line: 192
           column: 42
     - pointer: "/system_boundary/rules/80"
       rule_id: "system_boundary_rule_81"
@@ -2210,12 +2229,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17370
-          line: 192
+          offset: 17443
+          line: 193
           column: 1
         end:
-          offset: 17400
-          line: 192
+          offset: 17473
+          line: 193
           column: 31
     - pointer: "/system_boundary/rules/81"
       rule_id: "system_boundary_rule_82"
@@ -2223,12 +2242,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17401
-          line: 193
+          offset: 17474
+          line: 194
           column: 1
         end:
-          offset: 17436
-          line: 193
+          offset: 17509
+          line: 194
           column: 36
     - pointer: "/system_boundary/rules/82"
       rule_id: "system_boundary_rule_83"
@@ -2236,12 +2255,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17437
-          line: 194
+          offset: 17510
+          line: 195
           column: 1
         end:
-          offset: 17471
-          line: 194
+          offset: 17544
+          line: 195
           column: 35
     - pointer: "/system_boundary/rules/83"
       rule_id: "system_boundary_rule_84"
@@ -2249,12 +2268,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17472
-          line: 195
+          offset: 17545
+          line: 196
           column: 1
         end:
-          offset: 17518
-          line: 195
+          offset: 17591
+          line: 196
           column: 47
     - pointer: "/system_boundary/rules/84"
       rule_id: "system_boundary_rule_85"
@@ -2262,12 +2281,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17520
-          line: 197
+          offset: 17593
+          line: 198
           column: 1
         end:
-          offset: 17712
-          line: 197
+          offset: 17785
+          line: 198
           column: 193
     - pointer: "/system_boundary/rules/85"
       rule_id: "system_boundary_rule_86"
@@ -2275,12 +2294,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17823
-          line: 201
+          offset: 17896
+          line: 202
           column: 1
         end:
-          offset: 17906
-          line: 201
+          offset: 17979
+          line: 202
           column: 84
     - pointer: "/system_boundary/rules/86"
       rule_id: "system_boundary_rule_87"
@@ -2288,12 +2307,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17908
-          line: 203
+          offset: 17981
+          line: 204
           column: 1
         end:
-          offset: 18133
-          line: 203
+          offset: 18206
+          line: 204
           column: 226
     - pointer: "/system_boundary/rules/87"
       rule_id: "system_boundary_rule_88"
@@ -2301,12 +2320,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18135
-          line: 205
+          offset: 18208
+          line: 206
           column: 1
         end:
-          offset: 18211
-          line: 205
+          offset: 18284
+          line: 206
           column: 77
     - pointer: "/system_boundary/rules/88"
       rule_id: "system_boundary_rule_89"
@@ -2314,12 +2333,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18212
-          line: 206
+          offset: 18285
+          line: 207
           column: 1
         end:
-          offset: 18248
-          line: 206
+          offset: 18321
+          line: 207
           column: 37
     - pointer: "/system_boundary/rules/89"
       rule_id: "system_boundary_rule_90"
@@ -2327,12 +2346,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18249
-          line: 207
+          offset: 18322
+          line: 208
           column: 1
         end:
-          offset: 18488
-          line: 207
+          offset: 18561
+          line: 208
           column: 240
     - pointer: "/system_boundary/rules/90"
       rule_id: "system_boundary_rule_91"
@@ -2340,12 +2359,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18489
-          line: 208
+          offset: 18562
+          line: 209
           column: 1
         end:
-          offset: 18522
-          line: 208
+          offset: 18595
+          line: 209
           column: 34
     - pointer: "/system_boundary/rules/91"
       rule_id: "system_boundary_rule_92"
@@ -2353,12 +2372,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18523
-          line: 209
+          offset: 18596
+          line: 210
           column: 1
         end:
-          offset: 18553
-          line: 209
+          offset: 18626
+          line: 210
           column: 31
     - pointer: "/system_boundary/rules/92"
       rule_id: "system_boundary_rule_93"
@@ -2366,12 +2385,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18554
-          line: 210
+          offset: 18627
+          line: 211
           column: 1
         end:
-          offset: 18595
-          line: 210
+          offset: 18668
+          line: 211
           column: 42
     - pointer: "/system_boundary/rules/93"
       rule_id: "system_boundary_rule_94"
@@ -2379,12 +2398,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18596
-          line: 211
+          offset: 18669
+          line: 212
           column: 1
         end:
-          offset: 18626
-          line: 211
+          offset: 18699
+          line: 212
           column: 31
     - pointer: "/system_boundary/rules/94"
       rule_id: "system_boundary_rule_95"
@@ -2392,12 +2411,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18627
-          line: 212
+          offset: 18700
+          line: 213
           column: 1
         end:
-          offset: 18662
-          line: 212
+          offset: 18735
+          line: 213
           column: 36
     - pointer: "/system_boundary/rules/95"
       rule_id: "system_boundary_rule_96"
@@ -2405,12 +2424,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18663
-          line: 213
+          offset: 18736
+          line: 214
           column: 1
         end:
-          offset: 18697
-          line: 213
+          offset: 18770
+          line: 214
           column: 35
     - pointer: "/system_boundary/rules/96"
       rule_id: "system_boundary_rule_97"
@@ -2418,12 +2437,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18698
-          line: 214
+          offset: 18771
+          line: 215
           column: 1
         end:
-          offset: 18744
-          line: 214
+          offset: 18817
+          line: 215
           column: 47
     - pointer: "/system_boundary/rules/97"
       rule_id: "system_boundary_rule_98"
@@ -2431,12 +2450,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 18746
-          line: 216
+          offset: 18819
+          line: 217
           column: 1
         end:
-          offset: 18974
-          line: 216
+          offset: 19047
+          line: 217
           column: 229
     - pointer: "/system_boundary/rules/98"
       rule_id: "system_boundary_rule_99"
@@ -2444,12 +2463,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19081
-          line: 220
+          offset: 19154
+          line: 221
           column: 1
         end:
-          offset: 19164
-          line: 220
+          offset: 19237
+          line: 221
           column: 84
     - pointer: "/system_boundary/rules/99"
       rule_id: "system_boundary_rule_100"
@@ -2457,12 +2476,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19166
-          line: 222
+          offset: 19239
+          line: 223
           column: 1
         end:
-          offset: 19315
-          line: 222
+          offset: 19388
+          line: 223
           column: 150
     - pointer: "/system_boundary/rules/100"
       rule_id: "system_boundary_rule_101"
@@ -2470,12 +2489,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19317
-          line: 224
+          offset: 19390
+          line: 225
           column: 1
         end:
-          offset: 19391
-          line: 224
+          offset: 19464
+          line: 225
           column: 75
     - pointer: "/system_boundary/rules/101"
       rule_id: "system_boundary_rule_102"
@@ -2483,12 +2502,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19392
-          line: 225
+          offset: 19465
+          line: 226
           column: 1
         end:
-          offset: 19437
-          line: 225
+          offset: 19510
+          line: 226
           column: 46
     - pointer: "/system_boundary/rules/102"
       rule_id: "system_boundary_rule_103"
@@ -2496,12 +2515,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19438
-          line: 226
+          offset: 19511
+          line: 227
           column: 1
         end:
-          offset: 19627
-          line: 226
+          offset: 19700
+          line: 227
           column: 190
     - pointer: "/system_boundary/rules/103"
       rule_id: "system_boundary_rule_104"
@@ -2509,12 +2528,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19628
-          line: 227
+          offset: 19701
+          line: 228
           column: 1
         end:
-          offset: 19661
-          line: 227
+          offset: 19734
+          line: 228
           column: 34
     - pointer: "/system_boundary/rules/104"
       rule_id: "system_boundary_rule_105"
@@ -2522,12 +2541,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19662
-          line: 228
+          offset: 19735
+          line: 229
           column: 1
         end:
-          offset: 19692
-          line: 228
+          offset: 19765
+          line: 229
           column: 31
     - pointer: "/system_boundary/rules/105"
       rule_id: "system_boundary_rule_106"
@@ -2535,12 +2554,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19693
-          line: 229
+          offset: 19766
+          line: 230
           column: 1
         end:
-          offset: 19734
-          line: 229
+          offset: 19807
+          line: 230
           column: 42
     - pointer: "/system_boundary/rules/106"
       rule_id: "system_boundary_rule_107"
@@ -2548,12 +2567,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19735
-          line: 230
+          offset: 19808
+          line: 231
           column: 1
         end:
-          offset: 19765
-          line: 230
+          offset: 19838
+          line: 231
           column: 31
     - pointer: "/system_boundary/rules/107"
       rule_id: "system_boundary_rule_108"
@@ -2561,12 +2580,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19766
-          line: 231
+          offset: 19839
+          line: 232
           column: 1
         end:
-          offset: 19801
-          line: 231
+          offset: 19874
+          line: 232
           column: 36
     - pointer: "/system_boundary/rules/108"
       rule_id: "system_boundary_rule_109"
@@ -2574,12 +2593,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19802
-          line: 232
+          offset: 19875
+          line: 233
           column: 1
         end:
-          offset: 19839
-          line: 232
+          offset: 19912
+          line: 233
           column: 38
     - pointer: "/system_boundary/rules/109"
       rule_id: "system_boundary_rule_110"
@@ -2587,12 +2606,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19840
-          line: 233
+          offset: 19913
+          line: 234
           column: 1
         end:
-          offset: 19886
-          line: 233
+          offset: 19959
+          line: 234
           column: 47
     - pointer: "/system_boundary/rules/110"
       rule_id: "system_boundary_rule_111"
@@ -2600,12 +2619,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19888
-          line: 235
+          offset: 19961
+          line: 236
           column: 1
         end:
-          offset: 20075
-          line: 235
+          offset: 20148
+          line: 236
           column: 188
     - pointer: "/system_boundary/rules/111"
       rule_id: "system_boundary_rule_112"
@@ -2613,12 +2632,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 20185
-          line: 239
+          offset: 20258
+          line: 240
           column: 1
         end:
-          offset: 20269
-          line: 239
+          offset: 20342
+          line: 240
           column: 85
     - pointer: "/system_boundary/rules/112"
       rule_id: "system_boundary_rule_113"
@@ -2626,28 +2645,15 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 20271
-          line: 241
+          offset: 20344
+          line: 242
           column: 1
         end:
-          offset: 20899
-          line: 241
+          offset: 20972
+          line: 242
           column: 629
     - pointer: "/system_boundary/rules/113"
       rule_id: "system_boundary_rule_114"
-      identity_kind: "snapshot_local"
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 20901
-          line: 243
-          column: 1
-        end:
-          offset: 20973
-          line: 243
-          column: 73
-    - pointer: "/system_boundary/rules/114"
-      rule_id: "system_boundary_rule_115"
       identity_kind: "snapshot_local"
       unit_id: "normative_5448"
       source_span:
@@ -2656,8 +2662,21 @@ normative_context:
           line: 244
           column: 1
         end:
-          offset: 21007
+          offset: 21046
           line: 244
+          column: 73
+    - pointer: "/system_boundary/rules/114"
+      rule_id: "system_boundary_rule_115"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 21047
+          line: 245
+          column: 1
+        end:
+          offset: 21080
+          line: 245
           column: 34
     - pointer: "/system_boundary/rules/115"
       rule_id: "system_boundary_rule_116"
@@ -2665,12 +2684,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21008
-          line: 245
+          offset: 21081
+          line: 246
           column: 1
         end:
-          offset: 21432
-          line: 245
+          offset: 21505
+          line: 246
           column: 425
     - pointer: "/system_boundary/rules/116"
       rule_id: "system_boundary_rule_117"
@@ -2678,12 +2697,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21433
-          line: 246
+          offset: 21506
+          line: 247
           column: 1
         end:
-          offset: 21466
-          line: 246
+          offset: 21539
+          line: 247
           column: 34
     - pointer: "/system_boundary/rules/117"
       rule_id: "system_boundary_rule_118"
@@ -2691,12 +2710,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21467
-          line: 247
+          offset: 21540
+          line: 248
           column: 1
         end:
-          offset: 21497
-          line: 247
+          offset: 21570
+          line: 248
           column: 31
     - pointer: "/system_boundary/rules/118"
       rule_id: "system_boundary_rule_119"
@@ -2704,12 +2723,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21498
-          line: 248
+          offset: 21571
+          line: 249
           column: 1
         end:
-          offset: 21539
-          line: 248
+          offset: 21612
+          line: 249
           column: 42
     - pointer: "/system_boundary/rules/119"
       rule_id: "system_boundary_rule_120"
@@ -2717,12 +2736,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21540
-          line: 249
+          offset: 21613
+          line: 250
           column: 1
         end:
-          offset: 21570
-          line: 249
+          offset: 21643
+          line: 250
           column: 31
     - pointer: "/system_boundary/rules/120"
       rule_id: "system_boundary_rule_121"
@@ -2730,12 +2749,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21571
-          line: 250
+          offset: 21644
+          line: 251
           column: 1
         end:
-          offset: 21606
-          line: 250
+          offset: 21679
+          line: 251
           column: 36
     - pointer: "/system_boundary/rules/121"
       rule_id: "system_boundary_rule_122"
@@ -2743,12 +2762,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21607
-          line: 251
+          offset: 21680
+          line: 252
           column: 1
         end:
-          offset: 21645
-          line: 251
+          offset: 21718
+          line: 252
           column: 39
     - pointer: "/system_boundary/rules/122"
       rule_id: "system_boundary_rule_123"
@@ -2756,12 +2775,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21646
-          line: 252
+          offset: 21719
+          line: 253
           column: 1
         end:
-          offset: 21692
-          line: 252
+          offset: 21765
+          line: 253
           column: 47
     - pointer: "/system_boundary/rules/123"
       rule_id: "system_boundary_rule_124"
@@ -2769,12 +2788,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21694
-          line: 254
+          offset: 21767
+          line: 255
           column: 1
         end:
-          offset: 22037
-          line: 254
+          offset: 22110
+          line: 255
           column: 344
     - pointer: "/system_boundary/rules/124"
       rule_id: "system_boundary_rule_125"
@@ -2782,12 +2801,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22146
-          line: 258
+          offset: 22219
+          line: 259
           column: 1
         end:
-          offset: 22228
-          line: 258
+          offset: 22301
+          line: 259
           column: 83
     - pointer: "/system_boundary/rules/125"
       rule_id: "system_boundary_rule_126"
@@ -2795,12 +2814,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22230
-          line: 260
+          offset: 22303
+          line: 261
           column: 1
         end:
-          offset: 22432
-          line: 260
+          offset: 22505
+          line: 261
           column: 203
     - pointer: "/system_boundary/rules/126"
       rule_id: "system_boundary_rule_127"
@@ -2808,12 +2827,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22434
-          line: 262
+          offset: 22507
+          line: 263
           column: 1
         end:
-          offset: 22516
-          line: 262
+          offset: 22589
+          line: 263
           column: 83
     - pointer: "/system_boundary/rules/127"
       rule_id: "system_boundary_rule_128"
@@ -2821,12 +2840,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22517
-          line: 263
+          offset: 22590
+          line: 264
           column: 1
         end:
-          offset: 22550
-          line: 263
+          offset: 22623
+          line: 264
           column: 34
     - pointer: "/system_boundary/rules/128"
       rule_id: "system_boundary_rule_129"
@@ -2834,12 +2853,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22551
-          line: 264
+          offset: 22624
+          line: 265
           column: 1
         end:
-          offset: 22713
-          line: 264
+          offset: 22786
+          line: 265
           column: 163
     - pointer: "/system_boundary/rules/129"
       rule_id: "system_boundary_rule_130"
@@ -2847,12 +2866,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22714
-          line: 265
+          offset: 22787
+          line: 266
           column: 1
         end:
-          offset: 22747
-          line: 265
+          offset: 22820
+          line: 266
           column: 34
     - pointer: "/system_boundary/rules/130"
       rule_id: "system_boundary_rule_131"
@@ -2860,12 +2879,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22748
-          line: 266
+          offset: 22821
+          line: 267
           column: 1
         end:
-          offset: 22778
-          line: 266
+          offset: 22851
+          line: 267
           column: 31
     - pointer: "/system_boundary/rules/131"
       rule_id: "system_boundary_rule_132"
@@ -2873,12 +2892,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22779
-          line: 267
+          offset: 22852
+          line: 268
           column: 1
         end:
-          offset: 22820
-          line: 267
+          offset: 22893
+          line: 268
           column: 42
     - pointer: "/system_boundary/rules/132"
       rule_id: "system_boundary_rule_133"
@@ -2886,12 +2905,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22821
-          line: 268
+          offset: 22894
+          line: 269
           column: 1
         end:
-          offset: 22851
-          line: 268
+          offset: 22924
+          line: 269
           column: 31
     - pointer: "/system_boundary/rules/133"
       rule_id: "system_boundary_rule_134"
@@ -2899,12 +2918,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22852
-          line: 269
+          offset: 22925
+          line: 270
           column: 1
         end:
-          offset: 22887
-          line: 269
+          offset: 22960
+          line: 270
           column: 36
     - pointer: "/system_boundary/rules/134"
       rule_id: "system_boundary_rule_135"
@@ -2912,12 +2931,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22888
-          line: 270
+          offset: 22961
+          line: 271
           column: 1
         end:
-          offset: 22921
-          line: 270
+          offset: 22994
+          line: 271
           column: 34
     - pointer: "/system_boundary/rules/135"
       rule_id: "system_boundary_rule_136"
@@ -2925,12 +2944,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22922
-          line: 271
+          offset: 22995
+          line: 272
           column: 1
         end:
-          offset: 22968
-          line: 271
+          offset: 23041
+          line: 272
           column: 47
     - pointer: "/system_boundary/rules/136"
       rule_id: "system_boundary_rule_137"
@@ -2938,12 +2957,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 22970
-          line: 273
+          offset: 23043
+          line: 274
           column: 1
         end:
-          offset: 23169
-          line: 273
+          offset: 23242
+          line: 274
           column: 200
     - pointer: "/system_boundary/rules/137"
       rule_id: "system_boundary_rule_138"
@@ -2951,12 +2970,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23270
-          line: 277
+          offset: 23343
+          line: 278
           column: 1
         end:
-          offset: 23357
-          line: 277
+          offset: 23430
+          line: 278
           column: 88
     - pointer: "/system_boundary/rules/138"
       rule_id: "system_boundary_rule_139"
@@ -2964,12 +2983,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23359
-          line: 279
+          offset: 23432
+          line: 280
           column: 1
         end:
-          offset: 23591
-          line: 279
+          offset: 23664
+          line: 280
           column: 233
     - pointer: "/system_boundary/rules/139"
       rule_id: "system_boundary_rule_140"
@@ -2977,12 +2996,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23593
-          line: 281
+          offset: 23666
+          line: 282
           column: 1
         end:
-          offset: 23663
-          line: 281
+          offset: 23736
+          line: 282
           column: 71
     - pointer: "/system_boundary/rules/140"
       rule_id: "system_boundary_rule_141"
@@ -2990,12 +3009,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23664
-          line: 282
+          offset: 23737
+          line: 283
           column: 1
         end:
-          offset: 23697
-          line: 282
+          offset: 23770
+          line: 283
           column: 34
     - pointer: "/system_boundary/rules/141"
       rule_id: "system_boundary_rule_142"
@@ -3003,12 +3022,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23698
-          line: 283
+          offset: 23771
+          line: 284
           column: 1
         end:
-          offset: 23894
-          line: 283
+          offset: 23967
+          line: 284
           column: 197
     - pointer: "/system_boundary/rules/142"
       rule_id: "system_boundary_rule_143"
@@ -3016,12 +3035,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23895
-          line: 284
+          offset: 23968
+          line: 285
           column: 1
         end:
-          offset: 23928
-          line: 284
+          offset: 24001
+          line: 285
           column: 34
     - pointer: "/system_boundary/rules/143"
       rule_id: "system_boundary_rule_144"
@@ -3029,12 +3048,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23929
-          line: 285
+          offset: 24002
+          line: 286
           column: 1
         end:
-          offset: 23959
-          line: 285
+          offset: 24032
+          line: 286
           column: 31
     - pointer: "/system_boundary/rules/144"
       rule_id: "system_boundary_rule_145"
@@ -3042,12 +3061,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 23960
-          line: 286
+          offset: 24033
+          line: 287
           column: 1
         end:
-          offset: 24001
-          line: 286
+          offset: 24074
+          line: 287
           column: 42
     - pointer: "/system_boundary/rules/145"
       rule_id: "system_boundary_rule_146"
@@ -3055,12 +3074,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 24002
-          line: 287
+          offset: 24075
+          line: 288
           column: 1
         end:
-          offset: 24032
-          line: 287
+          offset: 24105
+          line: 288
           column: 31
     - pointer: "/system_boundary/rules/146"
       rule_id: "system_boundary_rule_147"
@@ -3068,12 +3087,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 24033
-          line: 288
+          offset: 24106
+          line: 289
           column: 1
         end:
-          offset: 24068
-          line: 288
+          offset: 24141
+          line: 289
           column: 36
     - pointer: "/system_boundary/rules/147"
       rule_id: "system_boundary_rule_148"
@@ -3081,12 +3100,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 24069
-          line: 289
+          offset: 24142
+          line: 290
           column: 1
         end:
-          offset: 24102
-          line: 289
+          offset: 24175
+          line: 290
           column: 34
     - pointer: "/system_boundary/rules/148"
       rule_id: "system_boundary_rule_149"
@@ -3094,12 +3113,12 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 24103
-          line: 290
+          offset: 24176
+          line: 291
           column: 1
         end:
-          offset: 24149
-          line: 290
+          offset: 24222
+          line: 291
           column: 47
     - pointer: "/system_boundary/rules/149"
       rule_id: "system_boundary_rule_150"
@@ -3107,130 +3126,143 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 24151
-          line: 292
+          offset: 24224
+          line: 293
           column: 1
         end:
-          offset: 24369
-          line: 292
+          offset: 24442
+          line: 293
           column: 219
     - pointer: "/allocation_rules/0"
       rule_id: "job_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_31724"
+      unit_id: "normative_31797"
       source_span:
         start:
-          offset: 31837
-          line: 428
+          offset: 31910
+          line: 429
           column: 1
         end:
-          offset: 32168
-          line: 428
+          offset: 32241
+          line: 429
           column: 332
     - pointer: "/allocation_rules/1"
       rule_id: "asset_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_31724"
+      unit_id: "normative_31797"
       source_span:
         start:
-          offset: 32169
-          line: 429
+          offset: 32242
+          line: 430
           column: 1
         end:
-          offset: 32692
-          line: 429
+          offset: 32765
+          line: 430
           column: 524
     - pointer: "/allocation_rules/2"
       rule_id: "custody_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_31724"
+      unit_id: "normative_31797"
       source_span:
         start:
-          offset: 32693
-          line: 430
+          offset: 32766
+          line: 431
           column: 1
         end:
-          offset: 33492
-          line: 430
-          column: 800
+          offset: 33602
+          line: 431
+          column: 837
     - pointer: "/validation_rules/0"
       rule_id: "validate_fit"
       identity_kind: "explicit"
-      unit_id: "normative_45003"
+      unit_id: "normative_47467"
       source_span:
         start:
-          offset: 45098
-          line: 471
+          offset: 47562
+          line: 473
           column: 1
         end:
-          offset: 45319
-          line: 471
+          offset: 47783
+          line: 473
           column: 222
     - pointer: "/validation_rules/1"
       rule_id: "validate_gate"
       identity_kind: "explicit"
-      unit_id: "normative_45003"
+      unit_id: "normative_47467"
       source_span:
         start:
-          offset: 45320
-          line: 472
+          offset: 47784
+          line: 474
           column: 1
         end:
-          offset: 45648
-          line: 472
+          offset: 48112
+          line: 474
           column: 329
     - pointer: "/validation_rules/2"
       rule_id: "validate_kit_balance"
       identity_kind: "explicit"
-      unit_id: "normative_45003"
+      unit_id: "normative_47467"
       source_span:
         start:
-          offset: 45649
-          line: 473
+          offset: 48113
+          line: 475
           column: 1
         end:
-          offset: 45923
-          line: 473
+          offset: 48387
+          line: 475
           column: 275
     - pointer: "/validation_rules/3"
       rule_id: "validate_assets"
       identity_kind: "explicit"
-      unit_id: "normative_45003"
+      unit_id: "normative_47467"
       source_span:
         start:
-          offset: 45924
-          line: 474
+          offset: 48388
+          line: 476
           column: 1
         end:
-          offset: 46201
-          line: 474
+          offset: 48665
+          line: 476
           column: 278
     - pointer: "/validation_rules/4"
       rule_id: "validate_bindings"
       identity_kind: "explicit"
-      unit_id: "normative_45003"
+      unit_id: "normative_47467"
       source_span:
         start:
-          offset: 46202
-          line: 475
+          offset: 48666
+          line: 477
           column: 1
         end:
-          offset: 46514
-          line: 475
+          offset: 48978
+          line: 477
           column: 313
     - pointer: "/validation_rules/5"
       rule_id: "validate_rework"
       identity_kind: "explicit"
-      unit_id: "normative_45003"
+      unit_id: "normative_47467"
       source_span:
         start:
-          offset: 46515
-          line: 476
+          offset: 48979
+          line: 478
           column: 1
         end:
-          offset: 46777
-          line: 476
+          offset: 49241
+          line: 478
           column: 263
+    - pointer: "/validation_rules/6"
+      rule_id: "validate_fuel_supply_fate"
+      identity_kind: "explicit"
+      unit_id: "normative_47467"
+      source_span:
+        start:
+          offset: 49242
+          line: 479
+          column: 1
+        end:
+          offset: 49669
+          line: 479
+          column: 428
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -3981,11 +4013,11 @@ normative_context:
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16592
+          offset: 16591
           line: 182
           column: 1
         end:
-          offset: 16675
+          offset: 16674
           line: 182
           column: 84
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -3994,95 +4026,71 @@ normative_context:
       source_span:
         start:
           offset: 16677
-          line: 184
+          line: 185
           column: 1
         end:
-          offset: 16807
-          line: 184
-          column: 131
+          offset: 16967
+          line: 185
+          column: 291
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16809
-          line: 186
+          offset: 16969
+          line: 187
           column: 1
         end:
-          offset: 16878
-          line: 186
-          column: 70
+          offset: 17037
+          line: 187
+          column: 69
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16879
-          line: 187
+          offset: 17038
+          line: 188
           column: 1
         end:
-          offset: 16912
-          line: 187
+          offset: 17071
+          line: 188
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 16913
-          line: 188
-          column: 1
-        end:
-          offset: 17262
-          line: 188
-          column: 350
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 17263
+          offset: 17072
           line: 189
           column: 1
         end:
-          offset: 17296
+          offset: 17335
           line: 189
-          column: 34
+          column: 264
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 17297
+          offset: 17336
           line: 190
-          column: 1
-        end:
-          offset: 17327
-          line: 190
-          column: 31
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 17328
-          line: 191
           column: 1
         end:
           offset: 17369
-          line: 191
-          column: 42
+          line: 190
+          column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
           offset: 17370
-          line: 192
+          line: 191
           column: 1
         end:
           offset: 17400
-          line: 192
+          line: 191
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
@@ -4090,143 +4098,143 @@ normative_context:
       source_span:
         start:
           offset: 17401
-          line: 193
+          line: 192
           column: 1
         end:
-          offset: 17436
-          line: 193
-          column: 36
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 17437
-          line: 194
-          column: 1
-        end:
-          offset: 17471
-          line: 194
-          column: 35
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 17472
-          line: 195
-          column: 1
-        end:
-          offset: 17518
-          line: 195
-          column: 47
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 17823
-          line: 201
-          column: 1
-        end:
-          offset: 17906
-          line: 201
-          column: 84
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 17908
-          line: 203
-          column: 1
-        end:
-          offset: 18133
-          line: 203
-          column: 226
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18135
-          line: 205
-          column: 1
-        end:
-          offset: 18211
-          line: 205
-          column: 77
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18212
-          line: 206
-          column: 1
-        end:
-          offset: 18248
-          line: 206
-          column: 37
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18249
-          line: 207
-          column: 1
-        end:
-          offset: 18488
-          line: 207
-          column: 240
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18489
-          line: 208
-          column: 1
-        end:
-          offset: 18522
-          line: 208
-          column: 34
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18523
-          line: 209
-          column: 1
-        end:
-          offset: 18553
-          line: 209
-          column: 31
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18554
-          line: 210
-          column: 1
-        end:
-          offset: 18595
-          line: 210
+          offset: 17442
+          line: 192
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
+          offset: 17443
+          line: 193
+          column: 1
+        end:
+          offset: 17473
+          line: 193
+          column: 31
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 17474
+          line: 194
+          column: 1
+        end:
+          offset: 17509
+          line: 194
+          column: 36
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 17510
+          line: 195
+          column: 1
+        end:
+          offset: 17544
+          line: 195
+          column: 35
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 17545
+          line: 196
+          column: 1
+        end:
+          offset: 17591
+          line: 196
+          column: 47
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 17896
+          line: 202
+          column: 1
+        end:
+          offset: 17979
+          line: 202
+          column: 84
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 17981
+          line: 204
+          column: 1
+        end:
+          offset: 18206
+          line: 204
+          column: 226
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 18208
+          line: 206
+          column: 1
+        end:
+          offset: 18284
+          line: 206
+          column: 77
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 18285
+          line: 207
+          column: 1
+        end:
+          offset: 18321
+          line: 207
+          column: 37
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 18322
+          line: 208
+          column: 1
+        end:
+          offset: 18561
+          line: 208
+          column: 240
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 18562
+          line: 209
+          column: 1
+        end:
+          offset: 18595
+          line: 209
+          column: 34
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
           offset: 18596
-          line: 211
+          line: 210
           column: 1
         end:
           offset: 18626
-          line: 211
+          line: 210
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
@@ -4234,143 +4242,143 @@ normative_context:
       source_span:
         start:
           offset: 18627
-          line: 212
+          line: 211
           column: 1
         end:
-          offset: 18662
-          line: 212
-          column: 36
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18663
-          line: 213
-          column: 1
-        end:
-          offset: 18697
-          line: 213
-          column: 35
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 18698
-          line: 214
-          column: 1
-        end:
-          offset: 18744
-          line: 214
-          column: 47
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19081
-          line: 220
-          column: 1
-        end:
-          offset: 19164
-          line: 220
-          column: 84
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19166
-          line: 222
-          column: 1
-        end:
-          offset: 19315
-          line: 222
-          column: 150
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19317
-          line: 224
-          column: 1
-        end:
-          offset: 19391
-          line: 224
-          column: 75
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19392
-          line: 225
-          column: 1
-        end:
-          offset: 19437
-          line: 225
-          column: 46
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19438
-          line: 226
-          column: 1
-        end:
-          offset: 19627
-          line: 226
-          column: 190
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19628
-          line: 227
-          column: 1
-        end:
-          offset: 19661
-          line: 227
-          column: 34
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19662
-          line: 228
-          column: 1
-        end:
-          offset: 19692
-          line: 228
-          column: 31
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 19693
-          line: 229
-          column: 1
-        end:
-          offset: 19734
-          line: 229
+          offset: 18668
+          line: 211
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
+          offset: 18669
+          line: 212
+          column: 1
+        end:
+          offset: 18699
+          line: 212
+          column: 31
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 18700
+          line: 213
+          column: 1
+        end:
+          offset: 18735
+          line: 213
+          column: 36
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 18736
+          line: 214
+          column: 1
+        end:
+          offset: 18770
+          line: 214
+          column: 35
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 18771
+          line: 215
+          column: 1
+        end:
+          offset: 18817
+          line: 215
+          column: 47
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19154
+          line: 221
+          column: 1
+        end:
+          offset: 19237
+          line: 221
+          column: 84
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19239
+          line: 223
+          column: 1
+        end:
+          offset: 19388
+          line: 223
+          column: 150
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19390
+          line: 225
+          column: 1
+        end:
+          offset: 19464
+          line: 225
+          column: 75
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19465
+          line: 226
+          column: 1
+        end:
+          offset: 19510
+          line: 226
+          column: 46
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19511
+          line: 227
+          column: 1
+        end:
+          offset: 19700
+          line: 227
+          column: 190
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19701
+          line: 228
+          column: 1
+        end:
+          offset: 19734
+          line: 228
+          column: 34
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
           offset: 19735
-          line: 230
+          line: 229
           column: 1
         end:
           offset: 19765
-          line: 230
+          line: 229
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
@@ -4378,72 +4386,84 @@ normative_context:
       source_span:
         start:
           offset: 19766
+          line: 230
+          column: 1
+        end:
+          offset: 19807
+          line: 230
+          column: 42
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19808
           line: 231
           column: 1
         end:
-          offset: 19801
+          offset: 19838
           line: 231
+          column: 31
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 19839
+          line: 232
+          column: 1
+        end:
+          offset: 19874
+          line: 232
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19802
-          line: 232
+          offset: 19875
+          line: 233
           column: 1
         end:
-          offset: 19839
-          line: 232
+          offset: 19912
+          line: 233
           column: 38
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 19840
-          line: 233
+          offset: 19913
+          line: 234
           column: 1
         end:
-          offset: 19886
-          line: 233
+          offset: 19959
+          line: 234
           column: 47
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 20185
-          line: 239
+          offset: 20258
+          line: 240
           column: 1
         end:
-          offset: 20269
-          line: 239
+          offset: 20342
+          line: 240
           column: 85
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 20271
-          line: 241
+          offset: 20344
+          line: 242
           column: 1
         end:
-          offset: 20899
-          line: 241
+          offset: 20972
+          line: 242
           column: 629
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 20901
-          line: 243
-          column: 1
-        end:
-          offset: 20973
-          line: 243
-          column: 73
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
@@ -4453,68 +4473,56 @@ normative_context:
           line: 244
           column: 1
         end:
-          offset: 21007
+          offset: 21046
           line: 244
+          column: 73
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 21047
+          line: 245
+          column: 1
+        end:
+          offset: 21080
+          line: 245
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21008
-          line: 245
+          offset: 21081
+          line: 246
           column: 1
         end:
-          offset: 21432
-          line: 245
+          offset: 21505
+          line: 246
           column: 425
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21433
-          line: 246
+          offset: 21506
+          line: 247
           column: 1
         end:
-          offset: 21466
-          line: 246
+          offset: 21539
+          line: 247
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 21467
-          line: 247
-          column: 1
-        end:
-          offset: 21497
-          line: 247
-          column: 31
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 21498
-          line: 248
-          column: 1
-        end:
-          offset: 21539
-          line: 248
-          column: 42
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
           offset: 21540
-          line: 249
+          line: 248
           column: 1
         end:
           offset: 21570
-          line: 249
+          line: 248
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
@@ -4522,143 +4530,143 @@ normative_context:
       source_span:
         start:
           offset: 21571
-          line: 250
+          line: 249
           column: 1
         end:
-          offset: 21606
-          line: 250
-          column: 36
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 21607
-          line: 251
-          column: 1
-        end:
-          offset: 21645
-          line: 251
-          column: 39
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 21646
-          line: 252
-          column: 1
-        end:
-          offset: 21692
-          line: 252
-          column: 47
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22146
-          line: 258
-          column: 1
-        end:
-          offset: 22228
-          line: 258
-          column: 83
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22230
-          line: 260
-          column: 1
-        end:
-          offset: 22432
-          line: 260
-          column: 203
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22434
-          line: 262
-          column: 1
-        end:
-          offset: 22516
-          line: 262
-          column: 83
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22517
-          line: 263
-          column: 1
-        end:
-          offset: 22550
-          line: 263
-          column: 34
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22551
-          line: 264
-          column: 1
-        end:
-          offset: 22713
-          line: 264
-          column: 163
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22714
-          line: 265
-          column: 1
-        end:
-          offset: 22747
-          line: 265
-          column: 34
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22748
-          line: 266
-          column: 1
-        end:
-          offset: 22778
-          line: 266
-          column: 31
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22779
-          line: 267
-          column: 1
-        end:
-          offset: 22820
-          line: 267
+          offset: 21612
+          line: 249
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
+          offset: 21613
+          line: 250
+          column: 1
+        end:
+          offset: 21643
+          line: 250
+          column: 31
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 21644
+          line: 251
+          column: 1
+        end:
+          offset: 21679
+          line: 251
+          column: 36
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 21680
+          line: 252
+          column: 1
+        end:
+          offset: 21718
+          line: 252
+          column: 39
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 21719
+          line: 253
+          column: 1
+        end:
+          offset: 21765
+          line: 253
+          column: 47
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22219
+          line: 259
+          column: 1
+        end:
+          offset: 22301
+          line: 259
+          column: 83
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22303
+          line: 261
+          column: 1
+        end:
+          offset: 22505
+          line: 261
+          column: 203
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22507
+          line: 263
+          column: 1
+        end:
+          offset: 22589
+          line: 263
+          column: 83
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22590
+          line: 264
+          column: 1
+        end:
+          offset: 22623
+          line: 264
+          column: 34
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22624
+          line: 265
+          column: 1
+        end:
+          offset: 22786
+          line: 265
+          column: 163
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22787
+          line: 266
+          column: 1
+        end:
+          offset: 22820
+          line: 266
+          column: 34
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
           offset: 22821
-          line: 268
+          line: 267
           column: 1
         end:
           offset: 22851
-          line: 268
+          line: 267
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
@@ -4666,143 +4674,143 @@ normative_context:
       source_span:
         start:
           offset: 22852
-          line: 269
+          line: 268
           column: 1
         end:
-          offset: 22887
-          line: 269
-          column: 36
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22888
-          line: 270
-          column: 1
-        end:
-          offset: 22921
-          line: 270
-          column: 34
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 22922
-          line: 271
-          column: 1
-        end:
-          offset: 22968
-          line: 271
-          column: 47
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23270
-          line: 277
-          column: 1
-        end:
-          offset: 23357
-          line: 277
-          column: 88
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23359
-          line: 279
-          column: 1
-        end:
-          offset: 23591
-          line: 279
-          column: 233
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23593
-          line: 281
-          column: 1
-        end:
-          offset: 23663
-          line: 281
-          column: 71
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23664
-          line: 282
-          column: 1
-        end:
-          offset: 23697
-          line: 282
-          column: 34
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23698
-          line: 283
-          column: 1
-        end:
-          offset: 23894
-          line: 283
-          column: 197
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23895
-          line: 284
-          column: 1
-        end:
-          offset: 23928
-          line: 284
-          column: 34
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23929
-          line: 285
-          column: 1
-        end:
-          offset: 23959
-          line: 285
-          column: 31
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_5448"
-      source_span:
-        start:
-          offset: 23960
-          line: 286
-          column: 1
-        end:
-          offset: 24001
-          line: 286
+          offset: 22893
+          line: 268
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
+          offset: 22894
+          line: 269
+          column: 1
+        end:
+          offset: 22924
+          line: 269
+          column: 31
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22925
+          line: 270
+          column: 1
+        end:
+          offset: 22960
+          line: 270
+          column: 36
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22961
+          line: 271
+          column: 1
+        end:
+          offset: 22994
+          line: 271
+          column: 34
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 22995
+          line: 272
+          column: 1
+        end:
+          offset: 23041
+          line: 272
+          column: 47
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 23343
+          line: 278
+          column: 1
+        end:
+          offset: 23430
+          line: 278
+          column: 88
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 23432
+          line: 280
+          column: 1
+        end:
+          offset: 23664
+          line: 280
+          column: 233
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 23666
+          line: 282
+          column: 1
+        end:
+          offset: 23736
+          line: 282
+          column: 71
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 23737
+          line: 283
+          column: 1
+        end:
+          offset: 23770
+          line: 283
+          column: 34
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 23771
+          line: 284
+          column: 1
+        end:
+          offset: 23967
+          line: 284
+          column: 197
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 23968
+          line: 285
+          column: 1
+        end:
+          offset: 24001
+          line: 285
+          column: 34
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
           offset: 24002
-          line: 287
+          line: 286
           column: 1
         end:
           offset: 24032
-          line: 287
+          line: 286
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
@@ -4810,59 +4818,83 @@ normative_context:
       source_span:
         start:
           offset: 24033
+          line: 287
+          column: 1
+        end:
+          offset: 24074
+          line: 287
+          column: 42
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 24075
           line: 288
           column: 1
         end:
-          offset: 24068
+          offset: 24105
           line: 288
+          column: 31
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_5448"
+      source_span:
+        start:
+          offset: 24106
+          line: 289
+          column: 1
+        end:
+          offset: 24141
+          line: 289
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 24069
-          line: 289
+          offset: 24142
+          line: 290
           column: 1
         end:
-          offset: 24102
-          line: 289
+          offset: 24175
+          line: 290
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_5448"
       source_span:
         start:
-          offset: 24103
-          line: 290
+          offset: 24176
+          line: 291
           column: 1
         end:
-          offset: 24149
-          line: 290
+          offset: 24222
+          line: 291
           column: 47
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_31724"
+      unit_id: "normative_31797"
       source_span:
         start:
-          offset: 31724
-          line: 424
+          offset: 31797
+          line: 425
           column: 1
         end:
-          offset: 31764
-          line: 424
+          offset: 31837
+          line: 425
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_45003"
+      unit_id: "normative_47467"
       source_span:
         start:
-          offset: 45003
-          line: 467
+          offset: 47467
+          line: 469
           column: 1
         end:
-          offset: 45025
-          line: 467
+          offset: 47489
+          line: 469
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -4871,5 +4903,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:3db6ffbbf3dccc78f769acae1d6ecea817fb8bf258d982e77040fbd56a2783eb"
-  generated_content_sha256: "sha256:9201714f0310da853a4d6062bc3e7562a2e8912a397096e2350cd8dedcd24b24"
+    sha256: "sha256:564c5ecaead810cd6dff50307d60e98ecf09203c2d437c319cafe59017ac4c94"
+  generated_content_sha256: "sha256:e3b8e15a6740dcb7f8ee788d10df25a1a32d36bf5b00d6fd064c8ae796954dcb"

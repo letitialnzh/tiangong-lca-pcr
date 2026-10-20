@@ -1366,6 +1366,7 @@ Each protocol owns one node. Use transfer ids to pair sending and receiving reco
 | event_gate | all_processes | Check run/batch linkage, rework paths, waste custody, shared consumer shares and single event ownership. Missing evidence fails completeness. |  |
 | identity_gate | all inventory rows | Verify actual formulation, service gate, flow type, property/unit and emission compartment; do not relabel manufactured tile as service or guess sealant/dust identity. |  |
 | range_gate | all inventory rows | Investigate broad-screen outliers using measurement evidence. Provisional screening bounds do not establish conformity, publication readiness or missing-flow zeros. |  |
+| validate_physical_slurry_stream | all collected wastewater/slurry | A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views. |  |
 
 ## 10. Published Dataset Profile
 

@@ -182,7 +182,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | demolition | 人工隔墙拆除与清场 | required | 仅在声明的开工接口得到证明后适用 | 独立拆除；负责存量托管、碎料清场、本地整改回路及出料收集节点 | 1 m2 验收净拆除面积 |
 
@@ -294,7 +294,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `area_normalization` | 所有清单行 | 可归属作业交换量除以实测验收净拆除面积（m2），记录为每参考流。各不重叠验收墙体多边形仅合计一次；记录不确定性，分母为零或未确定时拒绝归一化。不隐含面积到质量转换。 | cp_area; 节点专属数量协议 | 每参考流交换数量 |  |
 | `shared_attribution` | bounded_resource_service; site_electricity | 先用作业直接计量。仅将共享池剩余部分按同期间全部消费者的作业因果使用份额分配；核对分配合计与剩余池相等。分配后应用 area_normalization。 | cp_resources; cp_area | 每参考流可归属资源量 |  |
@@ -302,7 +302,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | dq_scope | demolition | 证明非承重裸露砖/砂浆墙、管线隔离、危害排查及批准手工方法；遇矛盾条件停工。 | 勘查；工程/方法批准；当地开工记录 |
 | dq_quantity | 所有清单行 | 采用同一验收面积分母；披露仪器误差、跨期存量、水分及未完成测量。未使用与缺失数量分开记录。 | cp_area 及所有链接协议 |

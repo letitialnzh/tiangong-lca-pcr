@@ -177,15 +177,16 @@ sync_with: pcr.en-US.md
 
 数量范围证据需求：要求实际获批恢复规格、不同产品身份及称重领用/库存；无通用播种或覆盖率。总接收/领用及各保管去向须对同批次/状态闭合。
 
-#### 采集要求：安装机械实际消耗的燃料 (`installation_fuels`)
+#### 采集要求：安装机械实际供应的燃料 (`installation_fuels`)
 
 过程／待建立交换的方向／类型：`tank_installation` / `inputs` / `product`.
 
-燃料用量依据实际机械/任务记录；体积换算质量须有供方燃料性质及实测体积/密度。
 
-- 采集对象：安装机械实际消耗的燃料
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
+
+- 采集对象：安装机械实际供应的燃料
 - 流属性/单位：质量 / kg
-- 数量规则：记录开挖、吊放、压实、搬运、修复及复验中实际消耗的各燃料；排除供方已含且已计燃料。未用燃料库存及真实退回的未消耗燃料不得进入此消耗燃料交换，须在库存/保管台账核对；不得计作消耗。
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -295,7 +296,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | tank_installation | 土建准备、罐体集成及安装验收 | required | 全部范围内工程；保护/试验水、额外组件及更换/复验投入依据实际记录 | 前景安装和装配集成 | 1 item 已验收的短接管界面内罐体安装 |
 
@@ -427,7 +428,7 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- |
 | job_attribution | tank_installation | 将实际工程材料/能源/场址作业及失败、修复和复验归属于最终验收工程。内部修复循环不产生另一项验收输出。不同配置或未完成工程须分开并披露，不得稀释分母。 |  |
 | asset_attribution | equipment_provision | 对每项资产索引生产、各服务/报告期间及使用工程、维护/更换和最终移除。按实际记录的服务活动份额相对完整有据的服务范围分摊，并说明剩余/闲置能力。资本/维护/移除负荷或经核实的供方覆盖计入一次；供方缺失阶段须明确补计，避免重复已含运行燃料。不得假设通用寿命或摊销。 |  |
-| custody_attribution | usable_product_returns; solid_waste; imported_support_fill | 按实际身份平衡期初库存/总接收/领用/安装或消耗去向/真实外退/废物/期末库存。全部材料输入使用工程总接收/领用；放置或消耗属于去向，不是另一种输入基准。消耗燃料交换排除另行核对的未用/退回燃料。留存库存以声明的未消耗负荷结转，不是产品输出。退回产品保持原批次负荷保管关系，不自动获得替代抵扣。现场回用原土承担搬运负荷，不承担采购生产负荷。实际出现范围外联产品时须另行明确审查分配。 |  |
+| custody_attribution | usable_product_returns; solid_waste; imported_support_fill | 按实际身份平衡期初库存/总接收/领用/安装或消耗去向/真实外退/废物/期末库存。全部材料输入使用工程总接收/领用；放置或消耗属于去向，不是另一种输入基准。燃料产品输入与燃烧活动按 fuel_supply_fate 区分；未用/退回燃料按真实库存和退出去向核对。留存库存以声明的未消耗负荷结转，不是产品输出。退回产品保持原批次负荷保管关系，不自动获得替代抵扣。现场回用原土承担搬运负荷，不承担采购生产负荷。实际出现范围外联产品时须另行明确审查分配。 |  |
 
 
 ## 8. 前景数据采集、计算与质量规则
@@ -438,7 +439,7 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_components | tank_installation | 罐体/组件及可用退回 | 供货清单及经校准数量/库存记录 | job_id; lot_id; product_identity; model; included_kit_parts; gross_receipts; gross_issues; installed_amount; real_outward_returns; waste_amount; closing_stock; mass_kg; matched_item_count; product_specific_mass_evidence; dimension_unit; native_soil_provenance; transfer_id | 使用材料总接收/领用及全部去向核对工厂清单和实际额外角色，不得用净消耗/放置量作为输入。实测质量或使用匹配供方尺寸/质量的可追溯证据；保留计数罐体/密封件记录。真实外退仅计一次，留存库存结转。按 transfer_id 关联 cp_soil 原土来源；使用实际质量证据闭合计数罐体/密封件接收与质量退回。 | kg; item; 实际尺寸单位 | 每次接收/领用/安装/退回/更换 | 准备至最终交付及全部失败尝试 | 工程及供货批次 | per reference flow | 签署清单、序列号、秤校准、相容性及批次平衡 |
 | cp_soil | tank_installation | 开挖/支承/回填及恢复 | 场址测量及材料台账 | job_id; native_soil_suitability; groundwater_state; excavated_quantity; surveyed_volume_unit; reused_onsite_quantity; import_mass_kg; material_identity; gross_receipts; gross_issues; placed_or_consumed; real_outward_returns; waste_quantity; closing_quantity; disposition_unit; moisture_basis; density_unit; finish_product_identity; closing_stock; exported_quantity; destination; custody_status; transfer_id | 按材料状态计量实际开挖及土壤/恢复材料保管；使用现场测量和称重票据、实测换算性质并明确平衡不确定性。原土外运以 transfer_id 及实测质量关联 cp_components 外移记录，保留场址来源而非采购批次。记录带实际单位和限值的放置/压实/整坡验收；场内土壤转移不形成采购输入。 | kg; 实际测量体积和几何单位 | 每次开挖/运入/放置/外运及恢复验收 | 全部土建准备、回填、修正和恢复 | 实际开挖及受控库存区域 | per reference flow | 获批土壤/场址报告、经校准测量/秤及签署放置/压实/整坡记录 |
-| cp_energy | tank_installation | 燃料及电力 | 仪表及燃料库存/任务日志 | job_id; task_id; asset_id; period_id; fuel_identity; fuel_mass_kg; fuel_volume; fuel_volume_unit; density_value; density_unit; density_temperature; density_temperature_unit; electricity_kWh; charging_boundary; provider_inclusion | 核对实际任务燃料及计量电力，包含返工。活动分摊使用记录任务及有据分母；明确供方已含使用及未来运行能源排除。未用库存和未消耗燃料退回在消耗燃料交换外核对。保留各物理单位及换算证据。 | kg; kWh | 每个任务/加注/计量区间 | 准备至修复/复验/交付 | 工程设备及声明充电供电 | per reference flow | 仪表/秤校准、燃料/密度证据及供方覆盖 |
+| cp_energy | tank_installation | 燃料及电力 | 仪表及燃料库存/任务日志 | job_id; task_id; asset_id; period_id; fuel_identity; fuel_mass_kg; fuel_volume; fuel_volume_unit; density_value; density_unit; density_temperature; density_temperature_unit; electricity_kWh; charging_boundary; provider_inclusion; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 核对实际任务燃料及计量电力，包含返工。活动分摊使用记录任务及有据分母；明确供方已含使用及未来运行能源排除。按 fuel_supply_fate 核对供应、燃烧、未燃废物/损失、可用退回和期末库存，不以燃烧量替代供应量。保留各物理单位及换算证据。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kg; kWh | 每个任务/加注/计量区间 | 准备至修复/复验/交付 | 工程设备及声明充电供电 | per reference flow | 仪表/秤校准、燃料/密度证据及供方覆盖 |
 | cp_water | tank_installation | 实际供水及安装出水 | 仪表和试验/去向日志 | job_id; event_id; actual_requirement; water_source; fill_level_unit; supply_mass_kg; measured_volume; measured_volume_unit; density_unit; retained_water; treatment_handoff; direct_release; receiving_medium; test_method; test_duration; test_duration_unit; test_pressure; pressure_unit; test_temperature; temperature_unit; test_volume; test_volume_unit; acceptance_limit_unit; test_result_value; result | 依据适用说明确定实际用水要求。逐次计量注水及复验；平衡留存水、管理废物交接和实际直接排出。记录实际试验/保护方法以及适用压力、温度、液位、体积、时长单位及规定验收条件和机构；不得假设通用注水或真空试验。 | kg; 实际体积/液位/时间/试验单位 | 每次实际注水、试验及去向 | 全部安装阶段注水/修复/复验事件 | 罐体/场址及实际水接收方 | per reference flow | 适用获批说明、校准仪表、试验/接收记录 |
 | cp_assets | tank_installation | 共享可重复使用资产及供应 | 资产/服务登记和全寿命分摊 | asset_id; provider_id; coverage_boundary; production_phase; service_period_id; consumer_job_id; task_duration_h; total_service_basis; maintenance_event; replacement_event; termination_event; removal_coverage; allocation_decision; uncovered_phase | 将本节点和其他全部使用工程/报告期间关联各资产。保留实际工程小时或合同单位和全寿命服务基准；逐阶段记录供方覆盖、运行/资本分开、缺口、分摊和事件单一归属。 | h 或实际核实的合同服务单位 | 每个资产/工程/期间及维护/更换/终止事件 | 完整资产生产/服务/移除范围及本工程 | 实际资产/供方及全部有据服务使用方 | per reference flow | 资产登记、活动计量、供方数据集范围、寿命/终止证据及不确定性 |
 | cp_transport | tank_installation | 运入退回及废物移动 | 托运及路线记录 | job_id; transfer_id; provider_id; origin; destination; payload_mass_t; distance_km; vehicle_class; included_legs; upstream_coverage | 将实际进出运输及所含运输与材料/供方范围匹配。仅按相容载重/路线单位计算实际运输功；记录所含空驶并防止重复运单。 | t km; 原始 t 及 km | 每次实际托运/清运 | 全部工程交付、退回和废物去向 | 实际路线/供方 | per reference flow | 票据、路线距离证据、载重及数据集行程范围 |
@@ -447,15 +448,16 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | job_normalization | 所有清单行 | 在规定工程边界内汇总各不同实际归属交换，并除以匹配的验收安装数量；保留物理单位及全部失败作业负荷。未经声明分层不得汇总不同型号。 | 节点特定工程记录; accepted_count; cp_acceptance | 每参考流的交换数量 |  |
 | stock_reconciliation | factory_tank; extra_gaskets; extra_pipe_tees; extra_access_parts; joint_consumables; imported_support_fill; finish_products; usable_product_returns; solid_waste | 按身份分别核对期初库存及总接收，与安装/消耗去向、真实外退、废物及期末库存。内部领用/转移是配对台账移动，不是重复外部接收。 | cp_components; cp_soil; cp_waste | 身份特定保管平衡及结转期末库存负荷 |  |
 | asset_share | equipment_provision | 将有据的实际工程服务份额用于完整有据资产阶段负荷；按同一服务基准核对全部使用方/期间份额及剩余能力，供方已含部分只计一次。 | cp_assets; cp_energy; 经核实供方范围 | 分摊资产供应及明确未覆盖阶段要求 |  |
+| fuel_supply_fate | installation_fuels | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | route_identity | tank_installation | 证明实际非通车、干燥、无需抗浮的重力路线、许可/设计/型号、独立短接管界面和完整套件范围。 | 获批场址/设计及实际供货清单 |
 | quantity_quality | 所有清单行 | 保留身份特定的实际单位、校准、时间/场址/批次范围、换算含水率/密度或供方质量、缺失活动及不确定性。不得推断默认值或用零表示缺失。 | 节点特定协议和原始记录 |
@@ -474,7 +476,7 @@ sync_with: pcr.en-US.md
 | validate_assets | equipment_provision | 要求全部使用工程/期间和完整生产/服务/维护/更换/移除范围、实际份额基准及每个共享事件的单一归属；未解决寿命/终止或供方缺口时阻止完成。 |  |
 | validate_bindings | 所有清单行 | 各最终 TIDAS 交换须有准确实际流、属性/单位组和去向支持；未解决语义身份及未支持的能量/时长/运输链须明确作为数据要求。不得使用近似身份或为方便而转换计数。 |  |
 | validate_rework | tank_installation | 在产生节点保留损坏/不合格材料、修复/更换及重复试验，明确实际内部循环、产品退回或废物退出。废弃罐体或未关闭失败不得进入验收数量。 |  |
-
+| validate_fuel_supply_fate | installation_fuels | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
 
 ## 10. 发布数据集画像
 

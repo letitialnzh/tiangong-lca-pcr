@@ -372,7 +372,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 (process_name) | 纳入状态 (inclusion) | 纳入条件 (inclusion_condition) | 角色 (role) | 定量参考 (quantitative_reference) |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | prep | 局部基层界面准备 | required | 已验收适用既有基层 | 局部接缝/边缘及准备界面 | 按分区实测准备面积 |
 | mix | 饰面石膏粉料加水拌和 | required | 实际所选石膏饰面系统 | 批次配制、粉料/水核对及新拌浆料交接 | 按批次实测新拌浆料质量 |
@@ -822,7 +822,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 (flow_role) | 记录类型 (record_type) | 原始字段 (raw_fields) | 采集方法 (collection_method) | 单位 (unit) | 频率 (frequency) | 时间覆盖 (temporal_coverage) | 场址范围 (site_scope) | 汇总规则 (aggregation_rule) | 质量证据 (quality_evidence) |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_prep | prep | 准备投入、界面、公用工程及残余物 | 分区记录及仪表/服务日志 | lot_id; zone_id; substrate_acceptance; prep_material_mass; prep_metered_kwh; prep_shared_total_kwh; prep_shared_node_share; prep_direct_service_hours; prep_shared_service_hours; prep_service_share; prepared_area; prep_waste_mass; transfer_id; accepted_area | 测量净表面，称量材料/残余物，读取可归属仪表及设备日志；按分区及交收单关联最终面积。 对可归属准备原始量或关联派生量按唯一事件核对后求和，再除以正的同批accepted_area。 | kg; kWh; h; m2 | 每个分区及公用工程/服务事件 | 包括返工、换批的完整工作批 | 具名项目及准备分区 | 每参考流 | 测量/开口表；供应商身份；仪器校准；共享份额核对 |
 | cp_mix | mix | 配方组分、浆料、公用工程、拒收物及排放 | 批次称量及交收记录 | lot_id; batch_id; zone_id; opening_powder_mass; received_powder_mass; closing_powder_mass; returned_powder_mass; external_transfer_powder_mass; mix_water_mass; mix_metered_kwh; mix_shared_total_kwh; mix_shared_node_share; mix_clean_water_mass; paste_transfer_mass; mix_reject_mass; mix_packaging_mass; mix_slurry_mass; mix_emission_mass; opening_paste_mass; closing_paste_mass; supplied_process_water; paste_transfer_water; collected_slurry_water; rejected_water_mass; emitted_water_mass; bound_water_change; free_water_change; water_balance_uncertainty; transfer_id; accepted_area | 分别称量期初、收货、期末、退回和外部转移粉料；退回与外部转移为互斥出界，均不含期末库存。采用calc_powder_stock得到powder_net_mass。称量交付/退回库存，计量配方/清洗水，称量湿浆及残余物；适用时取得具名物种大气证据；分开捕集粉尘及清洗浆水。 将粉料和工艺水与湿浆、分别记录的废物/排放及库存变化核对；各可归属节点分子除以正的同批accepted_area，已记录废物不重复扣减。 | kg; kWh; m2 | 每次批次、清洗及转移 | 包括不合格批次、最终清洗的整个工作批 | 向具名分区供料的实际拌和站 | 每参考流 | 秤/水表校准；袋装规格；批次/分区关联；废物交收；物种/介质证据 |
@@ -831,7 +831,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 (Applies to) | 公式或规则 (Formula or rule) | 输入 (Inputs) | 输出 (Output) | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | calc_prep | prep_materials; prep_electricity; prep_access; prepared_area; prep_waste | 每张prep卡分子为其申明原始或关联派生cp_prep分子，经唯一事件、库存/份额核对后，除以正的同批accepted_area。 | cp_prep; prep_material_mass; prep_kwh; prep_service_hours; prepared_area; prep_waste_mass; accepted_area | 每参考流prep交换量 | |
 | calc_mix | gypsum_powder; mix_water; mix_electricity; mix_clean_water; mixed_paste; mix_reject; mix_packaging; mix_slurry; mix_air | 每张mix卡分子为其申明原始或关联派生cp_mix分子，除以正的同批accepted_area；湿浆衡算保留实测损失和库存变化。 | cp_mix; powder_net_mass; mix_water_mass; mix_kwh; mix_clean_water_mass; paste_transfer_mass; mix_reject_mass; mix_packaging_mass; mix_slurry_mass; mix_emission_mass; accepted_area | 每参考流mix交换量 | |
@@ -845,7 +845,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 (Applies to) | 要求 (Requirement) | 证据 (Evidence) |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | dq_gate | accepted_skim | 必须记录实际系统、厚度、基层及饰面质量观测和申明干燥判据；固定制造商时间不能证明干燥。 | 供应商系统说明；分区验收签字及含水/目视判据 |
 | dq_balance | all nodes | 核对批次、转移、库存及水去向并报告测量不确定性；不得仅为闭合衡算而反算未测内部数量。 | 节点记录、配对转移编号及残差说明 |

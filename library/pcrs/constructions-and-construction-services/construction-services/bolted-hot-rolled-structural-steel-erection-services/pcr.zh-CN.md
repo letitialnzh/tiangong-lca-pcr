@@ -428,7 +428,8 @@ sync_with: pcr.en-US.md
 
 ###### 柴油（`diesel_fuel`）
 
-在已证实发生时记录自有或单独计量设备实际燃烧的柴油，包括应归属的怠速、试验和返工。固定身份为通用柴油，不断言牌号、炼厂或化石比例。数量范围需要经校准的库存和仪表、实际设备及完整工况时段与独立 S。交付燃油、燃烧燃油及库存变化必须核对；有效吊装功不等于燃油质量，服务商已含燃油不再计入。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 选定流：柴油 `9d258d75-6792-4f1c-9856-81602ed8f816`
 - 流属性/单位: Mass / kg
@@ -594,7 +595,7 @@ sync_with: pcr.en-US.md
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_steel_erect_material | steel_erect | 材料、产品、废物及验收 S | 称重、构件及连接和去向台账 | event_id；批次/配置；process_id；阶段；时间戳/期间；责任方；角色；actual_identity/current_state；native_amount/unit；measured_same_state_bridge；receiver/medium；证据；不确定性 | 使用经校准称重或可追溯同状态供应商质量记录；核对构件编号、连接清单、完整产品与组分桥接和验收及去向文件。实际基础及锚固放行、几何、检查及库存作为背景记录观测。由唯一验收永久钢组分测量 S，不用平衡残差。 | 千克；原生数量/体积附实测桥接 | 每笔收货、发放、返工、验收、退回或出库；期间边界盘库 | 从起始接口放行至完成验收；全阶段及所有实际报告期，含未结期间和库存边界 | 实际安装场址及声明的设备/服务责任边界 | 每 1 kg 参考流 | 校准、供应商组分数据、永久验收清单、检查及解除签字、保管及废物票据 |
-| cp_steel_erect_utility | steel_erect | 燃油、电力及供水 | 仪表、库存及设备工况日志 | event_id；批次/配置；process_id；阶段；时间戳/期间；责任方；角色；actual_identity/current_state；native_amount/unit；measured_same_state_bridge；receiver/medium；证据；不确定性 | 读取经校准仪表和期初期末库存及交付、来源和状态及设备工况。包括责任内怠速、试验及返工。余额归属前标记服务商覆盖和直接归属。液体体积仅用有证据实际状态密度换算，保留原生 kWh。 | 千克；kWh；原生表计单位附桥接 | 每个表计或库存时段及工况事件，包括中断 | 从起始接口放行至完成验收；全阶段及所有实际报告期，含未结期间和库存边界 | 实际安装场址及声明的设备/服务责任边界 | 每 1 kg 参考流 | 仪表拓扑及校准、收据、密度证据、完整工况日志及服务商覆盖 |
+| cp_steel_erect_utility | steel_erect | 燃油、电力及供水 | 仪表、库存及设备工况日志 | event_id；批次/配置；process_id；阶段；时间戳/期间；责任方；角色；actual_identity/current_state；native_amount/unit；measured_same_state_bridge；receiver/medium；证据；不确定性; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 读取经校准仪表和期初期末库存及交付、来源和状态及设备工况。包括责任内怠速、试验及返工。余额归属前标记服务商覆盖和直接归属。液体体积仅用有证据实际状态密度换算，保留原生 kWh。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | 千克；kWh；原生表计单位附桥接 | 每个表计或库存时段及工况事件，包括中断 | 从起始接口放行至完成验收；全阶段及所有实际报告期，含未结期间和库存边界 | 实际安装场址及声明的设备/服务责任边界 | 每 1 kg 参考流 | 仪表拓扑及校准、收据、密度证据、完整工况日志及服务商覆盖 |
 | cp_steel_erect_asset | steel_erect | 租用服务及可复用资产观测 | 服务、保管、共享使用及替换日志 | event_id；批次/配置；process_id；阶段；时间戳/期间；责任方；角色；actual_identity/current_state；native_amount/unit；measured_same_state_bridge；receiver/medium；证据；不确定性 | 将每项实际起重、登高、物流或临时支撑资产关联服务商或自有覆盖、保管和使用及占用时段、全部使用方和期间。观测质量而不视为消耗。自有时取得实际制造能力或寿命、使用、损坏及替换证据，否则保留缺口。 | 小时；资产观测千克；原生服务单位 | 每次租用、保管转移、使用时段、损坏、替换和解除 | 从起始接口放行至完成验收；全阶段及所有实际报告期，含未结期间和库存边界 | 实际安装场址及声明的设备/服务责任边界 | 每 1 kg 参考流 | 合同、设备标识、工况及占用和全部使用方日志、实际寿命及使用和损坏文件 |
 | cp_steel_erect_release | steel_erect | 直接资源取用及物质特定释放 | 来源、介质、采样及模型日志 | event_id；批次/配置；process_id；阶段；时间戳/期间；责任方；角色；actual_identity/current_state；native_amount/unit；measured_same_state_bridge；receiver/medium；证据；不确定性 | 对实际取水、排放及排水记录确切物质或报告口径、环境介质、来源池和阶段。使用经校准直接测量或有记录的相容物种及去向模型，输入及不确定性须实测。化石碳及纯水池分开；记录捕集及处理关联，不由闭合推导排放。 | 物质千克；原生采样单位附实测桥接 | 每项实际释放或取水事件或有证据模型时段 | 从起始接口放行至完成验收；全阶段及所有实际报告期，含未结期间和库存边界 | 实际安装场址及声明的设备/服务责任边界 | 每 1 kg 参考流 | 发生证据、样本及校准、实际燃油碳和配方数据、模型或因子适用性及接收介质 |
 
@@ -602,16 +603,17 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用于 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | derive_accepted_steel | reference_service | S = 已验收构件、永久连接及钢垫片中唯一实际永久保留净钢质量之和；各钢组分依据实测完整状态物件和有记录组分桥接求得。要求 S > 0 及完整关口证据；排除临时物、非钢灌浆或涂层、退回、废钢及在制品。 | cp_steel_erect_material; 已验收构件及连接清单; 实测完整状态与钢桥接 | S，千克 | steel-erection-accounting-method |
 | normalize_concrete_exchange | all inventory rows | 对每项独立识别具体交换，用有证据同状态桥接把原生事件数量转成必需单位，归属责任份额，再把作业数量分子仅一次除以 S。不同 SKU、状态和接收方或物质及介质的数量分子分开。只有 reference_service 使用 S/S = 1 千克；混合台账总量为 QA，不是交换。 | cp_steel_erect_material; cp_steel_erect_utility; cp_steel_erect_asset; cp_steel_erect_release; S | 具体单位/每 1 kg 参考流 | steel-erection-accounting-method |
 | compatible_pool_check | all inventory rows | 在一个相容身份及状态或有证据组分池内，将期初库存加实际投入与独立观测保留结合量、期末库存及互斥实际转出和释放比较。差异和不确定性记为发现项，不解算未测交换。原厂涂层、新增涂层和灌浆、干组分及纯水去向分开。 | cp_steel_erect_material; cp_steel_erect_utility; cp_steel_erect_release; 相容身份及组分桥接 | 池特定 QA 残差及不确定性 | steel-erection-accounting-method |
 | fossil_carbon_check | fossil_co2_air | 已识别化石 CO2 质量 <= 独立测得燃烧化石碳 * 44/12。由实际燃烧燃油及有证据碳和化石比例取得化石碳；不假定通用柴油化石比例或完全氧化。本项仅约束 CO2 碳，不是燃烧总质量平衡。 | cp_steel_erect_utility; cp_steel_erect_release; 实际燃烧化石碳 | 化石碳 QA 约束 | carbon-oxidation-identity |
+| fuel_supply_fate | diesel_fuel | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用于 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | quality_concrete_identity | all inventory rows | 实际发生状态记为是、否或未决，不发生和零值须有证据。将条件角色展开为各具体 SKU、状态及接收方或物质及介质，并在最终交换使用前核实流和支持身份；不得使用概念条件角色或无支持替代身份。 | 发生台账；身份、状态和接收方证据 |
 | quality_denominator | reference_service; fabricated_steel_members; permanent_connection_steel | 核对验收构件编号及永久连接和垫片清单、完整交付状态质量及独立有证据钢和原厂涂层组分。要求正值纯钢 S 和完整项目关口。设计几何或发票质量不能静默替代验收组分质量。 | 经校准同状态质量及桥接记录；签署验收 |
@@ -631,6 +633,8 @@ sync_with: pcr.en-US.md
 | validate_shared | hired_equipment_services; diesel_fuel; electricity | 核对共享资产或服务、全部使用方和期间、直接归属与余额份额。对照自有行检查服务商燃油、资本和维护是否重复覆盖。缺失自有寿命或使用证据时保留披露缺口，不计全部资产制造，也不设零负荷。 | steel-erection-accounting-method |
 | validate_fates | all inventory rows | 只闭合相容材料及状态或有证据组分池，包括期初期末库存。纯水及化石碳检查分别进行。区分捕集与未捕集、湿与干及产品、废物、环境去向。残差是发现项，绝不虚构交换；不得将燃油千克等同 CO2 千克或虚构氧气。 | steel-erection-accounting-method; carbon-oxidation-identity |
 | validate_scope | steel_erect | 应用本类别前审查任何另一个责任方交接、结构现场焊接或独立制作及完整涂装。记录实际本地或项目验收要求；安全指引示例不提供默认最终螺栓准则、设计容差或清单耗用率。 | fhwa-inspection-steel; osha-steel-site; osha-steel-stability |
+| validate_fuel_supply_fate | diesel_fuel | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
+| validate_physical_slurry_stream | all collected wastewater/slurry | 废水/浆液卡仅表示一个接收门槛下真实未物理分离的液固混合物流。分别收集的液体、已分离固体或不同处理去向须建立独立实际交换，不能为适配本卡而重新合并。混合物总质量与所含水/固体属于不可相加的视图。 |  |
 
 ## 10. 发布数据集画像
 

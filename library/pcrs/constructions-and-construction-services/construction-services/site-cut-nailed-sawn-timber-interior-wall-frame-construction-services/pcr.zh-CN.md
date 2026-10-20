@@ -263,7 +263,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | cut_members | 锯材构件下料准备 | required | 有记录的现场下料准备和实物构件交接 | 独立尺寸转换；包括重切循环及切割损失 | 每参考流所归属的实际称量预备构件交接量，绝不是 1 m2 木材 |
 | erect_frame | 裸墙骨架竖立与机械固定 | required | 实际非承重设计及支承就绪已验收 | 组装并固定构件和紧固件至签字的裸骨架节点；保留整改 | 1 m2 净验收墙立面面积 |
@@ -445,7 +445,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | accepted_net_area | accepted_frame | 将验收立面毛面积仅求和一次，并扣除其洞口净投影面积；不得扣除洞口周边骨架，也不得计数双面。 | cp_erect_acceptance 尺寸；验收；洞口 | 以 m2 表示的正净验收面积 |  |
 | lot_normalization | 所有清单行 | 对每种材料、废物、排放及实际服务单位，将归属批次数量除以相同的正净验收面积。保留实际预备构件及返工交接质量，其数量独立于最终产出面积。 | 节点特定协议总量；cp_erect_acceptance 净验收面积；分配证据 | 每参考流的每项实际交换量 |  |
@@ -453,7 +453,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | design_gate | 参考产品 | 须有实际非承重设计和已验收的相容支承界面；PNNL 示例尺寸/间距不构成项目验收。 | 批准立面图与固定规格；cp_erect_acceptance |
 | transfer_state | 两个节点 | 按构件、状态、含水率及交接 ID 匹配实测下料交接与重切循环。不得将内部数量固定为参考面积。 | cp_cut_material 和 cp_erect_material 核对 |

@@ -1594,7 +1594,7 @@ A定义为各独立最终验收斜面多边形之和，每个开口仅扣一次�
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | calc_deck_interface | survey_receive / 观测验收记录 (deck_interface) | actual_deck_interface = 实测deck_interface_actual_quantity，使用记录的几何换算桥换算为m2，按唯一表面ID、状态和有方向交接核对。不得汇总同一状态的重复测量或用最终A替换实测内部面积。返工保留实际负担，最终唯一面积仅计一次。输出是物理面积分子。 | raw:deck_interface_actual_quantity; raw:deck_interface_native_unit; raw:deck_interface_mass_or_geometry_bridge; raw:deck_interface_actual_state; raw:deck_interface_measured_absence_evidence; raw:deck_interface_destination; cp:cp_survey_receive; symbol:A | actual_deck_interface |  |
 | calc_receive_packaging | survey_receive / receive_packaging | actual_receive_packaging = receive_packaging_opening + receive_packaging_receipts - receive_packaging_closing_intact；各项先根据确切原单位数量、actual_mass_factor和factor_state_evidence换算成kg。未领用完整库存只扣一次，实际U/X流出保留在毛领用内。输出是物理分子而非强度。 | raw:receive_packaging_opening; raw:receive_packaging_receipts; raw:receive_packaging_closing_intact; raw:receive_packaging_native_unit; raw:receive_packaging_native_quantity; raw:receive_packaging_actual_mass_factor; raw:receive_packaging_factor_state_evidence; cp:cp_survey_receive; symbol:A | actual_receive_packaging |  |
@@ -1670,7 +1670,7 @@ A定义为各独立最终验收斜面多边形之和，每个开口仅扣一次�
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | quality_instructions | 实际路线及全部构件 | 保留实际安装供应商/SKU说明修订、项目设计、基层验收及接口责任方。历史路线参考不提供当前通用规定。 | 实际说明/设计包、签署释放及完整构件清单；gaf-three-tab-route；gaf-fiberglass-physical-state |
 | quality_identity | 每个实际具体交换 | 明确材料、复合整体或组成视图、物理状态、供应方/地理/电压或废物去向。直接排放须有实际物质/颗粒基准、介质和方向。有用语义汇总项并不是已验证具体最终交换。 | 供应商ID/状态/配方、废物保管凭证及物质采样证据。 |

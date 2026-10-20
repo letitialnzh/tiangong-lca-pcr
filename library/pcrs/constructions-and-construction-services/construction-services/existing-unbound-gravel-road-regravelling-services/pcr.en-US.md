@@ -106,11 +106,12 @@ Range evidence need: Collect actual asset-hour interval and attribution uncertai
 
 Process / prospective direction / type: `prepare_host` / `inputs` / `product`.
 
-Separate each actual fuel grade consumed by the preparation fleet only when not already included in its service dataset. Actual outward returns, transfers and spill disposal have their real custody and destination; record them separately by fuel grade or waste/substance identity if they occur, never as combustion.
+
+Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty.
 
 - Collection subject: Actual preparation-machine fuel by supplied grade
 - Flow property / unit: Mass / kg
-- Amount rule: Actual consumed fuel by grade from full issues/stock/return/transfer/spill balance, excluding unused/returned/transferred quantities from combustion; cp_prep_fuel.
+- Amount rule: Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8.
 - Value mode: `foreground_record`
 - Specificity: `site_specific`
 - Normalization basis: per reference flow
@@ -319,6 +320,46 @@ Separate actual evaporation, infiltration or discharge only where measured or su
 
 Range evidence need: Collect measured/pathway-supported volume intervals and water-balance uncertainty; added water is not automatically consumption or a pollutant release.
 
+#### Collection requirement: Actual placing, water-bowser and roller fuel by grade (`finish_fuel`)
+
+Process / prospective direction / type: `regravel_finish` / `inputs` / `product`.
+
+Resolve each actual SKU, composition/state and custody into a separate atomic exchange. This requirement is not a generic pooled flow. A genuinely complete purchased assembly may use its own verified package boundary; its already included parts are not additional purchases.
+
+Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty.
+
+- Collection subject: Actual placing, water-bowser and roller fuel by grade
+- Flow property / unit: Mass / kg
+- Amount rule: Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8.
+- Value mode: `foreground_record`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `collected_record`
+- Collection protocol: `cp_finish_fuel`
+
+Range evidence need: Collect actual consumption interval and allocation uncertainty, measured density/temperature for volume conversion; no default fuel per area.
+
+#### Collection requirement: Actual preparation removals transferred as waste (`prep_removed_waste`)
+
+Process / prospective direction / type: `prepare_host` / `outputs` / `waste`.
+
+Resolve each actual SKU, composition/state and custody into a separate atomic exchange. This requirement is not a generic pooled flow. A genuinely complete purchased assembly may use its own verified package boundary; its already included parts are not additional purchases.
+
+Separate each actual removed sediment/soil/gravel/debris waste stream by material, waste status and treatment destination; never aggregate heterogeneous removals into one exchange.
+
+- Collection subject: Actual preparation removals transferred as waste
+- Flow property / unit: Mass / kg
+- Amount rule: Actual gross outward waste quantities by identified stream; cp_prep_removed_waste.
+- Value mode: `foreground_record`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `collected_record`
+- Collection protocol: `cp_prep_removed_waste`
+
+Range evidence need: Collect stream-specific weighed quantity bounds and uncertainty, moisture/state and disposal evidence; no default removal fraction.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -366,8 +407,8 @@ This internal in-situ host interface retains original road identity and material
 
 - Selected flow: Prepared existing road at regravelling handoff
 - Flow property / unit: Number of items / item
-- Amount rule: 1 item only for the same declared prepared segment after actual pre-spread approval; cp_prepared_host.
-- Value mode: `fixed_value`
+- Amount rule: Actual independently recorded approved host handoff count for the declared segment/state divided by the positive accepted contract-segment count N_host; pair the same transfer IDs and state at both nodes. A same-segment ratio of one requires actual gate evidence, never default assignment from final output.
+- Value mode: `foreground_record`
 - Specificity: `site_specific`
 - Normalization basis: per reference flow
 - Basis kind: `reference_flow`
@@ -375,25 +416,9 @@ This internal in-situ host interface retains original road identity and material
 - Collection protocol: `cp_prepared_host`
 - Sources: `fhwa-gravel-2015`
 
-Range evidence need: The one-segment definition is exact; collect measured accepted chainage/area/crown/drainage tolerances and uncertainty, not a fictional volume yield.
+Range evidence need: Obtain actual gate counts, segment geometry and survey/inspection uncertainty; an observed count ratio of one is not a generic intermediate-quantity bound.
 
 ##### Waste flows
-
-###### Actual preparation removals transferred as waste (`prep_removed_waste`)
-
-Separate each actual removed sediment/soil/gravel/debris waste stream by material, waste status and treatment destination; never aggregate heterogeneous removals into one exchange.
-
-- Selected flow: Actual preparation removals transferred as waste
-- Flow property / unit: Mass / kg
-- Amount rule: Actual gross outward waste quantities by identified stream; cp_prep_removed_waste.
-- Value mode: `foreground_record`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `collected_record`
-- Collection protocol: `cp_prep_removed_waste`
-
-Range evidence need: Collect stream-specific weighed quantity bounds and uncertainty, moisture/state and disposal evidence; no default removal fraction.
 
 ##### Elementary flows
 
@@ -409,8 +434,8 @@ The same retained in-situ segment is received across the internal preparation ga
 
 - Selected flow: Prepared existing road received for new wearing layer
 - Flow property / unit: Number of items / item
-- Amount rule: 1 item of the same actually approved prepared segment; cp_host_to_finish.
-- Value mode: `fixed_value`
+- Amount rule: Actual independently recorded approved host handoff count for the declared segment/state divided by the positive accepted contract-segment count N_host; pair the same transfer IDs and state at both nodes. A same-segment ratio of one requires actual gate evidence, never default assignment from final output.
+- Value mode: `foreground_record`
 - Specificity: `site_specific`
 - Normalization basis: per reference flow
 - Basis kind: `reference_flow`
@@ -418,7 +443,7 @@ The same retained in-situ segment is received across the internal preparation ga
 - Collection protocol: `cp_host_to_finish`
 - Sources: `fhwa-gravel-2015`
 
-Range evidence need: Exact linked segment count; obtain transfer survey uncertainty and gate tolerances from cp_prepared_host, never assume acceptance.
+Range evidence need: Independently establish linked actual handoff count/state, transfer survey uncertainty and gate tolerances; never assume acceptance or a quantity equal to the final reference.
 
 ###### Actual specified natural wearing-course aggregate at supply gate (`new_aggregate`)
 
@@ -453,22 +478,6 @@ Only externally supplied water crosses as a product input; distinguish its sourc
 - Sources: `fhwa-gravel-2015`
 
 Range evidence need: Collect metered purchased-volume interval, accuracy and actual distribution losses; any kg conversion requires actual density/temperature.
-
-###### Actual placing, water-bowser and roller fuel by grade (`finish_fuel`)
-
-Separate each actual fuel grade and owning operation where not already included by plant/provider coverage. Actual outward returns, transfers and spill disposal have their real custody and destination; record them separately by fuel grade or waste/substance identity if they occur, never as combustion.
-
-- Selected flow: Actual placing, water-bowser and roller fuel by grade
-- Flow property / unit: Mass / kg
-- Amount rule: Actual consumed fuel by grade from full issues/stock/return/transfer/spill balance, excluding unused/returned/transferred quantities from combustion; cp_finish_fuel.
-- Value mode: `foreground_record`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `collected_record`
-- Collection protocol: `cp_finish_fuel`
-
-Range evidence need: Collect actual consumption interval and allocation uncertainty, measured density/temperature for volume conversion; no default fuel per area.
 
 ###### Actual layer-finishing electricity supply (`finish_electricity`)
 
@@ -548,7 +557,7 @@ Range evidence need: Collect stream-specific rejection/removal mass and uncertai
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_prep_plant | prepare_host | Actual road-preparation plant and tool service | Actual site/supplier record | asset_id; provider; task; event_id; start_time; end_time; service_hours_h; idle_hours_h; other_job_consumers; period; manufacture_maintenance_replacement_end_of_life_scope; utilization_denominator; attribution_share | Use meter/job logs and provider scope; enumerate this node, finishing and other contracts/periods, then attribute complete-life service consistently with asset_attribution. | h | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Retain full life phase evidence, replacement/termination decisions and single ownership of fuel/plant service; Duration support still requires confirmation. Completed asset lives use observed historical service. An in-service asset may use evidence-based prospective remaining service, replacement/termination and end-of-life scenarios: distinguish forecasts from observations, disclose the complete-life utilization denominator, source, uncertainty/sensitivity and update trigger. Do not invent a future retirement date or default lifespan; missing justified full coverage or denominator, rather than continued operation, is the data gap. |
-| cp_prep_fuel | prepare_host | Actual preparation-machine fuel by supplied grade | Actual site/supplier record | fuel_grade; asset_id; period; opening_kg; gross_issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; fuel_service_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg | Reconcile issues, tanks and job meter logs; attribute actual shared consumption to this node once, retaining calibration and conversion evidence. Close opening stock plus gross issues against actual consumption, closing stock, true outward return/transfer and spilled material. Link every actual return/transfer/spill to a separate real product/waste/elementary exchange as its actual custody requires; never include that mass in combustion. | kg | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Fuel receipts and measured density; no default consumption or combustion factor. No missing disposition treated as consumed fuel; record unresolved balance gap. |
+| cp_prep_fuel | prepare_host | Actual preparation-machine fuel by supplied grade | Actual site/supplier record | fuel_grade; asset_id; period; opening_kg; gross_issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; fuel_service_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | Reconcile issues, tanks and job meter logs; attribute actual shared consumption to this node once, retaining calibration and conversion evidence. Close opening stock plus gross issues against actual consumption, closing stock, true outward return/transfer and spilled material. Link every actual return/transfer/spill to a separate real product/waste/elementary exchange as its actual custody requires; never include that mass in combustion. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates. | kg | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Fuel receipts and measured density; no default consumption or combustion factor. No missing disposition treated as consumed fuel; record unresolved balance gap. |
 | cp_prep_electricity | prepare_host | Actual preparation electricity supply | Actual site/supplier record | meter_id; supplier; event_id; start_kWh; end_kWh; period; other_job_kWh; attribution_share; service_scope | Read calibrated meters or traceable supplier submeter records and assign unique node/event ownership. | kWh | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Native kWh remains; exact Energy property support is a separately declared gap. |
 | cp_prepared_host | prepare_host | Prepared existing road at regravelling handoff | Actual site/supplier record | road_id; segment_id; start_chainage_m; end_chainage_m; width_m; area_m2; crown_percent; crossfall_percent; longitudinal_grade_percent; distress; drainage_scope_owner; criterion_source; criterion_tolerance; inspection_result; gate_date; transfer_id | Survey actual chainages, widths and levels; inspect corrected distress and drainage against contract criteria and record the signed pre-spread gate paired with host_to_finish. | item | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Retain structural qualification, measured geometry/units and tolerances; failed preparation stays here and carries repeated burdens. |
 | cp_host_surplus | prepare_host | Actual usable retained-host surplus transferred outward | Actual site/supplier record | lot_id; material_identity; gross_kg; tare_kg; moisture_percent; destination; product_custody; period; dispatch_id; transport_owner | Weigh actual dispatched usable surplus and retain recipient/product-custody evidence; do not also classify the same lot as waste. | kg | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Calibrated weighing, destination and treatment of retained burden; no negative virgin aggregate input. For receipts/issues and outward dispatch, gross means total material before netting returns or other outward transfers, after removing vehicle/container tare. Where gross_kg and tare_kg record weighed vehicle/container and tare, subtract tare_kg from gross_kg to obtain material mass for the balance; never enter gross vehicle mass as material. Retain scale accuracy and matched moisture/state. |
@@ -561,7 +570,7 @@ Range evidence need: Collect stream-specific rejection/removal mass and uncertai
 | cp_finish_water_product | regravel_finish | Actual purchased water for moisture conditioning | Actual site/supplier record | water_supplier; supply_state; meter_id; received_m3; issued_m3; closing_m3; return_m3; internal_reuse_m3; temperature_C; density_kg_per_m3; period; supply_transport_scope | Read calibrated receipt/issue meters or traceable bowser delivery records, reconcile tank stock and actual moisture operations; internal recirculation is not a new supply. | m3 | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Do not assume rainfall, purchased water or abstraction equivalent; actual zero-use requires method evidence. |
 | cp_finish_water_abstraction | regravel_finish | Actual environmental water abstracted for this repair | Actual site/supplier record | source_id; environmental_compartment; permit; meter_id; abstracted_m3; period; reuse_m3; pump_energy_owner; temperature_C; density_kg_per_m3 | Read calibrated abstraction meters and source/permit records, distinguish environmental withdrawal from purchased supply and reuse. | m3 | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Actual source medium, water support and unit chain required; no use documented explicitly. |
 | cp_finish_plant | regravel_finish | Actual placing and compaction plant and tool service | Actual site/supplier record | asset_id; provider; event_id; operation; start_time; end_time; service_hours_h; idle_hours_h; pass_count; other_node_job_consumers; period; lifecycle_scope; utilization_denominator; attribution_share | Use actual hour/task logs and provider coverage, paired with the shared asset ledger; cover manufacture, maintenance/replacement and end-of-life over all jobs/periods once. | h | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | No omitted capital phases or duplicate separately modelled fuel; actual replacement/termination and coverage gaps retained. Completed asset lives use observed historical service. An in-service asset may use evidence-based prospective remaining service, replacement/termination and end-of-life scenarios: distinguish forecasts from observations, disclose the complete-life utilization denominator, source, uncertainty/sensitivity and update trigger. Do not invent a future retirement date or default lifespan; missing justified full coverage or denominator, rather than continued operation, is the data gap. |
-| cp_finish_fuel | regravel_finish | Actual placing, water-bowser and roller fuel by grade | Actual site/supplier record | fuel_grade; asset_id; event_id; period; opening_kg; issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; service_scope_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg | Reconcile fuel issues, stock and machine activity; include repeated spread/compaction work and uniquely attribute shared consumption. Close opening stock plus gross issues against actual consumption, closing stock, true outward return/transfer and spilled material. Link every actual return/transfer/spill to a separate real product/waste/elementary exchange as its actual custody requires; never include that mass in combustion. | kg | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Calibrated measures and real lot density; no automatic exhaust equivalence. No missing disposition treated as consumed fuel; record unresolved balance gap. |
+| cp_finish_fuel | regravel_finish | Actual placing, water-bowser and roller fuel by grade | Actual site/supplier record | fuel_grade; asset_id; event_id; period; opening_kg; issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; service_scope_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | Reconcile fuel issues, stock and machine activity; include repeated spread/compaction work and uniquely attribute shared consumption. Close opening stock plus gross issues against actual consumption, closing stock, true outward return/transfer and spilled material. Link every actual return/transfer/spill to a separate real product/waste/elementary exchange as its actual custody requires; never include that mass in combustion. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates. | kg | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Calibrated measures and real lot density; no automatic exhaust equivalence. No missing disposition treated as consumed fuel; record unresolved balance gap. |
 | cp_finish_electricity | regravel_finish | Actual layer-finishing electricity supply | Actual site/supplier record | meter_id; supplier; event_id; opening_kWh; closing_kWh; period; other_job_kWh; attribution_share; service_scope | Read actual calibrated meters/submeters and traceable job records; include rework and testing where owned. | kWh | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Native kWh retained; Energy support chain and supplier identity require confirmation. |
 | cp_accepted_regravelling | regravel_finish | Accepted existing unbound gravel-road regravelling repair service | Actual site/supplier record | road_id; segment_id; start_chainage_m; end_chainage_m; width_m; treated_area_m2; layer_thickness_mm; crown_percent; longitudinal_grade_percent; moisture_percent; compacted_density_kg_per_m3; density_test_method; grading; plasticity; actual_water_roller_method; weather; criterion_source; criterion_tolerance; test_result; defect_id; rework_closeout; handover_date; reporting_period; client_signoff | Survey the actual finished segment and take prescribed material/geometry/moisture/compaction tests against current contract criteria; retain signed acceptance and all defect/retest closure. Record actual chainages/areas as qualifiers, not count-equivalent output. | item | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | No unaccepted chainage counted, no universal performance target; full preparation/repair/rework burden retained. |
 | cp_aggregate_return | regravel_finish | Actual usable new aggregate returned outward | Actual site/supplier record | dispatch_id; lot_id; material_identity; gross_kg; tare_kg; moisture_percent; recipient; product_custody; transport_owner; period; input_receipt_id | Use weighed dispatch/recipient records, reconcile against gross new_aggregate receipts and closing stock; retain the actual burden/return treatment once. | kg | Every event/lot and all repeated operations | Complete bounded repair campaign, linked reporting dates | Actual declared chainages and responsible provider | per reference flow | Do not export retained stock or classify the same rejected lot twice. For receipts/issues and outward dispatch, gross means total material before netting returns or other outward transfers, after removing vehicle/container tare. Where gross_kg and tare_kg record weighed vehicle/container and tare, subtract tare_kg from gross_kg to obtain material mass for the balance; never enter gross vehicle mass as material. Retain scale accuracy and matched moisture/state. |
@@ -578,9 +587,11 @@ Range evidence need: Collect stream-specific rejection/removal mass and uncertai
 | repair_normalization | all inventory rows | Sum unique node-owned physical events including rework for this accepted contract segment; express amounts per reference flow. The regravel_finish lead logistics ledger owns each leg once through its producing-node/leg-owner matrix. Internal host transfers are paired, not duplicated final output. | Node event IDs; contract acceptance; all node protocols | Exchange amounts for the one declared accepted repair |  |
 | aggregate_reconcile | new_aggregate; aggregate_return; rejected_layer | Reconcile opening stock plus gross receipts with installed material, actual outward usable returns, outward waste, supported losses and closing stock at matched moisture/state. Derive loose/compacted volume only with actual density; FHWA examples are not conversion factors. | cp_new_aggregate; cp_aggregate_return; cp_rejected_layer; actual density/moisture tests | Lot-specific material balance and carried-forward stock burden | fhwa-gravel-2015 |
 | service_attribution | prep_plant; finish_plant | Assign complete-life shared asset burdens to actual node/job/period service using measured utilization and justified idle/mobilization/termination treatment; retain one event owner and no overlap with separately modelled fuel/energy/haul. | cp_prep_plant; cp_finish_plant; full asset lifecycle ledger; all consumers/periods | Attributable plant service and coverage gaps |  |
-| fuel_consumption | prep_fuel; finish_fuel | Actual consumed fuel is the balanced portion of opening stock plus gross issues after closing stock, true outward returns/transfers and actual spills. Model each real outward disposition by its custody and destination separately; consumption alone may drive combustion calculations. | cp_prep_fuel; cp_finish_fuel; return/transfer/spill disposition records | Actual grade-specific consumed exchange and separately owned exits |  |
+| fuel_consumption | prep_fuel; finish_fuel | Actual burned fuel B_fuel is the balanced portion of opening stock plus gross issues after closing stock, true outward returns/transfers and actual spills. Model each real outward disposition by its custody and destination separately; consumption alone may drive combustion calculations. | cp_prep_fuel; cp_finish_fuel; return/transfer/spill disposition records | Actual grade-specific consumed exchange and separately owned exits |  |
 | emission_calculation | prep_dust; prep_exhaust; finish_dust; finish_exhaust | Calculate species/fraction campaign mass from measured emission rate times actual activity duration, or actual applicable activity times a documented species/fraction-specific factor. Record method/factor source, units, applicability to actual machine/fuel/material/moisture/control and receiving medium, sampling/extrapolation and propagated uncertainty; derived totals are not direct measurement. | Actual rate/duration or activity/factor and method reference; all four emission protocols | Calculated actual campaign emissions with method/evidence gap disclosure |  |
 | water_balance | finish_water_product; finish_water_abstraction; captured_runoff; finish_water_release | Reconcile purchased/abstracted water, stock changes, new aggregate incoming moisture, retained-host initial/final moisture and actual influential rainfall/external run-on with retained moisture, captured outflow and substantiated releases. Weather/material moisture are measured balance terms, not extra purchases/credits. Internal reuse is paired; any missing term is a gap, never automatic evaporation. Use actual density/temperature for kg conversion. | cp_finish_water_product; cp_finish_water_abstraction; cp_new_aggregate; cp_captured_runoff; cp_finish_water_release; host moisture and actual weather/run-on evidence | Pathway quantities with uncertainty and unmatched balance gaps |  |
+| fuel_supply_fate | finish_fuel; prep_fuel | For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion. | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
+| actual_host_handoff | prepared_host; host_to_finish | Independently record N_host from signed accepted contract-segment IDs; count each complete accepted declared segment once, with different geometry kept distinct. At each actual preparation/receipt gate record approved handoff IDs, current state, time and measured geometry and derive its count from those records. Pair only the same physical state/transfer; distinct actual correction handoffs retain their activity and prior burden once. Documentary road identity is not a new purchased road or coproduct. Normalize each actual gate count by N_host; do not infer any intermediate count from the final reference one or count repeated preparation as another accepted segment. | cp_prepared_host; cp_host_to_finish; accepted segment IDs; actual handoff IDs/state/count; N_host | paired actual host gate quantities |  |
 
 ### Data Quality Requirements
 
@@ -603,7 +614,7 @@ Range evidence need: Collect stream-specific rejection/removal mass and uncertai
 | balance_paths | all inventory rows | Check gross received/issued material and water balances with uncertainty, retained host treatment, internal reuse, real outward custody and closing stock; no duplicate stock/return or burden. Resolve every defect/retest/rework path before counting accepted output. |  |
 | asset_periods | prep_plant; finish_plant | Check full shared-asset phase coverage, all consumers/reporting periods, utilization denominator, replacements/termination and single event ownership; missing lifecycle/support coverage blocks dataset finalization. |  |
 | identity_range | all inventory rows | Expand conditional material/service/waste/substance requirements into actual distinct exchanges. Verify exact flow/property/unit identities and actual numerical uncertainty evidence for each; never equate generic dust with a particle fraction or fuel with exhaust. Missing data is explicit, not zero. |  |
-
+| validate_fuel_supply_fate | finish_fuel; prep_fuel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |
 
 ## 10. Published Dataset Profile
 

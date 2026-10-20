@@ -289,7 +289,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | bench_install | 长椅与混凝土板机械装配整合及验收 | required | 相容且验收合格的既有混凝土及实际机械体系；条件性材料／服务依记录活动触发 | 负责组件界面、钻孔／清理／紧固、检查和闭环返工；供应方退回及实际废物出口均源于此 | 1 item 验收合格安装 |
 
@@ -393,7 +393,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_materials | bench_install | 长椅五金垫片包装收货及使用 | 收货与材料账 | job_id; model; serial_lot; sku; actual_configuration; supply_gate; received_count; measured_mass; unit_mass_basis; opening_stock; closing_stock; installed; damaged; return_id; upstream_coverage | 记录跨入作业边界的五金／垫片毛收货量／领用量，再分别核对安装、损失、实际向外退回及期末库存，不从投入净扣同一退回。采用校准称重或供应方 SKU 质量。已被上游包含的包装仅保留保管／去向账，不建第二次供应交换，并保留实际质量。记录从长椅拆下的滑垫而不虚构新增滑垫投入。以完整验收安装数归一化可归属作业总量，核对失败尝试。 | item; kg | 每次收货／使用／库存变化 | 包括纠正在内的整个首次安装作业 | 实际作业及供应方交接 | per reference flow | 可追溯发票、秤核查、SKU 质量、库存／转移记录及配置一致性 |
 | cp_resources | bench_install | 电力压缩空气共享资产及服务 | 电表与服务账 | job_id; asset_id; provider; meter_start; meter_end; native_unit; operating_hours; idle_hours; air_delivery; pressure; service_period; consumer_id; consumer_driver; total_driver; included_energy; maintenance_coverage | 计量直接使用，记录压缩机清孔和实际吊装／工具时段。在各共享账内枚举全部使用方和期间，说明因果驱动并与总负担核对。保留实际供气和供应方单位。根据服务覆盖只计电力一次；作业可归属总量除以验收数。 | kWh; h; 实际供应方单位 | 每项任务／服务时段及共享期间结账 | 完整作业及完整相关共享服务期间 | 实际现场／作业及共享资产的全部外部使用方 | per reference flow | 电表校准、压缩机／供应方记录、任务日志、全部使用方账及重叠／驱动证据 |
@@ -405,7 +405,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_job | 非参考清单 | q_ref = q_job / N; N = 声明可比作业批内完整验收安装数；保留全部可归属纠正负担并披露拒收作业处理。N 为零时不得归一化。 | q_job; accepted_count N; linked collection protocol | q_ref 每参考流 |  |
 | stock_custody | 材料账 | 按一致材料／单位，核对期初库存加收货与安装／消耗、实际向外可用退回、丢弃及期末库存。退回是明确出口，不得又从毛收货扣除。 | cp_materials; cp_fates; transfer_id | 核对后的材料／保管责任账 |  |
@@ -414,7 +414,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | actual_identity | 全部交换 | 最终数据集交换前核实实际型号／SKU／供应方／物质、状态、接收环境及属性／单位。条件性汇总卡仅在实际记录后展开；未解决身份仍是阻断项。 | 供应资料、供应方细节及具体身份／支持确认 |
 | host_and_gate | 参考流 | 未知既有混凝土不验收；保留实际相容性及说明证据、全部必需固定点及缺陷闭环。历史尺寸是示例体系证据。 | cp_acceptance; `lf-austin-installation-2009` |

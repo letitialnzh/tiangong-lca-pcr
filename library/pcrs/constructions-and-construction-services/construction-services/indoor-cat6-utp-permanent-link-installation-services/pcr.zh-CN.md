@@ -210,7 +210,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | install_certify | 安装并测试永久链路 | required | 所有范围内首次安装 | 独立集成：线缆、两端数据模块组件及永久附件；负责实际手工干式敷设、端接、标识、未验收状态纠正及测试交接 | 一条同配置验收完整链路；实际正值 D |
 
@@ -295,7 +295,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_acceptance | install_certify | 合格链路及测试证据 | 安装验收记录 | 作业、链路和两端端口编号；配置及实体线缆长度；实际 D；标准版次及限值；NVP；测试仪和适配器序列号及校准；原始通过或失败文件；修复及复测；验收日期及签字 | 从签字记录独立计数完整验收的唯一链路；逐条核对原始永久链路测试文件、选定限值及完整缺陷闭合。简单通断检查或完整通道测试不能代替选定的验收测试。 | item | 每条链路及每次初测或纠正测试 | 收货至签字验收，保留原始报告日期 | 声明的室内作业及已披露的同配置组 | 每参考流 | 签字竣工及端口图、包含失败尝试的完整原生结果、选定测试设置和校准证据；汇总口径：独立验收数量 D；每参考流 |
 | cp_materials | install_certify | 物资接收及安装输入 | SKU 保管及计量记录 | 批次、作业和 SKU；厂家、型号及材料；净质量；收货及使用长度或件数；同一 SKU 换算；保留余量；期初期末库存；成套部件；上游交付及包装包含项 | 按匹配 SKU 分别称量，或使用同一 SKU 可追溯的单位长度或件数净质量证据。核对实际线缆盘和两端端接材料的实装长度、保留线端、废物及库存；不得以电气测试长度代替实测耗用量。 | kg | 每次收货、领料及库存事件 | 收货至验收作业可归属的全部材料 | 实际安装作业及供货记录 | 每参考流 | 校准秤或匹配换算证据；供应商包含项清单；事件级库存闭合；汇总口径：实际可归属供料净质量；每参考流 |
@@ -305,7 +305,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | 来源 |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_job | all inventory rows | q_i = attributable collected numerator_i / D；D 为 cp_acceptance 独立采集的同配置链路验收数量。各分子均独立计量，并包含失败作业。 | numerator_i; D; cp_acceptance | q_i |  |
 | owned_resource_share | owned_tools_and_certifier | a_rj = A_rj / sum_k(A_rk)；求和覆盖同一完整资源生命周期数据包的全部作业 k。归属资产 = a_rj / D item；负荷 = B_r * a_rj / D。保留各期责任归属决定。 | A_rj; A_rk; B_r; D; cp_resources | attributed asset quantity and lifecycle burden |  |
@@ -313,7 +313,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | range_copper_data_cable | copper_data_cable | 范围证据需求：同一 SKU 的单位实体长度净质量、实际领用、实装、库存及废料长度和同配置链路长度；不得设定每条链路通用千克数。 | 实际匹配配置及计量记录；缺失明确保留为缺口，不设默认数量 |
 | range_cat6_utp_jacks | cat6_utp_jacks | 范围证据需求：匹配型号组件质量、实际领用、更换及退回数量和成套部件证据；包装质量单独处理。 | 实际匹配配置及计量记录；缺失明确保留为缺口，不设默认数量 |

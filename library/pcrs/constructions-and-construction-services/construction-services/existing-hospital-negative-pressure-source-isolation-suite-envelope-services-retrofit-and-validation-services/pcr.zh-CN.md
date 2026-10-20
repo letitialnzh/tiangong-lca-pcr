@@ -655,11 +655,32 @@ sync_with: pcr.en-US.md
 
 范围证据需求：须有实际事件、物质或粒径及接收介质和实测物种质量，或匹配活动量及有效因子单位来源，或实测整流体释放及有据成分去向与不确定性。捕集废物、整流体与物种审计视图分开；不得从感染风险推病原体量或采用默认泄漏排放因子。
 
+#### 采集要求：实际按面积供应的可清洁饰面系统 (`finish_area`)
+
+过程／待建立交换的方向／类型：`finishing` / `inputs` / `product`.
+
+按每个真实 SKU、组成/状态及保管关系建立独立原子交换。本要求不是通用集合流。真实完整的采购总成可采用其经核实的整包边界，已含部件不再额外采购。
+
+记录实际墙地顶可清洁饰面及胶涂系统；不设通用消毒效率或涂层排放因子。
+
+- 采集对象：实际按面积供应的可清洁饰面系统
+- 流属性/单位：面积 / m2
+- 数量规则：实际归属数量 / N；原始操作数保留于cp_finishing
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_finishing`
+- 来源：`nhs-isolation-hbn0401-supp1-2025`
+
+范围证据需求：记录实际可清洁饰面SKU系统、原生供货与安装表面积、母体首次检漏放行、裁切搭接、匹配外退、修补拒收、饰面检查及面积不确定性；不设默认厚度、杀菌效能或每套间饰面面积。
+
 ## 6. 过程清单结构
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | clearance | 临床释放、围挡与选择性拆除 | required | 实际完整工程 | 已签署既有套间临床/IPC释放、旧水气电通风系统隔离及拆出物去向；保留结构不作新采购。 | 每参考流 |
 | envelope_services | 围护密封与建筑设施集成 | required | 实际完整工程 | 板到板墙体、接缝、贯穿孔、门窗、送排风管及风机、压差稳定器、监测报警控制与实际水电医气消防接口；覆盖前先做首装测试。 | 每参考流 |
@@ -784,23 +805,6 @@ sync_with: pcr.en-US.md
 
 范围证据需求：按本节点事件采集实际供水来源品质、校准体积、保留及循环存水、受控送处理与环境直排去向和水平衡不确定性；供水量不能证明排水量。
 
-###### 实际按面积供应的可清洁饰面系统（`finish_area`）
-
-记录实际墙地顶可清洁饰面及胶涂系统；不设通用消毒效率或涂层排放因子。
-
-- 选定流：实际按面积供应的可清洁饰面系统
-- 流属性/单位：面积 / m2
-- 数量规则：实际归属数量 / N；原始操作数保留于cp_finishing
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_finishing`
-- 来源：`nhs-isolation-hbn0401-supp1-2025`
-
-范围证据需求：记录实际可清洁饰面SKU系统、原生供货与安装表面积、母体首次检漏放行、裁切搭接、匹配外退、修补拒收、饰面检查及面积不确定性；不设默认厚度、杀菌效能或每套间饰面面积。
-
 ##### 废物流
 
 ##### 基本流
@@ -906,7 +910,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_native | all inventory rows | 各实际具体交换以归属工程数量除N一次，最终套间输出为1 item；保留原分子与N。 | native_quantity; N; cp_clearance; cp_envelope_services; cp_finishing; cp_validation | 每参考流原生交换 |  |
 | stock_balance | all inventory rows | S = 归属期初库存 + 扣皮重外部收货 - 结转期末库存。内部领用安装不作新收货。选择总供货配匹配可用外退，或消耗量口径只扣一次外退并披露。未退废物损失保留上游，期末库存不是外退；历史拆除物不抵扣新供应。 | opening_stock; external_receipts; tare; carried_closing_stock; usable_outward_return | 对账供应与匹配外退台账 |  |
@@ -917,7 +921,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity | all inventory rows | 最终交换前核实具体SKU承包物种、类型方向状态门槛属性单位及支持行；集合卡不是固定身份。 | 详情行及实际规格 |
 | completeness | all inventory rows | 覆盖实际全部阶段承包临床临供及共享寿命；零需证据，未知作阻断，记录测量不确定性。 | 覆盖矩阵、原生记录、资产寿命及范围对账 |

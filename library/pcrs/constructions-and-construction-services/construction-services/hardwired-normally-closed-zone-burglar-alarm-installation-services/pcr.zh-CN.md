@@ -238,7 +238,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `install_accept` | 入侵报警系统集成、调试与验收 | required | 本类别声明范围内所有安装 | 承担部件集成、测试、纠正与最终交付；修复/复测仍在本节点内；退货与废物保留原始事件关联 | `accepted_installation`；独立测得 D |
 
@@ -339,7 +339,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_acceptance` | `install_accept` | accepted_installation | 验收记录 | 工单；场址；主机型号；防区/防拆表；物料清单；市电接口；电池；编程；测试结果；纠正/复测；恢复正常状态；日期；用户签字；验收数量 D |逐次核查安装设计与合格签署测试/交付记录；独立计数同配置完整验收安装；汇总：每参考流；归一化前保留实际正的 D 与原始验收事件 | item | 每工单及验收/复测事件 | 实际收货至交接日期，包含纠正作业 | 实际场所及声明配置 | 每参考流 | 签署验收；合格测试；排除失败/未完成；配置等价证据 |
 | `cp_materials` | `install_accept` | control_panel; field_alarm_devices; permanent_batteries; alarm_cable; fixings_and_containment; incoming_packaging | 物料保管记录 | 工单；批次；SKU；材料/状态；供货边界；已含附件/包装/运输；净质量；数量/长度；换算因子；库存；安装/退货/废物数量；原始事件；接收方 |使用经校准净称重或可追溯匹配 SKU 数量/长度转质量；检查供应方包含关系及事件关联实物记录；汇总：每参考流；按匹配 SKU 汇总归属实测分子后除以 D | kg | 每批次、领用及保管变动 | 全部安装日期及相关期初/期末库存日期 | 实际工单、供应方数据包与材料池 | 每参考流 | 校准；匹配因子出处；供货包含台账；平衡残差与容差 |
@@ -349,7 +349,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用于 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `c_actual` | all inventory rows | q_i = N_i / D；N_i 为逐项交换独立保留的实际归属分子；D 为独立计数的同配置验收安装。不得从预期参考输出反推 N_i。 | N_i; D; cp_acceptance; cp_materials; cp_energy; cp_services; cp_releases | q_i |  |
 | `c_custody` | material custody pools | 期初库存 + 收货 = 安装留存材料 + 期末库存 + 可用退货 + 实际废物 + 已识别释放 + 残差。按准确来源池核对并报告残差/容差；混合质量诊断不等于单一流或服务质量。 | cp_materials; cp_releases; source pool; measured quantities | 实物核对 |  |
@@ -357,7 +357,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用于 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `dq_identity` | all inventory rows | 保留准确型号/SKU/状态/提供方/接收方或物种/粒径/介质；最终绑定前核验具体流与兼容支持链。 | 供应方及接收方记录；核验身份支持 |
 | `dq_measurement` | all measured quantities | 保留校准、因子匹配、原始实际分子、单位、覆盖范围及不确定性。不设通用部件重量、废物因子、工具寿命或服务能耗范围。 | 表计/秤记录；换算出处；匹配数据包 |

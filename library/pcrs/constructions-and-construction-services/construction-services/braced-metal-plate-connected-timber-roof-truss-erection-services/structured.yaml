@@ -326,7 +326,7 @@ system_boundary:
       source_ids: []
     - rule_id: system_boundary_rule_74
       applies_to: "foreground_system_boundary"
-      rule: "Conditional umbrella for actual combustion fuel identities crossing the site boundary. Use this card only for operation not already included in crane/access/logistics services; keep fuel types and supply forms separate."
+      rule: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty."
       source_ids: []
     - rule_id: system_boundary_rule_75
       applies_to: "foreground_system_boundary"
@@ -338,7 +338,7 @@ system_boundary:
       source_ids: []
     - rule_id: system_boundary_rule_77
       applies_to: "foreground_system_boundary"
-      rule: "Amount rule: Actual fuel consumed by fuel type and equipment/period from refuelling and opening/closing stock records; convert volume only with actual fuel density evidence."
+      rule: "Amount rule: Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
       source_ids: []
     - rule_id: system_boundary_rule_78
       applies_to: "foreground_system_boundary"
@@ -867,8 +867,8 @@ dataset_production:
       process_id: "roof_truss_erection"
       flow_role: "direct electricity and fuel"
       record_type: "meter and fuel ledger"
-      raw_fields: "set_id; equipment; provider_coverage; supply/fuel_identity; opening_stock; delivered; closing_stock; meter_start/end; charging; operating_period; all_consumers; allocation_driver; factor/unit"
-      collection_method: "Use actual electricity meters/charging and consumed fuel stock reconciliation. Distinguish fuel and electricity, include compressor/tools and correction events, and allocate shared operation using measured consumption or documented causal use with complete denominator; record factors for any actual conversion."
+      raw_fields: "set_id; equipment; provider_coverage; supply/fuel_identity; opening_stock; delivered; closing_stock; meter_start/end; charging; operating_period; all_consumers; allocation_driver; factor/unit; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Use actual electricity meters/charging and consumed fuel stock reconciliation. Distinguish fuel and electricity, include compressor/tools and correction events, and allocate shared operation using measured consumption or documented causal use with complete denominator; record factors for any actual conversion. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "kWh; kg; original measured units"
       frequency: "each meter/refuelling period and stock closure"
       temporal_coverage: "P1 and any directly owned P2/P3 operation"
@@ -947,6 +947,21 @@ dataset_production:
         - "actual activity/factor or measurements"
       output: "substance- and compartment-specific released mass"
       source_ids: []
+    - id: fuel_supply_fate
+      applies_to: "direct_fuel"
+      rule: "For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion."
+      inputs:
+        - "opening fuel"
+        - "external receipts"
+        - "closing intact fuel"
+        - U_fuel
+        - X_fuel
+        - W_fuel
+        - P_fuel
+        - D_fuel
+        - "actual node fuel protocol and fate evidence"
+      output: "G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets"
+      source_ids: []
   data_quality_requirements:
     - id: actual_design_and_gate
       applies_to: "reference product"
@@ -993,6 +1008,10 @@ validation_rules:
     applies_to: "all inventory rows"
     rule: "Require actual identity/property/unit compatibility and traceable linked node-specific protocols. Each Range evidence need must be closed by actual evidence or disclosed as unresolved; fixed reference quantity is a definition, not a yield range. Check every actual conditional material/waste/substance separately and reject fabricated default fuel, density, loss, fastener, emission or carbon-credit values."
     source_ids: []
+  - rule_id: validate_fuel_supply_fate
+    applies_to: "direct_fuel"
+    rule: "Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Foreground site erection data package, with process and lifecyclemodel projections and actual component/resource background links"
   downstream_use: "secondary_dataset; background_dataset"
@@ -1020,7 +1039,7 @@ data_sources:
     used_for: "Job-specific installation/safety package and truss design/project-document requirement; actual package applicability remains foreground evidence"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:3b1d4b1572f67bffdadf1981d6bb062ec95ba94990eadaf05c2078b6e173eb24"
+  source_sha256: "sha256:b7e08a0e3101c4d6847618a5f5856c2ead46439be804983c7d78e98f07a26030"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6734"
@@ -1031,10 +1050,10 @@ normative_context:
           line: 60
           column: 1
         end:
-          offset: 27401
-          line: 310
+          offset: 27561
+          line: 311
           column: 1
-      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Factory-complete identified timber trusses and specified installation components at their declared supply gate, with existing bearings accepted for the actual package and lifting access available |\n| starting_condition_role | Foreground erection boundary; host readiness is a documented interface, not a zero-burden substitute for construction in a whole-building model |\n| product_classification_scope | Narrower timber-truss erection subset of CPC 3.0 54522; separate from roof coverings under 54530 |\n| recursive_input_rule | Record factory trusses as component products, not as this erection service. If a previously erected set or subcontracted erection service enters the package, disclose its completed scope and prevent repeating the same erection or resource burden; a relocation is outside first erection. |\n| upstream_dataset_requirement | Use actual supply-gate truss/component and resource datasets with declared packaging, freight, energy and temporary-asset coverage. Include upstream manufacture through these inputs; do not recreate factory production in the site node. |\n| disclosure | Declare supplied-kit coverage, excluded host/diaphragm work, physical state and responsibilities at the erection gate, all shared consumers and periods, and temporary-support production/use/removal coverage and later owner. Unresolved stability or service coverage blocks a completed dataset. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `document_and_host_gate` | roof_truss_erection | Before erection, reconcile actual truss design/placement/jobsite documents, approved erection/bracing plans and accepted bearings; resolve conflicts through the responsible designer/manufacturer. Record project-specific applicability rather than importing public article dimensions or tolerances. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `erection_components` | roof_truss_erection | Own finished trusses, additional bearing fasteners/hangers, permanent brace/restraint members and their fixings, temporary-stability service, lifting/access, installation energy, freight, actual auxiliary consumption, packaging and correction losses. Identify which items are already in the supplied kit to avoid counting them twice. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `erection_gate` | erected_roof_truss_set | Handover requires every specified truss positioned, securely connected at its accepted bearings, required permanent individual-member restraints/bracing installed, closed inspection findings and signed responsibility transfer. This is an erection-stage gate; do not claim complete roof load, weather, fire or thermal performance. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `retained_temporary_stability` | temporary_stability_service | Where a later diaphragm is needed, retain required temporary restraint. Index erection, post-handover continuation, later stability confirmation and authorized removal/return; name custody and removal owner at each change. A bounded service must include or explicitly link asset production, installation, maintenance/use, replacement, removal, return transport and end-of-use treatment; it cannot erase these burdens. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `external_repair_boundary` | roof_truss_erection | Placement/connection corrections loop within this node with their full resource burdens. Damaged, unsuitable or altered trusses remain quarantined; return or characterize their waste exit. Cutting/notching/drilling trusses and structural repair are not admitted operations in this PCR. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `resource_and_release_boundary` | roof_truss_erection | For crane, access, temporary bracing and freight, identify full provider coverage and every actual consumer/period, including other work packages. If the provider includes operation fuel/emissions, do not add the same operation again. For directly controlled equipment collect fuel, energy and characterized direct releases separately; no unmeasured zero assumption. |  |\n| `boundary_atomic_completion` | all processes | Section 5 collection requirements are mandatory collection and applicability instructions, not aggregate inventory exchanges. Instantiate a distinct atomic flow card/exchange for every actual product, waste stream, substance and environmental compartment before completing a foreground dataset. Preserve every actual event, upstream burden, return and native unit; apply the linked formula to each compatible identity separately. Record environmental withdrawals as inputs and releases as outputs. Never sum unlike native units, substitute one UUID for a pool, infer zero from missing records, or duplicate an existing concrete card. Documentary retained-host interfaces carry state only and create no new purchased asset. Quantified completion is blocked until applicable members are resolved or evidenced absent; nonbinding screening aids do not supply missing amounts or chemistry. |  |\n\n### Conditional inventory completion requirements\n\nThe following identifiers denote collection pools or documentary state ledgers. A pool may have zero, one or several actual members. Determine applicability from real records; retain the original quantity method and collection protocol for each member. Only compatible quantities may be reconciled together. Any old optional screening interval below remains a provisional aid for review and must not be imposed on a different material or on a mixed pool.\n\n#### Collection requirement: Specified pre-sized permanent timber restraint and bracing members (`permanent_bracing`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nInclude the actual members and reinforcements installed at this erection gate. Separate components supplied in the truss kit from additional purchases; no site transformation of trusses is permitted.\n\n- Collection subject: Specified pre-sized permanent timber restraint and bracing members\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual gross job receipts/issues attributable to this set by material/specification, including correction supply; measure the net material mass of those receipts/issues and record installed, usable-return and retained-stock states separately, without subtracting a separately modelled return again.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `sbca-installation-2023`; `sbca-bcsi-current`\n\nRange evidence need: Actual engineer-approved brace schedule, pieces and measured/supplier masses are needed; no generic brace spacing, timber density, loss fraction or force capacity is supplied.\n\n#### Collection requirement: Specified bearing connectors and installation fasteners (`bearing_connectors`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nRecord actual hangers, bearing connections, brace fixings and fasteners not already included in the factory product or other service input. Split material and corrosion-protection identities using actual purchase and installation records.\n\n- Collection subject: Specified bearing connectors and installation fasteners\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual gross job receipts/issues of connectors and fasteners by material/type attributable to this set, including correction supply; retain counted items and their net material mass, with installed, usable-return and retained-stock states recorded separately and no double net subtraction.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `sbca-installation-2023`\n\nRange evidence need: Obtain actual approved connection schedule and item-specific mass evidence; no standard nail count, anchor capacity or generic steel substitution is valid.\n\n#### Collection requirement: Bounded temporary roof-truss restraint and bracing service (`temporary_stability_service`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nThis conditional umbrella identifies the actual temporary restraint/bracing system and service provider or owner. Disaggregate each actual system. Coverage includes capital materials/assets and installation, retention, maintenance, replacement, authorized removal and return/end-of-use burdens; the h unit only records the declared service interval.\n\n- Collection subject: Bounded temporary roof-truss restraint and bracing service\n- Flow property / unit: Duration / h\n- Amount rule: Actual allocated service-hours and underlying system quantities/resources for the erection period and the separately indexed retained-support continuation; include linked future removal obligations and disclose unresolved provider coverage.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_services`\n- Sources: `sbca-installation-2023`; `sbca-bcsi-current`\n\nRange evidence need: Obtain actual approved temporary-bracing plan, member/asset inventory, dates, all consumers, ownership and removal/return records; neither a default duration nor zero asset burden can be inferred.\n\n#### Collection requirement: Bounded crane, lifting and access equipment service (`lifting_access_service`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nIdentify actual crane/rigging, hoisting and access systems serving the erection. For each provider disclose included mobilization, equipment production/maintenance, operation and demobilization; separate direct-operation inputs only when absent from that service.\n\n- Collection subject: Bounded crane, lifting and access equipment service\n- Flow property / unit: Duration / h\n- Amount rule: Actual service-specific operating/standby hours and allocated mobilization/demobilization events, retaining all other consuming jobs and the provider inventory basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_services`\n- Sources: `sbca-installation-2023`\n\nRange evidence need: Obtain actual lift plan and equipment/service logs, provider coverage and whole-period consumer denominator; no fuel-per-lift or capacity/time defaults are specified.\n\n#### Collection requirement: Actual component and residual freight service (`logistics`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nRecord actual transport legs for trusses, additional components, packaging and residual/return movements not included upstream or in a bounded service. Keep payloads, mode and provider boundaries distinct.\n\n- Collection subject: Actual component and residual freight service\n- Flow property / unit: Transport / t*km\n- Amount rule: Actual consignment mass and loaded distance by leg, with allocated empty-return/mobilization coverage where applicable; exclude freight already covered by upstream/provider datasets.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_logistics`\n\nRange evidence need: Obtain actual payload, route, distance and vehicle/service records; no typical distance or load factor is justified for an unspecified site.\n\n#### Collection requirement: Actual fuel supplied to directly controlled erection equipment (`direct_fuel`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nConditional umbrella for actual combustion fuel identities crossing the site boundary. Use this card only for operation not already included in crane/access/logistics services; keep fuel types and supply forms separate.\n\n- Collection subject: Actual fuel supplied to directly controlled erection equipment\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual fuel consumed by fuel type and equipment/period from refuelling and opening/closing stock records; convert volume only with actual fuel density evidence.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_resources`\n\nRange evidence need: Obtain actual equipment, fuel specification, consumed quantities and provider exclusions; fuel identity, density and consumption cannot be inferred from lifting requirements.\n\n#### Collection requirement: Actual auxiliary installation consumables (`ancillary_materials`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nConditional umbrella for genuinely consumed supplementary materials such as equipment lubricants when attributable and absent from provider inputs. No coating, adhesive, truss repair chemical or water-consuming route is presumed.\n\n- Collection subject: Actual auxiliary installation consumables\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual consumed net mass by substance/product identity and declared use, separating returned stock and waste; add any real water input with its property/unit from actual records.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n\nRange evidence need: Actual purchase/use/stock records and material identity are needed; a zero, one or multiple exchange outcome depends on the job and cannot use a generic chemical factor.\n\n#### Collection requirement: Actual incoming transport packaging (`transport_packaging`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nIdentify actual wrapping, straps, dunnage and reusable packaging at the declared supply gate. Activate a separate burden-bearing input only for separately supplied packaging or the portion not covered by the upstream product dataset. Supplier-included packaging still requires physical custody/exit records, without a second upstream material-production burden. Reusable temporary-bracing assets remain in their service.\n\n- Collection subject: Actual incoming transport packaging\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual incoming packaging mass by material and coverage: only separately supplied or upstream-uncovered packaging becomes an additional burden-bearing input; retain all packaging in the custody ledger and reconcile stock, genuine return and waste without double counting.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n\nRange evidence need: Obtain supplier packaging declarations and site counts/weighing with actual custody; no universal packaging intensity or return rate is established.\n\n#### Collection requirement: Usable installation-material and packaging returns (`reusable_returns`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `product`.\n\nConditional product-output umbrella for genuine unused connectors/braces and reusable packaging leaving to a named supplier or store. Record separate materials and destinations; retained site stock is a ledger state rather than an invented exit. Do not place rejected trusses here.\n\n- Collection subject: Usable installation-material and packaging returns\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual dispatched usable return mass by identity, receiving custodian and transfer ID, reconciled to gross supply and retained stock without a second net subtraction.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n\nRange evidence need: Obtain actual return acceptance, custody and mass records; no default reusable fraction or avoided-production credit is assumed.\n\n#### Collection requirement: Quarantined roof trusses returned for disposition (`rejected_truss_returns`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `product`.\n\nConditional product-output umbrella only when the receiving manufacturer or other identified custodian accepts the actual trusses for further use or authorized disposition as products. Include defect state and transfer record; waste-status trusses use the waste card instead.\n\n- Collection subject: Quarantined roof trusses returned for disposition\n- Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item\n- Amount rule: Actual returned count by truss ID with disposition, recipient and matching receipt; prevent those pieces from entering the accepted-set count or being counted again as waste.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n- Sources: `sbca-installation-2023`\n\nRange evidence need: Actual damage/inspection and manufacturer/engineer disposition plus return records determine quantities and product/waste classification; no reject fraction is established.\n\n#### Collection requirement: Characterized erection and packaging waste (`erection_waste`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `waste`.\n\nConditional waste-output umbrella for actual discarded connectors, braces, damaged trusses and packaging; segregate by material, hazardous status and receiving treatment. Retain failed-attempt and correction burdens. This route does not assume truss-cutting sawdust.\n\n- Collection subject: Characterized erection and packaging waste\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual weighed or traceably documented waste mass by material/status and destination with transfer IDs; keep captured residue distinct from releases and usable returns.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n\nRange evidence need: Obtain actual waste tickets, segregation and treatment evidence; no generic installation loss or recycling yield is imposed.\n\n#### Collection requirement: Characterized direct erection releases to the environment (`direct_releases`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `elementary`.\n\nConditional elementary-output umbrella for actual directly operated equipment combustion species and measured installation particles or other releases. Establish substance, receiving medium and particle class/basis before selecting each concrete flow; provider-included releases are not repeated.\n\n- Collection subject: Characterized direct erection releases to the environment\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual measured or defensibly calculated substance-specific mass using recorded activity and applicable source-specific factors, with capture controls and receiving compartment; unknown releases remain data gaps.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_releases`\n\nRange evidence need: Obtain actual equipment/fuel/emission-factor or sampling evidence and receiving medium; no generic VOC, particulate or exhaust quantity is fabricated.\n\n"
+      markdown: "## 5. System Boundary\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | Factory-complete identified timber trusses and specified installation components at their declared supply gate, with existing bearings accepted for the actual package and lifting access available |\n| starting_condition_role | Foreground erection boundary; host readiness is a documented interface, not a zero-burden substitute for construction in a whole-building model |\n| product_classification_scope | Narrower timber-truss erection subset of CPC 3.0 54522; separate from roof coverings under 54530 |\n| recursive_input_rule | Record factory trusses as component products, not as this erection service. If a previously erected set or subcontracted erection service enters the package, disclose its completed scope and prevent repeating the same erection or resource burden; a relocation is outside first erection. |\n| upstream_dataset_requirement | Use actual supply-gate truss/component and resource datasets with declared packaging, freight, energy and temporary-asset coverage. Include upstream manufacture through these inputs; do not recreate factory production in the site node. |\n| disclosure | Declare supplied-kit coverage, excluded host/diaphragm work, physical state and responsibilities at the erection gate, all shared consumers and periods, and temporary-support production/use/removal coverage and later owner. Unresolved stability or service coverage blocks a completed dataset. |\n\n### Boundary Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `document_and_host_gate` | roof_truss_erection | Before erection, reconcile actual truss design/placement/jobsite documents, approved erection/bracing plans and accepted bearings; resolve conflicts through the responsible designer/manufacturer. Record project-specific applicability rather than importing public article dimensions or tolerances. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `erection_components` | roof_truss_erection | Own finished trusses, additional bearing fasteners/hangers, permanent brace/restraint members and their fixings, temporary-stability service, lifting/access, installation energy, freight, actual auxiliary consumption, packaging and correction losses. Identify which items are already in the supplied kit to avoid counting them twice. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `erection_gate` | erected_roof_truss_set | Handover requires every specified truss positioned, securely connected at its accepted bearings, required permanent individual-member restraints/bracing installed, closed inspection findings and signed responsibility transfer. This is an erection-stage gate; do not claim complete roof load, weather, fire or thermal performance. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `retained_temporary_stability` | temporary_stability_service | Where a later diaphragm is needed, retain required temporary restraint. Index erection, post-handover continuation, later stability confirmation and authorized removal/return; name custody and removal owner at each change. A bounded service must include or explicitly link asset production, installation, maintenance/use, replacement, removal, return transport and end-of-use treatment; it cannot erase these burdens. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `external_repair_boundary` | roof_truss_erection | Placement/connection corrections loop within this node with their full resource burdens. Damaged, unsuitable or altered trusses remain quarantined; return or characterize their waste exit. Cutting/notching/drilling trusses and structural repair are not admitted operations in this PCR. | `sbca-installation-2023`; `sbca-bcsi-current`; `sbca-jobsite-packages` |\n| `resource_and_release_boundary` | roof_truss_erection | For crane, access, temporary bracing and freight, identify full provider coverage and every actual consumer/period, including other work packages. If the provider includes operation fuel/emissions, do not add the same operation again. For directly controlled equipment collect fuel, energy and characterized direct releases separately; no unmeasured zero assumption. |  |\n| `boundary_atomic_completion` | all processes | Section 5 collection requirements are mandatory collection and applicability instructions, not aggregate inventory exchanges. Instantiate a distinct atomic flow card/exchange for every actual product, waste stream, substance and environmental compartment before completing a foreground dataset. Preserve every actual event, upstream burden, return and native unit; apply the linked formula to each compatible identity separately. Record environmental withdrawals as inputs and releases as outputs. Never sum unlike native units, substitute one UUID for a pool, infer zero from missing records, or duplicate an existing concrete card. Documentary retained-host interfaces carry state only and create no new purchased asset. Quantified completion is blocked until applicable members are resolved or evidenced absent; nonbinding screening aids do not supply missing amounts or chemistry. |  |\n\n### Conditional inventory completion requirements\n\nThe following identifiers denote collection pools or documentary state ledgers. A pool may have zero, one or several actual members. Determine applicability from real records; retain the original quantity method and collection protocol for each member. Only compatible quantities may be reconciled together. Any old optional screening interval below remains a provisional aid for review and must not be imposed on a different material or on a mixed pool.\n\n#### Collection requirement: Specified pre-sized permanent timber restraint and bracing members (`permanent_bracing`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nInclude the actual members and reinforcements installed at this erection gate. Separate components supplied in the truss kit from additional purchases; no site transformation of trusses is permitted.\n\n- Collection subject: Specified pre-sized permanent timber restraint and bracing members\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual gross job receipts/issues attributable to this set by material/specification, including correction supply; measure the net material mass of those receipts/issues and record installed, usable-return and retained-stock states separately, without subtracting a separately modelled return again.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `sbca-installation-2023`; `sbca-bcsi-current`\n\nRange evidence need: Actual engineer-approved brace schedule, pieces and measured/supplier masses are needed; no generic brace spacing, timber density, loss fraction or force capacity is supplied.\n\n#### Collection requirement: Specified bearing connectors and installation fasteners (`bearing_connectors`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nRecord actual hangers, bearing connections, brace fixings and fasteners not already included in the factory product or other service input. Split material and corrosion-protection identities using actual purchase and installation records.\n\n- Collection subject: Specified bearing connectors and installation fasteners\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual gross job receipts/issues of connectors and fasteners by material/type attributable to this set, including correction supply; retain counted items and their net material mass, with installed, usable-return and retained-stock states recorded separately and no double net subtraction.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n- Sources: `sbca-installation-2023`\n\nRange evidence need: Obtain actual approved connection schedule and item-specific mass evidence; no standard nail count, anchor capacity or generic steel substitution is valid.\n\n#### Collection requirement: Bounded temporary roof-truss restraint and bracing service (`temporary_stability_service`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nThis conditional umbrella identifies the actual temporary restraint/bracing system and service provider or owner. Disaggregate each actual system. Coverage includes capital materials/assets and installation, retention, maintenance, replacement, authorized removal and return/end-of-use burdens; the h unit only records the declared service interval.\n\n- Collection subject: Bounded temporary roof-truss restraint and bracing service\n- Flow property / unit: Duration / h\n- Amount rule: Actual allocated service-hours and underlying system quantities/resources for the erection period and the separately indexed retained-support continuation; include linked future removal obligations and disclose unresolved provider coverage.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_services`\n- Sources: `sbca-installation-2023`; `sbca-bcsi-current`\n\nRange evidence need: Obtain actual approved temporary-bracing plan, member/asset inventory, dates, all consumers, ownership and removal/return records; neither a default duration nor zero asset burden can be inferred.\n\n#### Collection requirement: Bounded crane, lifting and access equipment service (`lifting_access_service`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nIdentify actual crane/rigging, hoisting and access systems serving the erection. For each provider disclose included mobilization, equipment production/maintenance, operation and demobilization; separate direct-operation inputs only when absent from that service.\n\n- Collection subject: Bounded crane, lifting and access equipment service\n- Flow property / unit: Duration / h\n- Amount rule: Actual service-specific operating/standby hours and allocated mobilization/demobilization events, retaining all other consuming jobs and the provider inventory basis.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_services`\n- Sources: `sbca-installation-2023`\n\nRange evidence need: Obtain actual lift plan and equipment/service logs, provider coverage and whole-period consumer denominator; no fuel-per-lift or capacity/time defaults are specified.\n\n#### Collection requirement: Actual component and residual freight service (`logistics`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nRecord actual transport legs for trusses, additional components, packaging and residual/return movements not included upstream or in a bounded service. Keep payloads, mode and provider boundaries distinct.\n\n- Collection subject: Actual component and residual freight service\n- Flow property / unit: Transport / t*km\n- Amount rule: Actual consignment mass and loaded distance by leg, with allocated empty-return/mobilization coverage where applicable; exclude freight already covered by upstream/provider datasets.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_logistics`\n\nRange evidence need: Obtain actual payload, route, distance and vehicle/service records; no typical distance or load factor is justified for an unspecified site.\n\n#### Collection requirement: Actual fuel supplied to directly controlled erection equipment (`direct_fuel`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\n\nActual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty.\n\n- Collection subject: Actual fuel supplied to directly controlled erection equipment\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_resources`\n\nRange evidence need: Obtain actual equipment, fuel specification, consumed quantities and provider exclusions; fuel identity, density and consumption cannot be inferred from lifting requirements.\n\n#### Collection requirement: Actual auxiliary installation consumables (`ancillary_materials`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nConditional umbrella for genuinely consumed supplementary materials such as equipment lubricants when attributable and absent from provider inputs. No coating, adhesive, truss repair chemical or water-consuming route is presumed.\n\n- Collection subject: Actual auxiliary installation consumables\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual consumed net mass by substance/product identity and declared use, separating returned stock and waste; add any real water input with its property/unit from actual records.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_components`\n\nRange evidence need: Actual purchase/use/stock records and material identity are needed; a zero, one or multiple exchange outcome depends on the job and cannot use a generic chemical factor.\n\n#### Collection requirement: Actual incoming transport packaging (`transport_packaging`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `inputs` / `product`.\n\nIdentify actual wrapping, straps, dunnage and reusable packaging at the declared supply gate. Activate a separate burden-bearing input only for separately supplied packaging or the portion not covered by the upstream product dataset. Supplier-included packaging still requires physical custody/exit records, without a second upstream material-production burden. Reusable temporary-bracing assets remain in their service.\n\n- Collection subject: Actual incoming transport packaging\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual incoming packaging mass by material and coverage: only separately supplied or upstream-uncovered packaging becomes an additional burden-bearing input; retain all packaging in the custody ledger and reconcile stock, genuine return and waste without double counting.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n\nRange evidence need: Obtain supplier packaging declarations and site counts/weighing with actual custody; no universal packaging intensity or return rate is established.\n\n#### Collection requirement: Usable installation-material and packaging returns (`reusable_returns`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `product`.\n\nConditional product-output umbrella for genuine unused connectors/braces and reusable packaging leaving to a named supplier or store. Record separate materials and destinations; retained site stock is a ledger state rather than an invented exit. Do not place rejected trusses here.\n\n- Collection subject: Usable installation-material and packaging returns\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual dispatched usable return mass by identity, receiving custodian and transfer ID, reconciled to gross supply and retained stock without a second net subtraction.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n\nRange evidence need: Obtain actual return acceptance, custody and mass records; no default reusable fraction or avoided-production credit is assumed.\n\n#### Collection requirement: Quarantined roof trusses returned for disposition (`rejected_truss_returns`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `product`.\n\nConditional product-output umbrella only when the receiving manufacturer or other identified custodian accepts the actual trusses for further use or authorized disposition as products. Include defect state and transfer record; waste-status trusses use the waste card instead.\n\n- Collection subject: Quarantined roof trusses returned for disposition\n- Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item\n- Amount rule: Actual returned count by truss ID with disposition, recipient and matching receipt; prevent those pieces from entering the accepted-set count or being counted again as waste.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n- Sources: `sbca-installation-2023`\n\nRange evidence need: Actual damage/inspection and manufacturer/engineer disposition plus return records determine quantities and product/waste classification; no reject fraction is established.\n\n#### Collection requirement: Characterized erection and packaging waste (`erection_waste`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `waste`.\n\nConditional waste-output umbrella for actual discarded connectors, braces, damaged trusses and packaging; segregate by material, hazardous status and receiving treatment. Retain failed-attempt and correction burdens. This route does not assume truss-cutting sawdust.\n\n- Collection subject: Characterized erection and packaging waste\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual weighed or traceably documented waste mass by material/status and destination with transfer IDs; keep captured residue distinct from releases and usable returns.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_residuals`\n\nRange evidence need: Obtain actual waste tickets, segregation and treatment evidence; no generic installation loss or recycling yield is imposed.\n\n#### Collection requirement: Characterized direct erection releases to the environment (`direct_releases`)\n\nProcess / prospective direction / type: `roof_truss_erection` / `outputs` / `elementary`.\n\nConditional elementary-output umbrella for actual directly operated equipment combustion species and measured installation particles or other releases. Establish substance, receiving medium and particle class/basis before selecting each concrete flow; provider-included releases are not repeated.\n\n- Collection subject: Characterized direct erection releases to the environment\n- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg\n- Amount rule: Actual measured or defensibly calculated substance-specific mass using recorded activity and applicable source-specific factors, with capture controls and receiving compartment; unknown releases remain data gaps.\n- Value mode: `foreground_record`\n- Specificity: `site_specific`\n- Normalization basis: per reference flow\n- Basis kind: `reference_flow`\n- Evidence kind: `collected_record`\n- Collection protocol: `cp_releases`\n\nRange evidence need: Obtain actual equipment/fuel/emission-factor or sampling evidence and receiving medium; no generic VOC, particulate or exhaust quantity is fabricated.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1071,16 +1090,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_31791"
+    - unit_id: "normative_31951"
       family: "allocation"
       span:
         start:
-          offset: 31791
-          line: 389
+          offset: 31951
+          line: 390
           column: 1
         end:
-          offset: 34495
-          line: 400
+          offset: 34655
+          line: 401
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `single_accepted_service` | roof_truss_erection | There is one intended accepted erection service. Do not allocate to the existing bearing structure or later roof covering as a co-product. Rejected trusses, waste and returns are not accepted erection output; retain all attributable failed-attempt and replacement burdens. |  |\n| `local_corrections_and_exits` | roof_truss_erection | Local repositioning/refastening repeats within this node. Link each correction to the original event and retain its extra materials, power and equipment. Link quarantine to product return or waste exit with actual receiver/status. Retained stock is reconciled separately; gross inputs, stock and returns must not be netted twice. No default recycling or biogenic-carbon credit is awarded. | `sbca-installation-2023` |\n| `shared_resource_attribution` | temporary_stability_service; lifting_access_service; logistics; installation_energy; direct_fuel | Identify asset/service IDs, roof_truss_erection and every other consuming work package or reporting period. Prefer separately metered activity and directly attributable trips; split inseparable common burdens by a documented causal driver suited to the actual resource, retaining the whole consumer denominator, standby/mobilization treatment and sensitivity. Record rejected alternatives and inventory coverage; do not divide by this PCR output alone when other consumers exist. |  |\n| `support_phase_attribution` | temporary_stability_service | Index P1 erection to signed gate, P2 retained support pending the separately owned diaphragm/stability gate, and P3 authorized removal/return/end-of-use. Attach each asset, replacement, maintenance, transport and removal event to its actual phase and consumer. Allocate production and termination burdens once across the documented service cycle; phase shares and receiving dataset responsibilities must reconcile to that whole cycle. Provider ownership does not remove burdens. Missing termination owner or service coverage blocks finalization. | `sbca-bcsi-current` |\n| `provider_and_direct_operations` | lifting_access_service; temporary_stability_service; logistics; installation_energy; direct_fuel; direct_releases | For each actual provider boundary, choose service-inclusive inventory or underlying disaggregated operation. Explicitly mark which fuel, electricity, asset and release burdens are included and which require separate exchanges. Counting service duration alone is insufficient. Material returns already included inside a service must not appear again as separate return outputs. |  |\n\n\n"
       headings:
@@ -1099,12 +1118,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 31791
-              line: 389
+              offset: 31951
+              line: 390
               column: 1
             end:
-              offset: 31831
-              line: 389
+              offset: 31991
+              line: 390
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1119,18 +1138,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_45727"
+    - unit_id: "normative_48234"
       family: "validation"
       span:
         start:
-          offset: 45727
-          line: 434
+          offset: 48234
+          line: 436
           column: 1
         end:
-          offset: 47770
-          line: 445
+          offset: 50697
+          line: 447
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `reference_completeness` | erected_roof_truss_set | Require 1 item, the real output link and identical complete-set meaning in both languages. Match each truss to the approved package and signed erection gate; exclude unresolved rejects from accepted output. | `un-cpc3-2025`; `sbca-installation-2023` |\n| `structural_handover` | roof_truss_erection | Verify actual bearing acceptance, placement/connection records, permanent member restraints/bracing, retained temporary stability, construction-stage restrictions, inspection closure and named responsibility transfer; do not infer finished diaphragm/roof performance. | `sbca-installation-2023`; `sbca-bcsi-current` |\n| `reject_path_and_balance` | all material and residual cards | Reconcile each material state and defect event to installed output, stock, genuine usable return, rejected product return or waste. Require receiver/status and transfer IDs; retain correction burdens and prevent double subtraction or rejected-set acceptance. |  |\n| `shared_phase_coverage` | temporary_stability_service; lifting_access_service; logistics; installation_energy; direct_fuel; direct_releases | Require complete all-consumer and P1/P2/P3 ledgers, actual causal allocations and full service coverage. Verify replacement/termination owner, authorized support removal gate and matching receiving dataset responsibility; unresolved phase/asset/removal coverage blocks completion. Count provider-included and direct operation once. |  |\n| `actual_identity_quantity` | all inventory rows | Require actual identity/property/unit compatibility and traceable linked node-specific protocols. Each Range evidence need must be closed by actual evidence or disclosed as unresolved; fixed reference quantity is a definition, not a yield range. Check every actual conditional material/waste/substance separately and reject fabricated default fuel, density, loss, fastener, emission or carbon-credit values. |  |\n\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `reference_completeness` | erected_roof_truss_set | Require 1 item, the real output link and identical complete-set meaning in both languages. Match each truss to the approved package and signed erection gate; exclude unresolved rejects from accepted output. | `un-cpc3-2025`; `sbca-installation-2023` |\n| `structural_handover` | roof_truss_erection | Verify actual bearing acceptance, placement/connection records, permanent member restraints/bracing, retained temporary stability, construction-stage restrictions, inspection closure and named responsibility transfer; do not infer finished diaphragm/roof performance. | `sbca-installation-2023`; `sbca-bcsi-current` |\n| `reject_path_and_balance` | all material and residual cards | Reconcile each material state and defect event to installed output, stock, genuine usable return, rejected product return or waste. Require receiver/status and transfer IDs; retain correction burdens and prevent double subtraction or rejected-set acceptance. |  |\n| `shared_phase_coverage` | temporary_stability_service; lifting_access_service; logistics; installation_energy; direct_fuel; direct_releases | Require complete all-consumer and P1/P2/P3 ledgers, actual causal allocations and full service coverage. Verify replacement/termination owner, authorized support removal gate and matching receiving dataset responsibility; unresolved phase/asset/removal coverage blocks completion. Count provider-included and direct operation once. |  |\n| `actual_identity_quantity` | all inventory rows | Require actual identity/property/unit compatibility and traceable linked node-specific protocols. Each Range evidence need must be closed by actual evidence or disclosed as unresolved; fixed reference quantity is a definition, not a yield range. Check every actual conditional material/waste/substance separately and reject fabricated default fuel, density, loss, fastener, emission or carbon-credit values. |  |\n| validate_fuel_supply_fate | direct_fuel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1147,12 +1166,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 45727
-              line: 434
+              offset: 48234
+              line: 436
               column: 1
             end:
-              offset: 45749
-              line: 434
+              offset: 48256
+              line: 436
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -2123,25 +2142,25 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19064
-          line: 187
+          offset: 19065
+          line: 188
           column: 1
         end:
-          offset: 19283
-          line: 187
-          column: 220
+          offset: 19355
+          line: 188
+          column: 291
     - pointer: "/system_boundary/rules/74"
       rule_id: "system_boundary_rule_75"
       identity_kind: "snapshot_local"
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19285
-          line: 189
+          offset: 19357
+          line: 190
           column: 1
         end:
-          offset: 19369
-          line: 189
+          offset: 19441
+          line: 190
           column: 85
     - pointer: "/system_boundary/rules/75"
       rule_id: "system_boundary_rule_76"
@@ -2149,12 +2168,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19370
-          line: 190
+          offset: 19442
+          line: 191
           column: 1
         end:
-          offset: 19442
-          line: 190
+          offset: 19514
+          line: 191
           column: 73
     - pointer: "/system_boundary/rules/76"
       rule_id: "system_boundary_rule_77"
@@ -2162,25 +2181,25 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19443
-          line: 191
+          offset: 19515
+          line: 192
           column: 1
         end:
-          offset: 19618
-          line: 191
-          column: 176
+          offset: 19778
+          line: 192
+          column: 264
     - pointer: "/system_boundary/rules/77"
       rule_id: "system_boundary_rule_78"
       identity_kind: "snapshot_local"
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19619
-          line: 192
+          offset: 19779
+          line: 193
           column: 1
         end:
-          offset: 19652
-          line: 192
+          offset: 19812
+          line: 193
           column: 34
     - pointer: "/system_boundary/rules/78"
       rule_id: "system_boundary_rule_79"
@@ -2188,12 +2207,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19653
-          line: 193
+          offset: 19813
+          line: 194
           column: 1
         end:
-          offset: 19683
-          line: 193
+          offset: 19843
+          line: 194
           column: 31
     - pointer: "/system_boundary/rules/79"
       rule_id: "system_boundary_rule_80"
@@ -2201,12 +2220,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19684
-          line: 194
+          offset: 19844
+          line: 195
           column: 1
         end:
-          offset: 19725
-          line: 194
+          offset: 19885
+          line: 195
           column: 42
     - pointer: "/system_boundary/rules/80"
       rule_id: "system_boundary_rule_81"
@@ -2214,12 +2233,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19726
-          line: 195
+          offset: 19886
+          line: 196
           column: 1
         end:
-          offset: 19756
-          line: 195
+          offset: 19916
+          line: 196
           column: 31
     - pointer: "/system_boundary/rules/81"
       rule_id: "system_boundary_rule_82"
@@ -2227,12 +2246,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19757
-          line: 196
+          offset: 19917
+          line: 197
           column: 1
         end:
-          offset: 19792
-          line: 196
+          offset: 19952
+          line: 197
           column: 36
     - pointer: "/system_boundary/rules/82"
       rule_id: "system_boundary_rule_83"
@@ -2240,12 +2259,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19793
-          line: 197
+          offset: 19953
+          line: 198
           column: 1
         end:
-          offset: 19830
-          line: 197
+          offset: 19990
+          line: 198
           column: 38
     - pointer: "/system_boundary/rules/83"
       rule_id: "system_boundary_rule_84"
@@ -2253,12 +2272,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19832
-          line: 199
+          offset: 19992
+          line: 200
           column: 1
         end:
-          offset: 20027
-          line: 199
+          offset: 20187
+          line: 200
           column: 196
     - pointer: "/system_boundary/rules/84"
       rule_id: "system_boundary_rule_85"
@@ -2266,12 +2285,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20125
-          line: 203
+          offset: 20285
+          line: 204
           column: 1
         end:
-          offset: 20210
-          line: 203
+          offset: 20370
+          line: 204
           column: 86
     - pointer: "/system_boundary/rules/85"
       rule_id: "system_boundary_rule_86"
@@ -2279,12 +2298,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20212
-          line: 205
+          offset: 20372
+          line: 206
           column: 1
         end:
-          offset: 20441
-          line: 205
+          offset: 20601
+          line: 206
           column: 230
     - pointer: "/system_boundary/rules/86"
       rule_id: "system_boundary_rule_87"
@@ -2292,12 +2311,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20443
-          line: 207
+          offset: 20603
+          line: 208
           column: 1
         end:
-          offset: 20506
-          line: 207
+          offset: 20666
+          line: 208
           column: 64
     - pointer: "/system_boundary/rules/87"
       rule_id: "system_boundary_rule_88"
@@ -2305,12 +2324,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20507
-          line: 208
+          offset: 20667
+          line: 209
           column: 1
         end:
-          offset: 20579
-          line: 208
+          offset: 20739
+          line: 209
           column: 73
     - pointer: "/system_boundary/rules/88"
       rule_id: "system_boundary_rule_89"
@@ -2318,12 +2337,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20580
-          line: 209
+          offset: 20740
+          line: 210
           column: 1
         end:
-          offset: 20773
-          line: 209
+          offset: 20933
+          line: 210
           column: 194
     - pointer: "/system_boundary/rules/89"
       rule_id: "system_boundary_rule_90"
@@ -2331,12 +2350,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20774
-          line: 210
+          offset: 20934
+          line: 211
           column: 1
         end:
-          offset: 20807
-          line: 210
+          offset: 20967
+          line: 211
           column: 34
     - pointer: "/system_boundary/rules/90"
       rule_id: "system_boundary_rule_91"
@@ -2344,12 +2363,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20808
-          line: 211
+          offset: 20968
+          line: 212
           column: 1
         end:
-          offset: 20838
-          line: 211
+          offset: 20998
+          line: 212
           column: 31
     - pointer: "/system_boundary/rules/91"
       rule_id: "system_boundary_rule_92"
@@ -2357,12 +2376,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20839
-          line: 212
+          offset: 20999
+          line: 213
           column: 1
         end:
-          offset: 20880
-          line: 212
+          offset: 21040
+          line: 213
           column: 42
     - pointer: "/system_boundary/rules/92"
       rule_id: "system_boundary_rule_93"
@@ -2370,12 +2389,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20881
-          line: 213
+          offset: 21041
+          line: 214
           column: 1
         end:
-          offset: 20911
-          line: 213
+          offset: 21071
+          line: 214
           column: 31
     - pointer: "/system_boundary/rules/93"
       rule_id: "system_boundary_rule_94"
@@ -2383,12 +2402,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20912
-          line: 214
+          offset: 21072
+          line: 215
           column: 1
         end:
-          offset: 20947
-          line: 214
+          offset: 21107
+          line: 215
           column: 36
     - pointer: "/system_boundary/rules/94"
       rule_id: "system_boundary_rule_95"
@@ -2396,12 +2415,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20948
-          line: 215
+          offset: 21108
+          line: 216
           column: 1
         end:
-          offset: 20986
-          line: 215
+          offset: 21146
+          line: 216
           column: 39
     - pointer: "/system_boundary/rules/95"
       rule_id: "system_boundary_rule_96"
@@ -2409,12 +2428,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20988
-          line: 217
+          offset: 21148
+          line: 218
           column: 1
         end:
-          offset: 21178
-          line: 217
+          offset: 21338
+          line: 218
           column: 191
     - pointer: "/system_boundary/rules/96"
       rule_id: "system_boundary_rule_97"
@@ -2422,12 +2441,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21270
-          line: 221
+          offset: 21430
+          line: 222
           column: 1
         end:
-          offset: 21355
-          line: 221
+          offset: 21515
+          line: 222
           column: 86
     - pointer: "/system_boundary/rules/97"
       rule_id: "system_boundary_rule_98"
@@ -2435,12 +2454,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21357
-          line: 223
+          offset: 21517
+          line: 224
           column: 1
         end:
-          offset: 21777
-          line: 223
+          offset: 21937
+          line: 224
           column: 421
     - pointer: "/system_boundary/rules/98"
       rule_id: "system_boundary_rule_99"
@@ -2448,12 +2467,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21779
-          line: 225
+          offset: 21939
+          line: 226
           column: 1
         end:
-          offset: 21836
-          line: 225
+          offset: 21996
+          line: 226
           column: 58
     - pointer: "/system_boundary/rules/99"
       rule_id: "system_boundary_rule_100"
@@ -2461,12 +2480,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21837
-          line: 226
+          offset: 21997
+          line: 227
           column: 1
         end:
-          offset: 21909
-          line: 226
+          offset: 22069
+          line: 227
           column: 73
     - pointer: "/system_boundary/rules/100"
       rule_id: "system_boundary_rule_101"
@@ -2474,12 +2493,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21910
-          line: 227
+          offset: 22070
+          line: 228
           column: 1
         end:
-          offset: 22196
-          line: 227
+          offset: 22356
+          line: 228
           column: 287
     - pointer: "/system_boundary/rules/101"
       rule_id: "system_boundary_rule_102"
@@ -2487,12 +2506,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22197
-          line: 228
+          offset: 22357
+          line: 229
           column: 1
         end:
-          offset: 22230
-          line: 228
+          offset: 22390
+          line: 229
           column: 34
     - pointer: "/system_boundary/rules/102"
       rule_id: "system_boundary_rule_103"
@@ -2500,12 +2519,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22231
-          line: 229
+          offset: 22391
+          line: 230
           column: 1
         end:
-          offset: 22261
-          line: 229
+          offset: 22421
+          line: 230
           column: 31
     - pointer: "/system_boundary/rules/103"
       rule_id: "system_boundary_rule_104"
@@ -2513,12 +2532,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22262
-          line: 230
+          offset: 22422
+          line: 231
           column: 1
         end:
-          offset: 22303
-          line: 230
+          offset: 22463
+          line: 231
           column: 42
     - pointer: "/system_boundary/rules/104"
       rule_id: "system_boundary_rule_105"
@@ -2526,12 +2545,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22304
-          line: 231
+          offset: 22464
+          line: 232
           column: 1
         end:
-          offset: 22334
-          line: 231
+          offset: 22494
+          line: 232
           column: 31
     - pointer: "/system_boundary/rules/105"
       rule_id: "system_boundary_rule_106"
@@ -2539,12 +2558,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22335
-          line: 232
+          offset: 22495
+          line: 233
           column: 1
         end:
-          offset: 22370
-          line: 232
+          offset: 22530
+          line: 233
           column: 36
     - pointer: "/system_boundary/rules/106"
       rule_id: "system_boundary_rule_107"
@@ -2552,12 +2571,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22371
-          line: 233
+          offset: 22531
+          line: 234
           column: 1
         end:
-          offset: 22408
-          line: 233
+          offset: 22568
+          line: 234
           column: 38
     - pointer: "/system_boundary/rules/107"
       rule_id: "system_boundary_rule_108"
@@ -2565,12 +2584,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22410
-          line: 235
+          offset: 22570
+          line: 236
           column: 1
         end:
-          offset: 22579
-          line: 235
+          offset: 22739
+          line: 236
           column: 170
     - pointer: "/system_boundary/rules/108"
       rule_id: "system_boundary_rule_109"
@@ -2578,12 +2597,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22683
-          line: 239
+          offset: 22843
+          line: 240
           column: 1
         end:
-          offset: 22769
-          line: 239
+          offset: 22929
+          line: 240
           column: 87
     - pointer: "/system_boundary/rules/109"
       rule_id: "system_boundary_rule_110"
@@ -2591,12 +2610,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22771
-          line: 241
+          offset: 22931
+          line: 242
           column: 1
         end:
-          offset: 23052
-          line: 241
+          offset: 23212
+          line: 242
           column: 282
     - pointer: "/system_boundary/rules/110"
       rule_id: "system_boundary_rule_111"
@@ -2604,12 +2623,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23054
-          line: 243
+          offset: 23214
+          line: 244
           column: 1
         end:
-          offset: 23126
-          line: 243
+          offset: 23286
+          line: 244
           column: 73
     - pointer: "/system_boundary/rules/111"
       rule_id: "system_boundary_rule_112"
@@ -2617,12 +2636,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23127
-          line: 244
+          offset: 23287
+          line: 245
           column: 1
         end:
-          offset: 23199
-          line: 244
+          offset: 23359
+          line: 245
           column: 73
     - pointer: "/system_boundary/rules/112"
       rule_id: "system_boundary_rule_113"
@@ -2630,12 +2649,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23200
-          line: 245
+          offset: 23360
+          line: 246
           column: 1
         end:
-          offset: 23381
-          line: 245
+          offset: 23541
+          line: 246
           column: 182
     - pointer: "/system_boundary/rules/113"
       rule_id: "system_boundary_rule_114"
@@ -2643,12 +2662,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23382
-          line: 246
+          offset: 23542
+          line: 247
           column: 1
         end:
-          offset: 23415
-          line: 246
+          offset: 23575
+          line: 247
           column: 34
     - pointer: "/system_boundary/rules/114"
       rule_id: "system_boundary_rule_115"
@@ -2656,12 +2675,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23416
-          line: 247
+          offset: 23576
+          line: 248
           column: 1
         end:
-          offset: 23446
-          line: 247
+          offset: 23606
+          line: 248
           column: 31
     - pointer: "/system_boundary/rules/115"
       rule_id: "system_boundary_rule_116"
@@ -2669,12 +2688,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23447
-          line: 248
+          offset: 23607
+          line: 249
           column: 1
         end:
-          offset: 23488
-          line: 248
+          offset: 23648
+          line: 249
           column: 42
     - pointer: "/system_boundary/rules/116"
       rule_id: "system_boundary_rule_117"
@@ -2682,12 +2701,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23489
-          line: 249
+          offset: 23649
+          line: 250
           column: 1
         end:
-          offset: 23519
-          line: 249
+          offset: 23679
+          line: 250
           column: 31
     - pointer: "/system_boundary/rules/117"
       rule_id: "system_boundary_rule_118"
@@ -2695,12 +2714,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23520
-          line: 250
+          offset: 23680
+          line: 251
           column: 1
         end:
-          offset: 23555
-          line: 250
+          offset: 23715
+          line: 251
           column: 36
     - pointer: "/system_boundary/rules/118"
       rule_id: "system_boundary_rule_119"
@@ -2708,12 +2727,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23556
-          line: 251
+          offset: 23716
+          line: 252
           column: 1
         end:
-          offset: 23593
-          line: 251
+          offset: 23753
+          line: 252
           column: 38
     - pointer: "/system_boundary/rules/119"
       rule_id: "system_boundary_rule_120"
@@ -2721,12 +2740,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23595
-          line: 253
+          offset: 23755
+          line: 254
           column: 1
         end:
-          offset: 23744
-          line: 253
+          offset: 23904
+          line: 254
           column: 150
     - pointer: "/system_boundary/rules/120"
       rule_id: "system_boundary_rule_121"
@@ -2734,12 +2753,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23853
-          line: 257
+          offset: 24013
+          line: 258
           column: 1
         end:
-          offset: 23939
-          line: 257
+          offset: 24099
+          line: 258
           column: 87
     - pointer: "/system_boundary/rules/121"
       rule_id: "system_boundary_rule_122"
@@ -2747,12 +2766,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23941
-          line: 259
+          offset: 24101
+          line: 260
           column: 1
         end:
-          offset: 24216
-          line: 259
+          offset: 24376
+          line: 260
           column: 276
     - pointer: "/system_boundary/rules/122"
       rule_id: "system_boundary_rule_123"
@@ -2760,12 +2779,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24218
-          line: 261
+          offset: 24378
+          line: 262
           column: 1
         end:
-          offset: 24289
-          line: 261
+          offset: 24449
+          line: 262
           column: 72
     - pointer: "/system_boundary/rules/123"
       rule_id: "system_boundary_rule_124"
@@ -2773,12 +2792,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24290
-          line: 262
+          offset: 24450
+          line: 263
           column: 1
         end:
-          offset: 24375
-          line: 262
+          offset: 24535
+          line: 263
           column: 86
     - pointer: "/system_boundary/rules/124"
       rule_id: "system_boundary_rule_125"
@@ -2786,12 +2805,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24376
-          line: 263
+          offset: 24536
+          line: 264
           column: 1
         end:
-          offset: 24565
-          line: 263
+          offset: 24725
+          line: 264
           column: 190
     - pointer: "/system_boundary/rules/125"
       rule_id: "system_boundary_rule_126"
@@ -2799,12 +2818,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24566
-          line: 264
+          offset: 24726
+          line: 265
           column: 1
         end:
-          offset: 24599
-          line: 264
+          offset: 24759
+          line: 265
           column: 34
     - pointer: "/system_boundary/rules/126"
       rule_id: "system_boundary_rule_127"
@@ -2812,12 +2831,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24600
-          line: 265
+          offset: 24760
+          line: 266
           column: 1
         end:
-          offset: 24630
-          line: 265
+          offset: 24790
+          line: 266
           column: 31
     - pointer: "/system_boundary/rules/127"
       rule_id: "system_boundary_rule_128"
@@ -2825,12 +2844,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24631
-          line: 266
+          offset: 24791
+          line: 267
           column: 1
         end:
-          offset: 24672
-          line: 266
+          offset: 24832
+          line: 267
           column: 42
     - pointer: "/system_boundary/rules/128"
       rule_id: "system_boundary_rule_129"
@@ -2838,12 +2857,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24673
-          line: 267
+          offset: 24833
+          line: 268
           column: 1
         end:
-          offset: 24703
-          line: 267
+          offset: 24863
+          line: 268
           column: 31
     - pointer: "/system_boundary/rules/129"
       rule_id: "system_boundary_rule_130"
@@ -2851,12 +2870,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24704
-          line: 268
+          offset: 24864
+          line: 269
           column: 1
         end:
-          offset: 24739
-          line: 268
+          offset: 24899
+          line: 269
           column: 36
     - pointer: "/system_boundary/rules/130"
       rule_id: "system_boundary_rule_131"
@@ -2864,12 +2883,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24740
-          line: 269
+          offset: 24900
+          line: 270
           column: 1
         end:
-          offset: 24777
-          line: 269
+          offset: 24937
+          line: 270
           column: 38
     - pointer: "/system_boundary/rules/131"
       rule_id: "system_boundary_rule_132"
@@ -2877,12 +2896,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24778
-          line: 270
+          offset: 24938
+          line: 271
           column: 1
         end:
-          offset: 24813
-          line: 270
+          offset: 24973
+          line: 271
           column: 36
     - pointer: "/system_boundary/rules/132"
       rule_id: "system_boundary_rule_133"
@@ -2890,12 +2909,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24815
-          line: 272
+          offset: 24975
+          line: 273
           column: 1
         end:
-          offset: 25008
-          line: 272
+          offset: 25168
+          line: 273
           column: 194
     - pointer: "/system_boundary/rules/133"
       rule_id: "system_boundary_rule_134"
@@ -2903,12 +2922,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25102
-          line: 276
+          offset: 25262
+          line: 277
           column: 1
         end:
-          offset: 25186
-          line: 276
+          offset: 25346
+          line: 277
           column: 85
     - pointer: "/system_boundary/rules/134"
       rule_id: "system_boundary_rule_135"
@@ -2916,12 +2935,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25188
-          line: 278
+          offset: 25348
+          line: 279
           column: 1
         end:
-          offset: 25454
-          line: 278
+          offset: 25614
+          line: 279
           column: 267
     - pointer: "/system_boundary/rules/135"
       rule_id: "system_boundary_rule_136"
@@ -2929,12 +2948,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25456
-          line: 280
+          offset: 25616
+          line: 281
           column: 1
         end:
-          offset: 25520
-          line: 280
+          offset: 25680
+          line: 281
           column: 65
     - pointer: "/system_boundary/rules/136"
       rule_id: "system_boundary_rule_137"
@@ -2942,12 +2961,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25521
-          line: 281
+          offset: 25681
+          line: 282
           column: 1
         end:
-          offset: 25593
-          line: 281
+          offset: 25753
+          line: 282
           column: 73
     - pointer: "/system_boundary/rules/137"
       rule_id: "system_boundary_rule_138"
@@ -2955,12 +2974,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25594
-          line: 282
+          offset: 25754
+          line: 283
           column: 1
         end:
-          offset: 25777
-          line: 282
+          offset: 25937
+          line: 283
           column: 184
     - pointer: "/system_boundary/rules/138"
       rule_id: "system_boundary_rule_139"
@@ -2968,12 +2987,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25778
-          line: 283
+          offset: 25938
+          line: 284
           column: 1
         end:
-          offset: 25811
-          line: 283
+          offset: 25971
+          line: 284
           column: 34
     - pointer: "/system_boundary/rules/139"
       rule_id: "system_boundary_rule_140"
@@ -2981,12 +3000,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25812
-          line: 284
+          offset: 25972
+          line: 285
           column: 1
         end:
-          offset: 25842
-          line: 284
+          offset: 26002
+          line: 285
           column: 31
     - pointer: "/system_boundary/rules/140"
       rule_id: "system_boundary_rule_141"
@@ -2994,12 +3013,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25843
-          line: 285
+          offset: 26003
+          line: 286
           column: 1
         end:
-          offset: 25884
-          line: 285
+          offset: 26044
+          line: 286
           column: 42
     - pointer: "/system_boundary/rules/141"
       rule_id: "system_boundary_rule_142"
@@ -3007,12 +3026,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25885
-          line: 286
+          offset: 26045
+          line: 287
           column: 1
         end:
-          offset: 25915
-          line: 286
+          offset: 26075
+          line: 287
           column: 31
     - pointer: "/system_boundary/rules/142"
       rule_id: "system_boundary_rule_143"
@@ -3020,12 +3039,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25916
-          line: 287
+          offset: 26076
+          line: 288
           column: 1
         end:
-          offset: 25951
-          line: 287
+          offset: 26111
+          line: 288
           column: 36
     - pointer: "/system_boundary/rules/143"
       rule_id: "system_boundary_rule_144"
@@ -3033,12 +3052,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25952
-          line: 288
+          offset: 26112
+          line: 289
           column: 1
         end:
-          offset: 25989
-          line: 288
+          offset: 26149
+          line: 289
           column: 38
     - pointer: "/system_boundary/rules/144"
       rule_id: "system_boundary_rule_145"
@@ -3046,12 +3065,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25991
-          line: 290
+          offset: 26151
+          line: 291
           column: 1
         end:
-          offset: 26136
-          line: 290
+          offset: 26296
+          line: 291
           column: 146
     - pointer: "/system_boundary/rules/145"
       rule_id: "system_boundary_rule_146"
@@ -3059,12 +3078,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26246
-          line: 294
+          offset: 26406
+          line: 295
           column: 1
         end:
-          offset: 26335
-          line: 294
+          offset: 26495
+          line: 295
           column: 90
     - pointer: "/system_boundary/rules/146"
       rule_id: "system_boundary_rule_147"
@@ -3072,12 +3091,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26337
-          line: 296
+          offset: 26497
+          line: 297
           column: 1
         end:
-          offset: 26633
-          line: 296
+          offset: 26793
+          line: 297
           column: 297
     - pointer: "/system_boundary/rules/147"
       rule_id: "system_boundary_rule_148"
@@ -3085,12 +3104,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26635
-          line: 298
+          offset: 26795
+          line: 299
           column: 1
         end:
-          offset: 26714
-          line: 298
+          offset: 26874
+          line: 299
           column: 80
     - pointer: "/system_boundary/rules/148"
       rule_id: "system_boundary_rule_149"
@@ -3098,12 +3117,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26715
-          line: 299
+          offset: 26875
+          line: 300
           column: 1
         end:
-          offset: 26787
-          line: 299
+          offset: 26947
+          line: 300
           column: 73
     - pointer: "/system_boundary/rules/149"
       rule_id: "system_boundary_rule_150"
@@ -3111,12 +3130,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26788
-          line: 300
+          offset: 26948
+          line: 301
           column: 1
         end:
-          offset: 27015
-          line: 300
+          offset: 27175
+          line: 301
           column: 228
     - pointer: "/system_boundary/rules/150"
       rule_id: "system_boundary_rule_151"
@@ -3124,12 +3143,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27016
-          line: 301
+          offset: 27176
+          line: 302
           column: 1
         end:
-          offset: 27049
-          line: 301
+          offset: 27209
+          line: 302
           column: 34
     - pointer: "/system_boundary/rules/151"
       rule_id: "system_boundary_rule_152"
@@ -3137,12 +3156,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27050
-          line: 302
+          offset: 27210
+          line: 303
           column: 1
         end:
-          offset: 27080
-          line: 302
+          offset: 27240
+          line: 303
           column: 31
     - pointer: "/system_boundary/rules/152"
       rule_id: "system_boundary_rule_153"
@@ -3150,12 +3169,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27081
-          line: 303
+          offset: 27241
+          line: 304
           column: 1
         end:
-          offset: 27122
-          line: 303
+          offset: 27282
+          line: 304
           column: 42
     - pointer: "/system_boundary/rules/153"
       rule_id: "system_boundary_rule_154"
@@ -3163,12 +3182,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27123
-          line: 304
+          offset: 27283
+          line: 305
           column: 1
         end:
-          offset: 27153
-          line: 304
+          offset: 27313
+          line: 305
           column: 31
     - pointer: "/system_boundary/rules/154"
       rule_id: "system_boundary_rule_155"
@@ -3176,12 +3195,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27154
-          line: 305
+          offset: 27314
+          line: 306
           column: 1
         end:
-          offset: 27189
-          line: 305
+          offset: 27349
+          line: 306
           column: 36
     - pointer: "/system_boundary/rules/155"
       rule_id: "system_boundary_rule_156"
@@ -3189,12 +3208,12 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27190
-          line: 306
+          offset: 27350
+          line: 307
           column: 1
         end:
-          offset: 27226
-          line: 306
+          offset: 27386
+          line: 307
           column: 37
     - pointer: "/system_boundary/rules/156"
       rule_id: "system_boundary_rule_157"
@@ -3202,143 +3221,156 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27228
-          line: 308
+          offset: 27388
+          line: 309
           column: 1
         end:
-          offset: 27399
-          line: 308
+          offset: 27559
+          line: 309
           column: 172
     - pointer: "/allocation_rules/0"
       rule_id: "single_accepted_service"
       identity_kind: "explicit"
-      unit_id: "normative_31791"
+      unit_id: "normative_31951"
       source_span:
         start:
-          offset: 31904
-          line: 393
+          offset: 32064
+          line: 394
           column: 1
         end:
-          offset: 32233
-          line: 393
+          offset: 32393
+          line: 394
           column: 330
     - pointer: "/allocation_rules/1"
       rule_id: "local_corrections_and_exits"
       identity_kind: "explicit"
-      unit_id: "normative_31791"
+      unit_id: "normative_31951"
       source_span:
         start:
-          offset: 32234
-          line: 394
+          offset: 32394
+          line: 395
           column: 1
         end:
-          offset: 32707
-          line: 394
+          offset: 32867
+          line: 395
           column: 474
     - pointer: "/allocation_rules/2"
       rule_id: "shared_resource_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_31791"
+      unit_id: "normative_31951"
       source_span:
         start:
-          offset: 32708
-          line: 395
+          offset: 32868
+          line: 396
           column: 1
         end:
-          offset: 33325
-          line: 395
+          offset: 33485
+          line: 396
           column: 618
     - pointer: "/allocation_rules/3"
       rule_id: "support_phase_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_31791"
+      unit_id: "normative_31951"
       source_span:
         start:
-          offset: 33326
-          line: 396
+          offset: 33486
+          line: 397
           column: 1
         end:
-          offset: 33957
-          line: 396
+          offset: 34117
+          line: 397
           column: 632
     - pointer: "/allocation_rules/4"
       rule_id: "provider_and_direct_operations"
       identity_kind: "explicit"
-      unit_id: "normative_31791"
+      unit_id: "normative_31951"
       source_span:
         start:
-          offset: 33958
-          line: 397
+          offset: 34118
+          line: 398
           column: 1
         end:
-          offset: 34492
-          line: 397
+          offset: 34652
+          line: 398
           column: 535
     - pointer: "/validation_rules/0"
       rule_id: "reference_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_45727"
+      unit_id: "normative_48234"
       source_span:
         start:
-          offset: 45822
-          line: 438
+          offset: 48329
+          line: 440
           column: 1
         end:
-          offset: 46127
-          line: 438
+          offset: 48634
+          line: 440
           column: 306
     - pointer: "/validation_rules/1"
       rule_id: "structural_handover"
       identity_kind: "explicit"
-      unit_id: "normative_45727"
+      unit_id: "normative_48234"
       source_span:
         start:
-          offset: 46128
-          line: 439
+          offset: 48635
+          line: 441
           column: 1
         end:
-          offset: 46493
-          line: 439
+          offset: 49000
+          line: 441
           column: 366
     - pointer: "/validation_rules/2"
       rule_id: "reject_path_and_balance"
       identity_kind: "explicit"
-      unit_id: "normative_45727"
+      unit_id: "normative_48234"
       source_span:
         start:
-          offset: 46494
-          line: 440
+          offset: 49001
+          line: 442
           column: 1
         end:
-          offset: 46821
-          line: 440
+          offset: 49328
+          line: 442
           column: 328
     - pointer: "/validation_rules/3"
       rule_id: "shared_phase_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_45727"
+      unit_id: "normative_48234"
       source_span:
         start:
-          offset: 46822
-          line: 441
+          offset: 49329
+          line: 443
           column: 1
         end:
-          offset: 47302
-          line: 441
+          offset: 49809
+          line: 443
           column: 481
     - pointer: "/validation_rules/4"
       rule_id: "actual_identity_quantity"
       identity_kind: "explicit"
-      unit_id: "normative_45727"
+      unit_id: "normative_48234"
       source_span:
         start:
-          offset: 47303
-          line: 442
+          offset: 49810
+          line: 444
           column: 1
         end:
-          offset: 47767
-          line: 442
+          offset: 50274
+          line: 444
           column: 465
+    - pointer: "/validation_rules/5"
+      rule_id: "validate_fuel_supply_fate"
+      identity_kind: "explicit"
+      unit_id: "normative_48234"
+      source_span:
+        start:
+          offset: 50275
+          line: 445
+          column: 1
+        end:
+          offset: 50695
+          line: 445
+          column: 421
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -4089,431 +4121,419 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19064
-          line: 187
+          offset: 19065
+          line: 188
           column: 1
         end:
-          offset: 19283
-          line: 187
-          column: 220
+          offset: 19355
+          line: 188
+          column: 291
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19285
-          line: 189
+          offset: 19357
+          line: 190
           column: 1
         end:
-          offset: 19369
-          line: 189
+          offset: 19441
+          line: 190
           column: 85
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19370
-          line: 190
+          offset: 19442
+          line: 191
           column: 1
         end:
-          offset: 19442
-          line: 190
+          offset: 19514
+          line: 191
           column: 73
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19443
-          line: 191
+          offset: 19515
+          line: 192
           column: 1
         end:
-          offset: 19618
-          line: 191
-          column: 176
+          offset: 19778
+          line: 192
+          column: 264
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19619
-          line: 192
+          offset: 19779
+          line: 193
           column: 1
         end:
-          offset: 19652
-          line: 192
+          offset: 19812
+          line: 193
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19653
-          line: 193
+          offset: 19813
+          line: 194
           column: 1
         end:
-          offset: 19683
-          line: 193
+          offset: 19843
+          line: 194
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19684
-          line: 194
+          offset: 19844
+          line: 195
           column: 1
         end:
-          offset: 19725
-          line: 194
+          offset: 19885
+          line: 195
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19726
-          line: 195
+          offset: 19886
+          line: 196
           column: 1
         end:
-          offset: 19756
-          line: 195
+          offset: 19916
+          line: 196
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19757
-          line: 196
+          offset: 19917
+          line: 197
           column: 1
         end:
-          offset: 19792
-          line: 196
+          offset: 19952
+          line: 197
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 19793
-          line: 197
+          offset: 19953
+          line: 198
           column: 1
         end:
-          offset: 19830
-          line: 197
+          offset: 19990
+          line: 198
           column: 38
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20125
-          line: 203
+          offset: 20285
+          line: 204
           column: 1
         end:
-          offset: 20210
-          line: 203
+          offset: 20370
+          line: 204
           column: 86
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20212
-          line: 205
+          offset: 20372
+          line: 206
           column: 1
         end:
-          offset: 20441
-          line: 205
+          offset: 20601
+          line: 206
           column: 230
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20443
-          line: 207
+          offset: 20603
+          line: 208
           column: 1
         end:
-          offset: 20506
-          line: 207
+          offset: 20666
+          line: 208
           column: 64
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20507
-          line: 208
+          offset: 20667
+          line: 209
           column: 1
         end:
-          offset: 20579
-          line: 208
+          offset: 20739
+          line: 209
           column: 73
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20580
-          line: 209
+          offset: 20740
+          line: 210
           column: 1
         end:
-          offset: 20773
-          line: 209
+          offset: 20933
+          line: 210
           column: 194
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20774
-          line: 210
+          offset: 20934
+          line: 211
           column: 1
         end:
-          offset: 20807
-          line: 210
+          offset: 20967
+          line: 211
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20808
-          line: 211
+          offset: 20968
+          line: 212
           column: 1
         end:
-          offset: 20838
-          line: 211
+          offset: 20998
+          line: 212
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20839
-          line: 212
+          offset: 20999
+          line: 213
           column: 1
         end:
-          offset: 20880
-          line: 212
+          offset: 21040
+          line: 213
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20881
-          line: 213
+          offset: 21041
+          line: 214
           column: 1
         end:
-          offset: 20911
-          line: 213
+          offset: 21071
+          line: 214
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20912
-          line: 214
+          offset: 21072
+          line: 215
           column: 1
         end:
-          offset: 20947
-          line: 214
+          offset: 21107
+          line: 215
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 20948
-          line: 215
+          offset: 21108
+          line: 216
           column: 1
         end:
-          offset: 20986
-          line: 215
+          offset: 21146
+          line: 216
           column: 39
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21270
-          line: 221
+          offset: 21430
+          line: 222
           column: 1
         end:
-          offset: 21355
-          line: 221
+          offset: 21515
+          line: 222
           column: 86
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21357
-          line: 223
+          offset: 21517
+          line: 224
           column: 1
         end:
-          offset: 21777
-          line: 223
+          offset: 21937
+          line: 224
           column: 421
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21779
-          line: 225
+          offset: 21939
+          line: 226
           column: 1
         end:
-          offset: 21836
-          line: 225
+          offset: 21996
+          line: 226
           column: 58
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21837
-          line: 226
+          offset: 21997
+          line: 227
           column: 1
         end:
-          offset: 21909
-          line: 226
+          offset: 22069
+          line: 227
           column: 73
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 21910
-          line: 227
+          offset: 22070
+          line: 228
           column: 1
         end:
-          offset: 22196
-          line: 227
+          offset: 22356
+          line: 228
           column: 287
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22197
-          line: 228
+          offset: 22357
+          line: 229
           column: 1
         end:
-          offset: 22230
-          line: 228
+          offset: 22390
+          line: 229
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22231
-          line: 229
+          offset: 22391
+          line: 230
           column: 1
         end:
-          offset: 22261
-          line: 229
+          offset: 22421
+          line: 230
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22262
-          line: 230
+          offset: 22422
+          line: 231
           column: 1
         end:
-          offset: 22303
-          line: 230
+          offset: 22463
+          line: 231
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22304
-          line: 231
+          offset: 22464
+          line: 232
           column: 1
         end:
-          offset: 22334
-          line: 231
+          offset: 22494
+          line: 232
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22335
-          line: 232
+          offset: 22495
+          line: 233
           column: 1
         end:
-          offset: 22370
-          line: 232
+          offset: 22530
+          line: 233
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22371
-          line: 233
+          offset: 22531
+          line: 234
           column: 1
         end:
-          offset: 22408
-          line: 233
+          offset: 22568
+          line: 234
           column: 38
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22683
-          line: 239
+          offset: 22843
+          line: 240
           column: 1
         end:
-          offset: 22769
-          line: 239
+          offset: 22929
+          line: 240
           column: 87
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 22771
-          line: 241
+          offset: 22931
+          line: 242
           column: 1
         end:
-          offset: 23052
-          line: 241
+          offset: 23212
+          line: 242
           column: 282
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23054
-          line: 243
-          column: 1
-        end:
-          offset: 23126
-          line: 243
-          column: 73
-    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
-      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_6734"
-      source_span:
-        start:
-          offset: 23127
+          offset: 23214
           line: 244
           column: 1
         end:
-          offset: 23199
+          offset: 23286
           line: 244
           column: 73
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -4521,516 +4541,528 @@ normative_context:
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23200
+          offset: 23287
           line: 245
           column: 1
         end:
-          offset: 23381
+          offset: 23359
           line: 245
+          column: 73
+    - code: "AMBIGUOUS_PROSE_ATTACHMENT"
+      message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
+      unit_id: "normative_6734"
+      source_span:
+        start:
+          offset: 23360
+          line: 246
+          column: 1
+        end:
+          offset: 23541
+          line: 246
           column: 182
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23382
-          line: 246
+          offset: 23542
+          line: 247
           column: 1
         end:
-          offset: 23415
-          line: 246
+          offset: 23575
+          line: 247
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23416
-          line: 247
+          offset: 23576
+          line: 248
           column: 1
         end:
-          offset: 23446
-          line: 247
+          offset: 23606
+          line: 248
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23447
-          line: 248
+          offset: 23607
+          line: 249
           column: 1
         end:
-          offset: 23488
-          line: 248
+          offset: 23648
+          line: 249
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23489
-          line: 249
+          offset: 23649
+          line: 250
           column: 1
         end:
-          offset: 23519
-          line: 249
+          offset: 23679
+          line: 250
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23520
-          line: 250
+          offset: 23680
+          line: 251
           column: 1
         end:
-          offset: 23555
-          line: 250
+          offset: 23715
+          line: 251
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23556
-          line: 251
+          offset: 23716
+          line: 252
           column: 1
         end:
-          offset: 23593
-          line: 251
+          offset: 23753
+          line: 252
           column: 38
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23853
-          line: 257
+          offset: 24013
+          line: 258
           column: 1
         end:
-          offset: 23939
-          line: 257
+          offset: 24099
+          line: 258
           column: 87
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 23941
-          line: 259
+          offset: 24101
+          line: 260
           column: 1
         end:
-          offset: 24216
-          line: 259
+          offset: 24376
+          line: 260
           column: 276
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24218
-          line: 261
+          offset: 24378
+          line: 262
           column: 1
         end:
-          offset: 24289
-          line: 261
+          offset: 24449
+          line: 262
           column: 72
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24290
-          line: 262
+          offset: 24450
+          line: 263
           column: 1
         end:
-          offset: 24375
-          line: 262
+          offset: 24535
+          line: 263
           column: 86
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24376
-          line: 263
+          offset: 24536
+          line: 264
           column: 1
         end:
-          offset: 24565
-          line: 263
+          offset: 24725
+          line: 264
           column: 190
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24566
-          line: 264
+          offset: 24726
+          line: 265
           column: 1
         end:
-          offset: 24599
-          line: 264
+          offset: 24759
+          line: 265
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24600
-          line: 265
+          offset: 24760
+          line: 266
           column: 1
         end:
-          offset: 24630
-          line: 265
+          offset: 24790
+          line: 266
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24631
-          line: 266
+          offset: 24791
+          line: 267
           column: 1
         end:
-          offset: 24672
-          line: 266
+          offset: 24832
+          line: 267
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24673
-          line: 267
+          offset: 24833
+          line: 268
           column: 1
         end:
-          offset: 24703
-          line: 267
+          offset: 24863
+          line: 268
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24704
-          line: 268
+          offset: 24864
+          line: 269
           column: 1
         end:
-          offset: 24739
-          line: 268
+          offset: 24899
+          line: 269
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24740
-          line: 269
+          offset: 24900
+          line: 270
           column: 1
         end:
-          offset: 24777
-          line: 269
+          offset: 24937
+          line: 270
           column: 38
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 24778
-          line: 270
+          offset: 24938
+          line: 271
           column: 1
         end:
-          offset: 24813
-          line: 270
+          offset: 24973
+          line: 271
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25102
-          line: 276
+          offset: 25262
+          line: 277
           column: 1
         end:
-          offset: 25186
-          line: 276
+          offset: 25346
+          line: 277
           column: 85
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25188
-          line: 278
+          offset: 25348
+          line: 279
           column: 1
         end:
-          offset: 25454
-          line: 278
+          offset: 25614
+          line: 279
           column: 267
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25456
-          line: 280
+          offset: 25616
+          line: 281
           column: 1
         end:
-          offset: 25520
-          line: 280
+          offset: 25680
+          line: 281
           column: 65
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25521
-          line: 281
+          offset: 25681
+          line: 282
           column: 1
         end:
-          offset: 25593
-          line: 281
+          offset: 25753
+          line: 282
           column: 73
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25594
-          line: 282
+          offset: 25754
+          line: 283
           column: 1
         end:
-          offset: 25777
-          line: 282
+          offset: 25937
+          line: 283
           column: 184
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25778
-          line: 283
+          offset: 25938
+          line: 284
           column: 1
         end:
-          offset: 25811
-          line: 283
+          offset: 25971
+          line: 284
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25812
-          line: 284
+          offset: 25972
+          line: 285
           column: 1
         end:
-          offset: 25842
-          line: 284
+          offset: 26002
+          line: 285
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25843
-          line: 285
+          offset: 26003
+          line: 286
           column: 1
         end:
-          offset: 25884
-          line: 285
+          offset: 26044
+          line: 286
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25885
-          line: 286
+          offset: 26045
+          line: 287
           column: 1
         end:
-          offset: 25915
-          line: 286
+          offset: 26075
+          line: 287
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25916
-          line: 287
+          offset: 26076
+          line: 288
           column: 1
         end:
-          offset: 25951
-          line: 287
+          offset: 26111
+          line: 288
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 25952
-          line: 288
+          offset: 26112
+          line: 289
           column: 1
         end:
-          offset: 25989
-          line: 288
+          offset: 26149
+          line: 289
           column: 38
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26246
-          line: 294
+          offset: 26406
+          line: 295
           column: 1
         end:
-          offset: 26335
-          line: 294
+          offset: 26495
+          line: 295
           column: 90
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26337
-          line: 296
+          offset: 26497
+          line: 297
           column: 1
         end:
-          offset: 26633
-          line: 296
+          offset: 26793
+          line: 297
           column: 297
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26635
-          line: 298
+          offset: 26795
+          line: 299
           column: 1
         end:
-          offset: 26714
-          line: 298
+          offset: 26874
+          line: 299
           column: 80
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26715
-          line: 299
+          offset: 26875
+          line: 300
           column: 1
         end:
-          offset: 26787
-          line: 299
+          offset: 26947
+          line: 300
           column: 73
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 26788
-          line: 300
+          offset: 26948
+          line: 301
           column: 1
         end:
-          offset: 27015
-          line: 300
+          offset: 27175
+          line: 301
           column: 228
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27016
-          line: 301
+          offset: 27176
+          line: 302
           column: 1
         end:
-          offset: 27049
-          line: 301
+          offset: 27209
+          line: 302
           column: 34
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27050
-          line: 302
+          offset: 27210
+          line: 303
           column: 1
         end:
-          offset: 27080
-          line: 302
+          offset: 27240
+          line: 303
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27081
-          line: 303
+          offset: 27241
+          line: 304
           column: 1
         end:
-          offset: 27122
-          line: 303
+          offset: 27282
+          line: 304
           column: 42
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27123
-          line: 304
+          offset: 27283
+          line: 305
           column: 1
         end:
-          offset: 27153
-          line: 304
+          offset: 27313
+          line: 305
           column: 31
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27154
-          line: 305
+          offset: 27314
+          line: 306
           column: 1
         end:
-          offset: 27189
-          line: 305
+          offset: 27349
+          line: 306
           column: 36
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
       unit_id: "normative_6734"
       source_span:
         start:
-          offset: 27190
-          line: 306
+          offset: 27350
+          line: 307
           column: 1
         end:
-          offset: 27226
-          line: 306
+          offset: 27386
+          line: 307
           column: 37
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_31791"
+      unit_id: "normative_31951"
       source_span:
         start:
-          offset: 31791
-          line: 389
+          offset: 31951
+          line: 390
           column: 1
         end:
-          offset: 31831
-          line: 389
+          offset: 31991
+          line: 390
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_45727"
+      unit_id: "normative_48234"
       source_span:
         start:
-          offset: 45727
-          line: 434
+          offset: 48234
+          line: 436
           column: 1
         end:
-          offset: 45749
-          line: 434
+          offset: 48256
+          line: 436
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -5039,5 +5071,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:3b1d4b1572f67bffdadf1981d6bb062ec95ba94990eadaf05c2078b6e173eb24"
-  generated_content_sha256: "sha256:29413a713bea0221ccef4eb99cb82cc77546d8e4e873a8d0a343ffbe21d242ff"
+    sha256: "sha256:b7e08a0e3101c4d6847618a5f5856c2ead46439be804983c7d78e98f07a26030"
+  generated_content_sha256: "sha256:a54f6bf7c33d8885634aae58e655afa7665307529bb6aa9ae6a78bc57c3d4d5d"

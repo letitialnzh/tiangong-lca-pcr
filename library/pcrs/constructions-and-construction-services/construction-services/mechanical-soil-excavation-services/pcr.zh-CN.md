@@ -181,7 +181,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `excavate` | 机械土开挖与验收 | required | 每个纳入开挖工作批 | 独立移除服务，包括申报内部移动及返工回路 | `accepted_excavation_service` |
 
@@ -195,12 +195,13 @@ sync_with: pcr.en-US.md
 
 ###### 开挖机械用柴油（`excavation_diesel`）
 
-仅当使用化石柴油动力设备时发生：交付挖掘机及申报范围内装载、场内转移机械的化石柴油；生物柴油混合物须单列并保留组成。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 选定流：柴油 `9d258d75-6792-4f1c-9856-81602ed8f816`
 - 绑定模式：`fixed`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 质量单位 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
-- 数量规则：采集发油量，扣除退油及油箱库存增加量；按机械作业记录归属。
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -429,10 +430,10 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cp_acceptance` | `excavate` | 验收服务 | 测量与验收文件 | 工作包编号；批次编号；原始及完工测量；设计边界；验收体积；排除量；日期；批准人 | 测量开挖前后表面或采用可追溯断面；核对批准几何与签署验收，排除未授权超挖及重复作业。 | m3 | 每验收批 | 完整批次，包括准备、怠速、纠正及结算 | 申报场址及工作包；披露其他使用方 | 每参考流 | 测量控制；设计修订；签署验收 |
-| `cp_energy` | `excavate` | 燃料与电力 | 燃料与电表台账 | 资产；燃料类型；表读数；发料；退料；库存；运行/怠速/返工时间；全部消耗工作包；期间 | 采用校准仪表和交付库存核对；按实测活动分割共享设备期间，并明确发电机归属。 | kg; kWh | 每班及每次交付 | 完整批次，包括准备、怠速、纠正及结算 | 申报场址及工作包；披露其他使用方 | 每参考流 | 仪表校准；发票；资产时间核对 |
+| `cp_energy` | `excavate` | 燃料与电力 | 燃料与电表台账 | 资产；燃料类型；表读数；发料；退料；库存；运行/怠速/返工时间；全部消耗工作包；期间; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 采用校准仪表和交付库存核对；按实测活动分割共享设备期间，并明确发电机归属。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kg; kWh | 每班及每次交付 | 完整批次，包括准备、怠速、纠正及结算 | 申报场址及工作包；披露其他使用方 | 每参考流 | 仪表校准；发票；资产时间核对 |
 | `cp_plant` | `excavate` | 机械使用 | 资产台时登记 | 资产；型号；班次；生产/怠速/返工台时；全部使用方；共享维护覆盖；上游数据集 | 按工作包及期间记录每台机械，核对可用台时及供应商覆盖；识别其他场址使用方。 | h | 每班 | 完整批次，包括准备、怠速、纠正及结算 | 申报场址及工作包；披露其他使用方 | 每参考流 | 资产日志；供应商边界；分配台账 |
 | `cp_mobilization` | `excavate` | 机械运输 | 调度与质量记录 | 行程编号；机械质量；距离；重载/空载段；全部使用方；归属期间；供应商边界 | 核对调度、路线及质量记录；按服务期间有记录的机械台时将同一行程分配给实际使用方。 | t*km | 每行程 | 完整批次，包括准备、怠速、纠正及结算 | 申报场址及工作包；披露其他使用方 | 每参考流 | 调度证据；路线轨迹；使用方台账 |
 | `cp_water` | `excavate` | 抑尘 | 供水与施用日志 | 水源；计量/罐体积；退回；区域；班次；施用；径流收集；其他使用方 | 计量实际外供水量，仅归属开挖相关施用；记录天气及水进入土壤、空气或收集废物的去向。 | m3 | 每交付及班次 | 完整批次，包括准备、怠速、纠正及结算 | 申报场址及工作包；披露其他使用方 | 每参考流 | 仪表检查；交付单；施用日志 |
@@ -442,16 +443,17 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `normalize_lot` | all inventory rows | 将各归属批次总量除以相同验收原状体积，以每参考流表示；保留原始单位及验收体积记录。 | attributable lot amount; accepted volume; cp_acceptance | exchange per reference flow |  |
 | `soil_reconcile` | reusable_soil_handover; waste_soil_handover | 用全部交接、留存库存变化及损失的干质量当量核对移出干土；记录密度/含水率及不确定性，不强制松散体积等于原状体积。 | cp_soil; cp_emissions | physical movement reconciliation |  |
 | `transport_activity` | plant_mobilization | 载货运输量按机械吨数乘路线公里计算；保留关联供应商服务的空驶处理及有记录归属份额。 | cp_mobilization | attributable transport service |  |
 | `direct_emissions` | fossil_co2_air; engine_species_air; soil_dust_pm25_air; soil_dust_coarse_air | 对归属活动采用有文件依据且适用的测量/模型方法；在数据集证据中保留完整方程、因子单位、物种/粒径基准及控制假设，不规定通用因子。 | cp_emissions; cp_energy; cp_soil | direct emission by substance and receiving medium | `epa-ap42-construction-dust`; `epa-nonroad-exhaust` |
+| fuel_supply_fate | excavation_diesel | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `quality_lot` | excavate | 所有记录采用一致批次/场址/期间及验收边界，包括不合格作业及未发生证明。 | 签署验收及班次/事件台账 |
 | `quality_identity` | all inventory rows | 最终过程发布前将各实际交换解析为已核实具体流、属性及单位；记录未决身份及总括/物种缺口。 | 身份核实及单位支持 |
@@ -468,6 +470,7 @@ sync_with: pcr.en-US.md
 | `validate_shared` | excavate | 检查全部使用方及期间、物理归属份额及事件唯一归属；核对机械服务、运输、燃料及维护边界，防止重复计数。 |  |
 | `validate_emissions` | excavate | 要求污染物种/报告基准、受纳空气、适用活动/模型及互不重叠粒径组分；缺失数据不得以零或通用固定身份替代。 | `epa-ap42-construction-dust`; `epa-nonroad-exhaust` |
 | `validate_completion` | all inventory rows | 要求节点专属采集关联、单位、双语规则/卡对齐及当前投影；超范围须调查，未决身份及不支持换算须明确不完整覆盖。 |  |
+| validate_fuel_supply_fate | excavation_diesel | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
 
 ## 10. 发布数据集画像
 

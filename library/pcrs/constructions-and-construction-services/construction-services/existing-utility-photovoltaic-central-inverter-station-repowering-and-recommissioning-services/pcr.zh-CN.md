@@ -532,7 +532,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用于 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | calc_direct | replacement_central_inverter,interface_parts_count,interface_cable_length,installation_mass_supplies,water_supply,fuel_supply,electricity_import,freight_service,specialist_service,shared_asset_service,removed_reusable_equipment,usable_count_returns,usable_length_returns,usable_mass_returns,test_electricity_export,removed_electronic_waste,new_supply_waste,contained_wastewater,nonburned_fuel_waste,direct_combustion_species,direct_incident_species,waste_treatment_service | 对各实际原生交换，数量 = 归属实际原生数量 / N。N 来自 cp_acceptance，是最终验收唯一站的正数数量。保持分子单位及互斥角色；这是直接每参考归属，不是质量/容量换算。 | actual native quantity; N; relevant node-owned protocol | 每参考流原生交换 |  |
 | calc_supply | replacement_central_inverter,interface_parts_count,interface_cable_length,installation_mass_supplies,fuel_supply,usable_count_returns,usable_length_returns,usable_mass_returns | S = 归属期初库存 + 外部去皮毛收货量 - 结转期末库存；总量含移出使用 S 作为上游并保留独立物理可用退回，仅消耗使用 S 减去一次匹配向外可用退回。内部领用不是收货。未退回废物/损失仍含上游；无额外退回信用。 | cp_supply; cp_fuel; cp_exits; declared supply convention | 归属原生供给与独立物理移出 |  |
@@ -546,7 +546,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用于 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | q_identity | 参考标识及配置 | 要求保留/更换物料清单、实际额定值/拓扑、固件/保护/控制状态、站标识、场址、设计及验收日期；不得主张 MWp/kWh 等价。 | cp_acceptance 及设计/序列号记录 |
 | q_coverage | 资源覆盖及去向 | 完整覆盖全部实际直接及供应商资源、库存/去向、运输、废物及处理。实际未使用须显式举证；未解决数量、资源责任、支持链或废物去向仍为最终数据阻断项，不是零。 | 全部节点所属协议及覆盖矩阵 |

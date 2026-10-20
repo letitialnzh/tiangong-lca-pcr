@@ -449,6 +449,27 @@ Conditional actual spills/leaks or direct effluent MUST expand substance, receiv
 
 Range evidence need: Require actual substance/particle fraction and receiving medium, measured released mass or compatible activity/species factor with units/source, or actual whole-fluid release and evidenced composition/fate. Retain capture/recovery and nonadditive views; no default species, SDS-based emission or repeated factor composition is evidenced.
 
+#### Collection requirement: Project-designed roof-to-beam restraint assemblies (`roof_connection_assemblies`)
+
+Process / prospective direction / type: `integration` / `inputs` / `product`.
+
+Resolve each actual SKU, composition/state and custody into a separate atomic exchange. This requirement is not a generic pooled flow. A genuinely complete purchased assembly may use its own verified package boundary; its already included parts are not additional purchases.
+
+Count each actual identified connector, plate, fastener, restraint or dissipative assembly by SKU/configuration and installed interface. Complete bought assemblies include their BOM once; separately supplied pieces retain separate item identities. Existing roof and beam are retained starting state.
+
+- Collection subject: Project-designed roof-to-beam restraint assemblies
+- Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
+- Amount rule: Use stock reconciliation in the corresponding section calculation rule for each actual counted item; do not equate installed count with new purchases.
+- Value mode: Foreground record (`foreground_record`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Collected record (`collected_record`)
+- Collection protocol: `cp_supply`
+- Sources: `reluis-industrial-retrofit-2024`
+
+Range evidence need: Require the actual approved connection schedule and SKU/BOM counts, roof/panel interface geometry, delivery/stock balances, failed-installation replacements and counting uncertainty; no generic bolts-per-building or poster dimensions are evidenced.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -464,23 +485,6 @@ Roof-to-beam and cladding-to-column/beam are distinct component roles integrated
 #### Inputs
 
 ##### Product flows
-
-###### Project-designed roof-to-beam restraint assemblies (`roof_connection_assemblies`)
-
-Count each actual identified connector, plate, fastener, restraint or dissipative assembly by SKU/configuration and installed interface. Complete bought assemblies include their BOM once; separately supplied pieces retain separate item identities. Existing roof and beam are retained starting state.
-
-- Selected flow: Project-designed roof-to-beam restraint assemblies
-- Flow property / unit: Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- Amount rule: Use stock reconciliation in the corresponding section calculation rule for each actual counted item; do not equate installed count with new purchases.
-- Value mode: Foreground record (`foreground_record`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Collected record (`collected_record`)
-- Collection protocol: `cp_supply`
-- Sources: `reluis-industrial-retrofit-2024`
-
-Range evidence need: Require the actual approved connection schedule and SKU/BOM counts, roof/panel interface geometry, delivery/stock balances, failed-installation replacements and counting uncertainty; no generic bolts-per-building or poster dimensions are evidenced.
 
 ###### Actual supplied product water for site preparation and tests (`product_water`)
 

@@ -184,11 +184,12 @@ sync_with: pcr.en-US.md
 
 过程／待建立交换的方向／类型：`roof_truss_erection` / `inputs` / `product`.
 
-实际进入现场的燃烧燃料身份使用条件性集合卡。仅用于起重、通道或运输服务未含运行；燃料种类及供应形态分开。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 采集对象：直接控制架设设备实际供给燃料
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
-- 数量规则：按燃料类型和设备期间，通过加油及期初期末库存记录实际消耗；体积换算仅用实际燃料密度证据。
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -311,7 +312,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `roof_truss_erection` | 屋架就位、锚固与支撑完备的架设阶段交付 | required | 在已验收支承首次架设实际指定工厂木屋架套件 | 整合成品屋架、支承连接件及永久支撑；安装保留临时稳定措施；负责架设纠正及处置出口 | 1 item 验收完整架设阶段套件 |
 
@@ -406,23 +407,24 @@ sync_with: pcr.en-US.md
 | `cp_components` | `roof_truss_erection` | 构件接收、使用、更换和库存 | 材料台账 | set_id; truss/design_id; supplier_gate; kit_coverage; material/specification; piece_count; net_mass; moisture_basis; receipts; replacement; installed; returned; closing_stock; period; event_id | 核对供应明细和交付票据、安装件数及用料清单、校准称量或实际单件质量记录；区分树种、等级、处理、涂层和材料类型。先将收货、使用和库存归属本套件及纠正事件，再归一化至验收完整套件。 | item; kg | 每次接收、领用、纠正和库存关闭 | P1 架设及实际更换事件 | 实际场址、套件和供应商 | per reference flow | 可追溯明细、称量校准、收货、库存核对及批准连接支撑文件；不使用通用密度。 |
 | `cp_services` | `roof_truss_erection` | 临时稳定、起吊及作业通道 | 服务及资产台账 | set_id; asset/provider_id; approved_plan; component_inventory; coverage; all_consumers; P1/P2/P3; start/end; hours; operating/standby; mobilization; maintenance; replacement; custody; removal_owner; removal/return_event; driver; total_denominator; allocation_share | 核对起重通道日志、批准的临时支撑记录及供应方清单覆盖。记录全部使用方阶段、实际期间特定因果驱动量和完整分母，包括后续屋面工作。获取生产、使用、拆除、运输及使用结束覆盖或明确关联清单；未知未来事件仍为披露责任，阻止完成工作包。 | h; 底层材料、能量和服务单位 | 每个服务期间、保管移交和终止事件 | P1 架设、P2 保留、P3 批准拆除归还 | 实际场址及每个共享使用方供应商 | per reference flow | 方案验收、供应方原始清单、完整使用方分母及阶段台账；份额合计为有界周期，仅在后续稳定有记录时批准拆除。 |
 | `cp_logistics` | `roof_truss_erection` | 构件、残余物和退回运输 | 货运台账 | set_id; transfer_id; material; net_payload; origin/destination; mode; vehicle/provider; distance; empty_return; included_upstream; shared_consumers; period | 逐段采集实际称量、发运及路线记录。计算实际载荷距离活动，以完整载荷使用方数据分配不可分共享运输，核对供应方上游覆盖后归一化至验收套件。 | t*km | 每个物理运输段 | P1 及可归属 P2/P3 运输段 | 实际来源、现场及接收方路线 | per reference flow | 载荷路线证据、分配记录、匹配转移 ID 和无重复运输的覆盖。 |
-| `cp_resources` | `roof_truss_erection` | 直接电力及燃料 | 电表和燃料台账 | set_id; equipment; provider_coverage; supply/fuel_identity; opening_stock; delivered; closing_stock; meter_start/end; charging; operating_period; all_consumers; allocation_driver; factor/unit | 使用实际电表充电及消耗燃料库存核对。区分燃料和电力，包含压缩机工具及纠正事件；按实测消耗或完整分母下有记录的因果使用量分配共享运行，记录实际换算因子。 | kWh; kg; 原始计量单位 | 每个计量加油期间及库存关闭 | P1 及任何直接负责的 P2/P3 运行 | 实际现场设备和供应 | per reference flow | 电表校准、收据、库存、设备日志、换算证据，以及供应方投入未含直接运行的确认。 |
+| `cp_resources` | `roof_truss_erection` | 直接电力及燃料 | 电表和燃料台账 | set_id; equipment; provider_coverage; supply/fuel_identity; opening_stock; delivered; closing_stock; meter_start/end; charging; operating_period; all_consumers; allocation_driver; factor/unit; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 使用实际电表充电及消耗燃料库存核对。区分燃料和电力，包含压缩机工具及纠正事件；按实测消耗或完整分母下有记录的因果使用量分配共享运行，记录实际换算因子。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kWh; kg; 原始计量单位 | 每个计量加油期间及库存关闭 | P1 及任何直接负责的 P2/P3 运行 | 实际现场设备和供应 | per reference flow | 电表校准、收据、库存、设备日志、换算证据，以及供应方投入未含直接运行的确认。 |
 | `cp_residuals` | `roof_truss_erection` | 包装、可用退回、拒收屋架、废物和库存 | 材料处置台账 | set_id; event_id; transfer_id; material/truss_id; count; net_mass; opening/closing_stock; received; installed; product/waste_status; defect; manufacturer_disposition; receiver; route; capture; phase | 按材料状态跟踪进场包装及残余物。核对可用退回发运和接收保管；拒收屋架隔离至书面处置；丢弃物采用废物票据。分开留存库存和服务内部资产归还，总供应及库存退回调整只做一次。 | kg; item | 每次接收、拒收、退回、废物转移及库存关闭 | P1 及链接 P2/P3 的可归属延续拆除残余物 | 实际场址、供应商和指定接收方 | per reference flow | 称量件数、匹配接收证据、状态缺陷决定、废物处理和材料闭合；不假定回收信用。 |
 | `cp_acceptance` | `roof_truss_erection` | 完整验收架设阶段套件 | 有记录验收记录 | set_id; truss_ids/count; span/pitch/spacing/layout; bearing_acceptance; design/placement_revision; instruction_edition; approved_lift/temporary/permanent_plans; connection/brace_completion; temporary_support_list; later_stability_dependency; P1/P2/P3; custody/removal_owner; inspection; defect_closure; accepted_complete_set_count | 把实际已安装屋架 ID、支承连接和永久杆件支撑与批准文件比较。检查关闭缺陷，记录保留临时稳定和下游责任，取得签署的架设阶段交付；只计完整合格套件。参考仍为一套指定套件，不是单榀或面积。 | item | 每套完整套件签署节点及保留支撑责任每次变化 | P1 签署节点，明确链接 P2/P3 责任 | 实际场址的指定套件 | per reference flow | 适用的设计者、安装者和接收者签署文件、检查关闭证据；不完整或不安全套件不能验收。 |
 | `cp_releases` | `roof_truss_erection` | 已表征直接释放 | 测量或活动因子记录 | set_id; equipment/source; provider_coverage; substance; medium; particle_size/basis; activity; factor/source/date; control/capture; measurement; uncertainty; period; allocation | 对实际直接控制运行，取得校准采样或适用于实测活动的合理来源特定因子。分别记录物质、环境、归属阶段及使用方；区分捕集废物和供应方已含排放，记录不确定性或未测缺口。 | kg | 每次测量或设备活动期间 | 实际直接 P1 及可归属 P2/P3 运行 | 实际场址接收环境 | per reference flow | 测量质量证据或包含技术、燃料、控制和不确定性的适用因子；通用污染物名称不能选择具体身份。 |
 
 ### 计算规则
 
-| rule_id | 适用于 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `normalize_complete_set` | 所有清单行 | 汇总指定完整工作包的实际可归属材料、资源、残余物和服务数量；一个实测作业期覆盖多套验收套件时，保留每套配置，以实际记录先分配再表达为每参考流数量。不得用单榀计数另建参考产品。 | 实际记录；验收完整套件台账；分配证据 | 每参考流清单数量 |  |
 | `component_closure` | roof_trusses; permanent_bracing; bearing_connectors; transport_packaging; reusable_returns; rejected_truss_returns; erection_waste | 按实际材料或屋架 ID 核对期初库存加收货与已安装消耗、真实产品退回、已表征废物及期末库存。明确未解决平衡缺口及纠正供应；不得把输出服务件数作为材料质量。 | cp_components; cp_residuals | 材料特定件数质量核对 |  |
 | `shared_cycle_closure` | temporary_stability_service; lifting_access_service; logistics; installation_energy; direct_fuel | 每个事件资源以有证据分配份额作用于完整覆盖清单，而非只作用于计费小时。核对全部使用方及 P1/P2/P3 份额至完整资源服务边界，每套验收归属只保留一次。 | cp_services; cp_logistics; cp_resources; 全使用方及阶段台账 | 完整分配的底层负担及服务活动 |  |
 | `release_calculation` | direct_releases | 使用实测释放质量，或实测活动与来源特定有记录因子，保留单位换算、捕集假设和不确定性。在构建的数据集中列实际外部因子参考；不在本 PCR 编造因子。 | cp_releases; 实际活动因子或测量 | 物质及接收环境特定释放质量 |  |
+| fuel_supply_fate | direct_fuel | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用于 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `actual_design_and_gate` | 参考产品 | 保留实际套件身份、设计布置版本、已验收接口、文件适用性及签署节点。不得在验收输出中隐藏未解决缺陷。 | cp_acceptance; 实际项目制造商工程师记录 |
 | `supply_and_quantity_quality` | 全部构件和残余物卡 | 保留材料身份状态、实际总量库存退回量、净质量件数证据、含水率基础和不确定性。候选数值范围须独立审查的可比证据；某批最大值不能验证该批自身。 | cp_components; cp_residuals |
@@ -440,7 +442,7 @@ sync_with: pcr.en-US.md
 | `reject_path_and_balance` | 全部材料和残余物卡 | 每个材料状态及缺陷事件核对至已安装输出、库存、真实可用退回、拒收产品退回或废物。要求接收方状态及转移 ID；保留纠正负担，防止重复扣减或验收拒收套件。 |  |
 | `shared_phase_coverage` | temporary_stability_service; lifting_access_service; logistics; installation_energy; direct_fuel; direct_releases | 要求完整全使用方及 P1/P2/P3 台账、实际因果分配和完整服务覆盖。核验更换终止责任人、批准支撑拆除节点及匹配的接收数据集责任；未解决阶段、资产或拆除覆盖阻止完成。供应方已含及直接运行仅计一次。 |  |
 | `actual_identity_quantity` | 所有清单行 | 要求实际身份属性单位兼容及可追溯同节点采集协议。每个范围证据需求须由实际证据关闭或披露未解决；固定参考数量是定义而非成品率范围。逐一检查实际条件材料、废物和物质，拒绝编造默认燃料、密度、损失、紧固件、排放或碳信用值。 |  |
-
+| validate_fuel_supply_fate | direct_fuel | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
 
 ## 10. 发布数据集画像
 

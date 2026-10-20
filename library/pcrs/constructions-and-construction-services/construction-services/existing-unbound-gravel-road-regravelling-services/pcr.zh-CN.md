@@ -106,11 +106,12 @@ sync_with: pcr.en-US.md
 
 过程／待建立交换的方向／类型：`prepare_host` / `inputs` / `product`.
 
-仅在服务数据集未含时，分别记录准备机群实际消耗的各燃料牌号。真实向外退货、转移及泄漏处置须有实际交接和去向，发生时按实际燃料或废物/物质身份单列，不能当燃烧。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 采集对象：按供给牌号区分的实际准备机具燃料
 - 流属性/单位：质量 / kg
-- 数量规则：实际消耗燃料按牌号由完整领用/库存/退货/转移/泄漏衡算确定；未耗、退回和转移量不计燃烧；cp_prep_fuel。
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -319,11 +320,51 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 
 数量范围证据需求：采集实测或路径支持的体积区间和水衡算不确定性；加水不自动等于消耗或污染物释放。
 
+#### 采集要求：按牌号区分的实际铺设、洒水和碾压燃料 (`finish_fuel`)
+
+过程／待建立交换的方向／类型：`regravel_finish` / `inputs` / `product`.
+
+按每个真实 SKU、组成/状态及保管关系建立独立原子交换。本要求不是通用集合流。真实完整的采购总成可采用其经核实的整包边界，已含部件不再额外采购。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
+
+- 采集对象：按牌号区分的实际铺设、洒水和碾压燃料
+- 流属性/单位：质量 / kg
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
+- 数值来源模式：`foreground_record`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`collected_record`
+- 采集协议：`cp_finish_fuel`
+
+数量范围证据需求：采集真实消耗区间和分配不确定性；体积换算须实测密度/温度；无默认每面积燃料。
+
+#### 采集要求：以废物交接的实际准备移除物 (`prep_removed_waste`)
+
+过程／待建立交换的方向／类型：`prepare_host` / `outputs` / `waste`.
+
+按每个真实 SKU、组成/状态及保管关系建立独立原子交换。本要求不是通用集合流。真实完整的采购总成可采用其经核实的整包边界，已含部件不再额外采购。
+
+按材料、废物状态和处理去向区分实际移除泥沙/土/碎砾石/杂物；不得将异质移除物加总为一个交换。
+
+- 采集对象：以废物交接的实际准备移除物
+- 流属性/单位：质量 / kg
+- 数量规则：按已识别流记录真实向外废物总量（扣皮重，未预扣退货）；cp_prep_removed_waste。
+- 数值来源模式：`foreground_record`
+- 适用范围：`site_specific`
+- 归一化基准：每参考流
+- 基准类型：`reference_flow`
+- 证据类型：`collected_record`
+- 采集协议：`cp_prep_removed_waste`
+
+数量范围证据需求：采集各流称量范围、不确定性、含水/状态和处置证据；无默认移除比例。
+
 ## 6. 过程清单结构
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | prepare_host | 留用道路翻松、整形与准备 | required | 适用既有道路在新层铺设前需要有记录的准备 | 独立成形责任：有病害既有几何状态变为验收翻松/整形路拱和排水交接状态 | 同一实际合同桩号和准备面积 |
 | regravel_finish | 新无结合料磨耗层铺设与整饰 | required | 准备门槛通过后；工法要求时采用实际调湿/碾压 | 留用父状态的表面整饰：集料交付总量（扣皮重，未预扣退货）、嵌入式均料/铺撒、实际压实和验收维修 | 1 item验收的桩号有界维修 |
@@ -366,8 +407,8 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 
 - 选定流：重新铺砾交接时准备完成的既有道路
 - 流属性/单位：数量 / item
-- 数量规则：实际铺前批准后仅对同一声明准备路段记录1 item；cp_prepared_host。
-- 数值来源模式：`fixed_value`
+- 数量规则：声明路段/状态下独立实测的批准道路交接计数，除以正值验收合同路段数 N_host；两节点按同一交接 ID 和状态配对。同一路段比值为一须有实际门槛证据，不能由最终产出默认赋值。
+- 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
 - 基准类型：`reference_flow`
@@ -375,25 +416,9 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 - 采集协议：`cp_prepared_host`
 - 来源：`fhwa-gravel-2015`
 
-数量范围证据需求：一路段定义精确；采集验收桩号/面积/路拱/排水公差和测量不确定性，不编造体积产率。
+数量范围证据需求：采集真实门槛计数、路段几何及测量/检查不确定性；观测到的计数比一不是通用中间量边界。
 
 ##### 废物流
-
-###### 以废物交接的实际准备移除物 (`prep_removed_waste`)
-
-按材料、废物状态和处理去向区分实际移除泥沙/土/碎砾石/杂物；不得将异质移除物加总为一个交换。
-
-- 选定流：以废物交接的实际准备移除物
-- 流属性/单位：质量 / kg
-- 数量规则：按已识别流记录真实向外废物总量（扣皮重，未预扣退货）；cp_prep_removed_waste。
-- 数值来源模式：`foreground_record`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
-- 采集协议：`cp_prep_removed_waste`
-
-数量范围证据需求：采集各流称量范围、不确定性、含水/状态和处置证据；无默认移除比例。
 
 ##### 基本流
 
@@ -409,8 +434,8 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 
 - 选定流：新磨耗层铺设接收的已准备既有道路
 - 流属性/单位：数量 / item
-- 数量规则：同一真实批准准备路段1 item；cp_host_to_finish。
-- 数值来源模式：`fixed_value`
+- 数量规则：声明路段/状态下独立实测的批准道路交接计数，除以正值验收合同路段数 N_host；两节点按同一交接 ID 和状态配对。同一路段比值为一须有实际门槛证据，不能由最终产出默认赋值。
+- 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
 - 基准类型：`reference_flow`
@@ -418,7 +443,7 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 - 采集协议：`cp_host_to_finish`
 - 来源：`fhwa-gravel-2015`
 
-数量范围证据需求：精确关联路段计数；从cp_prepared_host获取交接测量不确定性和门槛公差，不假设已验收。
+数量范围证据需求：独立确定关联交接实测计数/状态、交接测量不确定性和门槛公差；不得假设已验收或中间量等于最终参考量。
 
 ###### 供给门处实际规定天然磨耗层集料 (`new_aggregate`)
 
@@ -453,22 +478,6 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 - 来源：`fhwa-gravel-2015`
 
 数量范围证据需求：采集实测采购体积区间、精度及真实分配损失；转kg须有实际密度和温度。
-
-###### 按牌号区分的实际铺设、洒水和碾压燃料 (`finish_fuel`)
-
-在机具/供应商覆盖未含时按真实燃料牌号和操作责任区分。真实向外退货、转移及泄漏处置须实际交接去向，发生时按真实燃料或废物/物质身份单列，不能作燃烧。
-
-- 选定流：按牌号区分的实际铺设、洒水和碾压燃料
-- 流属性/单位：质量 / kg
-- 数量规则：按牌号由完整领用/库存/退货/转移/泄漏衡算确定实际消耗；未耗、退回和转移量不计燃烧；cp_finish_fuel。
-- 数值来源模式：`foreground_record`
-- 适用范围：`site_specific`
-- 归一化基准：每参考流
-- 基准类型：`reference_flow`
-- 证据类型：`collected_record`
-- 采集协议：`cp_finish_fuel`
-
-数量范围证据需求：采集真实消耗区间和分配不确定性；体积换算须实测密度/温度；无默认每面积燃料。
 
 ###### 实际新层整饰电力供给 (`finish_electricity`)
 
@@ -548,7 +557,7 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 | protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_prep_plant | prepare_host | 实际道路准备机具服务 | 实际场址/供应商记录 | asset_id; provider; task; event_id; start_time; end_time; service_hours_h; idle_hours_h; other_job_consumers; period; manufacture_maintenance_replacement_end_of_life_scope; utilization_denominator; attribution_share | 使用计时表/任务日志和供应商范围；列出本节点、整饰及其他合同/报告期，按asset_attribution一致分配完整寿命服务。 | h | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 保留全部寿命阶段证据、更换/终结决策及燃料/机具服务单一归属；时长支持链仍需核实。 已结束寿命资产采用实测历史服务。在役资产可使用有依据的未来剩余服务、更换/终止和寿命终结情景；区分预测与观测，披露完整寿命利用量分母、来源、不确定性/敏感性及更新触发。不编造未来退役日期或默认寿命；缺少有据完整覆盖或分母才构成数据缺口，资产仍在役本身不阻止建模。 |
-| cp_prep_fuel | prepare_host | 按供给牌号区分的实际准备机具燃料 | 实际场址/供应商记录 | fuel_grade; asset_id; period; opening_kg; gross_issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; fuel_service_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg | 核对领用、油箱和任务计量日志，共用消耗只归属本节点一次并保留校准和换算。期初加领用总量（扣容器皮重，未预扣退回）须与实际消耗、期末、真实退货/转移、泄漏闭合；实际处置按交接类型关联不同产品/废物/基本流，不计燃烧。 | kg | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 真实燃料收据与实测密度；无默认消耗或燃烧因子；去向不明量不能视为已耗燃料，记录衡算缺口。 |
+| cp_prep_fuel | prepare_host | 按供给牌号区分的实际准备机具燃料 | 实际场址/供应商记录 | fuel_grade; asset_id; period; opening_kg; gross_issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; fuel_service_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 核对领用、油箱和任务计量日志，共用消耗只归属本节点一次并保留校准和换算。期初加领用总量（扣容器皮重，未预扣退回）须与实际消耗、期末、真实退货/转移、泄漏闭合；实际处置按交接类型关联不同产品/废物/基本流，不计燃烧。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kg | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 真实燃料收据与实测密度；无默认消耗或燃烧因子；去向不明量不能视为已耗燃料，记录衡算缺口。 |
 | cp_prep_electricity | prepare_host | 实际准备阶段电力供给 | 实际场址/供应商记录 | meter_id; supplier; event_id; start_kWh; end_kWh; period; other_job_kWh; attribution_share; service_scope | 读取校准电表或可追溯供应商分表，明确唯一节点/事件责任。 | kWh | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 保留原生kWh；准确能量属性支持链是单独声明的缺口。 |
 | cp_prepared_host | prepare_host | 重新铺砾交接时准备完成的既有道路 | 实际场址/供应商记录 | road_id; segment_id; start_chainage_m; end_chainage_m; width_m; area_m2; crown_percent; crossfall_percent; longitudinal_grade_percent; distress; drainage_scope_owner; criterion_source; criterion_tolerance; inspection_result; gate_date; transfer_id | 测量实际桩号、宽度和高程，按合同标准检查修正病害和排水，记录签署铺前门槛并与host_to_finish配对。 | item | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 保留结构适用性、实测几何/单位和公差；不合格准备在本节点返工并承担重复负担。 |
 | cp_host_surplus | prepare_host | 实际向外交接的可用既有道路剩料 | 实际场址/供应商记录 | lot_id; material_identity; gross_kg; tare_kg; moisture_percent; destination; product_custody; period; dispatch_id; transport_owner | 称量实际发运可用剩料并保留收方/产品交接证据；同批次不能同时作废物。 | kg | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 校准称重、目的地及留用负担处理；无负的原生集料投入。 收货/领用与向外发运的总量指已扣车辆/容器皮重、尚未预扣退货或其他向外转移的材料量。gross_kg与tare_kg分别记录含载车辆/容器称量和皮重时，二者相减所得材料质量才进入衡算，不能把含车辆皮重的地磅总重当材料量；保留秤精度和匹配含水/状态。 |
@@ -561,7 +570,7 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 | cp_finish_water_product | regravel_finish | 实际调湿采购水 | 实际场址/供应商记录 | water_supplier; supply_state; meter_id; received_m3; issued_m3; closing_m3; return_m3; internal_reuse_m3; temperature_C; density_kg_per_m3; period; supply_transport_scope | 读取校准收货/领用表或可追溯洒水车供水记录，核对水箱库存和实际调湿；内部循环不作新供给。 | m3 | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 不假设降雨、采购水和取水等价；零用量须实际工法证据。 |
 | cp_finish_water_abstraction | regravel_finish | 本维修实际环境取水 | 实际场址/供应商记录 | source_id; environmental_compartment; permit; meter_id; abstracted_m3; period; reuse_m3; pump_energy_owner; temperature_C; density_kg_per_m3 | 读取校准取水表及水源/许可记录，区分环境取水、采购供给和回用。 | m3 | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 须真实水源介质及水支持/单位链；未使用也须明确记录。 |
 | cp_finish_plant | regravel_finish | 实际铺设与压实机具服务 | 实际场址/供应商记录 | asset_id; provider; event_id; operation; start_time; end_time; service_hours_h; idle_hours_h; pass_count; other_node_job_consumers; period; lifecycle_scope; utilization_denominator; attribution_share | 使用实际小时/任务日志与供应商覆盖，和共用资产账配对；制造、维护/更换和寿命终结在全部任务/报告期只计一次。 | h | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 不遗漏资本阶段或重复单列燃料；保留真实更换/终结和覆盖缺口。 已结束寿命资产采用实测历史服务。在役资产可使用有依据的未来剩余服务、更换/终止和寿命终结情景；区分预测与观测，披露完整寿命利用量分母、来源、不确定性/敏感性及更新触发。不编造未来退役日期或默认寿命；缺少有据完整覆盖或分母才构成数据缺口，资产仍在役本身不阻止建模。 |
-| cp_finish_fuel | regravel_finish | 按牌号区分的实际铺设、洒水和碾压燃料 | 实际场址/供应商记录 | fuel_grade; asset_id; event_id; period; opening_kg; issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; service_scope_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg | 核对燃料领用、库存与机具活动，计入重复铺撒/碾压，共用消耗唯一分配。期初加领用总量（扣容器皮重，未预扣退回）须与实际消耗、期末、真实向外退货/转移及泄漏闭合；实际处置按交接类型关联不同产品/废物/基本流，不计燃烧。 | kg | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 校准计量和真实批次密度；不自动等同尾气；去向不明不能算燃烧，记录衡算缺口。 |
+| cp_finish_fuel | regravel_finish | 按牌号区分的实际铺设、洒水和碾压燃料 | 实际场址/供应商记录 | fuel_grade; asset_id; event_id; period; opening_kg; issues_kg; closing_kg; other_job_kg; density_kg_per_m3; temperature_C; service_scope_owner; outward_return_kg; outward_transfer_kg; transfer_owner; spill_kg; spill_medium_or_waste_receiver; spill_treatment; actual_consumed_kg; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 核对燃料领用、库存与机具活动，计入重复铺撒/碾压，共用消耗唯一分配。期初加领用总量（扣容器皮重，未预扣退回）须与实际消耗、期末、真实向外退货/转移及泄漏闭合；实际处置按交接类型关联不同产品/废物/基本流，不计燃烧。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kg | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 校准计量和真实批次密度；不自动等同尾气；去向不明不能算燃烧，记录衡算缺口。 |
 | cp_finish_electricity | regravel_finish | 实际新层整饰电力供给 | 实际场址/供应商记录 | meter_id; supplier; event_id; opening_kWh; closing_kWh; period; other_job_kWh; attribution_share; service_scope | 读取真实校准电表/分表和可追溯任务记录，责任范围内计入返工和试验。 | kWh | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 保留原生kWh；能量支持链与供应商身份须核实。 |
 | cp_accepted_regravelling | regravel_finish | 验收的既有无结合料碎砾石道路重新铺砾维修服务 | 实际场址/供应商记录 | road_id; segment_id; start_chainage_m; end_chainage_m; width_m; treated_area_m2; layer_thickness_mm; crown_percent; longitudinal_grade_percent; moisture_percent; compacted_density_kg_per_m3; density_test_method; grading; plasticity; actual_water_roller_method; weather; criterion_source; criterion_tolerance; test_result; defect_id; rework_closeout; handover_date; reporting_period; client_signoff | 测量实际完工路段，按现行合同条件进行规定材料/几何/含水/压实试验，保留签署验收和全部缺陷/复验关闭。实际桩号/面积作为限定信息，不作为计数等价输出。 | item | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 不计未验收桩号，不设通用性能目标；保留完整准备、维修及返工负担。 |
 | cp_aggregate_return | regravel_finish | 实际向外退回的可用新集料 | 实际场址/供应商记录 | dispatch_id; lot_id; material_identity; gross_kg; tare_kg; moisture_percent; recipient; product_custody; transport_owner; period; input_receipt_id | 用发运称量和接收方记录，与new_aggregate收货总量（扣皮重，未预扣退货）及期末库存核对，真实负担/退货处理只保留一次。 | kg | 每个事件/批次及全部重复操作 | 完整有界维修作业，关联报告日期 | 实际声明桩号和负责供应商 | per reference flow | 不得出口留库材料或将同一拒收批次分类两次。 收货/领用与向外发运的总量指已扣车辆/容器皮重、尚未预扣退货或其他向外转移的材料量。gross_kg与tare_kg分别记录含载车辆/容器称量和皮重时，二者相减所得材料质量才进入衡算，不能把含车辆皮重的地磅总重当材料量；保留秤精度和匹配含水/状态。 |
@@ -573,7 +582,7 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | repair_normalization | 所有清单行 | 将本验收合同路段唯一归属节点的真实事件汇总，含返工，按每参考流表达数量。regravel_finish主责物流账通过产生节点/运输腿责任矩阵使每腿只计一次。内部道路交接配对，不重复最终输出。 | 节点事件ID；合同验收；全部节点协议 | 一项声明验收维修的交换数量 |  |
 | aggregate_reconcile | new_aggregate; aggregate_return; rejected_layer | 在相同含水/状态核对期初库存加收货总量（扣皮重，未预扣退货），与安装材料、真实向外可用退货、向外废物、有据损失和期末库存闭合。只用实际密度推导松散/压实体积；FHWA示例不是换算因子。 | cp_new_aggregate; cp_aggregate_return; cp_rejected_layer; 实际密度/含水试验 | 批次材料衡算和结转库存负担 | fhwa-gravel-2015 |
@@ -581,10 +590,12 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 | fuel_consumption | prep_fuel; finish_fuel | 实际消耗燃料是期初库存加领用总量（扣容器皮重，未预扣退回）扣除期末库存、真实向外退货/转移和真实泄漏后闭合的部分。每项向外处置按真实交接和去向分别建模；只有消耗量可驱动燃烧计算。 | cp_prep_fuel; cp_finish_fuel; 退货/转移/泄漏去向记录 | 实际牌号特定消耗交换及单独归属出口 |  |
 | emission_calculation | prep_dust; prep_exhaust; finish_dust; finish_exhaust | 按实测排放速率乘实际活动时长，或真实适用活动量乘有据物种/粒径特定因子，计算作业排放质量。记录方法/因子来源、单位、实际机具/燃料/材料/含水/控制与接收介质适用性、采样/外推和传播不确定性；派生总量不是直接测量。 | 真实速率/时长或活动量/因子及方法引用；全部四项排放协议 | 计算的真实作业排放及方法/证据缺口披露 |  |
 | water_balance | finish_water_product; finish_water_abstraction; captured_runoff; finish_water_release | 将采购/取水、库存变化、新集料带入含水、留用道路初末含水与真实有影响降雨/外来径流，和留存水、捕集出流及有据释放核对。天气/材料含水是实测衡算项，不是额外采购或信用。内部回用配对；任何缺测项保留缺口，不自动当蒸发。转kg使用实际密度/温度。 | cp_finish_water_product; cp_finish_water_abstraction; cp_new_aggregate; cp_captured_runoff; cp_finish_water_release; 既有道路含水和实际天气/径流证据 | 路径数量、不确定性及未闭合衡算缺口 |  |
+| fuel_supply_fate | finish_fuel; prep_fuel | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
+| actual_host_handoff | prepared_host; host_to_finish | 从签署验收的合同路段 ID 独立记录 N_host，每个完整验收声明路段仅计一次，不同几何分别保留。每个真实准备/接收门槛记录批准交接 ID、当前状态、时间和实测几何，由这些记录确定交接计数。仅配对相同物理状态/交接；真实纠正交接保留实际活动及原负荷一次。道路身份接口不是新采购道路或共产品。各实测门槛计数除以 N_host；不由最终参考量一推定中间计数，不将重复准备计作另一验收路段。 | cp_prepared_host; cp_host_to_finish; accepted segment IDs; actual handoff IDs/state/count; N_host | paired actual host gate quantities |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | qualified_geometry | prepared_host; accepted_regravelling | 保留实际道路适用性、铺前门槛、最终桩号/宽度/面积/厚度/路拱/排水、材料/含水/密度方法、单位、标准来源与公差。 | 测量/试验/检查及签署门槛记录 |
 | complete_events | 所有清单行 | 覆盖每批次/操作/报告期，含返工/复验、有日期物理ID与有据未使用声明；缺失不等于零。 | 有日期账本、运输腿责任矩阵和缺陷关闭 |
@@ -603,7 +614,7 @@ regravel_finish为单一主责物流账，每个真实维修运输腿只计一�
 | balance_paths | 所有清单行 | 结合不确定性检查收货总量（扣皮重，未预扣退货）/领用材料和水衡算、留用道路处理、内部回用、真实向外交接及期末库存；库存/退货或负担不重复。计验收输出前关闭全部缺陷/复验/返工路径。 |  |
 | asset_periods | prep_plant; finish_plant | 检查共用资产完整阶段、全部使用者/报告期、利用量分母、更换/终结和单一事件归属；生命周期/支持链覆盖缺失阻止数据集定稿。 |  |
 | identity_range | 所有清单行 | 将条件材料/服务/废物/物质需求展开为实际不同交换。核实准确流/属性/单位身份及每项实际数值不确定性；不将泛粉尘当作粒径组分或把燃料当作尾气。缺失数据明确记录，不等于零。 |  |
-
+| validate_fuel_supply_fate | finish_fuel; prep_fuel | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
 
 ## 10. 发布数据集画像
 

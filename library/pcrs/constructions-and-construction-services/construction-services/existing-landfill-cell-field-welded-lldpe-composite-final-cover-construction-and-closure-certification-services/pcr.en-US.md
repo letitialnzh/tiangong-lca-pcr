@@ -627,6 +627,48 @@ Record attributable actual water returned/discharged or evaporated into its evid
 
 Range evidence need: Collect actual source-specific metered supply/abstraction, use and wastewater/discharge/soil-moisture/evaporation destination evidence with uncertainty; no assumed water rate or double purchase of delivered moisture.
 
+#### Collection requirement: Actual segregated solid construction waste from prepare (`prepare_solid_waste`)
+
+Process / prospective direction / type: `prepare` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Identify each actual soil/debris, rejected material, offcut, destructive-test coupon, packaging and contaminated sorbent stream with wet/dry basis and actual permitted destination. Historic removed waste is not a negative new-material purchase. Retain upstream burden of nonreturned losses; no default recycling credit.
+
+- Collection subject: Actual segregated solid construction waste from prepare
+- Flow property / unit: Mass / kg
+- Amount rule: Actual attributable native quantity divided once by A, recorded per reference flow from the linked node protocol, with compatible stock and physical-state reconciliation.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_prepare_waste`
+- Sources:
+
+Range evidence need: Collect segregated actual debris/offcut/coupon/packaging waste masses, wet/dry state, weighing uncertainty and destination receipts; no default reject or recycling fraction.
+
+#### Collection requirement: Actual segregated solid construction waste from cap (`cap_solid_waste`)
+
+Process / prospective direction / type: `cap` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Identify each actual soil/debris, rejected material, offcut, destructive-test coupon, packaging and contaminated sorbent stream with wet/dry basis and actual permitted destination. Historic removed waste is not a negative new-material purchase. Retain upstream burden of nonreturned losses; no default recycling credit.
+
+- Collection subject: Actual segregated solid construction waste from cap
+- Flow property / unit: Mass / kg
+- Amount rule: Actual attributable native quantity divided once by A, recorded per reference flow from the linked node protocol, with compatible stock and physical-state reconciliation.
+- Value mode: `calculated_value`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `calculated_from_collection`
+- Collection protocol: `cp_cap_waste`
+- Sources:
+
+Range evidence need: Collect segregated actual debris/offcut/coupon/packaging waste masses, wet/dry state, weighing uncertainty and destination receipts; no default reject or recycling fraction.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -702,23 +744,6 @@ Internal handoff to cap assembly after actual grading, moisture conditioning and
 Range evidence need: Collect qualified prepared footprint, rejected-zone area, incoming and compacted soil states and independent qualification-inspection uncertainty; it need not equal final A.
 
 ##### Waste flows
-
-###### Actual segregated solid construction waste from prepare (`prepare_solid_waste`)
-
-Identify each actual soil/debris, rejected material, offcut, destructive-test coupon, packaging and contaminated sorbent stream with wet/dry basis and actual permitted destination. Historic removed waste is not a negative new-material purchase. Retain upstream burden of nonreturned losses; no default recycling credit.
-
-- Selected flow: Actual segregated solid construction waste from prepare
-- Flow property / unit: Mass / kg
-- Amount rule: Actual attributable native quantity divided once by A, recorded per reference flow from the linked node protocol, with compatible stock and physical-state reconciliation.
-- Value mode: `calculated_value`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `calculated_from_collection`
-- Collection protocol: `cp_prepare_waste`
-- Sources:
-
-Range evidence need: Collect segregated actual debris/offcut/coupon/packaging waste masses, wet/dry state, weighing uncertainty and destination receipts; no default reject or recycling fraction.
 
 ##### Elementary flows
 
@@ -839,23 +864,6 @@ Only the unique completed net developed final cover surface certified against th
 Range evidence need: Final 1 m2 is normalization only. Establish actual A uncertainty from unique certified surface polygons, slope convention, survey accuracy and certification extent; no empirical yield range.
 
 ##### Waste flows
-
-###### Actual segregated solid construction waste from cap (`cap_solid_waste`)
-
-Identify each actual soil/debris, rejected material, offcut, destructive-test coupon, packaging and contaminated sorbent stream with wet/dry basis and actual permitted destination. Historic removed waste is not a negative new-material purchase. Retain upstream burden of nonreturned losses; no default recycling credit.
-
-- Selected flow: Actual segregated solid construction waste from cap
-- Flow property / unit: Mass / kg
-- Amount rule: Actual attributable native quantity divided once by A, recorded per reference flow from the linked node protocol, with compatible stock and physical-state reconciliation.
-- Value mode: `calculated_value`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `calculated_from_collection`
-- Collection protocol: `cp_cap_waste`
-- Sources:
-
-Range evidence need: Collect segregated actual debris/offcut/coupon/packaging waste masses, wet/dry state, weighing uncertainty and destination receipts; no default reject or recycling fraction.
 
 ##### Elementary flows
 

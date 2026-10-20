@@ -483,7 +483,7 @@ D是唯一验收管段实际中心线m总和。各交换的数量分子按自己
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_exchange | incoming_packaging; pex_tube; barbed_fittings; copper_crimp_rings; support_and_protection; compatible_seal_material; cleaning_consumables; unused_product_return | 每实际材料/SKU/状态交换的 kg 数量分子除以 D；包装仅在供应负担单独建模时激活。总进入与退回不可两次净扣。 | actual_kg; D; cp_materials; cp_acceptance | kg per reference flow |  |
 | formulation_normalize | disinfection_product | 实际供应配方kg数量分子除以D；活性比例单列，不能替代供应混合物质量或推断余氯。 | formulation_mass; active_fraction; D; cp_water; cp_acceptance | kg per reference flow | |
@@ -499,7 +499,7 @@ D是唯一验收管段实际中心线m总和。各交换的数量分子按自己
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求（Requirement） | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | same_job_basis | all inventory rows | 所有协议使用同一任务、期间、正D及验收配置；保持原始数量分子、换算因子和单位。未知发生状态标为未知，零值仅有完整覆盖时允许。 | 六协议逐行追踪 |
 | source_applicability | all inventory rows | 保留实际厂家/SKU、版本、质量条件、仪表校准与量测误差。厂家通止规/水压/相容性要求与实际项目规范核对，不以等待或接触时长冒充Duration投入。 | 供应商原始资料及项目验收记录 |

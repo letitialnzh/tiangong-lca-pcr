@@ -405,7 +405,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `normalize_actual` | 所有非参考清单行 | q_i = n_i / D；n_i 为独立保留的具体交换实际归属分子；D 为实际完整验收正计数。不得从参考输出倒推 n_i。 | n_i; D; cp_acceptance; 对应材料/电量/服务/释放协议 | 每参考流 q_i |  |
 | `sku_mass` | 质量清单行 | 采用实测净 kg；仅有计数或长度时，将实际数量乘以可追溯匹配 SKU/状态质量因子并保留不确定性。异质总量仅作诊断，不构成具体交换。 | cp_materials; cp_releases; 匹配换算证据 | 实际 kg 分子 |  |
@@ -414,7 +414,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `configuration_quality` | 已验收输出 | 记录全部参考限定信息及配置等效性。产品点规格仅适用匹配型号，不是通用服务数量或接收保证。 | cp_acceptance；厂家型号说明 |
 | `custody_quality` | 材料及出口 | 保留确切身份、单位、校准数量、事件/接收者及上游制造/运输/包装包含项；报告库存和质量平衡残余。 | cp_materials; cp_releases |

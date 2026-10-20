@@ -431,6 +431,46 @@ Range evidence need: Need actual water balance, outlet monitoring, medium and an
 - Evidence kind: `calculated_from_collection`
 - Collection protocol: `cp_emissions`
 
+#### Collection requirement: Actual removed service-fluid waste (`removed_fluid_waste`)
+
+Process / prospective direction / type: `track_geometry_correction` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Separate hydraulic waste, lubricants and actual contaminated washwater. Preserve water/solid components and receiving treatment. No duplicate recovered-spill waste, retained oil or provider-included maintenance disposal.
+
+Range evidence need: Need actual drainage/maintenance records, fluid identity, contamination and treatment custody; no assumed annual change per campaign.
+
+- Collection subject: Actual removed service-fluid waste
+- Flow property / unit: Mass / kg
+- Amount rule: Measured removed fluid waste by exact fluid/contamination stream divided by L.
+- Value mode: `foreground_record`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `collected_record`
+- Collection protocol: `cp_materials`
+
+#### Collection requirement: Actual removed worn parts waste (`wear_parts_waste`)
+
+Process / prospective direction / type: `track_geometry_correction` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Track actual worn tines, inserts, hoses or seals to replacement and receiver. Retain part/composition separation; reused serviceable parts are actual product custody if supplied elsewhere. Do not add complete machine EOL already in asset life service.
+
+Range evidence need: Need replacement-event linkage, material-specific removed mass and actual reuse/recovery/disposal evidence.
+
+- Collection subject: Actual removed worn parts waste
+- Flow property / unit: Mass / kg
+- Amount rule: Measured net-tare removed component waste by distinct part/material divided by L.
+- Value mode: `foreground_record`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `collected_record`
+- Collection protocol: `cp_materials`
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -570,38 +610,6 @@ Range evidence need: Exactly 1 m defines the reference, not a statistical proces
 - Sources: `plasser-tamping-precision`; `plasser-tamping-control`
 
 ##### Waste flows
-
-###### Actual removed service-fluid waste (`removed_fluid_waste`)
-
-Separate hydraulic waste, lubricants and actual contaminated washwater. Preserve water/solid components and receiving treatment. No duplicate recovered-spill waste, retained oil or provider-included maintenance disposal.
-
-Range evidence need: Need actual drainage/maintenance records, fluid identity, contamination and treatment custody; no assumed annual change per campaign.
-
-- Selected flow: Actual removed service-fluid waste
-- Flow property / unit: Mass / kg
-- Amount rule: Measured removed fluid waste by exact fluid/contamination stream divided by L.
-- Value mode: `foreground_record`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `collected_record`
-- Collection protocol: `cp_materials`
-
-###### Actual removed worn parts waste (`wear_parts_waste`)
-
-Track actual worn tines, inserts, hoses or seals to replacement and receiver. Retain part/composition separation; reused serviceable parts are actual product custody if supplied elsewhere. Do not add complete machine EOL already in asset life service.
-
-Range evidence need: Need replacement-event linkage, material-specific removed mass and actual reuse/recovery/disposal evidence.
-
-- Selected flow: Actual removed worn parts waste
-- Flow property / unit: Mass / kg
-- Amount rule: Measured net-tare removed component waste by distinct part/material divided by L.
-- Value mode: `foreground_record`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `collected_record`
-- Collection protocol: `cp_materials`
 
 ##### Elementary flows
 

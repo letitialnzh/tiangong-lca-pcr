@@ -586,7 +586,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | layout_cut | 排版及瓷砖裁切 | required | 实际施工批段操作；条件性交换逐项声明 | 单一责任阶段与实测交接 | 经 A 归一至 1 m2 accepted_tiled_floor |
 | mortar_mix | 粘结浆配制与拌和 | required | 实际施工批段操作；条件性交换逐项声明 | 单一责任阶段与实测交接 | 经 A 归一至 1 m2 accepted_tiled_floor |
@@ -1321,7 +1321,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| 协议 protocol_id | 节点 process_id | 流角色 flow_role | 记录类型 record_type | 原始字段 raw_fields | 采集方法 collection_method | 单位 unit | 频率 frequency | 时间覆盖 temporal_coverage | 场址范围 site_scope | 汇总规则 aggregation_rule | 质量证据 quality_evidence |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_layout_cut | layout_cut | whole_tiles; cut_water; cut_electricity; prepared_tiles; tile_return; tile_offcuts; cut_slurry; tile_packaging; cut_air_release | 施工批段计量及接管账 | row_id; measurement_id; gross; tare; count; unit_mass; volume; density; measurement_route; unit; unit_conversion; lot_id; room_id; batch_id; event_id; record_event_uid; defect_id; rework_iteration; transfer_id; product_grade; composition; moisture_basis; meter_start; meter_end; meter_unit; driver_node; drivers_total; shared_consumers; run_time; cleanup_owner; waste_destination; concentration; exhaust_volume; species; particle_size; receiving_medium; accepted_area_record_id; A; opening_stock; receipts; closing_stock; external_return; stock_event_id; actual_processing_draw; cut_layout; cutting_method; reuse_piece_id | 用 row_id 标明事件表中的每项实际交换。称量 gross/tare 或采用 count 与同产品实测 unit_mass；用水采用实测质量或 volume 与实测 density；保留 meter_start/end、meter_unit、全部 shared_consumers 及 driver_node/drivers_total；每项实际排放记录 species、size、receiving_medium、concentration、exhaust_volume 及 unit_conversion，或直接实测质量。每事件只选一条有记录的 measurement_route；记录校准及干湿状态。配对转移并明确记录未启用交换；同批段 A 取自签认的 grout_finish 验收。 按数量或称量记录实际发入裁切的瓷砖，与采购收货及互斥的期末库存/退回分开；保留排版及可用碎块记录。 | kg; MJ | 每批次、转移及清洁；每批段一次验收 | 完整施工批段，包括失败及返工 | 一个声明的室内施工场址 | 每参考流 | 校准；签认面积表；供应商说明；库存/转移核对；发票；废物接收单；适用时的排放测量 |
 | cp_mortar_mix | mortar_mix | mortar_powder; mortar_water; mortar_additives; mortar_electricity; fresh_mortar; mortar_mix_residue; mortar_wash_effluent; mortar_packaging; mortar_mix_release | 施工批段计量及接管账 | row_id; measurement_id; gross; tare; count; unit_mass; volume; density; measurement_route; unit; unit_conversion; lot_id; room_id; batch_id; event_id; record_event_uid; defect_id; rework_iteration; transfer_id; product_grade; composition; moisture_basis; meter_start; meter_end; meter_unit; driver_node; drivers_total; shared_consumers; run_time; cleanup_owner; waste_destination; concentration; exhaust_volume; species; particle_size; receiving_medium; accepted_area_record_id; A; powder_issued; mixing_water; additive_issued; opening_wetstock; closing_wetstock; transferred_wetpaste; captured_mix_residue; mix_material_in_wash; measured_mix_releases; unexplained_balance; wash_addition; opening_washstock; effluent_transferred; retained_captured_wash_residue; measured_wash_release; closing_washstock; unexplained_wash_balance; wetstock_moisture; residue_solids; wash_solids; crystallization_water_basis; mix_recipe_version; water_grade; batch_grade; formulation_record; batch_times | 用 row_id 标明事件表中的每项实际交换。称量 gross/tare 或采用 count 与同产品实测 unit_mass；用水采用实测质量或 volume 与实测 density；保留 meter_start/end、meter_unit、全部 shared_consumers 及 driver_node/drivers_total；每项实际排放记录 species、size、receiving_medium、concentration、exhaust_volume 及 unit_conversion，或直接实测质量。每事件只选一条有记录的 measurement_route；记录校准及干湿状态。配对转移并明确记录未启用交换；同批段 A 取自签认的 grout_finish 验收。 按批次等级/配方记录实际 powder_issued、mixing_water 和 additive_issued、期初/期末湿库存及湿浆交接质量。拌和池与清洗水池分开，计量浆的固体/水分及实际进入清洗的物料；保留结晶水口径，将未知去向记为平衡缺口而非假定排放。 | kg; MJ | 每批次、转移及清洁；每批段一次验收 | 完整施工批段，包括失败及返工 | 一个声明的室内施工场址 | 每参考流 | 校准；签认面积表；供应商说明；库存/转移核对；发票；废物接收单；适用时的排放测量 |
@@ -1331,7 +1331,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | event_mass | whole_tiles; cut_water; prepared_tiles; tile_return; tile_offcuts; cut_slurry; tile_packaging; mortar_powder; mortar_water; mortar_additives; fresh_mortar; mortar_mix_residue; mortar_wash_effluent; mortar_packaging; grout_powder; grout_water; grout_additives; fresh_grout; grout_mix_residue; grout_wash_effluent; grout_packaging; tiles_feed; mortar_feed; bond_consumables; bond_reject; grout_feed; finish_water; movement_joint_materials; finish_consumables; finish_residue; finish_effluent; finish_packaging | 称量时 event_quantity = gross - tare; 也可依所选 measurement_route 采用 event_quantity = count * unit_mass 或 volume * density，单位须一致; 每事件仅选一条路径并保留实测产品/干湿身份。 | gross; tare; count; unit_mass; volume; density; measurement_route | event_quantity |  |
 | event_energy | cut_electricity; mortar_electricity; bond_electricity; grout_electricity; finish_electricity | meter_delta = meter_end - meter_start; share = driver_node / drivers_total; event_quantity = meter_delta * share; drivers_total 须为正，使用者份额合计须为 1; 独用仪表采用 share = 1; 分配后采用 electricity_convert 换算 kWh，MJ 读数保持不变。 | meter_start; meter_end; meter_unit; driver_node; drivers_total; shared_consumers | event_quantity |  |
@@ -1350,7 +1350,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity | all inventory rows | TIDAS 发布前将每项实际交换解析为兼容具体流；概括卡可展开多项交换，但不得改变服务范围。 | 流详情及支持流属性/单位证据 |
 | completeness | all_processes | 覆盖完整批次、清洁、换批、库存、废弃和共享事件；条件性缺席须有证据，不得将空白等同零。 | 事件账及核对记录 |
@@ -1366,6 +1366,7 @@ sync_with: pcr.en-US.md
 | event_gate | all_processes | 检查运行/批次关联、返工路径、废物接管、共享使用者份额及单一事件归属。缺证据即完整性失败。 |  |
 | identity_gate | all inventory rows | 核实实际配方、服务交接点、流类型、流属性/单位及排放介质；不得把制造砖改称服务或猜测密封胶/粉尘身份。 |  |
 | range_gate | all inventory rows | 用计量证据调查宽泛筛选异常值。暂定筛选界限不证明符合性、发布就绪或缺失流为零。 |  |
+| validate_physical_slurry_stream | all collected wastewater/slurry | 废水/浆液卡仅表示一个接收门槛下真实未物理分离的液固混合物流。分别收集的液体、已分离固体或不同处理去向须建立独立实际交换，不能为适配本卡而重新合并。混合物总质量与所含水/固体属于不可相加的视图。 |  |
 
 ## 10. 发布数据集画像
 

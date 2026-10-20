@@ -612,7 +612,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | c_area | accepted_waterproofing | A = 独一验收净展开表面积之和；output = 1 m2。重复几何、焊缝搭接和重复作业不得增加A。 | survey_geometry; excluded_area; signed_handover; cp_acceptance | A; 1 m2 |  |
 | c_supply | liner_supply; anchor_profiles; anchor_fasteners; perimeter_seals; drain_components; additional_geonet; repair_auxiliaries; clean_test_supplies; fuel_supply; native_area_supplies; native_length_supplies; native_volume_supplies; fuel_volume_supply | S = opening_stock + gross_receipts - tare - closing_stock；S保留实际兼容单位；inventory amount = attributable S / A。每一实物最终出口匹配一次；可用退回处理遵循a_stock。 | opening_stock; gross_receipts; tare; closing_stock; outward_usable_return; cp_material; cp_fuel; A | 每参考流归属供给数量 |  |
@@ -624,7 +624,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | dq_identity | all inventory rows | 最终数据集前核实实际具体交换与支持单位。伞形卡需落实实际SKU、服务商、废物或物质，不能任意采用近似匹配。 | 供应商规格及具体身份明细确认 |
 | dq_coverage | rehabilitate | 采集完整作业阶段，包括失败尝试、服务商资源、适用时的实际缺席证据及全消费方资产寿命。覆盖缺失为明确缺口并阻止最终定稿。 | 事件、归属方、期间和寿命名册 |

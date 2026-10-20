@@ -355,7 +355,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | install_accept | 常规有线系统安装与验收 | required | 真实已认可设计的常规有线工程 | 单一负责组装、测试纠正及交接的职责 | accepted_installation; 1 item |
 
@@ -474,7 +474,7 @@ D是cp_acceptance中同配置完整验收系统的正计数。Q为使用自身�
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_exchange | incoming_packaging; control_panel; field_alarm_devices; standby_batteries; alarm_cable; fixings_and_containment; detector_test_agent; test_cleaning_consumables; hired_support_service; unused_product_return | 归一化数量 = Q / D。Q为真实归属材料kg或真实完成服务事件数，分别测量；在按allocate_returns处理净耗用供应前保留毛领用、库存及退回。 | Q; D; cp_materials; cp_services; cp_acceptance | 每参考流采用原单位的具体交换归一化数量 |  |
 | energy_normalize | installation_electricity | 归一化电量 = E_job / D。E_job为实测时段kWh仅减有证据其他用户kWh；交接前归属充电纠正时段只计一次。 | 电表起止；其他用户记录；E_job; D; cp_energy; cp_acceptance | 每参考流kWh |  |
@@ -486,7 +486,7 @@ D是cp_acceptance中同配置完整验收系统的正计数。Q为使用自身�
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | dq_reference | accepted_installation | 保留全部限定信息、独立D及失败待验收记录；不同配置分别处理。 | cp_acceptance |
 | dq_pools | all inventory rows | 逐SKU状态接收方保留毛输入、库存、留存、退回及实测残留；混合质量总和仅为诊断。 | cp_materials; cp_residuals |

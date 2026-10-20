@@ -664,6 +664,26 @@ sync_with: pcr.en-US.md
 
 范围证据需求： 须有实际物种介质量化方法、捕集保留及不确定性，无通用排放因子。
 
+#### 采集要求：实际批准供应的爆炸物产品 (`explosives`)
+
+过程／待建立交换的方向／类型：`development` / `inputs` / `product`.
+
+按每个真实 SKU、组成/状态及保管关系建立独立原子交换。本要求不是通用集合流。真实完整的采购总成可采用其经核实的整包边界，已含部件不再额外采购。
+
+实际供应商形态、SKU 和批准用途决定每项具体交换；仅在实际记录证明时才采用 ANFO 或乳化炸药。
+
+- 采集对象： 实际批准供应的爆炸物产品
+- 流属性/单位： Mass / kg
+- 数量规则： 实际可归属爆炸物供应量 kg / L；未退回处置物、拒爆残留及损失保留上游负担。
+- 数值来源模式： 计算值（`calculated_value`）
+- 适用范围： 场址特定（`site_specific`）
+- 归一化基准： 每 1 m 参考流
+- 基准类型： 参考流（`reference_flow`）
+- 证据类型： 基于采集计算（`calculated_from_collection`）
+- 采集协议： `cp_dev_ledger`
+
+范围证据需求： 须按掘进循环、围岩类别及断面取得实际 SKU 供应及爆破核对记录，无默认爆破配方或每米用药量。
+
 ## 6. 过程清单结构
 
 这些质量流卡仅适用于实际质量原生供应。其他原生计数、面积或长度材料由各节点 other_native 流卡独立保留单位，不能无独立需要及实测换算便强行采用质量。
@@ -682,22 +702,6 @@ sync_with: pcr.en-US.md
 #### 输入
 
 ##### 产品流
-
-###### 实际批准供应的爆炸物产品 (`explosives`)
-
-实际供应商形态、SKU 和批准用途决定每项具体交换；仅在实际记录证明时才采用 ANFO 或乳化炸药。
-
-- 选定流： 实际批准供应的爆炸物产品
-- 流属性/单位： Mass / kg
-- 数量规则： 实际可归属爆炸物供应量 kg / L；未退回处置物、拒爆残留及损失保留上游负担。
-- 数值来源模式： 计算值（`calculated_value`）
-- 适用范围： 场址特定（`site_specific`）
-- 归一化基准： 每 1 m 参考流
-- 基准类型： 参考流（`reference_flow`）
-- 证据类型： 基于采集计算（`calculated_from_collection`）
-- 采集协议： `cp_dev_ledger`
-
-范围证据需求： 须按掘进循环、围岩类别及断面取得实际 SKU 供应及爆破核对记录，无默认爆破配方或每米用药量。
 
 ###### 实际供应的掘进电力 (`development_electricity`)
 
@@ -865,7 +869,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `native_supply` | explosives; initiators; drill_consumables; development_fuel; support_bolts; support_mesh; support_binder; service_extensions; support_consumables; support_fuel; development_other_native; support_other_native | 对各实际 SKU 和原生单位，采用期初可归属库存 + 外部扣皮重总收货 - 期末结转库存；选择总量加出口法，或一次性排除匹配可用退回。实际可归属原生数量除以 L。 | cp_dev_ledger; cp_sup_ledger; cp_accept | 每 1 m 参考流的原生供应 |  |
 | `native_outlets` | explosive_return; initiator_return; support_return; rock_spoil; development_waste; support_waste; development_water; support_water; development_water_out; support_water_out; development_withdrawal; support_withdrawal; development_mass_return; support_mass_return; support_length_return; development_other_return; support_other_return | 对相同责任方和状态汇总实际独立追踪的原生边界数量，再除以 L。内部转移标识成对匹配，不作为额外外部供应或产出相加。仅对实际独立需要的换算采用匹配的实测状态、密度、水分和来源。 | cp_dev_ledger; cp_sup_ledger; cp_dev_environment; cp_sup_environment; cp_accept | 每 1 m 参考流的实际原生交换 |  |
@@ -874,7 +878,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `identity_scope` | all inventory rows | 将每个实际最终交换解析为一个已核实具体 UUID，以及符合实际 SKU、服务、物种、介质的独立已核实属性单位支持；未知属于缺口，不是零。 | 实际供应商与流及支持详情记录；场址路线地质 |
 | `complete_campaign` | all inventory rows | 覆盖完整作业及全部直接和服务方资源、期间、失败循环及事故，实际为零须有未发生证据。 | 按责任记录的事件期间账及签署完整性审查 |

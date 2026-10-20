@@ -199,11 +199,12 @@ sync_with: pcr.en-US.md
 
 过程／待建立交换的方向／类型：`lift_installation` / `inputs` / `product`.
 
-条件性纳入为本作业服务的内燃设备实际燃料，按实际供货燃料身份及组成展开；可复用设备存在本身不代表有燃料。此行只记录已消耗燃料；未用/退回燃料在燃料账单独核对，并排除于 usable_material_return，防止重复计数。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 采集对象：范围内安装或起吊设备实际燃料
 - 流属性/单位：质量 / kg
-- 数量规则：通过称量或供应方可追溯记录获取已消耗燃料 kg；体积转质量须有实际密度/温度证据。排除提供方服务已含燃料。
+- 数量规则：真实上游供应燃料质量 G_fuel 仅除以声明参考单位下独立实测的正值验收批量 D_fuel 一次；保留各互斥燃料去向，按第8节另行确定实际燃烧 B_fuel。
 - 数值来源模式：`foreground_record`
 - 适用范围：`site_specific`
 - 归一化基准：每参考流
@@ -271,7 +272,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | `lift_installation` | 固定式螺杆升降平台组装、连接与调试 | required | 实际为固定式无围护双停层自承式宽度路线，基础/电源交接已验收；具备授权安装和实际调试要求 | 独立组装/集成套件、锚固和连接职责，形成一个已验收的调试完成安装。收货/文件检查留在本节点。不合格组装件在本节点纠正/复测，或按实际退回/废物保管责任离开；失败状态绝非已验收输出。 | 1 item 已验收安装 |
 
@@ -408,27 +409,28 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | raw_fields | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | aggregation_rule | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_materials | lift_installation | 套件、实际额外件、耗材和包装 | 收货/发料/称重 | job_id; date; supplier; identity; serial; specification; supplied_state; kit_inclusion; gross_receipt; actual_issue; installed_quantity; return_quantity; closing_stock; unit; measurement_uncertainty | 按各不同身份，将供应方供货清单和序列号与收货总量、作业发料、校准称重或可追溯供应方质量核对。期末留存保留负担责任方。只有本作业可归属数量才除以同配置已验收安装数量。 | item; kg | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 发票、校准称重/供应方质量、图纸、签署的发料/保管责任核对；不得混合身份求和 |
 | cp_interfaces | lift_installation | 基础及专用电源准备交接 | 设计/工程量/验收 | job_id; interface_id; provider; owner; existing_or_new; boundary_endpoint; drawing_revision; measured_work; quantity; unit; electrical_rating; tolerance; acceptance_source; acceptance_result; final_connection_owner; upstream_dataset_coverage | 在精确端点验证实际基础/电源设计和完工，记录实体工作量及独立上游数据集覆盖。既有建筑条件须有预先存在证据。真实项目专用服务除以已验收安装数；缺失新工作不能换成零。 | 实际 mm; m; m3; kg; V; A; Hz; 服务 item | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 批准的有效项目专用图纸、混凝土/基础/锚固和电气签署、实测工程量、提供方范围及边界核对 |
 | cp_assets | lift_installation | 可复用设备完整寿命份额 | 设备/服务/期间台账 | job_id; asset_id; owner; provider_scope; phase; period_id; consuming_job; consuming_node; use_hours; total_service_hours; replacement_event; termination_event; capital_burden; excluded_coverage; attribution_basis; uncertainty | 记录安装/起吊/登高/测试设备实际小时及所有相关使用作业/期间；验证生产、使用、更换及最终拆除覆盖。应用有据可查的完整寿命服务份额及期间特定责任，再将本作业归属负担除以已验收数。提供方缺口须单独覆盖。 | h；实际上游负担单位 | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 计量/日志、提供方边界、完整寿命台账、更换/寿命终止证据、份额核对及不确定性 |
 | cp_logistics | lift_installation | 真实货运段及进退场 | 发运/路径记录 | job_id; leg_id; provider; mode; origin; destination; load_identity; load_mass_t; distance_km; shared_load_basis; return_custody; supplier_included; allocation_uncertainty | 每段使用实际发运质量和路径 km，包含真实退回及进退场。按有据可查因果份额归属共载，并检查供应方/提供方覆盖；可归属 tkm 除以已验收安装数。 | t; km; tkm | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 运单、实测质量、路径证据、提供方覆盖及无重复回程段 |
-| cp_energy | lift_installation | 调试、工具和搬运能源/燃料 | 电表/燃料记录 | job_id; date; equipment_or_circuit; task; test_id; failed_or_repeat; meter_start; meter_end; runtime_h; measured_demand_kW; fuel_identity; fuel_mass_kg; fuel_volume; fuel_volume_unit; density; density_unit; temperature; temperature_unit; unit; provider_inclusion; uncertainty | 分表计量调试及工具/搬运回路，或记录实际时间和实测功率。排除后续乘客使用。核对实测已消耗燃料及有证据的密度转换；未用/退回燃料在燃料账单列，不进入 usable_material_return；纳入纠正/复测并排除提供方已覆盖能源；本作业可归属量除以已验收数。 | kWh; kg; 实际来源体积单位 | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 电表校准/读数、测试/任务时间戳、燃料/密度证据、不确定性及回路/提供方范围 |
+| cp_energy | lift_installation | 调试、工具和搬运能源/燃料 | 电表/燃料记录 | job_id; date; equipment_or_circuit; task; test_id; failed_or_repeat; meter_start; meter_end; runtime_h; measured_demand_kW; fuel_identity; fuel_mass_kg; fuel_volume; fuel_volume_unit; density; density_unit; temperature; temperature_unit; unit; provider_inclusion; uncertainty; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 分表计量调试及工具/搬运回路，或记录实际时间和实测功率。排除后续乘客使用。核对实测已消耗燃料及有证据的密度转换；未用/退回燃料在燃料账单列，不进入 usable_material_return；纳入纠正/复测并排除提供方已覆盖能源；本作业可归属量除以已验收数。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | kWh; kg; 实际来源体积单位 | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 电表校准/读数、测试/任务时间戳、燃料/密度证据、不确定性及回路/提供方范围 |
 | cp_acceptance | lift_installation | 实际最终已验收服务门槛 | 安装/测试/检验/交接 | job_id; model; serial; configuration; drawing_revision; authorized_instruction_revision; jurisdiction; installer_authorization; travel; platform_width; geometry_unit; rated_load; load_unit; supply_voltage_V; supply_current_A; supply_frequency_Hz; geometry_tolerance; load_tolerance; supply_tolerance; tolerance_source; pad_anchor_fascia_signoff; gate_interlock_guard_record; test_method; test_load; test_load_unit; test_duration; test_duration_unit; test_tolerance; pass_limit_source; actual_result; defect_id; correction; retest_result; inspection; owner_handover; accepted_count | 授权技师记录实际安装、配置的安全功能及授权测试方案/结果，包含全部适用单位/公差；保留所需检验验收、缺陷关闭、所有者指导/记录及后续维护责任。只计符合本范围的签署已验收作业，再归一化为 1 item。 | item；实际测试/几何/电气单位 | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 授权、有效作业图纸/指令、签署测试及规定检验、纠正缺陷记录和所有者交接 |
 | cp_custody | lift_installation | 可用退回、期末留存和废物 | 转移/库存/处置 | job_id; source_identity; source_receipt; defect_id; correction_task; disposition; usability; recipient; transfer_id; gross_outward_quantity; closing_stock_quantity; carried_burden_owner; waste_class; treatment; unit; uncertainty | 按实际身份和保管责任文件称重/计数真实向外退回及废物，区分内部返工和留存。核对收货总量与已安装使用、实际向外退回、废物和期末留存。向外归属量除以已验收安装数，保留负担转移方法。 | item; kg | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 签署退回/可用性验收、称重、期末库存账、废物运输/处理记录及缺陷关联 |
 | cp_releases | lift_installation | 实际物种及接收介质 | 监测或任务特定因子 | job_id; task; substance_or_particle_class; receiving_compartment; activity; activity_unit; factor_source; factor_unit; captured_fraction; release_mass_kg; uncertainty; zero_screen_evidence | 先筛查实际任务；逐项表征真实污染物/介质并实测 kg，或将有支持的任务特定物质因子应用于实测活动。记录收集且不把已收集废物作为排放。可归属释放除以已验收数；未知身份保留缺口。 | kg；实际因子/活动单位 | 每次事件/读数及作业关闭 | 完整首次安装作业含纠正/复测；设备历史覆盖所有相关期间 | 实际安装场址及明确上游提供方/设备 | per reference flow | 监测/校准或可追溯适用因子、物种/介质/收集证据及不确定性 |
 
 ### 计算规则
 
-| rule_id | 适用于 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `job_normalization` | 所有清单行 | 各实际身份的有据可查作业归属实体数量或负担，除以同配置已验收安装数量；收货总量、向外退回、废物和期末留存分别核对。最终参考输出为 1 item。 | 实际记录；accepted_count；cp_acceptance | 每参考流数量 |  |
 | `asset_share` | equipment_provision | 单独负责的完整寿命设备负担，按本作业实际服务小时占跨全部使用作业/期间有证据总服务小时的比例归属；核对份额和阶段，再归一化至已验收安装。采用其他因果依据时须论证披露。 | cp_assets；实际阶段负担；完整寿命服务分母 | 每参考流本作业设备归属负担 |  |
+| fuel_supply_fate | fuel | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用于 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `route_identity` | 参考输出和套件 | 依实际型号/项目图纸确认固定式/无围护/双停层 ACME 螺杆路线及自承式宽度；公开名义指南和冲突额定参数不能代替实际设计验收。 | 有效授权项目图纸、型号/序列号、供货清单、管辖要求和安装方授权 |
 | `quantity_and_custody` | 所有清单行 | 保留实际物理单位、测量/校准和不确定性，并按身份核对收货/发料/退回/库存/废物平衡；零须有积极证据。缺数量或范围证据是数据缺口而非零。 | 关联协议及完整作业台账 |
@@ -446,7 +448,7 @@ sync_with: pcr.en-US.md
 | `units_balance_identity` | 所有清单行 | 验证 1 item 最终输出和一致参考分母、关联的节点专用协议、物理单位及相容支持链；逐项实际组件/提供方/废物/污染物身份；总量平衡含真实退回和非输出期末留存。仅名称相似不得固定 UUID。 |  |
 | `shared_period_and_rework` | equipment_provision; installation_waste | 必须列明全部共享使用作业/节点和期间、完整寿命阶段覆盖、实际分母及单一责任。未决更换/终止/覆盖阻止定稿。拒收组装件关联到 lift_installation 纠正/复测或实际可用退回/废物离开，保留负担并从验收输出排除。 |  |
 | `boundary_completeness` | pad_work; supply_work; 全部投入 | 新建基础/电源须有实测工作量及明确有界责任方或已纳入，既有建筑零新工作须有证据，核对套件/额外件且不重复提供方/材料/能源/包装/货运。披露每项不可得数量、范围及身份；缺失非零。 |  |
-
+| validate_fuel_supply_fate | fuel | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
 
 ## 10. 发布数据集画像
 

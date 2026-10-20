@@ -504,6 +504,46 @@ Conditional actual evaporation/emissions/discharge by identified substance and r
 
 Range evidence need: Obtain actual product/SDS composition, dry-film evidence, species factors/monitoring, capture and receiving medium; no emission inferred from acrylic marketing label.
 
+#### Collection requirement: Actual unburned discarded or recovered fuel wastes (`prep_fuel_wastes`)
+
+Process / prospective direction / type: `prepare_host` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Conditional separate actual off-spec/unburned fuel, recovered free spill liquid and fuel-contaminated cleanup mixture sent to a waste receiver. Identify grade/composition and keep mixture mass distinct from its contained fuel. Usable outward fuel is a product return; actual uncontrolled substance releases belong to the elementary release row.
+
+- Collection subject: Actual unburned discarded or recovered fuel wastes
+- Flow property / unit: Mass / kg
+- Amount rule: Weighed actual unburned waste by grade/composition, original event and receiving custody, retaining fuel-content measurement where mixed; reconcile against the fuel balance without counting it as burned fuel.
+- Value mode: `foreground_record`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `collected_record`
+- Collection protocol: `cp_prep_residuals`
+
+Range evidence need: Obtain actual incident/tank drainage, segregated waste weights/composition and receiver records; absence requires event evidence, no assumed spill or recovery fraction.
+
+#### Collection requirement: Actual unburned discarded or recovered fuel wastes (`finish_fuel_wastes`)
+
+Process / prospective direction / type: `finish_surface` / `outputs` / `waste`.
+
+Each physically separate actual waste stream, composition/state and receiver requires its own atomic exchange. This collection requirement is not one combined waste flow; a genuinely unseparated physical mixture may use its own evidenced mixture identity, but separated outlets must never be recombined.
+
+Conditional separate actual off-spec/unburned fuel, recovered free spill liquid and fuel-contaminated cleanup mixture sent to a waste receiver. Identify grade/composition and keep mixture mass distinct from its contained fuel. Usable outward fuel is a product return; actual uncontrolled substance releases belong to the elementary release row.
+
+- Collection subject: Actual unburned discarded or recovered fuel wastes
+- Flow property / unit: Mass / kg
+- Amount rule: Weighed actual unburned waste by grade/composition, original event and receiving custody, retaining fuel-content measurement where mixed; reconcile against the fuel balance without counting it as burned fuel.
+- Value mode: `foreground_record`
+- Specificity: `site_specific`
+- Normalization basis: per reference flow
+- Basis kind: `reference_flow`
+- Evidence kind: `collected_record`
+- Collection protocol: `cp_finish_residuals`
+
+Range evidence need: Obtain actual incident/tank drainage, segregated waste weights/composition and receiver records; absence requires event evidence, no assumed spill or recovery fraction.
+
 ## 6. Process Inventory Structure
 
 ### Process Map
@@ -579,22 +619,6 @@ Captured cleaning/rinse/repair water with suspended coating/debris and actual cl
 - Collection protocol: `cp_prep_residuals`
 
 Range evidence need: Collect capture volumes/density, rainfall/runoff ingress, solids separation and treatment receipts plus sampling uncertainty; no default capture efficiency or discharge fraction.
-
-###### Actual unburned discarded or recovered fuel wastes (`prep_fuel_wastes`)
-
-Conditional separate actual off-spec/unburned fuel, recovered free spill liquid and fuel-contaminated cleanup mixture sent to a waste receiver. Identify grade/composition and keep mixture mass distinct from its contained fuel. Usable outward fuel is a product return; actual uncontrolled substance releases belong to the elementary release row.
-
-- Selected flow: Actual unburned discarded or recovered fuel wastes
-- Flow property / unit: Mass / kg
-- Amount rule: Weighed actual unburned waste by grade/composition, original event and receiving custody, retaining fuel-content measurement where mixed; reconcile against the fuel balance without counting it as burned fuel.
-- Value mode: `foreground_record`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `collected_record`
-- Collection protocol: `cp_prep_residuals`
-
-Range evidence need: Obtain actual incident/tank drainage, segregated waste weights/composition and receiver records; absence requires event evidence, no assumed spill or recovery fraction.
 
 ##### Elementary flows
 
@@ -746,22 +770,6 @@ Captured tool/changeover wash water and authorized rinses containing actual coat
 - Collection protocol: `cp_finish_residuals`
 
 Range evidence need: Collect actual cleaning/capture/rain balance and treatment receipts with composition/sampling uncertainty; no default all-water discharge or capture rate.
-
-###### Actual unburned discarded or recovered fuel wastes (`finish_fuel_wastes`)
-
-Conditional separate actual off-spec/unburned fuel, recovered free spill liquid and fuel-contaminated cleanup mixture sent to a waste receiver. Identify grade/composition and keep mixture mass distinct from its contained fuel. Usable outward fuel is a product return; actual uncontrolled substance releases belong to the elementary release row.
-
-- Selected flow: Actual unburned discarded or recovered fuel wastes
-- Flow property / unit: Mass / kg
-- Amount rule: Weighed actual unburned waste by grade/composition, original event and receiving custody, retaining fuel-content measurement where mixed; reconcile against the fuel balance without counting it as burned fuel.
-- Value mode: `foreground_record`
-- Specificity: `site_specific`
-- Normalization basis: per reference flow
-- Basis kind: `reference_flow`
-- Evidence kind: `collected_record`
-- Collection protocol: `cp_finish_residuals`
-
-Range evidence need: Obtain actual incident/tank drainage, segregated waste weights/composition and receiver records; absence requires event evidence, no assumed spill or recovery fraction.
 
 ##### Elementary flows
 

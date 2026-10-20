@@ -294,7 +294,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| 规则编号 | 适用对象 | 公式或规则 | 输入 | 输出 | 来源 |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalization | all non-reference cards | 对于工单实际数量 Q_i，q_i = Q_i / D；D > 0。对每种材料、资产包及真实服务单位分别保留数量。 | Q_i; D; cp_gate; cp_materials; cp_resources; cp_energy; cp_exits | 每参考流数量 |  |
 | stock_closure | neoprene_pads; packaging | 对每种材料，期初库存 + 接收量 = 期末未用库存 + 安装保留材料 + 可用退回物 + 废物 + 有据差异。纠正归属及称量差异，不得强行将差异计作排放。 | cp_materials; cp_exits; installation records | 经核对的材料清单 |  |
@@ -302,7 +302,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | configuration | accepted_isolation | 保留牌号、载荷分布、模块几何及设计批准的适用条件；不同设计分开，不声称性能相等。 | 供应商或项目设计和签字交付记录 |
 | range_evidence | all cards | 定量核查区间仅来自独立且可比的实测工单或已核实 SKU 数据。厂家支承载荷表既不是耗材质量，也不是安装产率。 | 逐卡实际证据及独立样本范围 |

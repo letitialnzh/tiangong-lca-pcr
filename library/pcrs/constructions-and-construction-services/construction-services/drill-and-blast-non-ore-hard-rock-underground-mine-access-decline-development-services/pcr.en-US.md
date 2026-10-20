@@ -664,6 +664,26 @@ Instantiate actual combustion species, material emissions, dust fraction or aque
 
 Range evidence need: Require actual species/medium quantity method, capture/retention and uncertainty; no generic emission factor.
 
+#### Collection requirement: Actual approved supplied explosive product (`explosives`)
+
+Process / prospective direction / type: `development` / `inputs` / `product`.
+
+Resolve each actual SKU, composition/state and custody into a separate atomic exchange. This requirement is not a generic pooled flow. A genuinely complete purchased assembly may use its own verified package boundary; its already included parts are not additional purchases.
+
+Actual supplier form/SKU and approved use determine each concrete exchange; ANFO and emulsion are alternatives only where actual records show them.
+
+- Collection subject: Actual approved supplied explosive product
+- Flow property / unit: Mass / kg
+- Amount rule: Attributable actual explosive supply in kg / L; retain upstream burden of nonreturned disposal, misfire residue and loss.
+- Value mode: Calculated value (`calculated_value`)
+- Specificity: Site-specific (`site_specific`)
+- Normalization basis: per 1 m reference flow
+- Basis kind: Reference flow (`reference_flow`)
+- Evidence kind: Calculated from collection (`calculated_from_collection`)
+- Collection protocol: `cp_dev_ledger`
+
+Range evidence need: Obtain actual SKU supply and blast reconciliation by round, ground class and section; no default explosive recipe or kg per metre.
+
 ## 6. Process Inventory Structure
 
 These mass-supply cards apply only to actual mass-native supplies. Other native counted, area or length supplies retain their units in the node-specific other_native cards; no mass forcing without independently required measured conversion.
@@ -682,22 +702,6 @@ The internal opening handoff is a task/ground-condition record under competent s
 #### Inputs
 
 ##### Product flows
-
-###### Actual approved supplied explosive product (`explosives`)
-
-Actual supplier form/SKU and approved use determine each concrete exchange; ANFO and emulsion are alternatives only where actual records show them.
-
-- Selected flow: Actual approved supplied explosive product
-- Flow property / unit: Mass / kg
-- Amount rule: Attributable actual explosive supply in kg / L; retain upstream burden of nonreturned disposal, misfire residue and loss.
-- Value mode: Calculated value (`calculated_value`)
-- Specificity: Site-specific (`site_specific`)
-- Normalization basis: per 1 m reference flow
-- Basis kind: Reference flow (`reference_flow`)
-- Evidence kind: Calculated from collection (`calculated_from_collection`)
-- Collection protocol: `cp_dev_ledger`
-
-Range evidence need: Obtain actual SKU supply and blast reconciliation by round, ground class and section; no default explosive recipe or kg per metre.
 
 ###### Actual development electricity supplied (`development_electricity`)
 

@@ -256,7 +256,7 @@ sync_with: pcr.en-US.md
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | clearance | 获准切割收集及残余物交接 | required | 在所声明首次施工清理路线内 | 独立前景移除与验收；不合格切割/收集返回同一节点并保留全部重复负担；残余物/耗材退出须保持交接记录 | 1 m2 验收水平多边形；重复作业不增加面积 |
 
@@ -331,7 +331,7 @@ sync_with: pcr.en-US.md
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | cp_acceptance | clearance | 验收服务 | 测量及签署交接 | lot_id; polygon_id; approved_boundary; exclusions; retained_islands; accepted_area_m2; survey_uncertainty; vegetation_species; density; moisture; slope; attachment; cut_height_spec; collection_state; defect_id; receiver_ticket; acceptance_time | 采用可追溯坐标方法测量实际水平清理多边形；叠加获准边界、计划排除区和保留植被岛。保留实际质量要求、前后证据、返工作业标识及签署验收分区。所有负担采用同一验收面积，未验收面积单列。 | m2 | 每个验收多边形及更正 | 完整首次清理至交接关闭 | 实际获准场地多边形 | per reference flow | 测量校准/坐标参照；多边形无重叠并集；验收权限及缺陷关闭记录 |
 | cp_energy | clearance | charging_electricity | 电表及充电台账 | lot_id; charger_id; meter_id; start_kwh; end_kwh; charge_time; standby_kwh; battery_id; consumer_job; accepted_area_m2 | 按事件测量充电器供电侧电量；以实际能量证据将共享充电分配至明确电池/批次。包括可归属充电损失、待机及返工，跨作业核对电表总量，再以 cp_acceptance 验收面积归一化批次电量。 | kWh | 每次充电及批次关闭 | 首次周期所需全部实际充电 | 与批次关联的场内或场外充电器 | per reference flow | 电表准确度、供应商/地域/日期及核对；不得仅由容量推断 |
@@ -344,14 +344,14 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | area_attribution | 所有清单行 | 将实测完整批次各交换归属于其清理批次，以 cp_acceptance 同一验收水平多边形面积归一化，并保留原分子单位。验收输出保持 1 m2。返工增加负担，不增加分母面积。 | cp_acceptance; 节点特定采集协议 | 每 1 m2 验收服务清单 |  |
 | stock_reconcile | cutting_consumables; protection_consumables; unused_material_returns; other_residuals | 对每项材料及交接范围，核对期初库存加总收货量与消耗、真实对外退回、期末库存及废物；应用平衡前说明所测消耗与下游废物是否重叠。总领用是内部台账，不是第二次边界投入。以总边界收货量/期初库存领用为投入，真实总对外退回为产品输出，不净扣投入；期末库存保持非交换余额，负担结转。 | cp_material | 已核对数量及结转库存负担 |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | identity_gate | 所有行 | 最终 TIDAS 交换绑定前，从实际记录核实具体身份、状态、供应商、流类型、属性/单位和去向。概括卡片实例化为零至多个具体交换；未知身份和支持保持明确缺口。 | 供应商资料、身份详情及属性/单位组证据 |
 | same_lot_basis | 所有行 | 分子与分母采用相同多边形、日期、实际植被及作业标识；未验收面积与后续维护另记。披露测量/电表/称量及分配不确定性和缺失覆盖。 | cp_acceptance 及完整节点台账 |

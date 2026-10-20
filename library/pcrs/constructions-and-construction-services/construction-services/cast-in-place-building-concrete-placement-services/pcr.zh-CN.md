@@ -361,7 +361,7 @@ content_maturity: authored_methodology
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | placement | 新拌混凝土浇筑振实 | required | 正常路线 | 新拌可流动混合料转为振实设计几何，交饰面，负责泵清理和浇筑拒收物。 | 每参考流 |
 | finishing | 成型混凝土表面饰面 | required | 正常路线 | 振实母体转为指定表面，交养护，关联饰面修整及残渣。 | 每参考流 |
@@ -400,7 +400,8 @@ content_maturity: authored_methodology
 
 ###### 浇筑设备柴油 （`placement_diesel`）
 
-仅计直接消耗燃料；外购泵送服务若已含能源清单则不得重复计入。
+
+本节点真实上游燃料供应，尚未扣除可用向外退出量。按 fuel_supply_fate 保留未退回废物/损失的供应负荷，并单独确定燃烧活动。保留真实燃料牌号、设备工况、供应商覆盖、密度/状态和计量不确定性。
 
 - 选定流：柴油 `9d258d75-6792-4f1c-9856-81602ed8f816`
 - 绑定模式: `fixed`
@@ -783,15 +784,15 @@ content_maturity: authored_methodology
 
 ### 数据采集协议
 
-| protocol_id | process_id | 流角色 | 记录类型 | 原始字段 | 采集方法 | 单位 | 频率 | 时间覆盖 | 场址范围 | 汇总规则 | 质量证据 |
+| protocol_id | process_id | flow_role | record_type | raw_fields | collection_method | unit | frequency | temporal_coverage | site_scope | aggregation_rule | quality_evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| cp_placement | placement | 该节点全部清单行 | 事件台账、计量及验收 | pour_id；delivery_id；event_id；transfer_id；asset_id；运行时间；实测或额定功率；利用率；使用者份额；燃料碳含量/方法；化石碳质量分数及分母；碳氧化为CO2的比例；所选燃烧因子值/单位/来源及适用性；因子不确定性；燃料密度/温度/低位热值；接收新拌体积；实测密度；柴油；电量；水；设备小时；dispatch_id；承运方；载荷吨数；路线公里；空返活动；进退场责任/份额；退料体积；废物/浆液质量；排放物种及介质；洗浆直接释放事件及接收子介质；释放液体体积或质量；实测物质浓度、采样时间及单位；收集/处理分流；存量变化 | 核对签署事件记录、校准仪表、供应商单据、实测几何/密度、检验及接收单，区分实测、估算及不存在证据。 | m3; kg; kWh; h; t; km; t*km | 每事件/班次；养护连续记录 | 完整浇筑至养护验收期 | 声明单一场址及节点 | 每参考流 | 签单、校准、几何与检验及质量平衡证据 |
+| cp_placement | placement | 该节点全部清单行 | 事件台账、计量及验收 | pour_id；delivery_id；event_id；transfer_id；asset_id；运行时间；实测或额定功率；利用率；使用者份额；燃料碳含量/方法；化石碳质量分数及分母；碳氧化为CO2的比例；所选燃烧因子值/单位/来源及适用性；因子不确定性；燃料密度/温度/低位热值；接收新拌体积；实测密度；柴油；电量；水；设备小时；dispatch_id；承运方；载荷吨数；路线公里；空返活动；进退场责任/份额；退料体积；废物/浆液质量；排放物种及介质；洗浆直接释放事件及接收子介质；释放液体体积或质量；实测物质浓度、采样时间及单位；收集/处理分流；存量变化; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner | 核对签署事件记录、校准仪表、供应商单据、实测几何/密度、检验及接收单，区分实测、估算及不存在证据。 按 fuel_supply_fate 分列供应与燃烧；采集各互斥去向、真实分母及单位，保留未退回废物/损失的供应负荷，披露未知去向。 | m3; kg; kWh; h; t; km; t*km | 每事件/班次；养护连续记录 | 完整浇筑至养护验收期 | 声明单一场址及节点 | 每参考流 | 签单、校准、几何与检验及质量平衡证据 |
 | cp_finishing | finishing | 该节点全部清单行 | 事件台账、计量及验收 | pour_id；event_id；transfer_id；asset_id；运行时间；实测或额定功率；利用率；使用者份额；投入及饰面体积；表面规范；电量；耗材；残渣；实际排放物质/空气子介质/粒径；返工事件 | 核对签署事件记录、校准仪表、供应商单据、实测几何/密度、检验及接收单，区分实测、估算及不存在证据。 | m3; kg; kWh; h; t; km; t*km | 每事件/班次；养护连续记录 | 完整浇筑至养护验收期 | 声明单一场址及节点 | 每参考流 | 签单、校准、几何与检验及质量平衡证据 |
 | cp_curing | curing | 该节点全部清单行 | 事件台账、计量及验收 | pour_id；event_id；transfer_id；asset_id；运行时间；实测或额定功率；利用率；使用者份额；投入体积；验收净体积；尺寸；空洞；养护始末；水；材料；电量；检验；验收；拒收物；实际物质/介质释放 | 核对签署事件记录、校准仪表、供应商单据、实测几何/密度、检验及接收单，区分实测、估算及不存在证据。 | m3; kg; kWh; h; t; km; t*km | 每事件/班次；养护连续记录 | 完整浇筑至养护验收期 | 声明单一场址及节点 | 每参考流 | 签单、校准、几何与检验及质量平衡证据 |
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | normalize_service | 所有清单行 | 将归属事件数量除以同组浇筑批次验收净就位体积，按每参考流报告；归一化前保留内部实体转移。 | 归属事件数量; 验收净体积; cp_placement; cp_finishing; cp_curing | 每参考流数量 |  |
 | receipt_reconcile | fresh_concrete; returned_fresh_concrete; placement_concrete_waste | 在一致新拌状态基准上平衡接收新拌体积、就位体积、供应商退料、取样、溢洒/泵残留及存量变化；无证据不得新拌体积等同硬化体积。 | 交货单; 实测密度; 转移台账; 退料/废物接收单; cp_placement | 平衡及残差解释 |  |
@@ -799,10 +800,11 @@ content_maturity: authored_methodology
 | fossil_carbon_emission | placement_fossil_co2 | 选择一种有记录的方法：m_CO2 = m_fuel × w_fossil_C × f_oxidized_to_CO2 × 44/12，其中w_fossil_C为每kg实际燃料中的化石碳kg，f为这些化石碳以CO2排出的比例；或将相容燃料活动量乘以有明确单位、经审查的CO2因子。保留实测燃料、混合组成、方法/因子来源、适用性及不确定性；两种方法不得相加，两个比例均不得默认1。同组浇筑总量计算后再按normalize_service归一化。 | cp_placement; 燃料质量或相容能量活动量; 化石碳分数及基准; 氧化为CO2比例; 因子值/单位/来源; 不确定性 | 归一化前同组浇筑的化石CO2 kg |  |
 | washout_release_mass | placement_washout_releases | 逐项核实直接释放事件及物质，将单位换算相容后计算释放体积×浓度（例如m3×kg/m3），或液体释放质量×实测kg物质/kg液体分数。保留实际接收子介质、采样及溶解态/总量基准；仅有pH不能确定物质质量。收集/处理/直接释放各部分只平衡一次，再按normalize_service归一化；组成缺失是明确缺口，不是零。 | cp_placement; 释放事件; 体积或液体质量; 浓度及单位; 物质及接收子介质; 采样证据; 收集/处理分流 | 归一化前同组浇筑向实际水或土壤子介质释放的逐物质kg |  |
 | shared_share | 所有清单行 | 按记录使用者份额分配共享实测事件数量，全部使用者份额之和为1且事件责任唯一。 | event_id; asset_id; 使用节点/批次; 实测活动; cp_placement; cp_finishing; cp_curing | 归属事件数量 |  |
+| fuel_supply_fate | placement_diesel | 对每种真实燃料身份及互不重叠的节点/事件期间，G_fuel = 期初可用燃料 + 外部接收量 - 期末可用燃料库存（含设备油箱）；扣除容器皮重，边界内领用/转移不再作新增接收。G_fuel 为真实可用向外退回 U_fuel、向外转移 X_fuel、收集的未燃燃料 W_fuel 和未收集燃料 P_fuel 扣除之前的物理产品输入总量。各去向互斥并分别解析实际产品、废物流或物质/介质身份；泄漏事件总量仅作核查，不重复扣除。W_fuel 和 P_fuel 指所含燃料质量，不是受污染吸附物或废水的总质量。仅在完整且有证据的去向台账下，B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel；未知去向保留缺口，不假定已燃烧。只有有独立依据的 B_fuel 驱动燃烧排放。所有未退回的未燃燃料、废物和损失均保留上游供应负荷；真实可用退出物仅可携带有记录的原始未用材料负荷，不再次扣减净输入或给予避免生产信用。期初/期末库存负荷只结转一次。各物理量仅除以 D_fuel 一次；D_fuel 为本 PCR 第3-4节规定的参考单位下独立实测的正值验收批量（验收体积、面积、轴向长度、钢材质量或完整验收计数），不是燃料量或中间产出。现有 actual_consumed/燃料消耗字段是燃烧活动记录，不能替代上游输入 G_fuel。供应商已含燃料和排放只设一个责任方，不重复加入重叠的前景供应或燃烧。 | opening fuel; external receipts; closing intact fuel; U_fuel; X_fuel; W_fuel; P_fuel; D_fuel; actual node fuel protocol and fate evidence | G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets |  |
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | gate_traceability | 参考产品 | 验收证据须匹配构件、浇筑、规范、养护方式及净体积；未验收数量排除在分母外。 | 签署验收；实测尺寸；检验记录 |
 | inventory_completeness | 所有清单行 | 条件存在、不存在证据与缺失标志分开记录；发布数据集前将伞形卡展开为具体交换及物种。 | 采购记录；设备日志；SDS；废物记录 |
@@ -819,6 +821,8 @@ content_maturity: authored_methodology
 | shared_and_runs | 所有过程 | 检查浇筑/批次/事件id、换批责任、全部共享资产使用者和份额；总量不得重复能源、资本、进退场与清理。 |  |
 | washout_release_route | placement_washout_releases; placement_wash_slurry | 每项已核实直接释放须有事件物质、接收水/土壤子介质及浓度/数量证据；归属placement及cp_placement，与交给责任方的浆液和养护释放区分。平衡各去向且不重复；组成或发生情况未明确时保留覆盖不完整，不填零。 | epa-concrete-washout-2012 |
 | actual_identity | 所有清单行 | 最终数据集交换须有已核实具体流/属性/单位身份，未解析语义卡及通用物种不是可发布交换。 |  |
+| validate_fuel_supply_fate | placement_diesel | 按实际燃料协议、库存和供应商覆盖核查 G_fuel、B_fuel 及各互斥去向。未退回的未燃废物/损失保留上游负荷；去向、燃料组分或正值 D_fuel 未解决时，不得宣称燃料定量清单完整。不以燃烧活动替代采购燃料，不同时扣减泄漏总量及其各组成去向。 |  |
+| validate_physical_slurry_stream | all collected wastewater/slurry | 废水/浆液卡仅表示一个接收门槛下真实未物理分离的液固混合物流。分别收集的液体、已分离固体或不同处理去向须建立独立实际交换，不能为适配本卡而重新合并。混合物总质量与所含水/固体属于不可相加的视图。 |  |
 
 ## 10. 发布数据集画像
 

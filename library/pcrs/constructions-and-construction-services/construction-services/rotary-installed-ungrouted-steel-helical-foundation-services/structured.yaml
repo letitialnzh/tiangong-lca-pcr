@@ -809,9 +809,9 @@ process_inventory:
           name: "Actual diesel fuel supplied to rotary installation plant"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Fuel covers actual mobilization, insertion, standby, extraction, remedial and reaction-pile work owned by this node. Provider-included fuel is excluded from a second local charge. Range evidence need: Use full-campaign tank/meter opening, receipts, issues and closing records, equipment duty and allocation uncertainty; no generic litres/pile or energy factor."
+          description: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty. Range evidence need: Use full-campaign tank/meter opening, receipts, issues and closing records, equipment duty and allocation uncertainty; no generic litres/pile or energy factor."
           amount:
-            expression: "Actual consumed diesel mass: actual opening plus receipts minus closing, usable outward fuel returns/transfers and separately recorded unburned spills/losses; allocate combustion and other dispositions by event to this group."
+            expression: "Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -1022,9 +1022,9 @@ process_inventory:
           name: "Actual diesel fuel for cap integration and load-testing equipment"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Conditional actual diesel covers cap work, test/retest and reaction-system removal owned by this node; it excludes already charged rotary-install fuel and provider-included demand. Range evidence need: Require tank/meter mass or volume with actual density/temperature, full test campaign and standby records and cross-node reconciliation; no fixed testing fuel."
+          description: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty. Range evidence need: Require tank/meter mass or volume with actual density/temperature, full test campaign and standby records and cross-node reconciliation; no fixed testing fuel."
           amount:
-            expression: "Actual consumed diesel mass: actual opening plus receipts minus closing, usable outward returns/transfers and separately recorded unburned spills/losses; cap/test events alone own combustion demand."
+            expression: "Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -1156,8 +1156,8 @@ dataset_production:
       process_id: "rotary_install"
       flow_role: "Actual installation diesel/electricity/hydraulic top-up"
       record_type: "Meter/tank/maintenance event record"
-      raw_fields: "contract_id; period_id; event_id; equipment_id; purpose; fuel_grade; fuel_kg; fuel_opening_kg; fuel_receipts_kg; fuel_closing_kg; fuel_returns_kg; fuel_transfer_out_kg; unburned_spill_kg; spill_disposition; fuel_volume_L; fuel_density_kg_per_L; density_temperature_C; electricity_kWh; oil_grade; oil_added_kg; oil_recovered_kg; operating_h; standby_h; provider_coverage; measurement_uncertainty"
-      collection_method: "Measure full-job fuel/energy/oil with calibrated meters and tank balances. Compute actual consumed fuel from opening plus receipts minus closing, actual usable outward fuel returns/transfers and unburned spills/losses; link those dispositions without adding a duplicate generic product-return exchange. Combustion CO2 uses only actual burned fuel, not returned/transferred/spilled fuel; when volume converts to kg use actual batch density and temperature. Separate carrier and other-node event IDs; include idle/extraction/reaction work, avoid provider/lifetime-maintenance duplication."
+      raw_fields: "contract_id; period_id; event_id; equipment_id; purpose; fuel_grade; fuel_kg; fuel_opening_kg; fuel_receipts_kg; fuel_closing_kg; fuel_returns_kg; fuel_transfer_out_kg; unburned_spill_kg; spill_disposition; fuel_volume_L; fuel_density_kg_per_L; density_temperature_C; electricity_kWh; oil_grade; oil_added_kg; oil_recovered_kg; operating_h; standby_h; provider_coverage; measurement_uncertainty; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Measure full-job fuel/energy/oil with calibrated meters and tank balances. Compute actual burned activity, not upstream supply, from opening plus receipts minus closing, actual usable outward fuel returns/transfers and unburned spills/losses; link those dispositions without adding a duplicate generic product-return exchange. Combustion CO2 uses only actual burned fuel, not returned/transferred/spilled fuel; when volume converts to kg use actual batch density and temperature. Separate carrier and other-node event IDs; include idle/extraction/reaction work, avoid provider/lifetime-maintenance duplication. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "kg; L; kg/L; degC; kWh; h"
       frequency: "Each receipt/issue/use/transfer/test/rework/exit event and period close as applicable"
       temporal_coverage: "Complete actual contract campaign including mobilization, failed/reaction piles, retests and acceptance; link earlier/later stock and asset-life periods"
@@ -1240,8 +1240,8 @@ dataset_production:
       process_id: "cap_accept"
       flow_role: "Actual cap/test diesel and electricity"
       record_type: "Meter/tank/event energy ledger"
-      raw_fields: "contract_id; period_id; event_id; equipment_id; pile_id; test_id; test_required; fuel_grade; fuel_kg; fuel_opening_kg; fuel_receipts_kg; fuel_closing_kg; fuel_returns_kg; fuel_transfer_out_kg; unburned_spill_kg; spill_disposition; fuel_volume_L; fuel_density_kg_per_L; density_temperature_C; electricity_kWh; operating_h; standby_h; provider_coverage; uncertainty"
-      collection_method: "Measure actual cap work, tests and retests by event. Actual consumed fuel equals opening plus receipts minus closing, usable outward returns/transfers and separately recorded unburned spills/losses. Link custody/incidents once and use only actual burned fuel for combustion emissions; retain meter/tank balances and actual density/temperature if fuel supplied volumetrically. Include auxiliaries and reaction-system handling, reconcile with rotary_install event ownership and provider coverage."
+      raw_fields: "contract_id; period_id; event_id; equipment_id; pile_id; test_id; test_required; fuel_grade; fuel_kg; fuel_opening_kg; fuel_receipts_kg; fuel_closing_kg; fuel_returns_kg; fuel_transfer_out_kg; unburned_spill_kg; spill_disposition; fuel_volume_L; fuel_density_kg_per_L; density_temperature_C; electricity_kWh; operating_h; standby_h; provider_coverage; uncertainty; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Measure actual cap work, tests and retests by event. Actual consumed fuel equals opening plus receipts minus closing, usable outward returns/transfers and separately recorded unburned spills/losses. Link custody/incidents once and use only actual burned fuel for combustion emissions; retain meter/tank balances and actual density/temperature if fuel supplied volumetrically. Include auxiliaries and reaction-system handling, reconcile with rotary_install event ownership and provider coverage. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "kg; L; kg/L; degC; kWh; h"
       frequency: "Each receipt/issue/use/transfer/test/rework/exit event and period close as applicable"
       temporal_coverage: "Complete actual contract campaign including mobilization, failed/reaction piles, retests and acceptance; link earlier/later stock and asset-life periods"
@@ -1341,6 +1341,21 @@ dataset_production:
         - "actual leg/provider records"
       output: "Actual tonne-kilometres per reference flow"
       source_ids: []
+    - id: fuel_supply_fate
+      applies_to: "installation_diesel; cap_test_diesel"
+      rule: "For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion."
+      inputs:
+        - "opening fuel"
+        - "external receipts"
+        - "closing intact fuel"
+        - U_fuel
+        - X_fuel
+        - W_fuel
+        - P_fuel
+        - D_fuel
+        - "actual node fuel protocol and fate evidence"
+      output: "G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets"
+      source_ids: []
   data_quality_requirements:
     - id: identity_and_gate
       applies_to: "all cards"
@@ -1392,6 +1407,10 @@ validation_rules:
     rule: "Actual access/utility-protection/obstruction work has explicit material, equipment, energy, freight and exit owners. Required unrepresented work or out-of-route substantial excavation/concrete remediation blocks route finalization pending reviewed inventory extension."
     source_ids:
       - chance-helical-installation-2017
+  - rule_id: validate_fuel_supply_fate
+    applies_to: "installation_diesel; cap_test_diesel"
+    rule: "Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Foreground installation data package with process and lifecyclemodel projections for the declared accepted contract group"
   downstream_use: "secondary_dataset; background_dataset"
@@ -1411,7 +1430,7 @@ data_sources:
     used_for: "Foundation service classification and narrower rotary boundary; excludes excavation and concrete work"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:c9ac50be1c364f2985f5690a56ee283260c28b2bee233da2e593adccc4f95382"
+  source_sha256: "sha256:55931c188ae86dfa1cf4e9d94ae6fe65946d0fe1065d2694e12f2f4889859b47"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5833"
@@ -1462,16 +1481,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_47179"
+    - unit_id: "normative_47475"
       family: "allocation"
       span:
         start:
-          offset: 47179
-          line: 669
+          offset: 47475
+          line: 671
           column: 1
         end:
-          offset: 50109
-          line: 679
+          offset: 50405
+          line: 681
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| single_service | accepted_foundation_service | The accepted group is the intended final output; no co-product from rejected steel, retained ground or temporary reaction piles is assumed. Use actual separate contract groups and resources when several products are delivered. |  |\n| rework_retention | all processes | Failed depth/torque, damaged sections, misalignment, unacceptable cap or load test retain all attempts, additional sections, energy, relocation, extraction, reaction-pile work and retests in the accepted group. Link loop/event IDs and final reuse/return/waste disposition; unresolved failures cannot be accepted outputs. | chance-helical-installation-2017 |\n| gross_stock_return | all material rows | Reconcile opening stock plus gross receipts with installed/consumed material, actual outward usable returns, measured waste/loss and closing retained stock by actual identity. Do not net returns in inputs then export them again. Closing stock is carried forward with its declared burden, not an outward exchange; actual reused components retain their prior allocation history. Gross receipts/issues mean material totals before returns or outward transfers are deducted, with vehicle/container tare already removed; they never mean gross loaded vehicle weight. Where gross_kg and tare_kg are recorded, subtract tare to obtain material mass entering the physical balance. Keep genuine outward flows and retained stock distinct.|  |\n| shared_complete_life | asset rows | For each distinct asset use documented physical service during this job/node divided by actual complete-life service of the same unit and duty; apply that share to production, maintenance/replacement and end-of-life without duplicating operating fuel. Index every other consuming job/node/reporting period and reconcile total shares. If using a bounded provider service, document actual capital and operating coverage and remove the overlapping local rows.  For an asset whose life is completed, use observed full-life history. For an in-service asset, an evidenced prospective remaining-service, replacement, termination and end-of-life scenario is allowed; label forecasts separately from observed facts, record the denominator/source, uncertainty and sensitivity, and update when actual use, replacement or retirement changes. Do not fabricate a future retirement_date or assume an arbitrary default life; only missing evidenced complete-life coverage or denominator blocks finalization.|  |\n| period_events | all processes | Declare mobilization/start, each installation/test/rework event, acceptance and stock close/open periods, plus asset commissioning/replacements/retirement. Assign each event once; reconcile carried-forward stock and remaining asset burden between periods without resetting lifetime at year end. |  |\n\n"
       headings:
@@ -1490,12 +1509,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 47179
-              line: 669
+              offset: 47475
+              line: 671
               column: 1
             end:
-              offset: 47219
-              line: 669
+              offset: 47515
+              line: 671
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1510,18 +1529,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_74126"
+    - unit_id: "normative_77177"
       family: "validation"
       span:
         start:
-          offset: 74126
-          line: 719
+          offset: 77177
+          line: 722
           column: 1
         end:
-          offset: 76518
-          line: 732
+          offset: 80014
+          line: 735
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| scope_and_gate | accepted_foundation_service | Confirm rotary insertion with subordinate thrust, no grout and approved steel cap interface for new construction. Required torque/depth and conditional load test criteria must be satisfied under actual current approved instructions; do not claim superstructure or building acceptance. | chance-helical-installation-2017; un-cpc3-2025 |\n| transfer_and_reference | installed_pile_assembly, installed_pile_feed, accepted_foundation_service | Reconcile paired physical transfer IDs/count/configuration/purpose; preserve actual feed amount and count exactly one accepted group output as 1 item. Failed/reaction assemblies cannot masquerade as accepted service quantity. | chance-helical-installation-2017 |\n| reject_closure | all processes | Every failure/rejected section/cap/test has a linked rework/replacement/return/waste disposition and retained burden. Missing closure or reaction/remedial resources blocks final foreground acceptance. | chance-helical-installation-2017 |\n| custody_balance | all material and waste rows | Check gross receipts, actual outward returns, installed/consumed/waste/loss and carried closing stock by exact identity, period and custody. No net-return/double-output, retained-stock export or unsupported recycling credit. |  |\n| asset_and_period | asset rows | Check each shared asset against all consuming nodes/jobs/periods and commissioning/maintenance/replacement/retirement evidence. Capital, operation and end-of-life coverage must sum once; unresolved life denominators/terminal coverage/provider overlap block final exchange production. |  |\n| release_and_range | all cards | Review every card-specific Range need and actual emission/waste completeness; verify native physical units and actual species/medium/fraction before concrete exchange binding. Unknown flow or support UUID and unknown actual bounds remain declared gaps, never fabricated near-matches. |  |\n| enabling_complete | rotary_install | Actual access/utility-protection/obstruction work has explicit material, equipment, energy, freight and exit owners. Required unrepresented work or out-of-route substantial excavation/concrete remediation blocks route finalization pending reviewed inventory extension. | chance-helical-installation-2017 |\n\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| scope_and_gate | accepted_foundation_service | Confirm rotary insertion with subordinate thrust, no grout and approved steel cap interface for new construction. Required torque/depth and conditional load test criteria must be satisfied under actual current approved instructions; do not claim superstructure or building acceptance. | chance-helical-installation-2017; un-cpc3-2025 |\n| transfer_and_reference | installed_pile_assembly, installed_pile_feed, accepted_foundation_service | Reconcile paired physical transfer IDs/count/configuration/purpose; preserve actual feed amount and count exactly one accepted group output as 1 item. Failed/reaction assemblies cannot masquerade as accepted service quantity. | chance-helical-installation-2017 |\n| reject_closure | all processes | Every failure/rejected section/cap/test has a linked rework/replacement/return/waste disposition and retained burden. Missing closure or reaction/remedial resources blocks final foreground acceptance. | chance-helical-installation-2017 |\n| custody_balance | all material and waste rows | Check gross receipts, actual outward returns, installed/consumed/waste/loss and carried closing stock by exact identity, period and custody. No net-return/double-output, retained-stock export or unsupported recycling credit. |  |\n| asset_and_period | asset rows | Check each shared asset against all consuming nodes/jobs/periods and commissioning/maintenance/replacement/retirement evidence. Capital, operation and end-of-life coverage must sum once; unresolved life denominators/terminal coverage/provider overlap block final exchange production. |  |\n| release_and_range | all cards | Review every card-specific Range need and actual emission/waste completeness; verify native physical units and actual species/medium/fraction before concrete exchange binding. Unknown flow or support UUID and unknown actual bounds remain declared gaps, never fabricated near-matches. |  |\n| enabling_complete | rotary_install | Actual access/utility-protection/obstruction work has explicit material, equipment, energy, freight and exit owners. Required unrepresented work or out-of-route substantial excavation/concrete remediation blocks route finalization pending reviewed inventory extension. | chance-helical-installation-2017 |\n| validate_fuel_supply_fate | installation_diesel; cap_test_diesel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1538,12 +1557,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 74126
-              line: 719
+              offset: 77177
+              line: 722
               column: 1
             end:
-              offset: 74148
-              line: 719
+              offset: 77199
+              line: 722
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -3642,159 +3661,172 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "single_service"
       identity_kind: "explicit"
-      unit_id: "normative_47179"
+      unit_id: "normative_47475"
       source_span:
         start:
-          offset: 47292
-          line: 673
+          offset: 47588
+          line: 675
           column: 1
         end:
-          offset: 47572
-          line: 673
+          offset: 47868
+          line: 675
           column: 281
     - pointer: "/allocation_rules/1"
       rule_id: "rework_retention"
       identity_kind: "explicit"
-      unit_id: "normative_47179"
+      unit_id: "normative_47475"
       source_span:
         start:
-          offset: 47573
-          line: 674
+          offset: 47869
+          line: 676
           column: 1
         end:
-          offset: 47967
-          line: 674
+          offset: 48263
+          line: 676
           column: 395
     - pointer: "/allocation_rules/2"
       rule_id: "gross_stock_return"
       identity_kind: "explicit"
-      unit_id: "normative_47179"
+      unit_id: "normative_47475"
       source_span:
         start:
-          offset: 47968
-          line: 675
+          offset: 48264
+          line: 677
           column: 1
         end:
-          offset: 48740
-          line: 675
+          offset: 49036
+          line: 677
           column: 773
     - pointer: "/allocation_rules/3"
       rule_id: "shared_complete_life"
       identity_kind: "explicit"
-      unit_id: "normative_47179"
+      unit_id: "normative_47475"
       source_span:
         start:
-          offset: 48741
-          line: 676
+          offset: 49037
+          line: 678
           column: 1
         end:
-          offset: 49773
-          line: 676
+          offset: 50069
+          line: 678
           column: 1033
     - pointer: "/allocation_rules/4"
       rule_id: "period_events"
       identity_kind: "explicit"
-      unit_id: "normative_47179"
+      unit_id: "normative_47475"
       source_span:
         start:
-          offset: 49774
-          line: 677
+          offset: 50070
+          line: 679
           column: 1
         end:
-          offset: 50107
-          line: 677
+          offset: 50403
+          line: 679
           column: 334
     - pointer: "/validation_rules/0"
       rule_id: "scope_and_gate"
       identity_kind: "explicit"
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 74221
-          line: 723
+          offset: 77272
+          line: 726
           column: 1
         end:
-          offset: 74605
-          line: 723
+          offset: 77656
+          line: 726
           column: 385
     - pointer: "/validation_rules/1"
       rule_id: "transfer_and_reference"
       identity_kind: "explicit"
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 74606
-          line: 724
+          offset: 77657
+          line: 727
           column: 1
         end:
-          offset: 74971
-          line: 724
+          offset: 78022
+          line: 727
           column: 366
     - pointer: "/validation_rules/2"
       rule_id: "reject_closure"
       identity_kind: "explicit"
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 74972
-          line: 725
+          offset: 78023
+          line: 728
           column: 1
         end:
-          offset: 75244
-          line: 725
+          offset: 78295
+          line: 728
           column: 273
     - pointer: "/validation_rules/3"
       rule_id: "custody_balance"
       identity_kind: "explicit"
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 75245
-          line: 726
+          offset: 78296
+          line: 729
           column: 1
         end:
-          offset: 75524
-          line: 726
+          offset: 78575
+          line: 729
           column: 280
     - pointer: "/validation_rules/4"
       rule_id: "asset_and_period"
       identity_kind: "explicit"
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 75525
-          line: 727
+          offset: 78576
+          line: 730
           column: 1
         end:
-          offset: 75847
-          line: 727
+          offset: 78898
+          line: 730
           column: 323
     - pointer: "/validation_rules/5"
       rule_id: "release_and_range"
       identity_kind: "explicit"
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 75848
-          line: 728
+          offset: 78899
+          line: 731
           column: 1
         end:
-          offset: 76170
-          line: 728
+          offset: 79221
+          line: 731
           column: 323
     - pointer: "/validation_rules/6"
       rule_id: "enabling_complete"
       identity_kind: "explicit"
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 76171
-          line: 729
+          offset: 79222
+          line: 732
           column: 1
         end:
-          offset: 76515
-          line: 729
+          offset: 79566
+          line: 732
           column: 345
+    - pointer: "/validation_rules/7"
+      rule_id: "validate_fuel_supply_fate"
+      identity_kind: "explicit"
+      unit_id: "normative_77177"
+      source_span:
+        start:
+          offset: 79567
+          line: 733
+          column: 1
+        end:
+          offset: 80012
+          line: 733
+          column: 446
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -5670,27 +5702,27 @@ normative_context:
           column: 38
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_47179"
+      unit_id: "normative_47475"
       source_span:
         start:
-          offset: 47179
-          line: 669
+          offset: 47475
+          line: 671
           column: 1
         end:
-          offset: 47219
-          line: 669
+          offset: 47515
+          line: 671
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_74126"
+      unit_id: "normative_77177"
       source_span:
         start:
-          offset: 74126
-          line: 719
+          offset: 77177
+          line: 722
           column: 1
         end:
-          offset: 74148
-          line: 719
+          offset: 77199
+          line: 722
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -5699,5 +5731,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:c9ac50be1c364f2985f5690a56ee283260c28b2bee233da2e593adccc4f95382"
-  generated_content_sha256: "sha256:ef3a3f0090d063db70f8f6643ab40ea165d909d5218c6cd1b5cd763374067189"
+    sha256: "sha256:55931c188ae86dfa1cf4e9d94ae6fe65946d0fe1065d2694e12f2f4889859b47"
+  generated_content_sha256: "sha256:0be42ec47110e73188870b5fb8a0f11986aacb80ba5e4b751aa755fac633a71b"

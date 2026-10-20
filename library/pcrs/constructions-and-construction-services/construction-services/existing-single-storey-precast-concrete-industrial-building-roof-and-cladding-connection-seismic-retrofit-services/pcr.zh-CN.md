@@ -449,6 +449,27 @@ N 为完整合格且唯一的建筑干预数量，必须大于零。同一建筑
 
 范围证据需求：须有实际物质粒径与接收介质、实测释放质量或兼容活动量物种因子及单位来源，或实际全流体释放和有据成分去向。保留捕集回收与非叠加视图；无默认物种、基于安全说明书的排放量或重复因子成分证据。
 
+#### 采集要求：按项目设计的屋面至梁约束组件 (`roof_connection_assemblies`)
+
+过程／待建立交换的方向／类型：`integration` / `inputs` / `product`.
+
+按每个真实 SKU、组成/状态及保管关系建立独立原子交换。本要求不是通用集合流。真实完整的采购总成可采用其经核实的整包边界，已含部件不再额外采购。
+
+按实际SKU、配置与安装界面逐项记录连接件、板件、紧固件、约束或耗能组件。采购完整组件时仅计一次完整物料清单，另购零件保留独立身份。既有屋面与梁属于保留起始状态。
+
+- 采集对象：按项目设计的屋面至梁约束组件
+- 流属性/单位：Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
+- 数量规则：对每种实际计件品按 本节相应计算规则 核对存货；不得把安装数量等同新增采购量。
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_supply`
+- 来源：`reluis-industrial-retrofit-2024`
+
+范围证据需求：须取得实际批准连接明细、SKU物料清单数量、屋面或围护界面几何、收货存货平衡、失败安装更换及计数不确定性；无通用每栋螺栓数或海报尺寸证据。
+
 ## 6. 过程清单结构
 
 ### 过程图
@@ -464,23 +485,6 @@ N 为完整合格且唯一的建筑干预数量，必须大于零。同一建筑
 #### 输入
 
 ##### 产品流
-
-###### 按项目设计的屋面至梁约束组件 （`roof_connection_assemblies`）
-
-按实际SKU、配置与安装界面逐项记录连接件、板件、紧固件、约束或耗能组件。采购完整组件时仅计一次完整物料清单，另购零件保留独立身份。既有屋面与梁属于保留起始状态。
-
-- 选定流：按项目设计的屋面至梁约束组件
-- 流属性/单位：Number of items `01846770-4cfe-4a25-8ad9-919d8d378345` / item
-- 数量规则：对每种实际计件品按 本节相应计算规则 核对存货；不得把安装数量等同新增采购量。
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_supply`
-- 来源：`reluis-industrial-retrofit-2024`
-
-范围证据需求：须取得实际批准连接明细、SKU物料清单数量、屋面或围护界面几何、收货存货平衡、失败安装更换及计数不确定性；无通用每栋螺栓数或海报尺寸证据。
 
 ###### 现场准备与试验实际供应的产品水 （`product_water`）
 
@@ -555,7 +559,7 @@ N 为完整合格且唯一的建筑干预数量，必须大于零。同一建筑
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | calc_normalize | all inventory rows | q_normalized = attributable_quantity / N；先按同一场址、项目、阶段、时段归属，再按每参考流除以 N 一次。 | attributable_quantity; N; cp_gate | 每参考流原生单位数量 |  |
 | calc_stock | roof_connection_assemblies; cladding_connection_assemblies; repair_consumables; temporary_sheet_supplies; temporary_linear_supplies; product_water; site_fuel; usable_count_returns; usable_mass_returns; usable_area_returns; usable_length_returns; usable_volume_returns | net_receipts = external_gross - tare; S = opening_attributed + net_receipts - closing_carried；按 allocation_stock 所选口径，gross-with-outlets 输入 S、匹配出口 usable_return；consumed-only 输入 S-usable_return、退回仅作非叠加审计。均除以 N 一次。 | opening_attributed; external_gross; tare; closing_carried; usable_return; convention; N; cp_supply; cp_fuel | 无重复扣退的原生输入与匹配外退 |  |
@@ -566,7 +570,7 @@ N 为完整合格且唯一的建筑干预数量，必须大于零。同一建筑
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | quality_gate | integration | 具名建筑、真实批准范围及完整闭合验收记录；工程完成不代表全球通用规范、未来风险或与新楼等效。 | reluis-industrial-retrofit-2024 |
 | quality_complete | all inventory rows | 真实SKU、供应门槛、原生单位、覆盖范围与排放介质必须明确；缺失资源、寿命驱动或实际水气角色会阻断最终数据，不得凭PCR候选通过而视为零。 | 收货/测试/表计/服务覆盖/资产寿命/环境记录 |

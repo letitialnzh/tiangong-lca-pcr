@@ -698,9 +698,9 @@ process_inventory:
           flow_ref:
             uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
           property_unit: "Mass / kg"
-          description: "Include only directly consumed fuel; hired pumping with an inclusive energy inventory must not be counted again."
+          description: "Actual upstream fuel supplied to this node, before usable outward exits. Apply fuel_supply_fate to retain the supply burden of nonreturned waste/loss and derive burned activity separately. Keep actual fuel grade, equipment duty, provider coverage, density/state and measurement uncertainty."
           amount:
-            expression: "Measure attributable diesel consumed by pumps, mobile plant and generators; retain lower heating value if converting energy."
+            expression: "Actual upstream supplied fuel mass G_fuel divided once by the independently measured positive accepted lot quantity D_fuel in the declared reference unit; retain all exclusive fuel outlets and derive actual burned B_fuel separately under section 8."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -1118,8 +1118,8 @@ dataset_production:
       process_id: "placement"
       flow_role: "all inventory rows in this node"
       record_type: "event ledger, measurements and acceptance"
-      raw_fields: "pour_id; delivery_id; event_id; transfer_id; asset_id; operating time; metered or rated power; utilization; consumer share; fuel carbon fraction/method; fossil carbon mass fraction and denominator; carbon oxidized-to-CO2 fraction; chosen combustion factor value/unit/source and applicability; factor uncertainty; fuel density/temperature/lower heating value; received fresh volume; measured density; diesel; electricity; water; equipment hours; dispatch_id; carrier; payload tonnes; route kilometres; empty-return activity; mobilization ownership/share; return volume; waste/slurry mass; emissions species and medium; direct washout release event and destination compartment; released liquid volume or mass; measured substance concentration, sampling time and unit; containment/treatment split; inventory changes"
-      collection_method: "Reconcile signed event records, calibrated meters, supplier tickets, measured geometry/density, testing and recipient receipts; distinguish measurements from estimates and absence evidence."
+      raw_fields: "pour_id; delivery_id; event_id; transfer_id; asset_id; operating time; metered or rated power; utilization; consumer share; fuel carbon fraction/method; fossil carbon mass fraction and denominator; carbon oxidized-to-CO2 fraction; chosen combustion factor value/unit/source and applicability; factor uncertainty; fuel density/temperature/lower heating value; received fresh volume; measured density; diesel; electricity; water; equipment hours; dispatch_id; carrier; payload tonnes; route kilometres; empty-return activity; mobilization ownership/share; return volume; waste/slurry mass; emissions species and medium; direct washout release event and destination compartment; released liquid volume or mass; measured substance concentration, sampling time and unit; containment/treatment split; inventory changes; G_fuel; B_fuel; U_fuel; X_fuel; W_fuel_contained_mass; P_fuel_contained_mass; closing_usable_tank_stock; D_fuel; D_fuel_unit; fate_completeness; fuel_supply_burden_owner"
+      collection_method: "Reconcile signed event records, calibrated meters, supplier tickets, measured geometry/density, testing and recipient receipts; distinguish measurements from estimates and absence evidence. Supply and burn are separate under fuel_supply_fate; collect every exclusive outlet, actual denominator and its unit, keep nonreturned waste/loss supply burdens, and report missing fates."
       unit: "m3; kg; kWh; h; t; km; t*km"
       frequency: "each event/shift; continuous curing log"
       temporal_coverage: "complete pour through cure acceptance"
@@ -1224,6 +1224,21 @@ dataset_production:
         - cp_curing
       output: "attributed event quantities"
       source_ids: []
+    - id: fuel_supply_fate
+      applies_to: "placement_diesel"
+      rule: "For each actual fuel identity and nonoverlapping node/event period, G_fuel = opening usable fuel + external receipts - closing usable fuel stock, including equipment tanks, with container tare excluded and same-boundary issues/transfers not added as new receipts. G_fuel is the gross physical product input before genuine usable outward U_fuel, outward transfer X_fuel, collected unburned fuel W_fuel and uncontained fuel P_fuel. Keep those exclusive outlets separate and resolve actual product, waste stream or substance/medium identities; a total spill is an incident diagnostic, never another deduction. W_fuel and P_fuel mean the contained fuel mass, not the total mass of contaminated absorbent or wastewater. B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel only with a complete supported fate ledger; unknown fate stays a gap and is not presumed burned. Only independently supported B_fuel drives combustion emissions. Retain upstream supply burdens of all nonreturned unburned fuel, waste and loss; only original unused-material burden may follow a documented usable exit, without a second net-input deduction or avoided-production credit. Carry opening/closing stock burden once. Normalize each physical quantity once by D_fuel, the independently measured positive accepted lot quantity in this PCR reference unit (accepted volume, area, axial length, steel mass or complete accepted count as defined in sections 3-4), never by a fuel quantity or an intermediate output. Existing actual_consumed/fuel-use fields are burn-activity records; they cannot replace G_fuel as the upstream input. Provider-included fuel and its emissions have one owner; do not add overlapping foreground supply or combustion."
+      inputs:
+        - "opening fuel"
+        - "external receipts"
+        - "closing intact fuel"
+        - U_fuel
+        - X_fuel
+        - W_fuel
+        - P_fuel
+        - D_fuel
+        - "actual node fuel protocol and fate evidence"
+      output: "G_fuel product input; independently supported B_fuel; separately resolved exclusive outlets"
+      source_ids: []
   data_quality_requirements:
     - id: gate_traceability
       applies_to: "reference product"
@@ -1268,6 +1283,14 @@ validation_rules:
     applies_to: "all inventory rows"
     rule: "Require verified concrete flow/property/unit identities for final dataset exchanges; unresolved semantic cards and generic species are not publishable exchanges."
     source_ids: []
+  - rule_id: validate_fuel_supply_fate
+    applies_to: "placement_diesel"
+    rule: "Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets."
+    source_ids: []
+  - rule_id: validate_physical_slurry_stream
+    applies_to: "all collected wastewater/slurry"
+    rule: "A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views."
+    source_ids: []
 published_dataset_profile:
   dataset_role: "Foreground construction-service data package with flow/process/lifecyclemodel projections."
   downstream_use: "secondary_dataset; background_dataset for declared building work-package models."
@@ -1291,7 +1314,7 @@ data_sources:
     used_for: "Supporting classification interpretation only; not a CPC 3.0 explanatory text or quantitative source."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:1d4278eff05324e85964c52bb883297b8cd59cc95df853a756bf676dd4a56b0d"
+  source_sha256: "sha256:ba7d2cb6fc85060cea28d0b3990d04af87a0cf84957fa19f3cacd35477f9fba4"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_4614"
@@ -1342,16 +1365,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_40955"
+    - unit_id: "normative_41258"
       family: "allocation"
       span:
         start:
-          offset: 40955
-          line: 771
+          offset: 41258
+          line: 772
           column: 1
         end:
-          offset: 42160
-          line: 780
+          offset: 42463
+          line: 781
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| retain_rework | all processes | Retain burdens from failed tests, rejected pours and routine rework in the originating accepted service lot; track placement→finishing or finishing→curing rework and return to placement for replacement with event ids. Count final accepted geometry once. |  |\n| run_attribution | all processes | Use identified pours and curing periods as production batches; assign startup, changeover and cleanup by event-linked measured activity. Shared events have one owner and documented shares summing to one across all consumers. |  |\n| shared_energy | all processes | Prefer submetering. If absent, estimate node shares from recorded operating time, rated/observed power and utilization, disclosing uncertainty; never charge grid electricity and generator fuel for the same generation twice. |  |\n| no_automatic_credit | returned_fresh_concrete; waste outputs | Record product returns or waste exits by recipient acceptance and legal status. No automatic avoided concrete or recycling credit; any consequential credit requires a separate declared study method. |  |\n\n"
       headings:
@@ -1370,12 +1393,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 40955
-              line: 771
+              offset: 41258
+              line: 772
               column: 1
             end:
-              offset: 40995
-              line: 771
+              offset: 41298
+              line: 772
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1390,18 +1413,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_50121"
+    - unit_id: "normative_52776"
       family: "validation"
       span:
         start:
-          offset: 50121
-          line: 810
+          offset: 52776
+          line: 812
           column: 1
         end:
-          offset: 51799
-          line: 821
+          offset: 55291
+          line: 825
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| final_acceptance | accepted_concrete_placement_service | Require 1 m3 reference definition, exact reference row link, actual accepted geometry and specified acceptance evidence; output remains a service. |  |\n| transfer_pair | placed_concrete_transfer; finishing_concrete_feed; finished_concrete_transfer; curing_concrete_feed | Pair each internal handoff by transfer_id, state and measured amount; prohibit duplicate upstream products and fixed 1 m3 internal feeds. |  |\n| loss_and_waste | all processes | Explain delivery/placement differences, retained water and stock changes; reconcile each return, residue, slurry and reject once with recipient/state and rework path. | epa-concrete-washout-2012 |\n| shared_and_runs | all processes | Check pour/run/event ids, changeover ownership, all shared asset consumers and shares; totals must avoid duplicate energy, capital, mobilization and cleanup. |  |\n| washout_release_route | placement_washout_releases; placement_wash_slurry | Require event-specific substance, receiving water/soil compartment and concentration/quantity evidence for each verified direct release. Keep it on placement and cp_placement, separate from custodian-bound slurry and curing releases. Reconcile pathways without double counting; unresolved composition or occurrence remains incomplete coverage rather than zero. | epa-concrete-washout-2012 |\n| actual_identity | all inventory rows | Require verified concrete flow/property/unit identities for final dataset exchanges; unresolved semantic cards and generic species are not publishable exchanges. |  |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| final_acceptance | accepted_concrete_placement_service | Require 1 m3 reference definition, exact reference row link, actual accepted geometry and specified acceptance evidence; output remains a service. |  |\n| transfer_pair | placed_concrete_transfer; finishing_concrete_feed; finished_concrete_transfer; curing_concrete_feed | Pair each internal handoff by transfer_id, state and measured amount; prohibit duplicate upstream products and fixed 1 m3 internal feeds. |  |\n| loss_and_waste | all processes | Explain delivery/placement differences, retained water and stock changes; reconcile each return, residue, slurry and reject once with recipient/state and rework path. | epa-concrete-washout-2012 |\n| shared_and_runs | all processes | Check pour/run/event ids, changeover ownership, all shared asset consumers and shares; totals must avoid duplicate energy, capital, mobilization and cleanup. |  |\n| washout_release_route | placement_washout_releases; placement_wash_slurry | Require event-specific substance, receiving water/soil compartment and concentration/quantity evidence for each verified direct release. Keep it on placement and cp_placement, separate from custodian-bound slurry and curing releases. Reconcile pathways without double counting; unresolved composition or occurrence remains incomplete coverage rather than zero. | epa-concrete-washout-2012 |\n| actual_identity | all inventory rows | Require verified concrete flow/property/unit identities for final dataset exchanges; unresolved semantic cards and generic species are not publishable exchanges. |  |\n| validate_fuel_supply_fate | placement_diesel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n| validate_physical_slurry_stream | all collected wastewater/slurry | A wastewater/slurry card denotes one actual physically unseparated liquid/solid mixture at one receiver gate. Independently collected liquids, separated solids or different treatment destinations require distinct actual exchanges; do not recombine them to fit this card. Mixture mass and constituent water/solids are nonadditive views. |  |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1418,12 +1441,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 50121
-              line: 810
+              offset: 52776
+              line: 812
               column: 1
             end:
-              offset: 50143
-              line: 810
+              offset: 52798
+              line: 812
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -3236,133 +3259,159 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "retain_rework"
       identity_kind: "explicit"
-      unit_id: "normative_40955"
+      unit_id: "normative_41258"
       source_span:
         start:
-          offset: 41068
-          line: 775
+          offset: 41371
+          line: 776
           column: 1
         end:
-          offset: 41360
-          line: 775
+          offset: 41663
+          line: 776
           column: 293
     - pointer: "/allocation_rules/1"
       rule_id: "run_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_40955"
+      unit_id: "normative_41258"
       source_span:
         start:
-          offset: 41361
-          line: 776
+          offset: 41664
+          line: 777
           column: 1
         end:
-          offset: 41626
-          line: 776
+          offset: 41929
+          line: 777
           column: 266
     - pointer: "/allocation_rules/2"
       rule_id: "shared_energy"
       identity_kind: "explicit"
-      unit_id: "normative_40955"
+      unit_id: "normative_41258"
       source_span:
         start:
-          offset: 41627
-          line: 777
+          offset: 41930
+          line: 778
           column: 1
         end:
-          offset: 41889
-          line: 777
+          offset: 42192
+          line: 778
           column: 263
     - pointer: "/allocation_rules/3"
       rule_id: "no_automatic_credit"
       identity_kind: "explicit"
-      unit_id: "normative_40955"
+      unit_id: "normative_41258"
       source_span:
         start:
-          offset: 41890
-          line: 778
+          offset: 42193
+          line: 779
           column: 1
         end:
-          offset: 42158
-          line: 778
+          offset: 42461
+          line: 779
           column: 269
     - pointer: "/validation_rules/0"
       rule_id: "final_acceptance"
       identity_kind: "explicit"
-      unit_id: "normative_50121"
+      unit_id: "normative_52776"
       source_span:
         start:
-          offset: 50216
-          line: 814
+          offset: 52871
+          line: 816
           column: 1
         end:
-          offset: 50426
-          line: 814
+          offset: 53081
+          line: 816
           column: 211
     - pointer: "/validation_rules/1"
       rule_id: "transfer_pair"
       identity_kind: "explicit"
-      unit_id: "normative_50121"
+      unit_id: "normative_52776"
       source_span:
         start:
-          offset: 50427
-          line: 815
+          offset: 53082
+          line: 817
           column: 1
         end:
-          offset: 50689
-          line: 815
+          offset: 53344
+          line: 817
           column: 263
     - pointer: "/validation_rules/2"
       rule_id: "loss_and_waste"
       identity_kind: "explicit"
-      unit_id: "normative_50121"
+      unit_id: "normative_52776"
       source_span:
         start:
-          offset: 50690
-          line: 816
+          offset: 53345
+          line: 818
           column: 1
         end:
-          offset: 50921
-          line: 816
+          offset: 53576
+          line: 818
           column: 232
     - pointer: "/validation_rules/3"
       rule_id: "shared_and_runs"
       identity_kind: "explicit"
-      unit_id: "normative_50121"
+      unit_id: "normative_52776"
       source_span:
         start:
-          offset: 50922
-          line: 817
+          offset: 53577
+          line: 819
           column: 1
         end:
-          offset: 51120
-          line: 817
+          offset: 53775
+          line: 819
           column: 199
     - pointer: "/validation_rules/4"
       rule_id: "washout_release_route"
       identity_kind: "explicit"
-      unit_id: "normative_50121"
+      unit_id: "normative_52776"
       source_span:
         start:
-          offset: 51121
-          line: 818
+          offset: 53776
+          line: 820
           column: 1
         end:
-          offset: 51589
-          line: 818
+          offset: 54244
+          line: 820
           column: 469
     - pointer: "/validation_rules/5"
       rule_id: "actual_identity"
       identity_kind: "explicit"
-      unit_id: "normative_50121"
+      unit_id: "normative_52776"
       source_span:
         start:
-          offset: 51590
-          line: 819
+          offset: 54245
+          line: 821
           column: 1
         end:
-          offset: 51797
-          line: 819
+          offset: 54452
+          line: 821
           column: 208
+    - pointer: "/validation_rules/6"
+      rule_id: "validate_fuel_supply_fate"
+      identity_kind: "explicit"
+      unit_id: "normative_52776"
+      source_span:
+        start:
+          offset: 54453
+          line: 822
+          column: 1
+        end:
+          offset: 54878
+          line: 822
+          column: 426
+    - pointer: "/validation_rules/7"
+      rule_id: "validate_physical_slurry_stream"
+      identity_kind: "explicit"
+      unit_id: "normative_52776"
+      source_span:
+        start:
+          offset: 54879
+          line: 823
+          column: 1
+        end:
+          offset: 55289
+          line: 823
+          column: 411
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
@@ -4974,27 +5023,27 @@ normative_context:
           column: 59
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_40955"
+      unit_id: "normative_41258"
       source_span:
         start:
-          offset: 40955
-          line: 771
+          offset: 41258
+          line: 772
           column: 1
         end:
-          offset: 40995
-          line: 771
+          offset: 41298
+          line: 772
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_50121"
+      unit_id: "normative_52776"
       source_span:
         start:
-          offset: 50121
-          line: 810
+          offset: 52776
+          line: 812
           column: 1
         end:
-          offset: 50143
-          line: 810
+          offset: 52798
+          line: 812
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -5003,5 +5052,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:1d4278eff05324e85964c52bb883297b8cd59cc95df853a756bf676dd4a56b0d"
-  generated_content_sha256: "sha256:d7ea20b1b2c44c4ea8c954cfb9cdac2e32bb11c18657042a2e7c5b1424d84ffa"
+    sha256: "sha256:ba7d2cb6fc85060cea28d0b3990d04af87a0cf84957fa19f3cacd35477f9fba4"
+  generated_content_sha256: "sha256:65aca0f16d64a580692428f7564f751c97317218c66fc1d7ed515bdb2fbe0e0d"

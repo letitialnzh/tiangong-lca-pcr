@@ -428,7 +428,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | accepted_normalisation | splice_protectors; fibre_cleaner; preparation_consumables; closure_reseal_materials; electricity_supply; direct_fuel; closure_test_gas; transport_service; shared_asset_supply; outward_protector_returns; outward_material_returns; fibre_sharps; other_solid_waste; wastewater; elementary_releases | 每参考流清单量 = 自身原生单位的完整批次归属数量 / N；N = 全部关卡完成后唯一最终验收纤对ID。个体和共同资源只分配一次；N为零时无有效正N数据集。 | cp_acceptance; each applicable own-node collection protocol; attributable campaign amount; N | 每1 item验收修复的各实际交换 |  |
 | material_ledger | splice_protectors; fibre_cleaner; preparation_consumables; closure_reseal_materials; outward_protector_returns; outward_material_returns | 每SKU/原生单位批次供应量 = opening_stock + gross_receipt - closing_stock，匹配同SKU/单位的结转上游负荷。总收货带出口保留实际外退为输出；仅消耗只扣一次匹配退回供应。物理核对：opening_stock + gross_receipt = closing_stock + installed_retained_final + discarded_native_quantity + return_native_quantity + release_native_quantity。总收货先扣皮重再处理退回；used_activity/internal_issue不可相加。总收货带出口记录总量及每个出口；仅消耗供应仅排除一次对应外退供应，不混用约定。质量换算：Count * matching_unit_mass或Volume * density，仅在实际匹配单位/状态/温度/来源齐备时采用。 | cp_materials; opening_stock; gross_receipt; closing_stock; installed_retained_final; discarded_native_quantity; return_native_quantity; release_native_quantity; native_quantity; matching_unit_mass; density; conversion_source | 核对的实际原生供应/退回及支持的质量展开 |  |
@@ -443,7 +443,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | traceable_acceptance | accepted_fibre_pair_repair | 实际长途陆地功能、兼容纤端ID/余长、独立机械及光学关卡、保护/布纤和所属保留接头盒验收为必需，不设通用损耗/扭矩/压力。 | cp_acceptance；实际业主判据及接头盒说明；corning-single-fibre-fusion-2020; corning-retained-closure-2019 |
 | complete_campaign | all inventory rows | 所有尝试、清洁/设置/转换、重密封/复测、归属充电、最终出口及撤场覆盖完整实际期间；条件资源未使用须实际记录，未知仍为缺口。 | 事件登记及所有关联本节点协议 |

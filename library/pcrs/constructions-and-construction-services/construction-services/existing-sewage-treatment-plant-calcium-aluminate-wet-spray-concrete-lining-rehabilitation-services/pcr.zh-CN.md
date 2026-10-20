@@ -379,6 +379,27 @@ sync_with: pcr.en-US.md
 
 范围证据需求：实际物种kg/m2须有实测排放或兼容活动-因子/组成-去向及不确定性证据；未知物种/介质不是零。
 
+#### 采集要求：收集的液体修复残余物 (`wastewater`)
+
+过程／待建立交换的方向／类型：`lining` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+纳入实际抽排污水、污染清洗/SSD径流、启动/软管冲洗及收集养护/检测水；物理水台账与物种视图不可相加。收集废水是废物流，不是直接基本排放。
+
+- 采集对象：按组成和去向区分的实际收集污水、清洁、冲洗和养护废水
+- 流属性/单位：Volume / m3
+- 数量规则：实际归属原生数量 m3 / A
+- 数值来源模式：前景记录（`foreground_record`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每 1 m2 参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：采集记录（`collected_record`）
+- 采集协议：`cp_wastewater`
+- 来源：`sika-4400-uk-pds-2021`; `sika-4400-uk-method-2025`
+
+范围证据需求：各实际流m3/m2、悬浮固体/组成及接收证据；不假定稀释或废水比例。
+
 ## 6. 过程清单结构
 
 ### 过程图
@@ -502,23 +523,6 @@ sync_with: pcr.en-US.md
 
 ##### 废物流
 
-###### 收集的液体修复残余物（`wastewater`）
-
-纳入实际抽排污水、污染清洗/SSD径流、启动/软管冲洗及收集养护/检测水；物理水台账与物种视图不可相加。收集废水是废物流，不是直接基本排放。
-
-- 选定流：按组成和去向区分的实际收集污水、清洁、冲洗和养护废水
-- 流属性/单位：Volume / m3
-- 数量规则：实际归属原生数量 m3 / A
-- 数值来源模式：前景记录（`foreground_record`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每 1 m2 参考流
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：采集记录（`collected_record`）
-- 采集协议：`cp_wastewater`
-- 来源：`sika-4400-uk-pds-2021`; `sika-4400-uk-method-2025`
-
-范围证据需求：各实际流m3/m2、悬浮固体/组成及接收证据；不假定稀释或废水比例。
-
 ##### 基本流
 
 ## 7. 分配与联产品处理
@@ -562,7 +566,7 @@ sync_with: pcr.en-US.md
 
 ### 计算规则
 
-| rule_id | 适用对象 | 公式或规则 | 输入 | 输出 | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | `unique_area` | `accepted_lining` | A = 互斥验收展开表面之和减孔洞；实际侧壁只加一次，扣除重叠和失败部分；分层和遍数不放大面积。缺少验收或A<=0时不产生验收参考产出。 | cp_acceptance | A m2 | |
 | `sku_stock` | `premix`; `starter`; `hardener`; `consumable_mass`; `consumable_count`; `consumable_length`; `consumable_area`; `fuel`; `return_mass`; `return_count`; `return_length`; `return_area`; `return_volume` | 各兼容原生SKU台账：归属供应量=期初归属库存+扣皮重外部毛收货-期末结转库存。毛供应带出口法仅保留实际可用对外退回一次；净耗用法仅扣除匹配退回及其供应负担一次，不重复抵扣。不退回损失/废物保留供应负担。闭合互斥最终出口，保留中间投料/使用作为不可相加记录。 | 实际收货/库存/发运/使用/废物/损失协议 | 归属原生供应量和匹配出口 | |
@@ -574,7 +578,7 @@ sync_with: pcr.en-US.md
 
 ### 数据质量要求
 
-| requirement_id | 适用对象 | 要求 | 证据 |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | `route_gate_evidence` | `lining`; `accepted_lining` | 核验厂内功能及排除池型/结构资格；实际现行本地批准规程、完好粗糙清洁基面、微裂纹/脱层/钢筋检查、采用英国V7时pH>=10和SSD；逐批水料比/稠度、设备无污染、分层/厚度、实际养护/硬化、检测/返工及签字污水恢复验收。 | 实际工程师/业主记录及一手本地产品/方法证据 |
 | `quantity_state_quality` | 所有清单行 | 保留原生单位、皮重、校准、日期、批/运行/区域/事件ID、库存结转、完整失败/换批/养护/检测覆盖、组成/状态/密度和唯一责任审查。量化模板不能代替实际消耗。 | 关联采集协议及闭合记录 |

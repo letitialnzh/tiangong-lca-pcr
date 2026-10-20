@@ -975,11 +975,40 @@ L 来自唯一验收区段登记，不是交付网卷长度、名义间距、围
 
 此区间为暂定作者推理，经独立审查可替换。不同真实配方有不同挥发或颗粒组分，筛查质量不规定 VOC 成分，也不能用涂料产品流代替排放。
 
+#### 采集要求：导轨集成产生的废物 (`rail_waste`)
+
+过程／待建立交换的方向／类型：`rail_brace` / `outputs` / `waste`.
+
+每个物理上独立的实际废物流、组成/状态及接收方须建立独立原子交换。本采集要求不是合并废物流；真实未分离的物理混合物可使用有证据的混合物身份，已分离去向不得重新合并。
+
+按实际材料记录导轨切余、失效配件、线材残余、捕集加工颗粒及本节点丢弃包装。捕集颗粒仍为废物，收集器记录不证明其直接环境排放。
+
+- 采集对象：导轨集成产生的废物
+- 流属性/单位：Mass / kg
+- 数量规则：actual_rail_waste/L
+- 数值来源模式：计算值（`calculated_value`）
+- 适用范围：场址特定（`site_specific`）
+- 归一化基准：每参考流
+- 基准类型：参考流（`reference_flow`）
+- 证据类型：由采集计算（`calculated_from_collection`）
+- 采集协议：`cp_rail_brace`
+- 来源：`clfmi-product-manual-2017`; `masterhalco-galvanized-components`
+- 未核实的可选筛查提示：暂定诊断筛查
+  - 范围角色：QA 校验（`qa_guardrail`）
+  - 下限：0
+  - 上限：150
+  - 单位：kg
+  - 基准：每参考流
+  - 基准类型：参考流（`reference_flow`）
+  - 证据类型：推理估算（`reasoned_estimate`）
+
+此区间为暂定作者推理，经独立审查可替换。切割布置、拒收和本节点拆包影响损失；核对材料与废物台账，不套用通用损耗百分比。
+
 ## 6. 过程清单结构
 
 ### 过程图
 
-| process_id | 过程名称 | 纳入状态 | 纳入条件 | 建模角色 | 定量参考 |
+| process_id | process_name | inclusion | inclusion_condition | role | quantitative_reference |
 | --- | --- | --- | --- | --- | --- |
 | survey_receive | 既有接口放行与安装材料接收 | required | 每个安装批次 | 接口验收、外部材料与包装保管及向工作节点真实发料 观察项 post_interface 和 physical_interface_release 仍由 cp_survey_receive 及 calc_post_interface/calc_physical_interface_release 独立测量既有柱/基础 Length/m 就绪与放行状态，不作为清单产品交换。 | 实际同状态移交量；仅 finish_accept 使用最终 L |
 | rail_brace | 导轨、支撑及规定张力线集成 | required | 每个安装批次；新构件角色按实际既有/新增清单 | 将构件连接至放行立柱，附带切割归此节点 观察项 physical_interface_construction_feed 由 cp_rail_brace 和 calc_physical_interface_construction_feed 确认同一已放行资产几何/状态，保留源接收观察 ID 和真实责任，不增加资产制造或产品购入。 | 实际同状态移交量；仅 finish_accept 使用最终 L |
@@ -1200,31 +1229,6 @@ L 来自唯一验收区段登记，不是交付网卷长度、名义间距、围
 ##### 产品流
 
 ##### 废物流
-
-###### 导轨集成产生的废物（`rail_waste`）
-
-按实际材料记录导轨切余、失效配件、线材残余、捕集加工颗粒及本节点丢弃包装。捕集颗粒仍为废物，收集器记录不证明其直接环境排放。
-
-- 选定流：导轨集成产生的废物
-- 流属性/单位：Mass / kg
-- 数量规则：actual_rail_waste/L
-- 数值来源模式：计算值（`calculated_value`）
-- 适用范围：场址特定（`site_specific`）
-- 归一化基准：每参考流
-- 基准类型：参考流（`reference_flow`）
-- 证据类型：由采集计算（`calculated_from_collection`）
-- 采集协议：`cp_rail_brace`
-- 来源：`clfmi-product-manual-2017`; `masterhalco-galvanized-components`
-- 数量范围：暂定诊断筛查
-  - 范围角色：QA 校验（`qa_guardrail`）
-  - 下限：0
-  - 上限：150
-  - 单位：kg
-  - 基准：每参考流
-  - 基准类型：参考流（`reference_flow`）
-  - 证据类型：推理估算（`reasoned_estimate`）
-
-此区间为暂定作者推理，经独立审查可替换。切割布置、拒收和本节点拆包影响损失；核对材料与废物台账，不套用通用损耗百分比。
 
 ##### 基本流
 
@@ -1509,7 +1513,7 @@ L 为实测且为正的唯一净验收区段长度；L/L 严格定义一参考�
 
 每条规则首输出为对应卡的物理分子，calc_accepted_fence_service 首输出为 L。电表/服务中间量和水差额也明确列出，仍为物理单位诊断。本表公式不除以 L，唯一归一化在卡片 Amount。原键、协议、输出和函数全部声明；函数完整定义在相关规则内投影，不仅依靠外部说明。
 
-| rule_id | Applies to | Formula or rule | Inputs | Output | source_ids |
+| rule_id | applies_to | formula_or_rule | inputs | output | source_ids |
 | --- | --- | --- | --- | --- | --- |
 | calc_post_interface | post_interface | actual_post_interface = SUM_UNIQUE_SEGMENTS(post_interface_centerline_m, post_interface_segment_ids)。输出为 m 物理分子，此观测输出仅用于自身协议与验收门槛，不适用库存Amount或交换；保留实测物理几何，不增加产品负荷。记录真实接收/移交几何及合格/当前状态，源接收事件配对一致并明确部分批次和 WIP，设计文件及固定 1 m 不能替代真实几何。 定义 SUM_UNIQUE_SEGMENTS：按稳定区段 ID 对互不重叠的实测中心线求和，拐角只计一次并先排除实际门洞/开口，返工返访不产生新验收段。只计满足本卡当前状态门槛的区段，最终参考段必须净且已验收。 此为既有资产观察/就绪测量，保留自身 ID、实测 Length/m/状态和接口门槛，不是清单产品交换、制造材料或设计文件产品。 | post_interface_transfer_event_ids; post_interface_segment_ids; post_interface_centerline_m; post_interface_state_ids; post_interface_source_node; post_interface_recipient_node; post_interface_handoff_document_ids; post_interface_condition_evidence; post_interface_corner_and_opening_resolution; cp_survey_receive; SUM_UNIQUE_SEGMENTS | actual_post_interface |  |
 | calc_receive_packaging | receive_packaging | actual_receive_packaging = receive_packaging_opening_kg + receive_packaging_external_receipts_kg - receive_packaging_closing_unissued_intact_kg。输出为 kg 物理分子，本计算完成后只执行卡片 Amount 一次，原始量和输出不重复归一化。三个池均为同 SKU/当前状态桥接后的真实 kg；期末为所有地点本批未发完好库存各一次，不含已发 U/X、安装保留或处理 WIP。总领用包含实际未用退出，不二次净扣。 | receive_packaging_opening_kg; receive_packaging_external_receipts_kg; receive_packaging_closing_unissued_intact_kg; receive_packaging_material_ids; receive_packaging_state_ids; receive_packaging_native_units; receive_packaging_native_quantities; receive_packaging_measured_kg_per_native_unit; receive_packaging_bridge_evidence; receive_packaging_stock_item_ids; receive_packaging_stock_sublocations; receive_packaging_stock_custodians; receive_packaging_stock_count_times; receive_packaging_receipt_event_ids; cp_survey_receive | actual_receive_packaging |  |
@@ -1586,7 +1590,7 @@ L 为实测且为正的唯一净验收区段长度；L/L 严格定义一参考�
 
 ### 数据质量要求
 
-| requirement_id | Applies to | Requirement | Evidence |
+| requirement_id | applies_to | requirement | evidence |
 | --- | --- | --- | --- |
 | quality_identity | 每种材料和实际交换 | 保留供应商SKU/供应者/物质、当前状态、规格和保管证据；宽泛金属网不能证明镀锌编织勾花网牌号状态，变化配件或排放角色须实际展开。 | 材料证书、实际产品记录、配方及现场状态检查。 |
 | quality_measurement | 全部kg及m量 | 校准称量和测量，保留原读数、同SKU状态桥接样本、皮重、不确定性、纠正和实际未发生证据；未知不为零。 | 校准证、原始读数、桥接、库存和移交记录。 |
