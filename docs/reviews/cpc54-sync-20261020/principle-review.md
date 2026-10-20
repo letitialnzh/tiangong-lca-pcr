@@ -124,3 +124,9 @@ lastReviewedNote: Individual eight-category review; target checks do not establi
 - 按本次已授权的目标范围验证，没有重新展开全库测试。上一轮 `npm run validate` 失败且不完整的事实仍保留；完整 CI、发布资格和未来项目证据没有被本次目标通过替代。
 
 全部保持 candidate / authored_methodology、中文 aligned，未发布、未合并。只更新 letitialnzh fork 的原有 PR，未写入上游或原共享工作区。
+
+## Documentation translation-state repair
+
+CI job 118460124850 exposed a frontmatter/manifest mismatch missed by the previous review. CPC 54112 Chinese frontmatter declared `reviewed` and CPC 54231 declared `draft_translation`; both authoritative manifests declare `aligned`. The two frontmatter values are now `aligned`. No methodology, English source, manifest lifecycle state or structured projection changed.
+
+The unmodified documentation `validateFrontmatter` function and its actual schema/type helpers were replayed across all 63 selected PCRs and 126 language files: the two original conflicts reproduced before repair and zero findings remained afterward. Both affected PCRs passed `pcr:check --workspace current --format json`; two official structured syncs per target left projection bytes unchanged. Current file fingerprints and detailed receipts are in `principle-review.json`. The full static-site build remains a separate CI qualification.

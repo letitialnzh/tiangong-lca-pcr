@@ -4,7 +4,7 @@ pcr_id: pcr.existing-water-supply-aqueduct-hand-applied-cementitious-concrete-pa
 language: zh-CN
 status: candidate
 content_maturity: authored_methodology
-translation_status: draft_translation
+translation_status: aligned
 sync_with: pcr.en-US.md
 ---
 
