@@ -223,17 +223,19 @@ test("real generator preserves multilingual released snapshots and excludes open
     for (const language of ["en-US", "zh-CN", "de-DE"]) {
       const search: unknown = JSON.parse(fs.readFileSync(path.join(output, "public/generated/search", language, "manifest.json"), "utf8"));
       assert.ok(isUnknownRecord(search));
-      assert.equal(search.schemaVersion, 5, "new indexes use lossless joined term columns");
+      assert.equal(search.schemaVersion, 5, "new indexes pack logical shards with a shared dictionary");
       assert.equal(search.language, language);
       assert.ok(Array.isArray(search.shards) && search.shards.length > 0);
       for (const shard of search.shards) {
         assert.ok(isUnknownRecord(shard) && typeof shard.url === "string");
-        const data: unknown = JSON.parse(fs.readFileSync(path.join(output, "public", shard.url), "utf8"));
+        const packed: unknown = JSON.parse(fs.readFileSync(path.join(output, "public", shard.url), "utf8"));
+        assert.ok(isUnknownRecord(packed) && packed.schemaVersion === 5 && Array.isArray(packed.indexes) && typeof shard.entry === "number");
+        const data: unknown = packed.indexes[shard.entry];
         assert.ok(isUnknownRecord(data) && isUnknownRecord(data.entries));
         assert.ok(Object.values(data.entries).length > 0);
         assert.ok(Object.values(data.entries).every(Array.isArray), "exports must not be nested JSON strings");
         const index = new Index({tokenize: "strict", encode: (value: unknown) => searchTerms(value, language)});
-        for (const [key, payload] of Object.entries(decodeSearchEntries(data.entries, data.sparseMaps, 5, data.scoreMasks, data.postingDeltas, data.columnarMaps, data.joinedTerms))) index.import(key, JSON.stringify(payload));
+        for (const [key, payload] of Object.entries(decodeSearchEntries(data.entries, data.sparseMaps, 5, data.scoreMasks, data.postingDeltas, data.columnarMaps, data.joinedTerms, search.termDictionary, data.dictionaryTerms))) index.import(key, JSON.stringify(payload));
         assert.ok(index.search("wheat", {limit: 30}).length > 0, "Generated v5 exports remain readable by the pinned engine");
       }
       const currentPages = recordPages(site, site.records[0]!, language);
@@ -371,6 +373,14 @@ test("metadata summaries describe the page they belong to, and report title-only
       titles: { "en-US": "Synthetic wheat seed", "zh-CN": "合成测试小麦种子" },
     });
     fs.appendFileSync(path.join(fixture.pcrDir, "pcr.en-US.md"), "\n[Original metadata](manifest.yaml)\n[Metadata fields](manifest.yaml#fields)\n");
+    for (const language of ["en-US", "zh-CN"]) {
+      const filename = path.join(fixture.pcrDir, `pcr.${language}.md`);
+      const opening = fs.readFileSync(filename, "utf8") + "\n\n";
+      const text = language === "zh-CN" ? "原文保真🙂 " : "Original source bytes. ";
+      const repeats = Math.floor((60 * 1024 - Buffer.byteLength(opening)) / Buffer.byteLength(text));
+      fs.writeFileSync(filename, opening + text.repeat(repeats) + "\n");
+      assert.ok(fs.statSync(filename).size > 49152 && fs.statSync(filename).size <= 61441);
+    }
     syncStructured({root, pcr: fixture.libraryPath});
     lifecycle({
       root,

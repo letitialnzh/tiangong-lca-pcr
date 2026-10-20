@@ -1,8 +1,8 @@
 import { parseYaml } from '../../pcr-core/src/yaml-lite.ts';
 import { isUnknownRecord } from '../../pcr-core/src/types.ts';
 
-export const INLINE_MANIFEST_LIMIT = 16384;
-export const INLINE_MARKDOWN_LIMIT = 49152;
+export const INLINE_MANIFEST_LIMIT = 49152;
+export const INLINE_MARKDOWN_LIMIT = 65536;
 export const INLINE_DOWNLOAD_NAMES = ['manifest.yaml', 'pcr.en-US.md', 'pcr.zh-CN.md'] as const;
 const prefix = 'data:application/octet-stream;base64,';
 const currentArtifact = /^(library\/pcrs\/[^/.][^/]*\/[^/.][^/]*\/[^/.][^/]*\/)(?:manifest\.yaml|pcr\.(?:en-US|zh-CN)\.md)$/u;

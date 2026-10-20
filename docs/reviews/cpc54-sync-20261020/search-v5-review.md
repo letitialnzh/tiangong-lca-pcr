@@ -1,4 +1,6 @@
-# Lossless search wire v5
+# Lossless search wire v5 — historical pre-integration validation
+
+This receipt describes commit `aef4c6ae9` against the earlier `58cb897e4` sync baseline. The target branch subsequently advanced to `9b347a173`; its combined-corpus validation supersedes these transport statistics and bounds. The 63 PCR source files remain unchanged.
 
 The documentation job for commit `68228caa9` reached search generation after the translation-state repair, then rejected the Chinese index at 4,009,879 gzip bytes against its unchanged 4,000,000-byte budget. V5 removes redundant JSON framing from term columns while retaining exact engine data.
 

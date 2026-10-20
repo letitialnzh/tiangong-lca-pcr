@@ -3,6 +3,28 @@ import assert from "node:assert/strict";
 import { summarizeExportFiles } from "./export-size.ts";
 import { INLINE_MANIFEST_LIMIT, INLINE_MARKDOWN_LIMIT, inlineDownloadUrl, decodeInlineDownloadUrl } from "./raw-download.ts";
 
+test("medium required-language downloads preserve original Unicode bytes within candidate eligibility", () => {
+  const directory = "library/pcrs/domain/category/item/";
+  const manifest = Buffer.from("status: candidate\ncontent_maturity: authored_methodology\n");
+  const sibling = {path: directory + "manifest.yaml", bytes: manifest};
+  for (const name of ["pcr.en-US.md", "pcr.zh-CN.md"]) {
+    for (const size of [40 * 1024, 60 * 1024]) {
+      const opening = Buffer.from("\ufeff# Source / 原文🙂\r\n\r\n" + name + "\r\n");
+      const original = Buffer.concat([opening, Buffer.alloc(size - opening.length, 32)]);
+      const url = inlineDownloadUrl(directory + name, original, false, sibling);
+      assert.ok(url, "medium canonical Markdown should retain native inline transport");
+      assert.deepEqual(decodeInlineDownloadUrl(url), original);
+      assert.equal(inlineDownloadUrl(directory + name, original, true, sibling), undefined);
+      assert.equal(inlineDownloadUrl(directory + name, original, false,
+        {path: sibling.path, bytes: Buffer.from("status: published\ncontent_maturity: authored_methodology\n")}), undefined);
+    }
+  }
+  assert.equal(inlineDownloadUrl(directory + "manifest.yaml",
+    Buffer.concat([manifest, Buffer.alloc(60 * 1024, 32)]), false), undefined);
+  assert.equal(inlineDownloadUrl(directory + "structured.yaml", Buffer.alloc(60 * 1024), false, sibling), undefined);
+  assert.equal(inlineDownloadUrl(directory + "pcr.de-DE.md", Buffer.alloc(60 * 1024), false, sibling), undefined);
+});
+
 test("bounded candidate manifest downloads preserve exact bytes and physical release artifacts", () => {
   const source = "library/pcrs/domain/category/product/manifest.yaml";
   const bytes = Buffer.from("\ufeffstatus: candidate\r\ncontent_maturity: authored_methodology\r\ntitle: 测试\r\n");
@@ -116,7 +138,7 @@ test("accounting reports growth above 1.5 GB without inventing an aggregate cap"
   assert.equal(report.maxFile!.bytes, 24_000_000);
 });
 
-test("48 KiB candidate Markdown packing preserves complete UTF-8 bytes and leaves larger files physical", () => {
+test("Expanded candidate Markdown packing preserves complete UTF-8 bytes and leaves larger files physical", () => {
   const directory = 'library/pcrs/domain/category/product/';
   const manifest = {path:directory + 'manifest.yaml', bytes:Buffer.from('status: candidate\ncontent_maturity: authored_methodology\n')};
   const body = Buffer.from('\ufeff# 完整原文\r\n' + '原始数据、边界和来源。\r\n'.repeat(1300));

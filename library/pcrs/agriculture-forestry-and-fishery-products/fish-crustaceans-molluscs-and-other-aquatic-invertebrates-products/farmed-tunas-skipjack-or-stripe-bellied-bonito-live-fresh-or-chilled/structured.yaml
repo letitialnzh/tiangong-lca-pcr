@@ -3,8 +3,8 @@ generated_from: markdown
 source_markdown: pcr.en-US.md
 product_category_identity:
   canonical_pcr_id: "pcr.agriculture-forestry-and-fishery-products.fish-crustaceans-molluscs-and-other-aquatic-invertebrates-products.farmed-tunas-skipjack-or-stripe-bellied-bonito-live-fresh-or-chilled"
-  classification_refs: "CPC 3.0 04252, Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled"
-  covered_products: "farmed, ranch-raised, or aquaculture-fattened tunas, skipjack, stripe-bellied bonito, and declared tuna-like scombrid species sold live, fresh, or chilled from declared hatchery, nursery, cage, net-pen, tank, offshore, capture-based aquaculture, or other controlled aquaculture systems"
+  classification_refs: "CPC 3.0 04252, Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled; narrower"
+  covered_products: "farmed, ranch-raised, or aquaculture-fattened tunas, skipjack, stripe-bellied bonito sold live, fresh, or chilled from declared hatchery, nursery, cage, net-pen, tank, offshore, capture-based aquaculture, or other controlled aquaculture systems"
   excluded_products: "wild tuna products that are only captured, landed, held, chilled, graded, or dispatched; frozen tuna; fillets; loins; steaks; fish meat; canned, cooked, smoked, dried, salted, prepared, or preserved products; non-tuna farmed fish; ornamental fish; fish seed sold as seed; roe, oil, offal, mortalities, sludge, or processing residues as separate products"
   representative_product: "live or chilled farmed tuna, skipjack, or stripe-bellied bonito at declared species, culture route, market size, product form, holding condition, and gate"
   production_route: "hatchery or supplier stock route where present, or capture-based wild juvenile or subadult stock capture and transfer, followed by controlled grow-out or fattening, husbandry, harvest, live holding or chilling, packaging, and declared gate release"
@@ -14,7 +14,7 @@ functional_unit:
   how_much: "1 kg"
   how_well: "declared species, farmed or aquaculture-fattened proof, stock origin, culture route, live/fresh/chilled state, whole or declared product basis, size grade, harvest and holding condition, and gate"
   how_long_or_cycle: "one aquaculture production batch, fattening campaign, harvest lot, or reporting period normalized to marketable product output"
-  reference_flow_link: "Reference amount and product flow below"
+  reference_flow_link: "qualified_product_gate_release"
 system_boundary:
   rules:
     - rule_id: system_boundary_rule_1
@@ -45,10 +45,10 @@ boundary_abstraction:
   upstream_dataset_requirement: "hatchery, supplier, juvenile, capture-based stocking, feed, bait, or service dataset, or documented source, species, batch, count or mass, life stage, capture or supplier permit, transfer loss, health or biosecurity status, and certification or permit evidence"
   disclosure: "disclose species, culture route, biological starting condition, farmed production evidence, capture area and permit where capture-based, stocking density or biomass, cage or tank system, feed or bait regime, feed supplier and feed basis, marine ingredient or bait species where available, water source and temperature where controlled, dissolved oxygen and salinity where relevant, vessel fuel and farm servicing, health treatments, welfare handling, mortality and escape records, harvest and holding conditions, product form, packaging state, declared gate, and unresolved Tiangong UUID substitutions"
 reference_flow_definition:
-  reference_amount: "1 kg"
+  reference_amount: "1"
   product_flow_ref:
-    name: "Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled"
-    uuid: "2d170776-6886-4a54-9341-ee064d0f182a"
+    name: "Farmed tuna or skipjack product in its actual declared state at the final gate"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -102,6 +102,13 @@ reference_flow_definition:
 reference_flows:
   []
 measurement_rules:
+  - id: final_gate_normalization
+    applies_to: "all inventory rows"
+    required_property_ref:
+      name: "actual native exchange property"
+      uuid: ""
+    required_unit: "native unit per 1 kg final reference"
+    rule: "Attribute raw batch/event quantities by actual ownership and allocation, then divide by positive accepted net kg at declared_gate_release; divide same-boundary per-1000-kg-final-product values by 1000. Stage-output denominators require measured lot transfers and yield conversion, never direct substitution for the final denominator; biological batches are not machine M."
   - id: reference_mass
     applies_to: "reference product"
     required_property_ref:
@@ -115,7 +122,7 @@ measurement_rules:
       name: "Record identity and production evidence"
       uuid: ""
     required_unit: "declared records"
-    rule: "Dataset records must show a foreground aquaculture production, ranching, controlled holding, or fattening period. Wild capture followed only by holding, chilling, grading, or dispatch is outside this PCR."
+    rule: "Dataset records must show a foreground aquaculture production or biological grow-out/fattening period; bounded holding alone is not farming. Wild capture followed only by holding, chilling, grading, or dispatch is outside this PCR."
   - id: capture_based_stock_origin
     applies_to: "capture-based aquaculture and tuna ranching"
     required_property_ref:
@@ -204,424 +211,477 @@ process_map:
     inclusion_condition: "include when the reference flow is delivered product beyond the farm, harvest, dispatch, or packhouse gate"
     role: "foreground transport"
     quantitative_reference: "delivered product at declared gate"
+  - id: declared_gate_release
+    name: "Declared final-gate acceptance and release"
+    inclusion: "required"
+    inclusion_condition: "Every qualifying lot after any actual included optional delivery"
+    role: "Sole final reference, actual state and rejection; no invented duplicate operation"
+    quantitative_reference: "1 kg final accepted net product"
 process_inventory:
   - id: stock_capture_hatchery_transfer_and_stocking
     label: "Stock Capture, Hatchery, Transfer, and Stocking"
     inputs:
       product:
-        - row_id: biological_stock_input
-          role: "Hatchery, supplier, or captured juvenile stock input"
-          name: "Juvenile tuna ; route-specific broodstock, egg, larval, supplier fish, or captured wild stock selected from foreground records"
+        - row_id: stock_broodstock
+          role: "Live tuna broodstock"
+          name: "Live tuna broodstock"
           flow_type: "product"
-          flow_ref:
-            uuid: "20aa3377-d508-4626-bddd-867de01d7ba7"
-          property_unit: "Mass or count with life stage / kg, item, egg count, or stage count"
-          description: "This row records purchased, internally produced, transferred, or capture-based tuna stock entering the declared aquaculture route."
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "measured count, mass where measurable, life stage, accepted quantity, capture or supplier origin, and transfer loss entering hatchery, grow-out, or fattening"
+            expression: "Independently measure net wet biomass for this actual species and life stage; counts require representative measured same-stage mass and uncertainty, never a universal animal/egg weight. Retain source, stage ownership and upstream burden; normalize to final-gate accepted net mass."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1,000 kg marketable reference product"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_stock_origin_capture_transfer_and_stocking_records
-              source_ids:
-                - fao-atlantic-bluefin-tuna-culture
-                - fao-capture-based-aquaculture-2008
-                - fao-capture-based-aquaculture-guidelines-2011
-                - asc-farm-standard-2025
-            ranges:
-              - role: default_estimate
-                lower: "0.001"
-                upper: "20"
-                unit: "kg biological stock live mass/kg marketable product"
-                basis: "broad first-pass juvenile, subadult, or supplier stock live mass input relative to marketable output"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-        - row_id: transfer_water_oxygen_fuel_and_handling_inputs
-          role: "Transfer water, oxygen, fuel, and handling inputs"
-          name: "Process water ; Diesel oil ; route-specific oxygen, towing, vessel service, anesthetic, or transfer material selected from site records"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ec205030-248c-496f-9cf2-06d9d26dc6ff"
-          property_unit: "Mass, volume, fuel, or energy / kg, m3, L, MJ, or kWh"
-          description: "This row records the selected exchange within the declared process and system boundary."
-          amount:
-            expression: "measured or allocated water, oxygen, vessel fuel, towing, transport, anesthetic, transfer equipment, and handling inputs by stocking event"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per stocking event and per 1,000 kg marketable reference product after normalization"
-              kind: "process_output"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_stock_origin_capture_transfer_and_stocking_records
-              source_ids:
-                - fao-capture-based-aquaculture-guidelines-2011
-                - asc-farm-standard-2025
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "10000"
-                unit: "kg, m3, L, MJ, or kWh/1,000 kg marketable product"
-                basis: "broad first-pass transfer and stocking support input check"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: transfer_mortalities_and_rejected_stock
-          role: "Transfer mortalities and rejected stock"
-          name: "Sludge ; route-specific mortality, rejected stock, and organic residue selected from site records"
-          flow_type: "waste"
-          flow_ref:
-            uuid: "725c8f6e-7975-4155-a250-1f95ef70c508"
-          property_unit: "Mass or count / kg or item"
-          description: "This row records the selected exchange within the declared process and system boundary."
-          amount:
-            expression: "measured mortality count, mortality mass where available, rejected stock, residue mass, disposal route, and recovery route"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per stocking event and per 1,000 kg marketable reference product after normalization"
-              kind: "process_output"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_mortality_residue_and_escape_records
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "1"
-                unit: "kg mortality/kg stock input"
-                basis: "broad mortality and rejection check during capture, transfer, acclimation, and stocking"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
+        - row_id: stock_eggs
+          role: "Fertilized tuna eggs"
+          name: "Fertilized tuna eggs"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure net wet biomass for this actual species and life stage; counts require representative measured same-stage mass and uncertainty, never a universal animal/egg weight. Retain source, stage ownership and upstream burden; normalize to final-gate accepted net mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
+        - row_id: stock_larvae
+          role: "Live tuna larvae"
+          name: "Live tuna larvae"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure net wet biomass for this actual species and life stage; counts require representative measured same-stage mass and uncertainty, never a universal animal/egg weight. Retain source, stage ownership and upstream burden; normalize to final-gate accepted net mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
+        - row_id: stock_juveniles
+          role: "Live tuna juveniles"
+          name: "Live tuna juveniles"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure net wet biomass for this actual species and life stage; counts require representative measured same-stage mass and uncertainty, never a universal animal/egg weight. Retain source, stage ownership and upstream burden; normalize to final-gate accepted net mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
+        - row_id: stock_subadults
+          role: "Live wild-caught tuna subadults for evidenced aquaculture stocking"
+          name: "Live wild-caught tuna subadults for evidenced aquaculture stocking"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure net wet biomass for this actual species and life stage; counts require representative measured same-stage mass and uncertainty, never a universal animal/egg weight. Retain source, stage ownership and upstream burden; normalize to final-gate accepted net mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
+        - row_id: stock_capture_hatchery_transfer_and_stocking_diesel
+          role: "Diesel fuel"
+          name: "Diesel fuel"
+          flow_type: "product"
+          flow_ref:
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measured quantity of this exchange normalized to final accepted net delivered mass, retaining native units and actual density, composition or energy conversion evidence."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
+        - row_id: stock_capture_hatchery_transfer_and_stocking_supplied_water
+          role: "Supplied liquid water of the declared source and treatment"
+          name: "Supplied liquid water of the declared source and treatment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Only this independently measured external liquid-water supply; volume measurements require actual temperature/salinity/density. Record natural abstraction and internal circulation separately; never subtract circulation again from external intake or add another supply burden."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
+        - row_id: stock_capture_hatchery_transfer_and_stocking_gaseous_oxygen
+          role: "oxygen"
+          name: "oxygen"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f804eb52-65c3-4db0-9d2d-e463b29e6e4b"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure only actual purchased gaseous oxygen mass, retaining purity, pressure, temperature and delivery state; air aeration, dissolved-oxygen monitoring and oxygen-generator electricity are not purchased oxygen."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
+      waste:
+        []
       elementary:
         []
     outputs:
       product:
         - row_id: accepted_stock_for_growout_or_fattening
-          role: "Accepted stock for grow-out or fattening"
-          name: "Juvenile tuna"
+          role: "Live tuna stock at the declared species and life stage"
+          name: "Live tuna stock at the declared species and life stage"
           flow_type: "product"
-          flow_ref:
-            uuid: "20aa3377-d508-4626-bddd-867de01d7ba7"
-          property_unit: "Mass or count with mean size / kg or item"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "calculated accepted stock after capture, receipt, transport, acclimation, grading, and transfer losses"
-            value_mode: "calculated_value"
+            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
+            value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "accepted stock entering controlled grow-out or fattening"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_stock_origin_capture_transfer_and_stocking_records
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "1"
-                unit: "kg/kg biological stock input"
-                basis: "accepted stock fraction after capture or receipt, transport, acclimation, grading, and transfer"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
       waste:
         []
       elementary:
-        []
+        - row_id: stock_capture_hatchery_transfer_and_stocking_fossil_co2
+          role: "carbon dioxide (fossil), emissions to air unspecified"
+          name: "carbon dioxide (fossil), emissions to air unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Only fossil carbon dioxide from this node’s actual diesel combustion, derived from measured fuel and independent applicable carbon/oxidation or emission-factor evidence, or direct measurement; no universal factor or supplier-emission substitution. Normalize to final-gate net reference mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+              source_ids: []
+            ranges: []
   - id: growout_fattening_and_husbandry
     label: "Grow-out, Fattening, and Husbandry"
     inputs:
       product:
         - row_id: stocked_tuna_entering_growout_or_fattening
-          role: "Stocked tuna entering grow-out or fattening"
-          name: "Juvenile tuna"
+          role: "Live tuna stock at the declared species and life stage"
+          name: "Live tuna stock at the declared species and life stage"
           flow_type: "product"
-          flow_ref:
-            uuid: "20aa3377-d508-4626-bddd-867de01d7ba7"
-          property_unit: "Mass or count / kg or item"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "accepted stock allocated to each cage, tank, net pen, or site with stocking date, mean mass, count, and biomass"
+            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1,000 kg marketable reference product"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_stock_origin_capture_transfer_and_stocking_records
-              source_ids:
-                - fao-atlantic-bluefin-tuna-culture
-                - asc-farm-standard-2025
-            ranges:
-              - role: qa_guardrail
-                lower: "0.001"
-                upper: "20"
-                unit: "kg stocked biomass/kg marketable product"
-                basis: "broad first-pass stocked biomass relative to marketable product"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-        - row_id: feed_fresh_bait_and_feed_additives
-          role: "Feed, fresh bait, and feed additives"
-          name: "Fresh bait ; Fry feed ; route-specific grow-out feed, bait fish, live feed, medicines, supplements, or additives selected from foreground records"
+              collection_protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
+              source_ids: []
+            ranges: []
+        - row_id: growout_fattening_and_husbandry_electricity
+          role: "Electricity at the declared supplier and voltage"
+          name: "Electricity at the declared supplier and voltage"
           flow_type: "product"
-          flow_ref:
-            uuid: "40685ba7-0e7f-41bc-92b0-cec9e6696f19"
-          property_unit: "Mass, volume, active ingredient, or dose / kg, L, g active ingredient, or dose"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Net calorific value / kWh"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "measured formulated feed, fresh bait, frozen bait, live feed, medicated feed, additives, feeding losses, and supplier or bait species basis"
+            expression: "Independently measured quantity of this exchange normalized to final accepted net delivered mass, retaining native units and actual density, composition or energy conversion evidence."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per grow-out or fattening batch and per 1,000 kg marketable reference product after normalization"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_feed_bait_and_feed_composition_records
-              source_ids:
-                - fao-atlantic-bluefin-tuna-culture
-                - fao-capture-based-aquaculture-2008
-                - asc-feed-standard-2026
-                - asc-farm-standard-2025
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "50"
-                unit: "kg feed or bait/kg marketable product"
-                basis: "broad first-pass feed or bait input check for tuna hatchery, grow-out, ranching, and fattening routes"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-        - row_id: growout_water_energy_fuel_cage_materials_and_services
-          role: "Grow-out water, energy, fuel, cage materials, and services"
-          name: "Process water ; Electricity ; Diesel oil ; route-specific oxygen, netting, cage, anchor, float, boat service, cleaning, diving, monitoring, or maintenance input selected from site records"
+              collection_protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
+              source_ids: []
+            ranges: []
+        - row_id: growout_fattening_and_husbandry_diesel
+          role: "Diesel fuel"
+          name: "Diesel fuel"
           flow_type: "product"
           flow_ref:
-            uuid: "ec205030-248c-496f-9cf2-06d9d26dc6ff"
-          property_unit: "Mass, volume, energy, fuel, item count, length, or service quantity / kg, m3, kWh, L, MJ, item, m, or service unit"
-          description: "This row records the selected exchange within the declared process and system boundary."
+            uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "measured or allocated water where controlled, electricity, vessel fuel, cage materials, net cleaning, monitoring, oxygenation, farm servicing, and maintenance inputs"
+            expression: "Independently measured quantity of this exchange normalized to final accepted net delivered mass, retaining native units and actual density, composition or energy conversion evidence."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per culture unit and per 1,000 kg marketable reference product after normalization"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_water_energy_vessel_cage_and_site_records
-              source_ids:
-                - fao-capture-based-aquaculture-guidelines-2011
-                - asc-farm-standard-2025
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "10000"
-                unit: "kg, m3, kWh, L, MJ, item, or m/1,000 kg marketable product"
-                basis: "broad first-pass cage, vessel, energy, water, oxygen, and site input check"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+              collection_protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
+              source_ids: []
+            ranges: []
+        - row_id: growout_fattening_and_husbandry_supplied_water
+          role: "Supplied liquid water of the declared source and treatment"
+          name: "Supplied liquid water of the declared source and treatment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Only this independently measured external liquid-water supply; volume measurements require actual temperature/salinity/density. Record natural abstraction and internal circulation separately; never subtract circulation again from external intake or add another supply burden."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
+              source_ids: []
+            ranges: []
+        - row_id: growout_fattening_and_husbandry_gaseous_oxygen
+          role: "oxygen"
+          name: "oxygen"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f804eb52-65c3-4db0-9d2d-e463b29e6e4b"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure only actual purchased gaseous oxygen mass, retaining purity, pressure, temperature and delivery state; air aeration, dissolved-oxygen monitoring and oxygen-generator electricity are not purchased oxygen."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
+              source_ids: []
+            ranges: []
       waste:
-        - row_id: mortalities_uneaten_feed_residues_and_escaped_fish
-          role: "Mortalities, uneaten feed, residues, and escaped fish"
-          name: "Sludge ; route-specific mortalities, uneaten feed, fish residue, net cleaning residue, escape organism, and waste-treatment flow selected from site records"
-          flow_type: "waste"
-          flow_ref:
-            uuid: "725c8f6e-7975-4155-a250-1f95ef70c508"
-          property_unit: "Mass or count / kg or item"
-          description: "This row records the selected exchange within the declared process and system boundary."
-          amount:
-            expression: "measured mortality count and mass, feed residue, sludge or organic residue, escape count where applicable, fate, disposal route, recovery route, and receiving environment"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per grow-out or fattening batch and per 1,000 kg marketable reference product after normalization"
-              kind: "process_output"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_mortality_residue_and_escape_records
-              source_ids:
-                - asc-farm-standard-2025
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "5"
-                unit: "kg residue/kg marketable product"
-                basis: "broad first-pass mortality, residue, and uneaten feed check"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+        []
       elementary:
         []
     outputs:
       product:
         - row_id: harvest_size_farmed_tuna_biomass
-          role: "Harvest-size farmed tuna biomass"
-          name: "Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled"
+          role: "Live farmed tuna or skipjack biomass before harvest"
+          name: "Live farmed tuna or skipjack biomass before harvest"
           flow_type: "product"
-          flow_ref:
-            uuid: "2d170776-6886-4a54-9341-ee064d0f182a"
           property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "calculated harvest-size live biomass after stocking, growth, feed or bait inputs, mortalities, escapes, and grading"
-            value_mode: "calculated_value"
+            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
+            value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "harvest-size biomass entering final handling"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_harvest_product_packout_records
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "50"
-                unit: "kg harvest-size biomass/kg stocked biomass"
-                basis: "broad growth, survival, and fattening mass-balance check"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
       waste:
         []
       elementary:
-        []
+        - row_id: growout_fattening_and_husbandry_fossil_co2
+          role: "carbon dioxide (fossil), emissions to air unspecified"
+          name: "carbon dioxide (fossil), emissions to air unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Only fossil carbon dioxide from this node’s actual diesel combustion, derived from measured fuel and independent applicable carbon/oxidation or emission-factor evidence, or direct measurement; no universal factor or supplier-emission substitution. Normalize to final-gate net reference mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
+              source_ids: []
+            ranges: []
   - id: harvest_live_holding_chilling_and_packout
     label: "Harvest, Live Holding, Chilling, and Pack-out"
     inputs:
       product:
         - row_id: harvested_tuna_entering_final_handling
-          role: "Harvested tuna entering final handling"
-          name: "Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled"
+          role: "Actual-state farmed tuna or skipjack biomass at pre-gate handling transfer"
+          name: "Actual-state farmed tuna or skipjack biomass at pre-gate handling transfer"
           flow_type: "product"
-          flow_ref:
-            uuid: "2d170776-6886-4a54-9341-ee064d0f182a"
           property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "measured harvested biomass entering grading, bleeding, live holding, chilling, packing, or dispatch"
+            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1,000 kg marketable reference product"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_harvest_product_packout_records
-              source_ids:
-                - codex-cxc-52-2003
-                - asc-farm-standard-2025
-            ranges:
-              - role: qa_guardrail
-                lower: "1"
-                upper: "2"
-                unit: "kg harvested biomass/kg marketable product"
-                basis: "broad yield and handling-loss check for live, fresh, or chilled product"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-        - row_id: chilling_packaging_water_electricity_and_ice_inputs
-          role: "Chilling, packaging, water, electricity, and ice inputs"
-          name: "Packaging, unspecified ; Process water ; Electricity ; route-specific ice, gel pack, oxygen, live-pack material, box, liner, refrigerant, or pallet selected from site records"
+              collection_protocol_id: cp_atomic_inventory_harvest_live_holding_chilling_and_packout
+              source_ids: []
+            ranges: []
+        - row_id: harvest_live_holding_chilling_and_packout_electricity
+          role: "Electricity at the declared supplier and voltage"
+          name: "Electricity at the declared supplier and voltage"
+          flow_type: "product"
+          property_unit: "Net calorific value / kWh"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measured quantity of this exchange normalized to final accepted net delivered mass, retaining native units and actual density, composition or energy conversion evidence."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_harvest_live_holding_chilling_and_packout
+              source_ids: []
+            ranges: []
+        - row_id: harvest_live_holding_chilling_and_packout_supplied_water
+          role: "Supplied liquid water of the declared source and treatment"
+          name: "Supplied liquid water of the declared source and treatment"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Only this independently measured external liquid-water supply; volume measurements require actual temperature/salinity/density. Record natural abstraction and internal circulation separately; never subtract circulation again from external intake or add another supply burden."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_harvest_live_holding_chilling_and_packout
+              source_ids: []
+            ranges: []
+        - row_id: harvest_live_holding_chilling_and_packout_gaseous_oxygen
+          role: "oxygen"
+          name: "oxygen"
           flow_type: "product"
           flow_ref:
-            uuid: "7336a8ee-9e4d-49a6-9fe5-ce285f613245"
-          property_unit: "Mass, volume, energy, or item count / kg, m3, kWh, or item"
-          description: "This row records the selected exchange within the declared process and system boundary."
+            uuid: "f804eb52-65c3-4db0-9d2d-e463b29e6e4b"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "measured packaging, ice, chilling, washing, live-holding oxygen, electricity, refrigerant service, and dispatch preparation quantities"
+            expression: "Independently measure only actual purchased gaseous oxygen mass, retaining purity, pressure, temperature and delivery state; air aeration, dissolved-oxygen monitoring and oxygen-generator electricity are not purchased oxygen."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
-              text: "per 1,000 kg marketable reference product"
+              text: "per 1 kg reference flow"
               kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_packaging_ice_chilling_and_dispatch_records
-              source_ids:
-                - codex-cxc-52-2003
-                - asc-farm-standard-2025
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "5000"
-                unit: "kg, m3, kWh, or item/1,000 kg marketable product"
-                basis: "broad first-pass packaging, ice, water, live-holding, and chilling input check"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: handling_rejects_bleed_water_packaging_waste_and_residues
-          role: "Handling rejects, bleed water, packaging waste, and residues"
-          name: "Sludge ; route-specific rejects, bleed water, wastewater, packaging waste, viscera, and fish residue selected from site records"
-          flow_type: "waste"
-          flow_ref:
-            uuid: "725c8f6e-7975-4155-a250-1f95ef70c508"
-          property_unit: "Mass or volume / kg or m3"
-          description: "This row records the selected exchange within the declared process and system boundary."
-          amount:
-            expression: "measured rejected fish, handling losses, bleed water, wastewater, packaging waste, residue mass, disposal route, recovery route, and receiving environment"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per 1,000 kg marketable reference product"
-              kind: "reference_flow"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_mortality_residue_and_escape_records
+              collection_protocol_id: cp_atomic_inventory_harvest_live_holding_chilling_and_packout
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "1"
-                unit: "kg residue/kg marketable product"
-                basis: "broad reject, bleed-water solids, packaging waste, and residue check"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
+        - row_id: harvest_live_holding_chilling_and_packout_water_ice
+          role: "Solid water ice"
+          name: "Solid water ice"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure actual solid water-ice mass, distinguishing purchased from own-made ice. Own-made ice retains its water and energy without an additional purchased-ice supplier burden; reconcile meltwater, water pathways and transported load separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_harvest_live_holding_chilling_and_packout
+              source_ids: []
+            ranges: []
+      waste:
+        []
       elementary:
         []
     outputs:
       product:
         - row_id: marketable_live_fresh_or_chilled_farmed_tuna
-          role: "Marketable live, fresh, or chilled farmed tuna"
-          name: "Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled"
+          role: "Actual-state farmed tuna or skipjack biomass at pre-gate handling transfer"
+          name: "Actual-state farmed tuna or skipjack biomass at pre-gate handling transfer"
           flow_type: "product"
-          flow_ref:
-            uuid: "2d170776-6886-4a54-9341-ee064d0f182a"
           property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "fixed reference output after declared grading, chilling, drainage, packaging tare exclusion, and product-form normalization"
-            value_mode: "fixed_value"
-            specificity: "product_specific"
+            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
             basis:
-              text: "1 kg reference product"
+              text: "per 1 kg reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "identity_reference"
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_harvest_live_holding_chilling_and_packout
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "1"
-                upper: "1"
-                unit: "kg/kg reference product"
-                basis: "fixed reference flow output"
-                basis_kind: "reference_flow"
-                evidence_kind: "identity_reference"
-                source_ids: []
+            ranges: []
       waste:
         []
       elementary:
@@ -630,34 +690,100 @@ process_inventory:
     label: "Delivery to Declared Gate"
     inputs:
       product:
-        - row_id: delivery_fuel_electricity_refrigerant_and_packaging_support
-          role: "Delivery fuel, electricity, refrigerant service, and packaging support"
-          name: "Diesel oil ; Electricity ; route-specific transport service, refrigerant service, ice, live-holding oxygen, or reusable packaging support selected from site records"
+        - row_id: delivery_to_declared_gate_electricity
+          role: "Electricity at the declared supplier and voltage"
+          name: "Electricity at the declared supplier and voltage"
+          flow_type: "product"
+          property_unit: "Net calorific value / kWh"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measured quantity of this exchange normalized to final accepted net delivered mass, retaining native units and actual density, composition or energy conversion evidence."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_delivery_to_declared_gate
+              source_ids: []
+            ranges: []
+        - row_id: delivery_to_declared_gate_diesel
+          role: "Diesel fuel"
+          name: "Diesel fuel"
           flow_type: "product"
           flow_ref:
             uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
-          property_unit: "Fuel, energy, mass, or transport service / L, MJ, kWh, kg, or tonne-km"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "include only when the declared reference flow is delivered beyond the farm, harvest, dispatch, or packhouse gate; record distance, mode, load factor, temperature control, live-holding condition, and return logistics where relevant"
+            expression: "Independently measured quantity of this exchange normalized to final accepted net delivered mass, retaining native units and actual density, composition or energy conversion evidence."
             value_mode: "foreground_record"
-            specificity: "route_specific"
+            specificity: "site_specific"
             basis:
-              text: "per 1,000 kg delivered reference product or tonne-km"
-              kind: "transport_service"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "collected_record"
-              collection_protocol_id: cp_delivery_records
+              collection_protocol_id: cp_atomic_inventory_delivery_to_declared_gate
               source_ids: []
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "5000"
-                unit: "tonne-km/1,000 kg reference product"
-                basis: "broad first-pass delivery activity check when delivery is in scope"
-                basis_kind: "transport_service"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
+        - row_id: delivery_to_declared_gate_gaseous_oxygen
+          role: "oxygen"
+          name: "oxygen"
+          flow_type: "product"
+          flow_ref:
+            uuid: "f804eb52-65c3-4db0-9d2d-e463b29e6e4b"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure only actual purchased gaseous oxygen mass, retaining purity, pressure, temperature and delivery state; air aeration, dissolved-oxygen monitoring and oxygen-generator electricity are not purchased oxygen."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_delivery_to_declared_gate
+              source_ids: []
+            ranges: []
+        - row_id: delivery_to_declared_gate_water_ice
+          role: "Solid water ice"
+          name: "Solid water ice"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measure actual solid water-ice mass, distinguishing purchased from own-made ice. Own-made ice retains its water and energy without an additional purchased-ice supplier burden; reconcile meltwater, water pathways and transported load separately."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_delivery_to_declared_gate
+              source_ids: []
+            ranges: []
+        - row_id: delivery_product_receipt
+          role: "Actual-state farmed tuna or skipjack product loaded for controlled delivery"
+          name: "Actual-state farmed tuna or skipjack product loaded for controlled delivery"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Independently measured quantity of this exchange normalized to final accepted net delivered mass, retaining native units and actual density, composition or energy conversion evidence."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_delivery_to_declared_gate
+              source_ids: []
+            ranges: []
       waste:
         []
       elementary:
@@ -665,35 +791,111 @@ process_inventory:
     outputs:
       product:
         - row_id: delivered_farmed_tuna_at_declared_gate
-          role: "Delivered farmed tuna at declared gate"
-          name: "Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled"
+          role: "Actual-state farmed tuna or skipjack biomass at delivery completion"
+          name: "Actual-state farmed tuna or skipjack biomass at delivery completion"
           flow_type: "product"
-          flow_ref:
-            uuid: "2d170776-6886-4a54-9341-ee064d0f182a"
           property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
           amount:
-            expression: "delivered mass at the declared gate, excluding transport packaging tare and ice unless contractually part of the product basis"
-            value_mode: "calculated_value"
-            specificity: "route_specific"
+            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
             basis:
-              text: "delivered reference product"
+              text: "per 1 kg reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "calculated_from_collection"
-              collection_protocol_id: cp_delivery_records
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_delivery_to_declared_gate
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "1"
-                upper: "1"
-                unit: "kg/kg delivered reference product"
-                basis: "delivered reference product mass after route allocation and product-basis normalization"
-                basis_kind: "reference_flow"
-                evidence_kind: "calculated_from_collection"
-                source_ids: []
+            ranges: []
       waste:
         []
+      elementary:
+        - row_id: delivery_to_declared_gate_fossil_co2
+          role: "carbon dioxide (fossil), emissions to air unspecified"
+          name: "carbon dioxide (fossil), emissions to air unspecified"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Only fossil carbon dioxide from this node’s actual diesel combustion, derived from measured fuel and independent applicable carbon/oxidation or emission-factor evidence, or direct measurement; no universal factor or supplier-emission substitution. Normalize to final-gate net reference mass."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_atomic_inventory_delivery_to_declared_gate
+              source_ids: []
+            ranges: []
+  - id: declared_gate_release
+    label: "Declared final-gate acceptance and release"
+    inputs:
+      product:
+        - row_id: qualified_product_gate_receipt
+          role: "Actual-state farmed tuna or skipjack product received at the declared final gate"
+          name: "Actual-state farmed tuna or skipjack product received at the declared final gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Receive exactly one actual pack-out-complete transfer or the arrival after included controlled delivery; measure net animal mass with the same lot, actual state and paired transfer ID, retaining rejects and losses. Never fix input to 1 kg."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_gate_acceptance
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: qualified_product_gate_release
+          role: "Farmed tuna or skipjack product in its actual declared state at the final gate"
+          name: "Farmed tuna or skipjack product in its actual declared state at the final gate"
+          flow_type: "product"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "1 kg"
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_gate_acceptance
+              source_ids: []
+            ranges: []
+      waste:
+        - row_id: final_gate_animal_rejects
+          role: "Rejected farmed tuna or skipjack bodies at final acceptance"
+          name: "Rejected farmed tuna or skipjack bodies at final acceptance"
+          flow_type: "waste"
+          property_unit: "Mass / kg"
+          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          amount:
+            expression: "Measured net animal mass actually rejected at final acceptance to its evidenced disposal destination; retain upstream burdens and normalize by accepted final net delivered mass. Unknown is not zero."
+            value_mode: "foreground_record"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "collected_record"
+              collection_protocol_id: cp_final_gate_acceptance
+              source_ids: []
+            ranges: []
       elementary:
         []
 allocation_rules:
@@ -713,92 +915,216 @@ allocation_rules:
     applies_to: "mixed-product packing or delivery"
     rule: "Allocate packaging, ice, live-holding, refrigeration, and delivery loads by measured product mass, package count, pallet, trip, temperature-control zone, or tonne-km as applicable."
     source_ids: []
+  - rule_id: allocation_rule_5
+    applies_to: "foreground_burden_allocation"
+    rule: "This PCR explicitly adopts the allocation hierarchy in GHG Protocol Product Standard chapter 9: subdivision first, then evidenced causal physical relationships, and evidenced economic relationships where physical relationships are inapplicable. Mass is not an automatic convenience default. Preserve unallocated physical quantities and a separately labelled once-only LCA view; reconcile all output/node shares to one. Allocation never repairs physical imbalance, and internal transfers create no sale or substitution credit. Source: ghg-product-allocation."
+    source_ids: []
 dataset_production:
   collection_protocols:
-    - protocol_id: cp_stock_origin_capture_transfer_and_stocking_records
-      process_id: "stock_capture_hatchery_transfer_and_stocking_growout_fattening_and_husbandry"
+    - protocol_id: cp_stock_origin_capture_transfer_and_stocking_records_stock_capture_hatchery_transfer_and_stocking
+      process_id: "stock_capture_hatchery_transfer_and_stocking"
       flow_role: "biological stock, capture-based stock, transfer, accepted stocking"
       record_type: "hatchery record, supplier invoice, capture log, permit, transfer log, stocking log, mortality log"
-      raw_fields: "species, origin, capture area, permit, supplier, life stage, count, mean mass, total mass, transfer route, stocking date, cage or tank, accepted count, accepted mass, transfer mortality"
+      raw_fields: "species, origin, capture area, permit, supplier, life stage, count, mean mass, total mass, transfer route, stocking date, cage or tank, accepted count, accepted mass, transfer mortality ; raw collection basis and original aggregation obligations: reconcile source stock plus transfers minus mortalities and rejects to accepted stocked biomass; normalize to marketable output"
       collection_method: "batch records reconciled to cage or tank inventory"
       unit: "kg, item, date, permit id"
       frequency: "each stocking event"
       temporal_coverage: "full reporting period or production campaign"
       site_scope: "hatchery, supplier, capture vessel, transfer route, cage, tank, or farm site"
-      aggregation_rule: "reconcile source stock plus transfers minus mortalities and rejects to accepted stocked biomass; normalize to marketable output"
-      quality_evidence: "supplier documents, permits, transfer logs, cage inventory, mortality records, and manager sign-off"
-    - protocol_id: cp_feed_bait_and_feed_composition_records
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "supplier documents, permits, transfer logs, cage inventory, mortality records, and manager sign-off ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_stock_origin_capture_transfer_and_stocking_records_growout_fattening_and_husbandry
+      process_id: "growout_fattening_and_husbandry"
+      flow_role: "biological stock, capture-based stock, transfer, accepted stocking"
+      record_type: "hatchery record, supplier invoice, capture log, permit, transfer log, stocking log, mortality log"
+      raw_fields: "species, origin, capture area, permit, supplier, life stage, count, mean mass, total mass, transfer route, stocking date, cage or tank, accepted count, accepted mass, transfer mortality ; raw collection basis and original aggregation obligations: reconcile source stock plus transfers minus mortalities and rejects to accepted stocked biomass; normalize to marketable output"
+      collection_method: "batch records reconciled to cage or tank inventory"
+      unit: "kg, item, date, permit id"
+      frequency: "each stocking event"
+      temporal_coverage: "full reporting period or production campaign"
+      site_scope: "hatchery, supplier, capture vessel, transfer route, cage, tank, or farm site"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "supplier documents, permits, transfer logs, cage inventory, mortality records, and manager sign-off ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_feed_bait_and_feed_composition_records_growout_fattening_and_husbandry
       process_id: "growout_fattening_and_husbandry"
       flow_role: "feed, fresh bait, formulated feed, additives, feeding losses"
       record_type: "feed invoice, feed log, bait purchase, bait species log, formulation sheet, feeding record"
-      raw_fields: "feed or bait type, supplier, species, mass, dry/wet/as-fed basis, moisture, feeding date, cage or lot, uneaten feed, additive or medication, marine ingredient disclosure"
+      raw_fields: "feed or bait type, supplier, species, mass, dry/wet/as-fed basis, moisture, feeding date, cage or lot, uneaten feed, additive or medication, marine ingredient disclosure ; raw collection basis and original aggregation obligations: sum feed or bait mass by batch and basis; convert only with moisture or supplier evidence; normalize to marketable output"
       collection_method: "weigh tickets, supplier declarations, feed-system records, and stockkeeper logs"
       unit: "kg, %, dose, date"
       frequency: "each feed delivery and feeding period"
       temporal_coverage: "full grow-out or fattening campaign"
       site_scope: "each cage, tank, site, and feed supplier"
-      aggregation_rule: "sum feed or bait mass by batch and basis; convert only with moisture or supplier evidence; normalize to marketable output"
-      quality_evidence: "invoices, feed declarations, feed logs, formulation sheets, and reconciliation to inventory"
-    - protocol_id: cp_water_energy_vessel_cage_and_site_records
-      process_id: "growout_fattening_and_husbandry_stock_capture_hatchery_transfer_and_stocking"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "invoices, feed declarations, feed logs, formulation sheets, and reconciliation to inventory ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_water_energy_vessel_cage_and_site_records_stock_capture_hatchery_transfer_and_stocking
+      process_id: "stock_capture_hatchery_transfer_and_stocking"
       flow_role: "water, oxygen, electricity, fuel, vessel service, cage materials, site service"
       record_type: "meter log, fuel invoice, vessel log, oxygen log, cage maintenance log, net cleaning log, service invoice"
-      raw_fields: "electricity, fuel, oxygen, water, vessel hours, distance, cage, net, anchor, float, cleaning, maintenance, allocation driver, site and batch"
+      raw_fields: "electricity, fuel, oxygen, water, vessel hours, distance, cage, net, anchor, float, cleaning, maintenance, allocation driver, site and batch ; raw collection basis and original aggregation obligations: allocate shared records by direct meter, operation log, biomass-time, cage-time, or declared physical driver"
       collection_method: "metered records, invoices, vessel logs, and maintenance records"
       unit: "kWh, L, MJ, kg, m3, item, m, h, tonne-km"
       frequency: "monthly and each major operation"
       temporal_coverage: "full reporting period or campaign"
       site_scope: "farm site, vessel, cage, tank, hatchery, or delivery route"
-      aggregation_rule: "allocate shared records by direct meter, operation log, biomass-time, cage-time, or declared physical driver"
-      quality_evidence: "meter readings, invoices, service logs, allocation worksheet, and calibration records where relevant"
-    - protocol_id: cp_mortality_residue_and_escape_records
-      process_id: "stock_capture_hatchery_transfer_and_stocking_growout_fattening_and_husbandry_harvest_live_holding_chilling_and_packout"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter readings, invoices, service logs, allocation worksheet, and calibration records where relevant ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_water_energy_vessel_cage_and_site_records_growout_fattening_and_husbandry
+      process_id: "growout_fattening_and_husbandry"
+      flow_role: "water, oxygen, electricity, fuel, vessel service, cage materials, site service"
+      record_type: "meter log, fuel invoice, vessel log, oxygen log, cage maintenance log, net cleaning log, service invoice"
+      raw_fields: "electricity, fuel, oxygen, water, vessel hours, distance, cage, net, anchor, float, cleaning, maintenance, allocation driver, site and batch ; raw collection basis and original aggregation obligations: allocate shared records by direct meter, operation log, biomass-time, cage-time, or declared physical driver"
+      collection_method: "metered records, invoices, vessel logs, and maintenance records"
+      unit: "kWh, L, MJ, kg, m3, item, m, h, tonne-km"
+      frequency: "monthly and each major operation"
+      temporal_coverage: "full reporting period or campaign"
+      site_scope: "farm site, vessel, cage, tank, hatchery, or delivery route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "meter readings, invoices, service logs, allocation worksheet, and calibration records where relevant ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_mortality_residue_and_escape_records_stock_capture_hatchery_transfer_and_stocking
+      process_id: "stock_capture_hatchery_transfer_and_stocking"
       flow_role: "mortalities, rejected stock, residue, uneaten feed, sludge, escapes, wastewater"
       record_type: "mortality log, escape report, residue log, wastewater record, disposal note"
-      raw_fields: "date, species, count, mass, cause, cage or tank, fate, disposal route, recovery route, escape count, corrective action, receiving environment"
+      raw_fields: "date, species, count, mass, cause, cage or tank, fate, disposal route, recovery route, escape count, corrective action, receiving environment ; raw collection basis and original aggregation obligations: sum and classify by fate; reconcile stock balance and product mass; normalize to reference output"
       collection_method: "daily husbandry records, incident reports, waste tickets, and treatment records"
       unit: "kg, item, m3, date"
       frequency: "each event and monthly reconciliation"
       temporal_coverage: "full reporting period or campaign"
       site_scope: "cage, tank, transfer route, harvest area, packhouse, or waste route"
-      aggregation_rule: "sum and classify by fate; reconcile stock balance and product mass; normalize to reference output"
-      quality_evidence: "mortality records, waste transfer notes, escape incident files, treatment records, and supervisor review"
-    - protocol_id: cp_harvest_product_packout_records
-      process_id: "growout_fattening_and_husbandry_harvest_live_holding_chilling_and_packout"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "mortality records, waste transfer notes, escape incident files, treatment records, and supervisor review ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_mortality_residue_and_escape_records_growout_fattening_and_husbandry
+      process_id: "growout_fattening_and_husbandry"
+      flow_role: "mortalities, rejected stock, residue, uneaten feed, sludge, escapes, wastewater"
+      record_type: "mortality log, escape report, residue log, wastewater record, disposal note"
+      raw_fields: "date, species, count, mass, cause, cage or tank, fate, disposal route, recovery route, escape count, corrective action, receiving environment ; raw collection basis and original aggregation obligations: sum and classify by fate; reconcile stock balance and product mass; normalize to reference output"
+      collection_method: "daily husbandry records, incident reports, waste tickets, and treatment records"
+      unit: "kg, item, m3, date"
+      frequency: "each event and monthly reconciliation"
+      temporal_coverage: "full reporting period or campaign"
+      site_scope: "cage, tank, transfer route, harvest area, packhouse, or waste route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "mortality records, waste transfer notes, escape incident files, treatment records, and supervisor review ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_mortality_residue_and_escape_records_harvest_live_holding_chilling_and_packout
+      process_id: "harvest_live_holding_chilling_and_packout"
+      flow_role: "mortalities, rejected stock, residue, uneaten feed, sludge, escapes, wastewater"
+      record_type: "mortality log, escape report, residue log, wastewater record, disposal note"
+      raw_fields: "date, species, count, mass, cause, cage or tank, fate, disposal route, recovery route, escape count, corrective action, receiving environment ; raw collection basis and original aggregation obligations: sum and classify by fate; reconcile stock balance and product mass; normalize to reference output"
+      collection_method: "daily husbandry records, incident reports, waste tickets, and treatment records"
+      unit: "kg, item, m3, date"
+      frequency: "each event and monthly reconciliation"
+      temporal_coverage: "full reporting period or campaign"
+      site_scope: "cage, tank, transfer route, harvest area, packhouse, or waste route"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "mortality records, waste transfer notes, escape incident files, treatment records, and supervisor review ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_harvest_product_packout_records_growout_fattening_and_husbandry
+      process_id: "growout_fattening_and_husbandry"
       flow_role: "harvest biomass, grading, product form, marketable output"
       record_type: "harvest log, grading sheet, packout record, sales note, scale ticket"
-      raw_fields: "harvest date, species, cage or tank, live mass, product form, count, size grade, bleeding or gutting status, chilled or live state, rejected mass, marketable mass, destination"
+      raw_fields: "harvest date, species, cage or tank, live mass, product form, count, size grade, bleeding or gutting status, chilled or live state, rejected mass, marketable mass, destination ; raw collection basis and original aggregation obligations: reconcile harvested biomass plus purchases minus rejects and residues to marketable output; normalize all flows to 1 kg reference product"
       collection_method: "calibrated scales, grading records, sales records, and packhouse reconciliation"
       unit: "kg, item, grade, date"
       frequency: "each harvest and packing lot"
       temporal_coverage: "full reporting period or campaign"
       site_scope: "harvest site, live-holding unit, packhouse, or dispatch gate"
-      aggregation_rule: "reconcile harvested biomass plus purchases minus rejects and residues to marketable output; normalize all flows to 1 kg reference product"
-      quality_evidence: "scale calibration, harvest sheets, packout records, dispatch records, and sales reconciliation"
-    - protocol_id: cp_packaging_ice_chilling_and_dispatch_records
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "scale calibration, harvest sheets, packout records, dispatch records, and sales reconciliation ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_harvest_product_packout_records_harvest_live_holding_chilling_and_packout
+      process_id: "harvest_live_holding_chilling_and_packout"
+      flow_role: "harvest biomass, grading, product form, marketable output"
+      record_type: "harvest log, grading sheet, packout record, sales note, scale ticket"
+      raw_fields: "harvest date, species, cage or tank, live mass, product form, count, size grade, bleeding or gutting status, chilled or live state, rejected mass, marketable mass, destination ; raw collection basis and original aggregation obligations: reconcile harvested biomass plus purchases minus rejects and residues to marketable output; normalize all flows to 1 kg reference product"
+      collection_method: "calibrated scales, grading records, sales records, and packhouse reconciliation"
+      unit: "kg, item, grade, date"
+      frequency: "each harvest and packing lot"
+      temporal_coverage: "full reporting period or campaign"
+      site_scope: "harvest site, live-holding unit, packhouse, or dispatch gate"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "scale calibration, harvest sheets, packout records, dispatch records, and sales reconciliation ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_packaging_ice_chilling_and_dispatch_records_harvest_live_holding_chilling_and_packout
       process_id: "harvest_live_holding_chilling_and_packout"
       flow_role: "packaging, ice, live holding, chilling, washing, refrigerant service"
       record_type: "packaging invoice, ice log, temperature log, water meter, oxygen log, refrigerant service record, dispatch sheet"
-      raw_fields: "packaging material, item count, tare, ice mass, oxygen, water, electricity, refrigerant service, temperature, holding time, lot, destination"
+      raw_fields: "packaging material, item count, tare, ice mass, oxygen, water, electricity, refrigerant service, temperature, holding time, lot, destination ; raw collection basis and original aggregation obligations: allocate to product lots by measured lot, package count, product mass, holding time, or temperature-control zone"
       collection_method: "invoices, meters, temperature records, and dispatch records"
       unit: "kg, item, m3, kWh, deg C, h"
       frequency: "each packing lot and monthly reconciliation"
       temporal_coverage: "harvest, holding, packing, and dispatch period"
       site_scope: "packhouse, live-holding unit, cold room, dispatch gate"
-      aggregation_rule: "allocate to product lots by measured lot, package count, product mass, holding time, or temperature-control zone"
-      quality_evidence: "invoices, temperature logs, calibration records, dispatch sheets, and operator review"
-    - protocol_id: cp_delivery_records
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "invoices, temperature logs, calibration records, dispatch sheets, and operator review ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_delivery_records_delivery_to_declared_gate
       process_id: "delivery_to_declared_gate"
       flow_role: "delivered product, transport energy, live or chilled delivery condition"
       record_type: "delivery note, transport invoice, fuel record, route plan, temperature or live-holding log"
-      raw_fields: "origin, destination, distance, mode, load mass, fuel, electricity, ice, oxygen, temperature, live-holding duration, return logistics"
+      raw_fields: "origin, destination, distance, mode, load mass, fuel, electricity, ice, oxygen, temperature, live-holding duration, return logistics ; raw collection basis and original aggregation obligations: calculate tonne-km and allocate fuel or service by load mass, distance, temperature zone, and return logistics where relevant"
       collection_method: "carrier documents, vehicle logs, meter records, and dispatch reconciliation"
       unit: "kg, km, tonne-km, L, kWh, h, deg C"
       frequency: "each delivery route"
       temporal_coverage: "delivery period in declared scope"
       site_scope: "delivery route, vehicle, vessel, or carrier"
-      aggregation_rule: "calculate tonne-km and allocate fuel or service by load mass, distance, temperature zone, and return logistics where relevant"
-      quality_evidence: "carrier invoice, route record, temperature log, and dispatch sign-off"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "carrier invoice, route record, temperature log, and dispatch sign-off ; retain raw batch, stage, per-1000-kg and native-unit records; apply calc_final_gate_normalization explicitly, never relabel biological collection as per-machine data."
+    - protocol_id: cp_atomic_inventory_stock_capture_hatchery_transfer_and_stocking
+      process_id: "stock_capture_hatchery_transfer_and_stocking"
+      flow_role: "Every actual atomic exchange owned by this node"
+      record_type: "Independent weighing/metering, lot/transfer, invoice, stock and monitoring/factor evidence"
+      raw_fields: "actual species/stage/state; lot/event/transfer/period; each substance/supplier/voltage/composition; independent raw quantity/native unit; temperature/salinity/density; count and representative same-stage net weight; feed/growth/stock; fuel carbon/engine/independent factor or test; gaseous oxygen purity/pressure; waste fate/receiving medium/emission substance; allocation; final accepted net kg; original per-1000-kg and stage basis"
+      collection_method: "Independently meter/weigh each actual exchange with calibrated equipment; reconcile same-lot/stage original protocols, invoices, actual state, transfers, losses, fates and evidenced factors; apply calc_final_gate_normalization explicitly while retaining raw values"
+      unit: "individual native units, kg/kWh as applicable"
+      frequency: "each event and matched lot/period"
+      temporal_coverage: "actual complete node stage and matching reporting period"
+      site_scope: "only this node and its actual attributable share"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, original node protocols, invoices, composition/density, representative weighing, factors/monitoring and per-flow reconciliation"
+    - protocol_id: cp_atomic_inventory_growout_fattening_and_husbandry
+      process_id: "growout_fattening_and_husbandry"
+      flow_role: "Every actual atomic exchange owned by this node"
+      record_type: "Independent weighing/metering, lot/transfer, invoice, stock and monitoring/factor evidence"
+      raw_fields: "actual species/stage/state; lot/event/transfer/period; each substance/supplier/voltage/composition; independent raw quantity/native unit; temperature/salinity/density; count and representative same-stage net weight; feed/growth/stock; fuel carbon/engine/independent factor or test; gaseous oxygen purity/pressure; waste fate/receiving medium/emission substance; allocation; final accepted net kg; original per-1000-kg and stage basis"
+      collection_method: "Independently meter/weigh each actual exchange with calibrated equipment; reconcile same-lot/stage original protocols, invoices, actual state, transfers, losses, fates and evidenced factors; apply calc_final_gate_normalization explicitly while retaining raw values"
+      unit: "individual native units, kg/kWh as applicable"
+      frequency: "each event and matched lot/period"
+      temporal_coverage: "actual complete node stage and matching reporting period"
+      site_scope: "only this node and its actual attributable share"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, original node protocols, invoices, composition/density, representative weighing, factors/monitoring and per-flow reconciliation"
+    - protocol_id: cp_atomic_inventory_harvest_live_holding_chilling_and_packout
+      process_id: "harvest_live_holding_chilling_and_packout"
+      flow_role: "Every actual atomic exchange owned by this node"
+      record_type: "Independent weighing/metering, lot/transfer, invoice, stock and monitoring/factor evidence"
+      raw_fields: "actual species/stage/state; lot/event/transfer/period; each substance/supplier/voltage/composition; independent raw quantity/native unit; temperature/salinity/density; count and representative same-stage net weight; feed/growth/stock; fuel carbon/engine/independent factor or test; gaseous oxygen purity/pressure; waste fate/receiving medium/emission substance; allocation; final accepted net kg; original per-1000-kg and stage basis"
+      collection_method: "Independently meter/weigh each actual exchange with calibrated equipment; reconcile same-lot/stage original protocols, invoices, actual state, transfers, losses, fates and evidenced factors; apply calc_final_gate_normalization explicitly while retaining raw values"
+      unit: "individual native units, kg/kWh as applicable"
+      frequency: "each event and matched lot/period"
+      temporal_coverage: "actual complete node stage and matching reporting period"
+      site_scope: "only this node and its actual attributable share"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, original node protocols, invoices, composition/density, representative weighing, factors/monitoring and per-flow reconciliation"
+    - protocol_id: cp_atomic_inventory_delivery_to_declared_gate
+      process_id: "delivery_to_declared_gate"
+      flow_role: "Every actual atomic exchange owned by this node"
+      record_type: "Independent weighing/metering, lot/transfer, invoice, stock and monitoring/factor evidence"
+      raw_fields: "actual species/stage/state; lot/event/transfer/period; each substance/supplier/voltage/composition; independent raw quantity/native unit; temperature/salinity/density; count and representative same-stage net weight; feed/growth/stock; fuel carbon/engine/independent factor or test; gaseous oxygen purity/pressure; waste fate/receiving medium/emission substance; allocation; final accepted net kg; original per-1000-kg and stage basis"
+      collection_method: "Independently meter/weigh each actual exchange with calibrated equipment; reconcile same-lot/stage original protocols, invoices, actual state, transfers, losses, fates and evidenced factors; apply calc_final_gate_normalization explicitly while retaining raw values"
+      unit: "individual native units, kg/kWh as applicable"
+      frequency: "each event and matched lot/period"
+      temporal_coverage: "actual complete node stage and matching reporting period"
+      site_scope: "only this node and its actual attributable share"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, original node protocols, invoices, composition/density, representative weighing, factors/monitoring and per-flow reconciliation"
+    - protocol_id: cp_final_gate_acceptance
+      process_id: "declared_gate_release"
+      flow_role: "Sole final-gate receipt, rejection and reference release"
+      record_type: "Calibrated weighing, lot and buyer acceptance records"
+      raw_fields: "selected gate/route; included/bypassed delivery evidence; paired transfer ID; species/state/form/lot/period; incoming net animal mass; packaging/water/ice/tare; rejects/loss/disposal; final accepted net kg; resource owner"
+      collection_method: "Reconcile calibrated incoming, rejection and final accepted net mass against matched lot transfer/acceptance records; exclude free water, ice and packaging; retain measured form yields and uncertainty"
+      unit: "kg"
+      frequency: "every final lot handover"
+      temporal_coverage: "same lot and reporting period including any included delivery interval"
+      site_scope: "sole declared final gate"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "calibration, weighing, buyer acceptance, state/route and reject/disposal evidence"
   calculation_rules:
     - id: normalize_to_reference_product
       applies_to: "all inventory rows"
@@ -860,7 +1186,7 @@ dataset_production:
         - codex-cxc-52-2003
     - id: delivery_tonne_kilometres
       applies_to: "delivered reference product"
-      rule: "tonne-km = delivered product mass in tonnes x one-way or contract-declared route distance; allocate temperature-control or live-holding inputs by load share"
+      rule: "For each actual route leg, multiply the mass in tonnes of the consignment actually carried by that leg distance in km, then normalize to matched final reference-product output. The load includes carrier water, ice and packaging actually transported and is not the net reference-product mass. For shared loads use a justified mass, occupied-volume or other causal attribution key. Record empty-return, cooling, oxygenation and holding coverage; zero payload on an empty return does not imply zero transport burden. Do not double-count a transport service that covers the same fuel/direct emissions already modelled explicitly."
       inputs:
         - "delivered mass"
         - distance
@@ -868,6 +1194,17 @@ dataset_production:
         - "load factor"
         - "temperature or live-holding condition"
       output: "tonne-km and delivered product inventory"
+      source_ids:
+        - mass-balance-identity
+    - id: calc_final_gate_normalization
+      applies_to: "all inventory rows"
+      rule: "Divide same-boundary, same-actual-state quantities reported per 1000 kg final accepted product by 1000. For raw batch/event totals, establish actual ownership and once-only allocation, then divide by positive final accepted net kg from cp_final_gate_acceptance. Stage, harvest or pack-out denominators require same-lot measured transfer/yield mapping with the original values and conversion audit trail retained. Internal animals and transported water/ice/packaging are never fixed 1 kg inputs."
+      inputs:
+        - "raw batch and stage records"
+        - "measured yields/transfers"
+        - "once-only allocation"
+        - cp_final_gate_acceptance
+      output: "native exchange quantity per 1 kg final reference, with raw values and conversion record"
       source_ids:
         - mass-balance-identity
   data_quality_requirements:
@@ -895,10 +1232,50 @@ dataset_production:
       applies_to: "all datasets"
       requirement: "The dataset must disclose whether upstream stock capture, hatchery production, feed, bait, packaging, delivery, capital goods, and infrastructure are foreground, linked upstream datasets, or excluded by scope."
       evidence: "dataset boundary statement, supplier records, upstream dataset links, and scope declaration"
+    - id: dq_inventory_completion
+      applies_to: "all concrete exchanges and final gate"
+      requirement: "Complete every actual exchange including route-specific water, energy, feed, treatment, packaging, service, capital/replacement/cleaning and fate. Independently measure listed water/electricity/diesel/oxygen/ice cards only when actually used, and add separate cards for all other actual materials. Retain independent Range/UUID gaps as blockers to final completeness; never replace unknown with zero."
+      evidence: "per-flow coverage ledger, raw records, independent ranges and verified identities"
+    - id: dq_complete_biological_stock_input
+      applies_to: "stock_capture_hatchery_transfer_and_stocking; inputs; product"
+      requirement: "Collect every actual exchange for the collection responsibility “Hatchery, supplier, or captured juvenile stock input”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records purchased, internally produced, transferred, or capture-based tuna stock entering the declared aquaculture route. Flow property / unit: Mass or count with life stage / kg, item, egg count, or stage count Amount rule: measured count, mass where measurable, life stage, accepted quantity, capture or supplier origin, and transfer loss entering hatchery, grow-out, or fattening Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per 1,000 kg marketable reference product Basis kind: Process output (process_output) Evidence kind: Collected record (collected_record) Collection protocol: cp_stock_origin_capture_transfer_and_stocking_records_stock_capture_hatchery_transfer_and_stocking Sources: fao-atlantic-bluefin-tuna-culture, fao-capture-based-aquaculture-2008, fao-capture-based-aquaculture-guidelines-2011, asc-farm-standard-2025 Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_transfer_water_oxygen_fuel_and_handling_inputs
+      applies_to: "stock_capture_hatchery_transfer_and_stocking; inputs; product"
+      requirement: "Collect every actual exchange for the collection responsibility “Transfer water, oxygen, fuel, and handling inputs”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Mass, volume, fuel, or energy / kg, m3, L, MJ, or kWh Amount rule: measured or allocated water, oxygen, vessel fuel, towing, transport, anesthetic, transfer equipment, and handling inputs by stocking event Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per stocking event and per 1,000 kg marketable reference product after normalization Basis kind: Process output (process_output) Evidence kind: Collected record (collected_record) Collection protocol: cp_stock_origin_capture_transfer_and_stocking_records_stock_capture_hatchery_transfer_and_stocking Sources: fao-capture-based-aquaculture-guidelines-2011, asc-farm-standard-2025 Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_transfer_mortalities_and_rejected_stock
+      applies_to: "stock_capture_hatchery_transfer_and_stocking; outputs; waste"
+      requirement: "Collect every actual exchange for the collection responsibility “Transfer mortalities and rejected stock”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Mass or count / kg or item Amount rule: measured mortality count, mortality mass where available, rejected stock, residue mass, disposal route, and recovery route Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per stocking event and per 1,000 kg marketable reference product after normalization Basis kind: Process output (process_output) Evidence kind: Collected record (collected_record) Collection protocol: cp_mortality_residue_and_escape_records_stock_capture_hatchery_transfer_and_stocking Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_feed_fresh_bait_and_feed_additives
+      applies_to: "growout_fattening_and_husbandry; inputs; product"
+      requirement: "Collect every actual exchange for the collection responsibility “Feed, fresh bait, and feed additives”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Mass, volume, active ingredient, or dose / kg, L, g active ingredient, or dose Amount rule: measured formulated feed, fresh bait, frozen bait, live feed, medicated feed, additives, feeding losses, and supplier or bait species basis Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per grow-out or fattening batch and per 1,000 kg marketable reference product after normalization Basis kind: Process output (process_output) Evidence kind: Collected record (collected_record) Collection protocol: cp_feed_bait_and_feed_composition_records_growout_fattening_and_husbandry Sources: fao-atlantic-bluefin-tuna-culture, fao-capture-based-aquaculture-2008, asc-feed-standard-2026, asc-farm-standard-2025 Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_growout_water_energy_fuel_cage_materials_and_services
+      applies_to: "growout_fattening_and_husbandry; inputs; product"
+      requirement: "Collect every actual exchange for the collection responsibility “Grow-out water, energy, fuel, cage materials, and services”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Mass, volume, energy, fuel, item count, length, or service quantity / kg, m3, kWh, L, MJ, item, m, or service unit Amount rule: measured or allocated water where controlled, electricity, vessel fuel, cage materials, net cleaning, monitoring, oxygenation, farm servicing, and maintenance inputs Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per culture unit and per 1,000 kg marketable reference product after normalization Basis kind: Process output (process_output) Evidence kind: Collected record (collected_record) Collection protocol: cp_water_energy_vessel_cage_and_site_records_growout_fattening_and_husbandry Sources: fao-capture-based-aquaculture-guidelines-2011, asc-farm-standard-2025 Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_mortalities_uneaten_feed_residues_and_escaped_fish
+      applies_to: "growout_fattening_and_husbandry; outputs; waste"
+      requirement: "Collect every actual exchange for the collection responsibility “Mortalities, uneaten feed, residues, and escaped fish”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Mass or count / kg or item Amount rule: measured mortality count and mass, feed residue, sludge or organic residue, escape count where applicable, fate, disposal route, recovery route, and receiving environment Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per grow-out or fattening batch and per 1,000 kg marketable reference product after normalization Basis kind: Process output (process_output) Evidence kind: Collected record (collected_record) Collection protocol: cp_mortality_residue_and_escape_records_growout_fattening_and_husbandry Sources: asc-farm-standard-2025 Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_chilling_packaging_water_electricity_and_ice_inputs
+      applies_to: "harvest_live_holding_chilling_and_packout; inputs; product"
+      requirement: "Collect every actual exchange for the collection responsibility “Chilling, packaging, water, electricity, and ice inputs”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Mass, volume, energy, or item count / kg, m3, kWh, or item Amount rule: measured packaging, ice, chilling, washing, live-holding oxygen, electricity, refrigerant service, and dispatch preparation quantities Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per 1,000 kg marketable reference product Basis kind: Reference flow (reference_flow) Evidence kind: Collected record (collected_record) Collection protocol: cp_packaging_ice_chilling_and_dispatch_records_harvest_live_holding_chilling_and_packout Sources: codex-cxc-52-2003, asc-farm-standard-2025 Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_handling_rejects_bleed_water_packaging_waste_and_residues
+      applies_to: "harvest_live_holding_chilling_and_packout; outputs; waste"
+      requirement: "Collect every actual exchange for the collection responsibility “Handling rejects, bleed water, packaging waste, and residues”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Mass or volume / kg or m3 Amount rule: measured rejected fish, handling losses, bleed water, wastewater, packaging waste, residue mass, disposal route, recovery route, and receiving environment Value mode: Foreground record (foreground_record) Specificity: Site-specific (site_specific) Normalization basis: per 1,000 kg marketable reference product Basis kind: Reference flow (reference_flow) Evidence kind: Collected record (collected_record) Collection protocol: cp_mortality_residue_and_escape_records_harvest_live_holding_chilling_and_packout Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
+    - id: dq_complete_delivery_fuel_electricity_refrigerant_and_packaging_support
+      applies_to: "delivery_to_declared_gate; inputs; product"
+      requirement: "Collect every actual exchange for the collection responsibility “Delivery fuel, electricity, refrigerant service, and packaging support”, retaining these real raw quantity, batch/stage, native-unit, fate, collection and range-evidence obligations: This row records the selected exchange within the declared process and system boundary. Flow property / unit: Fuel, energy, mass, or transport service / L, MJ, kWh, kg, or tonne-km Amount rule: include only when the declared reference flow is delivered beyond the farm, harvest, dispatch, or packhouse gate; record distance, mode, load factor, temperature control, live-holding condition, and return logistics where relevant Value mode: Foreground record (foreground_record) Specificity: Route-specific (route_specific) Normalization basis: per 1,000 kg delivered reference product or tonne-km Basis kind: Transport service (transport_service) Evidence kind: Collected record (collected_record) Collection protocol: cp_delivery_records_delivery_to_declared_gate Every actual substance, fuel, material, waste, emission and service requires its own concrete identity card and independent measurement. Generated wastes/emissions are outputs, not inputs; escaped organisms remain separate from mortality/sludge. Convert original per-1000-kg/stage and batch bases explicitly to the sole final gate under calc_final_gate_normalization. No grouped UUID, total or Range is inherited; grouped bounds are not child allowed ranges. Any unresolved actual child’s independent Range evidence, quantity, fate or UUID makes the final dataset incomplete and fails validation; unknown is not zero."
+      evidence: "node-owned collection protocol, raw records, per-flow coverage ledger and identity/fate evidence"
 validation_rules:
   - rule_id: val_reference_flow_uuid
     applies_to: "foreground_dataset_conformance"
-    rule: "Reference product flow UUID equals 2d170776-6886-4a54-9341-ee064d0f182a unless a more specific Tiangong farmed tuna-category product flow is documented."
+    rule: "error"
     source_ids: []
   - rule_id: val_not_wild_only
     applies_to: "foreground_dataset_conformance"
@@ -923,6 +1300,10 @@ validation_rules:
   - rule_id: val_structured_sync
     applies_to: "foreground_dataset_conformance"
     rule: "structured.yaml is regenerated from the bilingual Markdown after edits."
+    source_ids: []
+  - rule_id: val_final_gate_completion
+    applies_to: "foreground_dataset_conformance"
+    rule: "error"
     source_ids: []
 published_dataset_profile:
   dataset_role: "foreground production dataset for farmed tunas, skipjack, or stripe-bellied bonito, live, fresh, or chilled"
@@ -961,21 +1342,25 @@ data_sources:
     type: "method_factor"
     reference: "PCR internal mass-balance identity: output equals measured inputs plus growth or transformation minus losses under declared product basis"
     used_for: "normalization, allocation, stock balance, yield, and delivery calculations"
+  - id: "ghg-product-allocation"
+    type: "standard"
+    reference: "GHG Protocol Product Life Cycle Accounting and Reporting Standard, chapter 9, https://ghgprotocol.org/sites/default/files/standards/Product-Life-Cycle-Accounting-Reporting-Standard_041613.pdf (verified 2026-10-16, printed pp.60–70)"
+    used_for: "Allocation hierarchy explicitly adopted by this PCR: subdivision, causal physical and economic relationships; no aquaculture performance, actual share or non-GHG impact-assessment conclusion"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:114d502b683c01b53b0d9cae7bb77dc2cd27c10055ba64fe63ae6b359713607f"
+  source_sha256: "sha256:1a84100ae658c5a05831eef64a2a961eaea3dda4b8b45a1d6dbc6e620e2e42bc"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_11132"
+    - unit_id: "normative_12482"
       family: "system_boundary"
       span:
         start:
-          offset: 11132
-          line: 79
+          offset: 12482
+          line: 84
           column: 1
         end:
-          offset: 14220
-          line: 101
+          offset: 15570
+          line: 106
           column: 1
       markdown: "## 5. System Boundary\n\nThe default boundary covers foreground-controlled farmed tuna-category production to the declared farm, harvest, packhouse, dispatch, or delivery gate:\n\n1. Broodstock, egg, larval, juvenile, or supplier stock sourcing for full-cycle aquaculture where present, or capture-based wild juvenile or subadult stock capture, purchase, transfer, and stocking when the aquaculture route depends on wild stock.\n2. Controlled grow-out, ranching, or fattening husbandry, including stocking, feeding with fresh bait or formulated feed, water control where relevant, cage or net-pen operation, vessel servicing, aeration or oxygenation where relevant, health management, welfare handling, escape prevention, mortalities, residue management, and directly controlled maintenance.\n3. Harvest, grading, stunning or bleeding where performed, washing, live holding, chilling, packaging, and declared gate release.\n4. Delivery to the declared gate when the reference flow is delivered product rather than farm, harvest, dispatch, or packhouse gate product.\n\nCapital goods and long-lived infrastructure are included only when the declared data package scope requires them. Purchased juveniles, captured stock, feed, bait, packaging, ice, oxygen, electricity, fuel, chemicals, health treatments, cage materials, and vessel services require upstream datasets unless the same operator controls and reports their production in the foreground package.\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | declared_hatchery_supplier_or_capture_based_stocking_event |\n| starting_condition_role | aquaculture_stock_identity_and_biological_starting_condition |\n| product_classification_scope | current CPC 3.0 product category `04252`, `Farmed tunas, skipjack or stripe-bellied bonito, live, fresh or chilled` |\n| recursive_input_rule | farmed tuna broodstock, eggs, larvae, juveniles, or supplier stock used to produce market product are recorded as declared biological starting conditions with supplier, hatchery, farm, source, life-stage, capture-based status, and health disclosure, not recursively as finished reference product output |\n| upstream_dataset_requirement | hatchery, supplier, juvenile, capture-based stocking, feed, bait, or service dataset, or documented source, species, batch, count or mass, life stage, capture or supplier permit, transfer loss, health or biosecurity status, and certification or permit evidence |\n| disclosure | disclose species, culture route, biological starting condition, farmed production evidence, capture area and permit where capture-based, stocking density or biomass, cage or tank system, feed or bait regime, feed supplier and feed basis, marine ingredient or bait species where available, water source and temperature where controlled, dissolved oxygen and salinity where relevant, vessel fuel and farm servicing, health treatments, welfare handling, mortality and escape records, harvest and holding conditions, product form, packaging state, declared gate, and unresolved Tiangong UUID substitutions |\n\n"
       headings:
@@ -994,12 +1379,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 11132
-              line: 79
+              offset: 12482
+              line: 84
               column: 1
             end:
-              offset: 11153
-              line: 79
+              offset: 12503
+              line: 84
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -1014,18 +1399,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_36725"
+    - unit_id: "normative_55943"
       family: "allocation"
       span:
         start:
-          offset: 36725
-          line: 495
+          offset: 55943
+          line: 680
           column: 1
         end:
-          offset: 38605
-          line: 504
+          offset: 58384
+          line: 691
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| allocation_id | Applies to | Rule | Required data | Source |\n| --- | --- | --- | --- | --- |\n| `single_reference_product_default` | marketable live, fresh, or chilled farmed tuna output | Treat the declared reference product as the single reference product unless roe, offal, mortalities, residues, or processing outputs are intentionally recovered as co-products. | marketable mass, rejected mass, recovered co-product mass, destination, and revenue or physical relation where co-products are claimed | `mass-balance-identity` |\n| `capture_based_stock_boundary` | capture-based aquaculture routes | Do not allocate away wild stock capture, transfer losses, or mortality by excluding them from the foreground package. Assign them to the aquaculture product unless a reviewed upstream wild-stock dataset and allocation rule are declared. | stock capture or purchase records, transfer loss, accepted stocked biomass, discarded or dead stock, and permit evidence | `fao-capture-based-aquaculture-guidelines-2011` |\n| `shared_site_and_cage_allocation` | multi-species, multi-lot, or shared-service farms | Allocate shared electricity, vessel fuel, oxygen, site service, net cleaning, and holding infrastructure by measured meter, batch log, biomass-time, cage-time, or another declared physical driver before economic allocation. | meters, service logs, cage or tank occupancy, biomass-time, harvest mass, and allocation driver | `asc-farm-standard-2025` |\n| `packaging_and_delivery_allocation` | mixed-product packing or delivery | Allocate packaging, ice, live-holding, refrigeration, and delivery loads by measured product mass, package count, pallet, trip, temperature-control zone, or tonne-km as applicable. | dispatch records, package counts, load mass, distance, temperature condition, and return logistics | `codex-cxc-52-2003` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| allocation_id | Applies to | Rule | Required data | Source |\n| --- | --- | --- | --- | --- |\n| `single_reference_product_default` | marketable live, fresh, or chilled farmed tuna output | Treat the declared reference product as the single reference product unless roe, offal, mortalities, residues, or processing outputs are intentionally recovered as co-products. | marketable mass, rejected mass, recovered co-product mass, destination, and revenue or physical relation where co-products are claimed | `mass-balance-identity` |\n| `capture_based_stock_boundary` | capture-based aquaculture routes | Do not allocate away wild stock capture, transfer losses, or mortality by excluding them from the foreground package. Assign them to the aquaculture product unless a reviewed upstream wild-stock dataset and allocation rule are declared. | stock capture or purchase records, transfer loss, accepted stocked biomass, discarded or dead stock, and permit evidence | `fao-capture-based-aquaculture-guidelines-2011` |\n| `shared_site_and_cage_allocation` | multi-species, multi-lot, or shared-service farms | Allocate shared electricity, vessel fuel, oxygen, site service, net cleaning, and holding infrastructure by measured meter, batch log, biomass-time, cage-time, or another declared physical driver before economic allocation. | meters, service logs, cage or tank occupancy, biomass-time, harvest mass, and allocation driver | `asc-farm-standard-2025` |\n| `packaging_and_delivery_allocation` | mixed-product packing or delivery | Allocate packaging, ice, live-holding, refrigeration, and delivery loads by measured product mass, package count, pallet, trip, temperature-control zone, or tonne-km as applicable. | dispatch records, package counts, load mass, distance, temperature condition, and return logistics | `codex-cxc-52-2003` |\n\nThis PCR explicitly adopts the allocation hierarchy in GHG Protocol Product Standard chapter 9: subdivision first, then evidenced causal physical relationships, and evidenced economic relationships where physical relationships are inapplicable. Mass is not an automatic convenience default. Preserve unallocated physical quantities and a separately labelled once-only LCA view; reconcile all output/node shares to one. Allocation never repairs physical imbalance, and internal transfers create no sale or substitution credit. Source: `ghg-product-allocation`.\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1042,12 +1427,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 36725
-              line: 495
+              offset: 55943
+              line: 680
               column: 1
             end:
-              offset: 36765
-              line: 495
+              offset: 55983
+              line: 680
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -1062,18 +1447,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_49574"
+    - unit_id: "normative_101707"
       family: "validation"
       span:
         start:
-          offset: 49574
-          line: 540
+          offset: 101707
+          line: 748
           column: 1
         end:
-          offset: 51252
-          line: 552
+          offset: 103799
+          line: 761
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | Severity | Failure message |\n| --- | --- | --- | --- |\n| `val_reference_flow_uuid` | Reference product flow UUID equals `2d170776-6886-4a54-9341-ee064d0f182a` unless a more specific Tiangong farmed tuna-category product flow is documented. | error | Reference flow must use the farmed tunas, skipjack, or stripe-bellied bonito product identity or document a reviewed replacement. |\n| `val_not_wild_only` | Dataset has controlled aquaculture, ranching, or fattening evidence beyond wild capture and post-capture handling. | error | Wild capture only belongs under the wild tuna PCR, not this farmed product PCR. |\n| `val_capture_based_stock_trace` | Capture-based routes include capture or supplier origin, permit or legal evidence, transfer, stocking, mortality, and harvest reconciliation. | error | Capture-based aquaculture route is missing required stock traceability evidence. |\n| `val_mass_basis` | Product mass basis is declared as live, fresh, chilled, gutted, bled, drained, ice-excluded, or another stated product basis. | error | Product mass basis is missing or ambiguous. |\n| `val_feed_bait_basis` | Feed or bait rows distinguish dry, wet, fresh, frozen, live, thawed, medicated, or declared feed basis. | warning | Feed or bait basis should be declared before comparing or normalizing inputs. |\n| `val_required_qualifiers` | Required qualifiers are present in metadata or process notes. | warning | Reference flow qualifiers are incomplete. |\n| `val_structured_sync` | `structured.yaml` is regenerated from the bilingual Markdown after edits. | error | Structured projection is out of sync with authored PCR Markdown. |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | Severity | Failure message |\n| --- | --- | --- | --- |\n| `val_reference_flow_uuid` | error | Independently verify reference identity against actual species, life stage, form/state and final gate. A category label or live-animal landing UUID cannot automatically identify farm, packhouse or delivered product; no grouped UUID grants a binding. |\n| `val_not_wild_only` | Dataset has controlled aquaculture, ranching, or fattening evidence beyond wild capture and post-capture handling. | error | Wild capture only belongs under the wild tuna PCR, not this farmed product PCR. |\n| `val_capture_based_stock_trace` | Capture-based routes include capture or supplier origin, permit or legal evidence, transfer, stocking, mortality, and harvest reconciliation. | error | Capture-based aquaculture route is missing required stock traceability evidence. |\n| `val_mass_basis` | Product mass basis is declared as live, fresh, chilled, gutted, bled, drained, ice-excluded, or another stated product basis. | error | Product mass basis is missing or ambiguous. |\n| `val_feed_bait_basis` | Feed or bait rows distinguish dry, wet, fresh, frozen, live, thawed, medicated, or declared feed basis. | warning | Feed or bait basis should be declared before comparing or normalizing inputs. |\n| `val_required_qualifiers` | Required qualifiers are present in metadata or process notes. | warning | Reference flow qualifiers are incomplete. |\n| `val_structured_sync` | `structured.yaml` is regenerated from the bilingual Markdown after edits. | error | Structured projection is out of sync with authored PCR Markdown. |\n| `val_final_gate_completion` | error | Check sole declared_gate_release reference output 1 kg, positive final accepted net-kg denominator, actual included/bypassed delivery and every independently measured internal transfer, rejection and loss. Verify all dq_complete actual child exchanges, native units, normalization, independent Range evidence, UUIDs, fates and non-duplication; any gap makes the final dataset incomplete and fails validation. |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1090,12 +1475,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 49574
-              line: 540
+              offset: 101707
+              line: 748
               column: 1
             end:
-              offset: 49596
-              line: 540
+              offset: 101729
+              line: 748
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1114,259 +1499,285 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "system_boundary_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_11132"
+      unit_id: "normative_12482"
       source_span:
         start:
-          offset: 11308
-          line: 83
+          offset: 12658
+          line: 88
           column: 1
         end:
-          offset: 11555
-          line: 83
+          offset: 12905
+          line: 88
           column: 248
     - pointer: "/system_boundary/rules/1"
       rule_id: "system_boundary_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_11132"
+      unit_id: "normative_12482"
       source_span:
         start:
-          offset: 11556
-          line: 84
+          offset: 12906
+          line: 89
           column: 1
         end:
-          offset: 11918
-          line: 84
+          offset: 13268
+          line: 89
           column: 363
     - pointer: "/system_boundary/rules/2"
       rule_id: "system_boundary_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_11132"
+      unit_id: "normative_12482"
       source_span:
         start:
-          offset: 11919
-          line: 85
+          offset: 13269
+          line: 90
           column: 1
         end:
-          offset: 12048
-          line: 85
+          offset: 13398
+          line: 90
           column: 130
     - pointer: "/system_boundary/rules/3"
       rule_id: "system_boundary_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_11132"
+      unit_id: "normative_12482"
       source_span:
         start:
-          offset: 12049
-          line: 86
+          offset: 13399
+          line: 91
           column: 1
         end:
-          offset: 12190
-          line: 86
+          offset: 13540
+          line: 91
           column: 142
     - pointer: "/system_boundary/rules/4"
       rule_id: "system_boundary_rule_5"
       identity_kind: "snapshot_local"
-      unit_id: "normative_11132"
+      unit_id: "normative_12482"
       source_span:
         start:
-          offset: 12192
-          line: 88
+          offset: 13542
+          line: 93
           column: 1
         end:
-          offset: 12579
-          line: 88
+          offset: 13929
+          line: 93
           column: 388
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_36725"
+      unit_id: "normative_55943"
       source_span:
         start:
-          offset: 36862
-          line: 499
+          offset: 56080
+          line: 684
           column: 1
         end:
-          offset: 37298
-          line: 499
+          offset: 56516
+          line: 684
           column: 437
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_36725"
+      unit_id: "normative_55943"
       source_span:
         start:
-          offset: 37299
-          line: 500
+          offset: 56517
+          line: 685
           column: 1
         end:
-          offset: 37780
-          line: 500
+          offset: 56998
+          line: 685
           column: 482
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_36725"
+      unit_id: "normative_55943"
       source_span:
         start:
-          offset: 37781
-          line: 501
+          offset: 56999
+          line: 686
           column: 1
         end:
-          offset: 38221
-          line: 501
+          offset: 57439
+          line: 686
           column: 441
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_36725"
+      unit_id: "normative_55943"
       source_span:
         start:
-          offset: 38222
-          line: 502
+          offset: 57440
+          line: 687
           column: 1
         end:
-          offset: 38603
-          line: 502
+          offset: 57821
+          line: 687
           column: 382
+    - pointer: "/allocation_rules/4"
+      rule_id: "allocation_rule_5"
+      identity_kind: "snapshot_local"
+      unit_id: "normative_55943"
+      source_span:
+        start:
+          offset: 57823
+          line: 689
+          column: 1
+        end:
+          offset: 58382
+          line: 689
+          column: 560
     - pointer: "/validation_rules/0"
       rule_id: "val_reference_flow_uuid"
       identity_kind: "explicit"
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 49672
-          line: 544
+          offset: 101805
+          line: 752
           column: 1
         end:
-          offset: 49998
-          line: 544
-          column: 327
+          offset: 102094
+          line: 752
+          column: 290
     - pointer: "/validation_rules/1"
       rule_id: "val_not_wild_only"
       identity_kind: "explicit"
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 49999
-          line: 545
+          offset: 102095
+          line: 753
           column: 1
         end:
-          offset: 50229
-          line: 545
+          offset: 102325
+          line: 753
           column: 231
     - pointer: "/validation_rules/2"
       rule_id: "val_capture_based_stock_trace"
       identity_kind: "explicit"
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 50230
-          line: 546
+          offset: 102326
+          line: 754
           column: 1
         end:
-          offset: 50500
-          line: 546
+          offset: 102596
+          line: 754
           column: 271
     - pointer: "/validation_rules/3"
       rule_id: "val_mass_basis"
       identity_kind: "explicit"
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 50501
-          line: 547
+          offset: 102597
+          line: 755
           column: 1
         end:
-          offset: 50703
-          line: 547
+          offset: 102799
+          line: 755
           column: 203
     - pointer: "/validation_rules/4"
       rule_id: "val_feed_bait_basis"
       identity_kind: "explicit"
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 50704
-          line: 548
+          offset: 102800
+          line: 756
           column: 1
         end:
-          offset: 50925
-          line: 548
+          offset: 103021
+          line: 756
           column: 222
     - pointer: "/validation_rules/5"
       rule_id: "val_required_qualifiers"
       identity_kind: "explicit"
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 50926
-          line: 549
+          offset: 103022
+          line: 757
           column: 1
         end:
-          offset: 51073
-          line: 549
+          offset: 103169
+          line: 757
           column: 148
     - pointer: "/validation_rules/6"
       rule_id: "val_structured_sync"
       identity_kind: "explicit"
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 51074
-          line: 550
+          offset: 103170
+          line: 758
           column: 1
         end:
-          offset: 51250
-          line: 550
+          offset: 103346
+          line: 758
           column: 177
+    - pointer: "/validation_rules/7"
+      rule_id: "val_final_gate_completion"
+      identity_kind: "explicit"
+      unit_id: "normative_101707"
+      source_span:
+        start:
+          offset: 103347
+          line: 759
+          column: 1
+        end:
+          offset: 103797
+          line: 759
+          column: 451
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_11132"
+      unit_id: "normative_12482"
       source_span:
         start:
-          offset: 11132
-          line: 79
+          offset: 12482
+          line: 84
           column: 1
         end:
-          offset: 11153
-          line: 79
+          offset: 12503
+          line: 84
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_11132"
+      unit_id: "normative_12482"
       source_span:
         start:
-          offset: 12607
-          line: 92
+          offset: 13957
+          line: 97
           column: 1
         end:
-          offset: 14218
-          line: 99
+          offset: 15568
+          line: 104
           column: 619
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_36725"
+      unit_id: "normative_55943"
       source_span:
         start:
-          offset: 36725
-          line: 495
+          offset: 55943
+          line: 680
           column: 1
         end:
-          offset: 36765
-          line: 495
+          offset: 55983
+          line: 680
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_49574"
+      unit_id: "normative_101707"
       source_span:
         start:
-          offset: 49574
-          line: 540
+          offset: 101707
+          line: 748
           column: 1
         end:
-          offset: 49596
-          line: 540
+          offset: 101729
+          line: 748
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1375,5 +1786,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:114d502b683c01b53b0d9cae7bb77dc2cd27c10055ba64fe63ae6b359713607f"
-  generated_content_sha256: "sha256:64c3b784dfd75931c82510380e27842dfa9c4ae8df24e7dd80742e60fc37a1fc"
+    sha256: "sha256:1a84100ae658c5a05831eef64a2a961eaea3dda4b8b45a1d6dbc6e620e2e42bc"
+  generated_content_sha256: "sha256:ec8f5baa1b1bc2fd9c609b6575c20e13dd9d7fc46288dba542e5a6e252ba17ba"

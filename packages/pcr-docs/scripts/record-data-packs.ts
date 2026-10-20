@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { PcrRecord } from "../lib/types.ts";
 import { decodeRecordData, encodeRecordDataPack, parseRecordData, MAX_RECORDS_PER_PACK, type RecordDataEntry } from "../lib/record-data.ts";
-export const RECORD_DATA_PACK_BYTES = 1_000_000;
+export const RECORD_DATA_PACK_BYTES = 4_000_000;
 /** Pack only the generated inspector transport, with exact per-record round-trip verification. */
 export function writeRecordDataPacks(stage: string, records: readonly PcrRecord[]) {
   const directory = path.join(stage, "public/data");

@@ -14,7 +14,7 @@ functional_unit:
   how_much: "1 kg"
   how_well: "declared species or species group, reason more specific PCR does not apply, live/fresh/chilled state, wet or drained mass basis, route, handling condition, packaging state, and gate"
   how_long_or_cycle: "one harvest, collection, aquaculture, landing, handling, sales lot, or reporting period normalized to marketable output"
-  reference_flow_link: "Reference amount and product flow below"
+  reference_flow_link: "declared_gate_product"
 system_boundary:
   rules:
     - rule_id: system_boundary_rule_1
@@ -41,10 +41,10 @@ boundary_abstraction:
   upstream_dataset_requirement: "harvest, collection, aquaculture, supplier, landing, stock, feed, packaging, ice, fuel, electricity, water, oxygen, and delivery datasets where outside foreground control"
   disclosure: "disclose species or species group, n.e.c. justification, route, harvest or production area, gear, culture system where relevant, landing or receipt site, live/fresh/chilled state, wet or drained mass basis, sorting and rejection, washing or holding water, temperature or ice use, holding duration, packaging state, intended use where known, declared gate, and unresolved Tiangong UUID substitutions"
 reference_flow_definition:
-  reference_amount: "1 kg"
+  reference_amount: "1"
   product_flow_ref:
-    name: "Other aquatic invertebrates"
-    uuid: "9e2938bd-46d5-4801-b52c-87c35caf9a07"
+    name: "Aquatic invertebrate animal"
+    uuid: ""
   flow_property_ref:
     uuid: "93a60a56-a3c8-11da-a746-0800200b9a66"
   unit_group_ref:
@@ -128,281 +128,374 @@ measurement_rules:
     rule: "Packaging and containers must retain material type, item count, tare or fill mass, reuse rate, and destination before normalization."
 process_map:
   - id: production_harvest_collection_and_receipt
-    name: "Production, Harvest, Collection, and Receipt"
+    name: "Production, capture, collection and receipt"
     inclusion: "required"
-    inclusion_condition: "route, species or species group, and n.e.c. justification must be declared"
-    role: "foreground production/upstream bridge"
-    quantitative_reference: "accepted aquatic invertebrate lot entering live/fresh/chilled handling"
+    inclusion_condition: "Actual source/production route is evidenced"
+    role: "Actual event/transfer and resource ownership"
+    quantitative_reference: "per 1 kg reference flow"
   - id: sorting_holding_chilling_and_packout
-    name: "Sorting, Holding, Chilling, and Pack-out"
-    inclusion: "required"
-    inclusion_condition: ""
-    role: "foreground conditioning and gate release"
-    quantitative_reference: "marketable live, fresh, or chilled n.e.c. aquatic invertebrate"
-  - id: delivery_to_declared_gate
-    name: "Delivery to Declared Gate"
+    name: "Sorting, live maintenance, chilling and pack-out"
     inclusion: "conditional"
-    inclusion_condition: "include when the reference flow is delivered product beyond landing, receipt, dispatch, or packhouse gate"
-    role: "foreground transport"
-    quantitative_reference: "delivered product at declared gate"
+    inclusion_condition: "Only actual pre-gate preparation; bypass for a landing gate or absent preparation"
+    role: "Actual event/transfer and resource ownership"
+    quantitative_reference: "per 1 kg reference flow"
+  - id: delivery_to_declared_gate
+    name: "Delivery to declared gate"
+    inclusion: "conditional"
+    inclusion_condition: "Only actual delivery before the chosen gate; unknown choice fails"
+    role: "Actual event/transfer and resource ownership"
+    quantitative_reference: "per 1 kg reference flow"
+  - id: declared_gate_release
+    name: "Final declared-gate acceptance and release"
+    inclusion: "required"
+    inclusion_condition: "One declared gate receives the actual final predecessor; exactly one reference output"
+    role: "Actual event/transfer and resource ownership"
+    quantitative_reference: "per 1 kg reference flow"
 process_inventory:
   - id: production_harvest_collection_and_receipt
-    label: "Production, Harvest, Collection, and Receipt"
+    label: "Production, capture, collection and receipt"
     inputs:
       product:
-        - row_id: production_harvest_collection_or_receipt_inputs
-          role: "Production, harvest, collection, or receipt inputs"
-          name: "Diesel oil ; Electricity ; route-specific stock, feed, gear, vessel service, culture material, collection input, water, ice, oxygen, or supplier input selected from foreground records"
+        - row_id: source_diesel
+          role: "Conditional diesel input"
+          name: "Diesel fuel"
           flow_type: "product"
           flow_ref:
             uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
-          property_unit: "Fuel, energy, mass, volume, item, time, or service quantity / L, kWh, MJ, kg, m3, item, h, or service unit"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. This UUID establishes a mass-based diesel identity only, with no grade, provider, density, heating value or emission factor; L-to-kg conversion requires matching density evidence."
           amount:
-            expression: "measured or allocated harvest, collection, aquaculture, receipt, gear, water, fuel, electricity, stock, feed, and landing support inputs by route and lot"
-            value_mode: "foreground_record"
+            expression: "Collect this exchange’s own quantity under cp_production_harvest_collection_and_receipt_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per production, harvest, collection, or receipt lot and per 1,000 kg marketable reference product after normalization"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_production_harvest_collection_and_receipt_records
-              source_ids:
-                - fao-code-responsible-fisheries-1995
-                - codex-cxc-52-2003
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "10000"
-                unit: "L, kWh, MJ, kg, m3, item, h, or service unit/1,000 kg marketable product"
-                basis: "broad first-pass route input check across n.e.c. aquatic invertebrate products"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: bycatch_mortalities_rejected_biomass_and_receipt_residues
-          role: "Bycatch, mortalities, rejected biomass, and receipt residues"
-          name: "Sludge ; route-specific bycatch, mortality, rejected organism, non-target material, wastewater, and residue flow selected from site records"
-          flow_type: "waste"
-          flow_ref:
-            uuid: "725c8f6e-7975-4155-a250-1f95ef70c508"
-          property_unit: "Mass, volume, or count / kg, m3, or item"
-          description: "This row records the selected exchange within the declared process and system boundary."
+              source_ids: []
+            ranges: []
+        - row_id: source_electricity
+          role: "Conditional electricity input"
+          name: "Electricity"
+          flow_type: "product"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / kWh"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive."
           amount:
-            expression: "measured bycatch, mortalities, rejected organisms, non-target material, drainage or wastewater, residue mass, fate, disposal route, recovery route, and receiving environment"
-            value_mode: "foreground_record"
+            expression: "Collect this exchange’s own quantity under cp_production_harvest_collection_and_receipt_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per production, harvest, collection, or receipt lot and per 1,000 kg marketable reference product after normalization"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_reject_residue_bycatch_mortality_and_discharge_records
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_production_harvest_collection_and_receipt_records
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "10"
-                unit: "kg residue/kg accepted lot"
-                basis: "broad bycatch, mortality, rejection, drainage, and residue check at production or receipt"
-                basis_kind: "process_output"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
+        - row_id: source_ice
+          role: "Conditional ice input"
+          name: "Ice"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. Its precise UUID remains unresolved; the medium name does not prove live product condition."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_production_harvest_collection_and_receipt_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_production_harvest_collection_and_receipt_records
+              source_ids: []
+            ranges: []
+        - row_id: source_oxygen
+          role: "Conditional oxygen input"
+          name: "Oxygen, gaseous"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. Its precise UUID remains unresolved; the medium name does not prove live product condition."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_production_harvest_collection_and_receipt_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_production_harvest_collection_and_receipt_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
       elementary:
         []
     outputs:
       product:
         - row_id: accepted_n_e_c_aquatic_invertebrate_lot
-          role: "Accepted n.e.c. aquatic invertebrate lot"
-          name: "Other aquatic invertebrates"
+          role: "Accepted source lot to the next actual responsibility"
+          name: "Aquatic invertebrate animal"
           flow_type: "product"
-          flow_ref:
-            uuid: "9e2938bd-46d5-4801-b52c-87c35caf9a07"
-          property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record species, origin, original form/state and accepted net mass by lot; independently measure this source-stage quantity and pair the actual next receipt. A landing UUID applies only with matching unprocessed-catch/landing-quality qualifiers and cannot substitute for later preparation or final-delivery identities."
           amount:
-            expression: "calculated accepted lot after receipt, sorting, rejection, mortality, drainage, and lot identification"
+            expression: "Collect this exchange’s own quantity under cp_production_harvest_collection_and_receipt_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
             value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "accepted lot entering live, fresh, or chilled handling"
-              kind: "process_output"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_production_harvest_collection_and_receipt_records
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "1"
-                upper: "20"
-                unit: "kg accepted lot/kg marketable product"
-                basis: "broad lot-to-marketable mass-balance check before final sorting and drainage"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
       waste:
         []
       elementary:
-        []
+        - row_id: source_fossil_co2
+          role: "Actual foreground fossil CO2 to unspecified air"
+          name: "Carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Include only actual direct fossil-fuel combustion to air owned by this node, using measurement or an explicitly sourced factor compatible with fuel/engine/units; retain oxidation, controls and uncertainty. Exclude animal respiration, dissolved carbon to water and supplier-covered emissions; add each other actual pollutant separately by substance/medium."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_production_harvest_collection_and_receipt_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_production_harvest_collection_and_receipt_records
+              source_ids: []
+            ranges: []
   - id: sorting_holding_chilling_and_packout
-    label: "Sorting, Holding, Chilling, and Pack-out"
+    label: "Sorting, live maintenance, chilling and pack-out"
     inputs:
       product:
         - row_id: accepted_lot_entering_final_handling
-          role: "Accepted lot entering final handling"
-          name: "Other aquatic invertebrates"
+          role: "Source lot received for preparation"
+          name: "Aquatic invertebrate animal"
           flow_type: "product"
-          flow_ref:
-            uuid: "9e2938bd-46d5-4801-b52c-87c35caf9a07"
-          property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Pair the actual upstream transfer, retaining original receipt state and independently measured mass; activate only when this pre-gate node actually occurs."
           amount:
-            expression: "measured accepted n.e.c. aquatic invertebrate lot entering sorting, washing, drainage, live holding, chilling, or packing"
-            value_mode: "foreground_record"
+            expression: "Collect this exchange’s own quantity under cp_packout_product_state_and_mass_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
             specificity: "site_specific"
             basis:
-              text: "per 1,000 kg marketable reference product"
+              text: "per 1 kg reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_packout_product_state_and_mass_records
-              source_ids:
-                - codex-cxc-52-2003
-            ranges:
-              - role: qa_guardrail
-                lower: "1"
-                upper: "20"
-                unit: "kg accepted lot/kg marketable product"
-                basis: "broad wet, drained, live, fresh, or chilled product-yield check"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-        - row_id: water_ice_electricity_packaging_and_live_holding_inputs
-          role: "Water, ice, electricity, packaging, and live-holding inputs"
-          name: "Process water ; Electricity ; Packaging, unspecified ; route-specific ice, seawater, oxygen, container, liner, refrigerant service, or pallet selected from site records"
-          flow_type: "product"
-          flow_ref:
-            uuid: "ec205030-248c-496f-9cf2-06d9d26dc6ff"
-          property_unit: "Mass, volume, energy, or item count / kg, m3, kWh, or item"
-          description: "This row records the selected exchange within the declared process and system boundary."
-          amount:
-            expression: "measured washing or live-holding water, ice, electricity, oxygen, packaging, chilling, container, and dispatch preparation quantities"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per 1,000 kg marketable reference product"
-              kind: "reference_flow"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_packaging_ice_chilling_and_dispatch_records
-              source_ids:
-                - codex-cxc-52-2003
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "5000"
-                unit: "kg, m3, kWh, or item/1,000 kg marketable product"
-                basis: "broad first-pass water, ice, packaging, live-holding, and chilling input check"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
-      waste:
-        - row_id: sorting_rejects_mortalities_drainage_wastewater_and_packaging_waste
-          role: "Sorting rejects, mortalities, drainage, wastewater, and packaging waste"
-          name: "Sludge ; route-specific rejected organisms, mortalities, drainage, wastewater, spent ice, packaging waste, and organic residue selected from site records"
-          flow_type: "waste"
-          flow_ref:
-            uuid: "725c8f6e-7975-4155-a250-1f95ef70c508"
-          property_unit: "Mass or volume / kg or m3"
-          description: "This row records the selected exchange within the declared process and system boundary."
-          amount:
-            expression: "measured rejects, mortalities, drainage, wastewater, spent ice, packaging waste, residue mass, disposal route, recovery route, and receiving environment"
-            value_mode: "foreground_record"
-            specificity: "site_specific"
-            basis:
-              text: "per 1,000 kg marketable reference product"
-              kind: "reference_flow"
-            evidence:
-              kind: "collected_record"
-              collection_protocol_id: cp_reject_residue_bycatch_mortality_and_discharge_records
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "0"
-                upper: "10"
-                unit: "kg or m3/kg marketable product"
-                basis: "broad reject, mortality, drainage, wastewater, spent ice, packaging waste, and residue check"
-                basis_kind: "reference_flow"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
+        - row_id: preparation_electricity
+          role: "Conditional electricity input"
+          name: "Electricity"
+          flow_type: "product"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / kWh"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_packaging_ice_chilling_and_dispatch_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_ice_chilling_and_dispatch_records
+              source_ids: []
+            ranges: []
+        - row_id: preparation_ice
+          role: "Conditional ice input"
+          name: "Ice"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. Its precise UUID remains unresolved; the medium name does not prove live product condition."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_packaging_ice_chilling_and_dispatch_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_ice_chilling_and_dispatch_records
+              source_ids: []
+            ranges: []
+        - row_id: preparation_oxygen
+          role: "Conditional oxygen input"
+          name: "Oxygen, gaseous"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. Its precise UUID remains unresolved; the medium name does not prove live product condition."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_packaging_ice_chilling_and_dispatch_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_ice_chilling_and_dispatch_records
+              source_ids: []
+            ranges: []
+      waste:
+        []
       elementary:
         []
     outputs:
       product:
         - row_id: marketable_live_fresh_or_chilled_n_e_c_aquatic_invertebrate
-          role: "Marketable live, fresh, or chilled n.e.c. aquatic invertebrate"
-          name: "Other aquatic invertebrates"
+          role: "Prepared product transfer to the actual next node"
+          name: "Aquatic invertebrate animal"
           flow_type: "product"
-          flow_ref:
-            uuid: "9e2938bd-46d5-4801-b52c-87c35caf9a07"
-          property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Use independently measured same-lot output mass, form, life/preparation state and moisture basis, retaining rejection, tissue/water changes and losses. This is not fixed to reference 1 kg; transfer to the final gate if delivery is absent and to delivery when present."
           amount:
-            expression: "fixed reference output after declared sorting, drainage, chilling, packaging tare exclusion, and product-state normalization"
-            value_mode: "fixed_value"
-            specificity: "product_specific"
+            expression: "Collect this exchange’s own quantity under cp_packout_product_state_and_mass_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
             basis:
-              text: "1 kg reference product"
+              text: "per 1 kg reference flow"
               kind: "reference_flow"
             evidence:
-              kind: "identity_reference"
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packout_product_state_and_mass_records
               source_ids: []
-            ranges:
-              - role: qa_guardrail
-                lower: "1"
-                upper: "1"
-                unit: "kg/kg reference product"
-                basis: "fixed reference flow output"
-                basis_kind: "reference_flow"
-                evidence_kind: "identity_reference"
-                source_ids: []
+            ranges: []
       waste:
         []
       elementary:
-        []
+        - row_id: preparation_fossil_co2
+          role: "Actual foreground fossil CO2 to unspecified air"
+          name: "Carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Include only actual direct fossil-fuel combustion to air owned by this node, using measurement or an explicitly sourced factor compatible with fuel/engine/units; retain oxidation, controls and uncertainty. Exclude animal respiration, dissolved carbon to water and supplier-covered emissions; add each other actual pollutant separately by substance/medium."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_packaging_ice_chilling_and_dispatch_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_packaging_ice_chilling_and_dispatch_records
+              source_ids: []
+            ranges: []
   - id: delivery_to_declared_gate
-    label: "Delivery to Declared Gate"
+    label: "Delivery to declared gate"
     inputs:
       product:
-        - row_id: delivery_fuel_electricity_ice_and_temperature_control_support
-          role: "Delivery fuel, electricity, ice, and temperature-control support"
-          name: "Diesel oil ; Electricity ; route-specific transport service, ice, live-holding water, oxygen, refrigerant service, or reusable packaging support selected from site records"
+        - row_id: delivery_product_receipt
+          role: "Product received for delivery"
+          name: "Aquatic invertebrate animal"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Collect only when this concrete exchange actually occurs under this node’s foreground responsibility; exclude components already covered by an inclusive supplier service. Retain its own unallocated raw quantity/native unit and never inherit a collection total or range."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_delivery_records
+              source_ids: []
+            ranges: []
+        - row_id: delivery_diesel
+          role: "Conditional diesel input"
+          name: "Diesel fuel"
           flow_type: "product"
           flow_ref:
             uuid: "9d258d75-6792-4f1c-9856-81602ed8f816"
-          property_unit: "Fuel, energy, mass, volume, or transport service / L, MJ, kWh, kg, m3, or tonne-km"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. This UUID establishes a mass-based diesel identity only, with no grade, provider, density, heating value or emission factor; L-to-kg conversion requires matching density evidence."
           amount:
-            expression: "include only when the declared reference flow is delivered beyond landing, receipt, dispatch, or packhouse gate; record distance, mode, load factor, live or chilled condition, and return logistics where relevant"
-            value_mode: "foreground_record"
-            specificity: "route_specific"
+            expression: "Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
             basis:
-              text: "per 1,000 kg delivered reference product or tonne-km"
-              kind: "transport_service"
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
             evidence:
-              kind: "collected_record"
+              kind: "calculated_from_collection"
               collection_protocol_id: cp_delivery_records
               source_ids: []
-            ranges:
-              - role: default_estimate
-                lower: "0"
-                upper: "5000"
-                unit: "tonne-km/1,000 kg reference product"
-                basis: "broad first-pass delivery activity check when delivery is in scope"
-                basis_kind: "transport_service"
-                evidence_kind: "reasoned_estimate"
-                source_ids: []
+            ranges: []
+        - row_id: delivery_electricity
+          role: "Conditional electricity input"
+          name: "Electricity"
+          flow_type: "product"
+          property_unit: "Net calorific value 93a60a56-a3c8-11da-a746-0800200c9a66 / kWh"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_delivery_records
+              source_ids: []
+            ranges: []
+        - row_id: delivery_ice
+          role: "Conditional ice input"
+          name: "Ice"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. Its precise UUID remains unresolved; the medium name does not prove live product condition."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_delivery_records
+              source_ids: []
+            ranges: []
+        - row_id: delivery_oxygen
+          role: "Conditional oxygen input"
+          name: "Oxygen, gaseous"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Record only if actually used at this node, never as a default input. Verify supply, composition/purity and purpose, retaining its own measured native quantity and same-lot final-gate basis; inclusive service and owned components are mutually exclusive. Its precise UUID remains unresolved; the medium name does not prove live product condition."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_delivery_records
+              source_ids: []
+            ranges: []
       waste:
         []
       elementary:
@@ -410,41 +503,109 @@ process_inventory:
     outputs:
       product:
         - row_id: delivered_n_e_c_aquatic_invertebrate_at_declared_gate
-          role: "Delivered n.e.c. aquatic invertebrate at declared gate"
-          name: "Other aquatic invertebrates"
+          role: "Delivered product transfer to final gate acceptance"
+          name: "Aquatic invertebrate animal"
           flow_type: "product"
-          flow_ref:
-            uuid: "9e2938bd-46d5-4801-b52c-87c35caf9a07"
-          property_unit: "Mass / kg"
-          description: "This row records the selected exchange within the declared process and system boundary."
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Independently weigh delivered product per actual route, excluding separable cargo water, ice and package tare; retain transit loss, state and moisture changes before final gate acceptance. This internal handoff is not a fixed reference output."
           amount:
-            expression: "delivered mass at the declared gate, excluding transport packaging tare and ice unless contractually part of the product basis"
+            expression: "Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
             value_mode: "calculated_value"
-            specificity: "route_specific"
+            specificity: "site_specific"
             basis:
-              text: "delivered reference product"
+              text: "per 1 kg reference flow"
               kind: "reference_flow"
             evidence:
               kind: "calculated_from_collection"
               collection_protocol_id: cp_delivery_records
               source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        - row_id: delivery_fossil_co2
+          role: "Actual foreground fossil CO2 to unspecified air"
+          name: "Carbon dioxide (fossil)"
+          flow_type: "elementary"
+          flow_ref:
+            uuid: "08a91e70-3ddc-11dd-923d-0050c2490048"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Include only actual direct fossil-fuel combustion to air owned by this node, using measurement or an explicitly sourced factor compatible with fuel/engine/units; retain oxidation, controls and uncertainty. Exclude animal respiration, dissolved carbon to water and supplier-covered emissions; add each other actual pollutant separately by substance/medium."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_delivery_records and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_delivery_records
+              source_ids: []
+            ranges: []
+  - id: declared_gate_release
+    label: "Final declared-gate acceptance and release"
+    inputs:
+      product:
+        - row_id: declared_gate_receipt
+          role: "Product receipt from the actual final predecessor"
+          name: "Aquatic invertebrate animal"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "Receive only the actual final predecessor, determined by the real gate: landing/receipt, pack-out or delivery. Record predecessor transfer ID, net product mass, state and losses without adding alternative routes together."
+          amount:
+            expression: "Collect this exchange’s own quantity under cp_declared_gate and normalize by the measured same-lot accepted net mass at the final declared gate after unique ownership/attribution. Preserve unallocated physical material transfers; intermediate quantities are never fixed to 1 kg."
+            value_mode: "calculated_value"
+            specificity: "site_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "calculated_from_collection"
+              collection_protocol_id: cp_declared_gate
+              source_ids: []
+            ranges: []
+      waste:
+        []
+      elementary:
+        []
+    outputs:
+      product:
+        - row_id: declared_gate_product
+          role: "Sole declared-gate reference product"
+          name: "Aquatic invertebrate animal"
+          flow_type: "product"
+          property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
+          description: "The sole final reference output uses positive measured same-lot accepted net mass Q at the declared gate, excluding separate package tare and free carrier water/ice. This identity establishes neither life condition, yield nor upstream internal throughput."
+          amount:
+            expression: "1 kg"
+            value_mode: "fixed_value"
+            specificity: "product_specific"
+            basis:
+              text: "per 1 kg reference flow"
+              kind: "reference_flow"
+            evidence:
+              kind: "identity_reference"
+              collection_protocol_id: cp_declared_gate
+              source_ids: []
             ranges:
               - role: qa_guardrail
                 lower: "1"
                 upper: "1"
-                unit: "kg/kg delivered reference product"
-                basis: "delivered reference product mass after route allocation and product-state normalization"
+                unit: "kg"
+                basis: "per 1 kg reference flow"
                 basis_kind: "reference_flow"
-                evidence_kind: "calculated_from_collection"
-                source_ids: []
+                evidence_kind: "method_formula"
+                source_ids:
+                  - mass-balance-identity
       waste:
         []
       elementary:
         []
 allocation_rules:
   - rule_id: allocation_rule_1
-    applies_to: "marketable live, fresh, or chilled n.e.c. aquatic invertebrate output"
-    rule: "Treat the declared reference product as the single reference product unless rejected biomass, bycatch, mortalities, or residues are intentionally recovered as co-products."
+    applies_to: "sole declared-gate reference and all other intended outputs"
+    rule: "The final reference output remains unique. Enumerate other actually intended and accepted products by species, form, state, destination and separate handoff; bycatch, mortality or residue does not automatically establish a coproduct. Subdivide/directly assign measured activities first; attribute residual shared burdens by an evidenced causal physical relationship, or a justified economic relationship with sensitivity when a physical basis is unsupported. Allocation does not alter physical mass."
     source_ids: []
   - rule_id: allocation_rule_2
     applies_to: "all datasets"
@@ -462,103 +623,135 @@ dataset_production:
   collection_protocols:
     - protocol_id: cp_production_harvest_collection_and_receipt_records
       process_id: "production_harvest_collection_and_receipt"
-      flow_role: "route, species, harvest, collection, aquaculture, receipt, accepted lot"
-      record_type: "vessel log, collector log, farm log, landing note, receipt note, supplier invoice, permit, feed or stock record"
-      raw_fields: "species, route, area or site, gear or culture system, supplier, trip or batch, date, fuel, electricity, water, stock, feed, gross mass, rejected mass, accepted mass, landing or receipt site, n.e.c. justification"
-      collection_method: "trip, farm, receipt, landing, supplier, permit, and weigh records"
-      unit: "kg, L, kWh, MJ, item, date, area"
-      frequency: "each trip, production batch, receipt, or landing lot"
-      temporal_coverage: "full reporting period or declared season/cycle"
-      site_scope: "vessel, collector, farm, harvest area, landing site, supplier, or packhouse"
-      aggregation_rule: "reconcile produced, collected, landed, or received mass minus rejects and losses to accepted lot; normalize to marketable output"
-      quality_evidence: "landing tickets, scale records, farm logs, supplier records, permits, invoices, and operator sign-off"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "species/origin, n.e.c. justification, actual wild collection or declared culture route, gear/culture unit, trip/cycle/date, purchased stock/feed by actual identity and sampled counts/masses, observed biological growth where farmed, gross/tare/accepted mass, bycatch/mortality/rejection and fates, permit/traceability where applicable; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
     - protocol_id: cp_packout_product_state_and_mass_records
       process_id: "sorting_holding_chilling_and_packout"
-      flow_role: "sorting, drainage, product state, marketable output"
-      record_type: "sorting sheet, wash log, drainage record, temperature log, live-holding log, packout record, sales note"
-      raw_fields: "accepted mass, product state, wet or drained basis, washing, drainage time, temperature, holding duration, rejected mass, marketable mass, package count, destination"
-      collection_method: "calibrated scales, handling logs, temperature records, packout records, and sales reconciliation"
-      unit: "kg, item, deg C, h, date"
-      frequency: "each handling or packing lot"
-      temporal_coverage: "full handling and dispatch period"
-      site_scope: "landing site, farm, holding unit, packhouse, dispatch gate"
-      aggregation_rule: "reconcile accepted lot mass minus rejects, mortalities, drainage, and handling losses to marketable output; normalize all flows to 1 kg reference product"
-      quality_evidence: "scale calibration, temperature logs, packout sheets, sales records, and supervisor review"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "actual sorting, surface washing, drainage, live maintenance or chilling, life/temperature/salinity/duration, free water/ice and tare, source/handled product states and paired transfers, own water/ice/oxygen/chemical composition and package count/tare/reuse; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
     - protocol_id: cp_packaging_ice_chilling_and_dispatch_records
       process_id: "sorting_holding_chilling_and_packout"
-      flow_role: "water, ice, electricity, packaging, live holding, chilling"
-      record_type: "packaging invoice, ice log, water meter, electricity meter, temperature log, oxygen log, dispatch sheet"
-      raw_fields: "packaging material, item count, tare, ice mass, water, electricity, oxygen, temperature, holding time, lot, destination"
-      collection_method: "invoices, meters, temperature records, and dispatch records"
-      unit: "kg, item, m3, kWh, deg C, h"
-      frequency: "each packing lot and monthly reconciliation"
-      temporal_coverage: "handling and dispatch period"
-      site_scope: "packhouse, live-holding unit, cold room, dispatch gate"
-      aggregation_rule: "allocate to product lots by measured lot, package count, product mass, holding time, or temperature-control zone"
-      quality_evidence: "invoices, meter readings, temperature logs, dispatch sheets, and operator review"
-    - protocol_id: cp_reject_residue_bycatch_mortality_and_discharge_records
-      process_id: "production_harvest_collection_and_receipt_sorting_holding_chilling_and_packout"
-      flow_role: "bycatch, mortalities, rejected biomass, drainage, wastewater, residues, packaging waste"
-      record_type: "reject log, bycatch record, mortality log, wastewater record, disposal note, waste ticket"
-      raw_fields: "date, species or material, count, mass, volume, cause, fate, disposal route, recovery route, receiving environment"
-      collection_method: "production, landing, handling, waste, and discharge records"
-      unit: "kg, m3, item, date"
-      frequency: "each event and monthly reconciliation"
-      temporal_coverage: "full reporting period or season/cycle"
-      site_scope: "vessel, farm, landing site, packhouse, discharge route, or waste route"
-      aggregation_rule: "sum by material and fate; reconcile to gross lot, accepted mass, marketable output, and disposal route"
-      quality_evidence: "reject logs, mortality logs, waste transfer notes, discharge records, and supervisor review"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "actual sorting, surface washing, drainage, live maintenance or chilling, life/temperature/salinity/duration, free water/ice and tare, source/handled product states and paired transfers, own water/ice/oxygen/chemical composition and package count/tare/reuse; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
     - protocol_id: cp_delivery_records
       process_id: "delivery_to_declared_gate"
-      flow_role: "delivered product, transport energy, live or chilled delivery condition"
-      record_type: "delivery note, transport invoice, fuel record, route plan, temperature or live-holding log"
-      raw_fields: "origin, destination, distance, mode, load mass, fuel, electricity, ice, water, oxygen, temperature, live-holding duration, return logistics"
-      collection_method: "carrier documents, vehicle logs, meter records, and dispatch reconciliation"
-      unit: "kg, km, tonne-km, L, kWh, h, deg C"
-      frequency: "each delivery route"
-      temporal_coverage: "delivery period in declared scope"
-      site_scope: "delivery route, vehicle, vessel, or carrier"
-      aggregation_rule: "calculate tonne-km and allocate fuel or service by load mass, distance, temperature zone, and return logistics where relevant"
-      quality_evidence: "carrier invoice, route record, temperature log, and dispatch sign-off"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "origin/destination, leg distance/mode/actual cargo including water/ice/containers, temperature/oxygen control, loaded/empty returns, service scope, receipt and losses; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
+    - protocol_id: cp_declared_gate
+      process_id: "declared_gate_release"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "unique declared gate location/time/recipient, predecessor route, actual acceptance, species/form/state/moisture basis, same-lot final accepted net mass Q, gross/tare/free water/ice and refusal; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
+    - protocol_id: cp_production_harvest_collection_and_receipt_outputs
+      process_id: "production_harvest_collection_and_receipt"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "species/origin, n.e.c. justification, actual wild collection or declared culture route, gear/culture unit, trip/cycle/date, purchased stock/feed by actual identity and sampled counts/masses, observed biological growth where farmed, gross/tare/accepted mass, bycatch/mortality/rejection and fates, permit/traceability where applicable; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
+    - protocol_id: cp_sorting_holding_chilling_and_packout_outputs
+      process_id: "sorting_holding_chilling_and_packout"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "actual sorting, surface washing, drainage, live maintenance or chilling, life/temperature/salinity/duration, free water/ice and tare, source/handled product states and paired transfers, own water/ice/oxygen/chemical composition and package count/tare/reuse; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
+    - protocol_id: cp_delivery_outputs
+      process_id: "delivery_to_declared_gate"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "origin/destination, leg distance/mode/actual cargo including water/ice/containers, temperature/oxygen control, loaded/empty returns, service scope, receipt and losses; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
+    - protocol_id: cp_gate_outputs
+      process_id: "declared_gate_release"
+      flow_role: "Concrete node exchanges, stocks and per-flow extension duties"
+      record_type: "Weighing, metering, activity, supplier, transfer and recipient records"
+      raw_fields: "unique declared gate location/time/recipient, predecessor route, actual acceptance, species/form/state/moisture basis, same-lot final accepted net mass Q, gross/tare/free water/ice and refusal; lot/event/time, individual identity/native quantity/unit, destination/medium, ownership, allocation drivers, opening/closing stocks and independent range/uncertainty evidence"
+      collection_method: "Use calibrated scales/meters, original documents, process/temperature/moisture logs and supplier/recipient confirmation; retain method/sampling/factor and uncertainty without amount or conversion defaults"
+      unit: "kg; kWh; L; m3; item; h; deg C; km; tkm; each actual native unit separately"
+      frequency: "Each event/lot; monthly/period reconciliation"
+      temporal_coverage: "Complete production/trip/handling/delivery periods and attributable return, idle, failed, maintenance and asset replacement/retirement periods"
+      site_scope: "Actual node sites/equipment/providers/recipients and shared consumers"
+      aggregation_rule: "per 1 kg reference flow"
+      quality_evidence: "Calibration, traceability, paired transfers, mass/moisture/stock reconciliation, service scope, attribution and uncertainty evidence"
   calculation_rules:
     - id: normalize_to_reference_product
       applies_to: "all inventory rows"
-      rule: "normalized amount = collected amount / marketable reference product mass, with unit and product-state basis retained"
+      rule: "normalized amount = actual same-lot exchange quantity / positive same-lot declared-gate accepted net product mass Q; retain raw trip/lot/reporting-period numerators and units. Apply evidenced shares only to genuinely shared LCA burdens in a separate attribution view, keeping the physical ledger unallocated. Link intermediate process yields through measured stage masses and Q; local output cannot replace Q or imply a 1:1 yield. The sole final reference output is Q/Q = 1 kg."
       inputs:
-        - "collected amount"
-        - "marketable product mass"
-        - "product basis"
-      output: "kg, kWh, L, item, m3, or tonne-km per kg reference product"
+        - "Node raw quantities"
+        - Q
+        - "measured intermediate yields"
+        - "attribution decisions"
+      output: "Quantity per 1 kg reference flow and separate physical ledger"
       source_ids:
         - mass-balance-identity
-    - id: accepted_lot_balance
-      applies_to: "production, harvest, collection, receipt"
-      rule: "accepted lot = gross produced, harvested, collected, or received mass - rejected biomass - mortalities - documented losses"
+    - id: material_state_balance
+      applies_to: "all material stages and stocks"
+      rule: "Record opening stocks, receipts/collection, biological growth where actually farmed, actual water/material additions, internal handoffs, closing stocks, accepted products, rejection, mortality, tissue removal, trimming, drainage/evaporation and other losses separately; reconcile on matching species/form/moisture basis with unexplained residual retained. Do not deduct package tare or free ice again from already net product masses."
       inputs:
-        - "gross lot"
-        - "received mass"
-        - rejects
-        - mortalities
-        - losses
-      output: "accepted lot"
+        - "Node mass/moisture/stock and fate records"
+      output: "Measured stage yields and balance differences"
       source_ids:
         - mass-balance-identity
-    - id: product_state_yield
-      applies_to: "sorting, drainage, and packout"
-      rule: "marketable product mass = accepted lot mass - rejected mass - mortality mass - drainage or product-state loss - packaging tare and ice excluded from product basis"
-      inputs:
-        - "accepted mass"
-        - "rejected mass"
-        - mortalities
-        - drainage
-        - "product-state records"
-        - "packout records"
-      output: "marketable live, fresh, or chilled mass"
-      source_ids:
-        - codex-cxc-52-2003
     - id: delivery_tonne_kilometres
       applies_to: "delivered reference product"
-      rule: "tonne-km = delivered product mass in tonnes x one-way or contract-declared route distance; allocate temperature-control or live-holding inputs by load share"
+      rule: "For each actual route leg, multiply the mass in tonnes of the consignment actually carried by that leg distance in km, then normalize to matched final reference-product output. The load includes carrier water, ice and packaging actually transported and is not the net reference-product mass. For shared loads use a justified mass, occupied-volume or other causal attribution key. Record empty-return, cooling, oxygenation and holding coverage; zero payload on an empty return does not imply zero transport burden. Do not double-count a transport service that covers the same fuel/direct emissions already modelled explicitly."
       inputs:
         - "delivered mass"
         - distance
@@ -568,51 +761,73 @@ dataset_production:
       output: "tonne-km and delivered product inventory"
       source_ids:
         - mass-balance-identity
+    - id: direct_emissions
+      applies_to: "all actual direct releases"
+      rule: "Use measurements or a sourced factor compatible with actual fuel/substance/units/receiving medium; retain original factor evidence, applicability, controls and uncertainty. No generic diesel factor is prescribed, and a water-body balance is not automatically a negative emission or credit."
+      inputs:
+        - "Node activity"
+        - "measurement or sourced factor"
+        - medium
+      output: "Substance-specific direct release quantity"
+      source_ids:
+        - mass-balance-identity
   data_quality_requirements:
-    - id: dq_identity
-      applies_to: "reference product and lot"
-      requirement: "Species or species group, CPC category, n.e.c. justification, route, live/fresh/chilled state, wet or drained mass basis, area or site, and declared gate must be explicit."
-      evidence: "reference flow metadata, PCR selection note, production or landing records, product-state logs, packout records, and sales or dispatch records"
-    - id: dq_product_state
-      applies_to: "all product rows"
-      requirement: "Dataset must not mix live, fresh, or chilled product with frozen, dried, salted, brined, prepared, preserved, ornamental, or processed product."
-      evidence: "product descriptions, temperature logs, handling records, preservation records, and sales documents"
-    - id: dq_mass_balance
-      applies_to: "production, harvest, collection, receipt, sorting, drainage, and packout"
-      requirement: "Gross lot, accepted mass, rejects, mortalities, drainage, residues, and marketable product records must reconcile within declared tolerance; unexplained gaps require disclosure."
-      evidence: "mass-balance worksheet, scale tickets, production or landing records, packout records, and supervisor review"
-    - id: dq_temporal_coverage
-      applies_to: "all foreground rows"
-      requirement: "Data must cover the declared harvest season, production cycle, handling lots, and dispatch period, or disclose partial-season, partial-cycle, partial-lot, or proxy coverage."
-      evidence: "reporting calendar, trip or farm logs, handling logs, dispatch records, and coverage statement"
-    - id: dq_boundary_disclosure
-      applies_to: "all datasets"
-      requirement: "The dataset must disclose whether production, harvest, collection, stock, feed, water, ice, packaging, delivery, capital goods, and infrastructure are foreground, linked upstream datasets, or excluded by scope."
-      evidence: "dataset boundary statement, supplier records, upstream dataset links, and scope declaration"
+    - id: collect_production_harvest_collection_or_receipt_inputs
+      applies_to: "production_harvest_collection_and_receipt"
+      requirement: "Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Fuel, energy, mass, volume, item, time, or service quantity / L, kWh, MJ, kg, m3, item, h, or service unit; Amount rule: measured or allocated harvest, collection, aquaculture, receipt, gear, water, fuel, electricity, stock, feed, and landing support inputs by route and lot; Sources: fao-code-responsible-fisheries-1995, codex-cxc-52-2003 Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range."
+      evidence: "cp_production_harvest_collection_and_receipt_records; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support"
+    - id: collect_bycatch_mortalities_rejected_biomass_and_receipt_residues
+      applies_to: "production_harvest_collection_and_receipt"
+      requirement: "Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Mass, volume, or count / kg, m3, or item; Amount rule: measured bycatch, mortalities, rejected organisms, non-target material, drainage or wastewater, residue mass, fate, disposal route, recovery route, and receiving environment; Sources:  Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range."
+      evidence: "cp_production_harvest_collection_and_receipt_outputs; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support"
+    - id: collect_water_ice_electricity_packaging_and_live_holding_inputs
+      applies_to: "sorting_holding_chilling_and_packout"
+      requirement: "Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Mass, volume, energy, or item count / kg, m3, kWh, or item; Amount rule: measured washing or live-holding water, ice, electricity, oxygen, packaging, chilling, container, and dispatch preparation quantities; Sources: codex-cxc-52-2003 Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range."
+      evidence: "cp_packaging_ice_chilling_and_dispatch_records; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support"
+    - id: collect_sorting_rejects_mortalities_drainage_wastewater_and_packaging_waste
+      applies_to: "sorting_holding_chilling_and_packout"
+      requirement: "Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Mass or volume / kg or m3; Amount rule: measured rejects, mortalities, drainage, wastewater, spent ice, packaging waste, residue mass, disposal route, recovery route, and receiving environment; Sources:  Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range."
+      evidence: "cp_sorting_holding_chilling_and_packout_outputs; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support"
+    - id: collect_delivery_fuel_electricity_ice_and_temperature_control_support
+      applies_to: "delivery_to_declared_gate"
+      requirement: "Add a separate exchange and quantity for each actual material, natural resource, distinct service, other intended product, waste and direct release at this node; record composition/species/state, native property/unit, supply boundary, destination/medium, ownership and evidenced actual absence. Generated rejects/residues/releases are outputs; only genuinely received wastes are inputs. Separate intended recovery, managed waste and direct environmental release by actual fate. Do not bind generic sludge/packaging/process-water identities or inherit aggregate quantities or mixed-unit ranges. Flow property / unit: Fuel, energy, mass, volume, or transport service / L, MJ, kWh, kg, m3, or tonne-km; Amount rule: include only when the declared reference flow is delivered beyond landing, receipt, dispatch, or packhouse gate; record distance, mode, load factor, live or chilled condition, and return logistics where relevant; Sources:  Retain each raw trip/lot/reporting-period quantity and applicable yield/moisture basis; divide every reporting quantity by measured same-lot final declared-gate accepted net mass Q. Collect independent range/uncertainty evidence for each concrete flow; a mixed collection screen is not a component range."
+      evidence: "cp_delivery_records; Raw records, provider/recipient evidence, mass/water/stock balances and independent range/uncertainty support"
+    - id: dq_unique_object_gate
+      applies_to: "reference object and every stage"
+      requirement: "Before collection each dataset must fix one physical reference object: one species or an evidenced single physical commercial species-group product, one source/production route, form, actual life/preparation state, moisture/drainage basis, grade and unique gate location/time/acceptance condition. Do not combine different species, live/dead, fresh/chilled, raw/prepared states or different gates in one reference exchange; unresolved specifications make the dataset incomplete. Each stage is the measured state of that same lot and is not automatically the final 1 kg."
+      evidence: "Species/origin/state/moisture/grade specification, actual gate and lot transfer/acceptance records"
+    - id: dq_ranges_uncertainty
+      applies_to: "every actual individual exchange"
+      requirement: "Verify each range basis against its concrete flow, real unit, same-lot final Q denominator and representative conditions; retain independent source/historical-batch evidence, observed variation and uncertainty without treating unknown as zero. A mixed-unit collection screen is not an individual-flow range; no universal initial upper bound spans different moisture, yield, gate or taxa. Do not self-validate against the tested batch maximum or clip actual outliers."
+      evidence: "Independent original evidence, calibration, method and uncertainty records"
+    - id: dq_period_ownership
+      applies_to: "all nodes, periods, assets and inclusive services"
+      requirement: "Cover complete actual trip/production/handling/holding/transport periods, return, idle/failed duty, maintenance/cleaning and asset replacement/retirement; reconcile unique ownership and carried stock burdens across shared consumers. Zero output or unknown Q cannot justify division by zero or erased burdens; exclude duplicate components according to inclusive service scope. Disclose actual applicability of natural origin/habitat/permit, n.e.c. justification, temporal/technology/geographic representativeness and exclusions."
+      evidence: "Period calendars, resource/asset/service/stock ledgers and origin/scope evidence"
+    - id: collect_declared_gate_handling
+      applies_to: "declared_gate_release"
+      requirement: "The final gate is the actual boundary responsibility interface, not presumed extra processing. Collect each actual pre-gate acceptance/weighing/handling event’s own electricity, material, service, rejection and release; carry the original record when the same event is already owned by a predecessor, without duplicate measurement. Every applicable concrete exchange needs its own native quantity/unit, same-Q normalization, destination and verified identity; missing data is not zero."
+      evidence: "cp_declared_gate; cp_gate_outputs; actual event/ownership/transfer/acceptance and independent range/uncertainty records"
 validation_rules:
-  - rule_id: val_reference_flow_uuid
-    applies_to: "foreground_dataset_conformance"
-    rule: "Reference product flow UUID equals 9e2938bd-46d5-4801-b52c-87c35caf9a07 unless a more specific Tiangong CPC 04590 product flow is documented."
+  - rule_id: validate_scope
+    applies_to: "reference object"
+    rule: "Verify this PCR scope, single species/physical commercial product, actual source/route, life/preparation state, form/moisture/grade and unique declared gate. Classification labels or generic landing UUIDs cannot replace actual gate/state. Explain more-specific-PCR nonapplicability for n.e.c. products and animal origin for natural sponges."
     source_ids: []
-  - rule_id: val_fallback_scope
-    applies_to: "foreground_dataset_conformance"
-    rule: "Dataset states why no more specific canonical PCR applies."
+  - rule_id: validate_gate_quantity
+    applies_to: "reference output and all quantities"
+    rule: "declared_gate_product is the sole final 1 kg reference output, and Q must be positive measured same-lot accepted net mass. Retain all raw batch quantities, actual intermediate yields, refusal/transit loss/moisture changes and paired transfers. Pack-out and delivery receipts are independently measured, not competing reference outputs."
     source_ids: []
-  - rule_id: val_product_state
-    applies_to: "foreground_dataset_conformance"
-    rule: "Product state is live, fresh, or chilled and excludes frozen, dried, salted, brined, prepared, preserved, ornamental, or processed product."
+  - rule_id: validate_atomic_completion
+    applies_to: "all collection duties and actual exchanges"
+    rule: "Resolve every applicable section-8 duty into specific physical/chemical exchanges with independent quantities, native units, range/uncertainty evidence, composition/state, same-Q normalization, destination/medium and verified compatible UUIDs. Any unresolved applicable duty makes the final dataset incomplete and validation fails; unknown is not zero and collection amounts/ranges/UUIDs are never copied."
     source_ids: []
-  - rule_id: val_mass_basis
-    applies_to: "foreground_dataset_conformance"
-    rule: "Product mass basis is declared as wet, drained, cleaned, live, chilled, ice-excluded, or another stated basis."
+  - rule_id: validate_fates_ownership
+    applies_to: "outputs, resources, services and periods"
+    rule: "Check intended products, managed wastes, environmental releases and stocks by actual fate; generated wastes/releases cannot be inputs. Inclusive services exclude overlapping owned fuel/electricity/assets/releases; transport cargo includes accompanying water/ice/containers and empty return is not zero burden. All actual nodes/periods/shared consumers and carried burdens must be complete."
     source_ids: []
-  - rule_id: val_required_qualifiers
-    applies_to: "foreground_dataset_conformance"
-    rule: "Required qualifiers are present in metadata or process notes."
-    source_ids: []
-  - rule_id: val_structured_sync
-    applies_to: "foreground_dataset_conformance"
-    rule: "structured.yaml is regenerated from the bilingual Markdown after edits."
+  - rule_id: validate_projection
+    applies_to: "bilingual content and structured projection"
+    rule: "English/Chinese must align on reference object, exchange IDs, rules, units/denominators and duties; UUID-bearing Chinese displays use official baseName and unresolved identities remain explicit. Normally regenerate and verify structured Schema/fingerprints; structural pass does not prove identity, yield, numerical ranges or actual data completeness."
     source_ids: []
 published_dataset_profile:
   dataset_role: "foreground production dataset for other aquatic invertebrates, live, fresh, or chilled, n.e.c."
@@ -633,23 +848,23 @@ data_sources:
     used_for: "responsible fishery operations, bycatch, habitat, route, and traceability disclosure context"
   - id: "mass-balance-identity"
     type: "method_factor"
-    reference: "PCR internal mass-balance identity: output equals measured inputs plus growth or receipt minus rejects, mortalities, drainage, and losses under declared product basis"
+    reference: "Declared conservation/stock ledger and same-lot final-gate normalization method in PCR sections 4, 7 and 8, including measured receipts, stocks, water/tissue changes and all actual fates; no empirical yield or factor is supplied."
     used_for: "normalization, allocation, accepted-lot balance, yield, and delivery calculations"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:87f93937e590682f358159c15e0e6dda129386fc03fae0171d3c2b11b540438a"
+  source_sha256: "sha256:b23c91cec0239f82277e677d18a054ddc497e65c707d0cf4100f2f7e815ef7f8"
   identity_scope: "projection_snapshot"
   units:
-    - unit_id: "normative_6942"
+    - unit_id: "normative_7455"
       family: "system_boundary"
       span:
         start:
-          offset: 6942
-          line: 63
+          offset: 7455
+          line: 65
           column: 1
         end:
-          offset: 9390
-          line: 84
+          offset: 9903
+          line: 86
           column: 1
       markdown: "## 5. System Boundary\n\nThe default boundary covers foreground-controlled production or capture to the declared landing, holding, dispatch, packhouse, or delivery gate:\n\n1. Wild harvest, gathering, collection, or declared aquaculture production when no more specific PCR applies, including gear or culture-unit operation, catch or stock handling, non-target material, bycatch, mortalities, and direct operating inputs.\n2. Landing or receipt, grading, washing where performed, live holding or chilled holding, drainage, rejection, residue handling, temperature control, icing, packaging, storage, and declared gate release.\n3. Delivery to the declared gate when the reference flow is delivered product beyond landing, receipt, dispatch, or packhouse gate.\n\nCapital goods and long-lived vessels, gear, tanks, cages, holding systems, cold rooms, and infrastructure are included only when the declared data package scope requires them. Purchased stock, feed, ice, packaging, electricity, fuel, water, oxygen, and transport services require upstream datasets unless the same operator controls and reports their production in the foreground package.\n\n### Boundary Abstraction\n\n| Field | Value |\n| --- | --- |\n| declared_starting_condition | declared_other_aquatic_invertebrate_harvest_collection_or_stocking_lot |\n| starting_condition_role | n_e_c_aquatic_invertebrate_lot_identity_and_product_state |\n| product_classification_scope | current CPC 3.0 product category `04590`, `Other aquatic invertebrates, live, fresh or chilled, n.e.c.` |\n| recursive_input_rule | other aquatic invertebrates used as inputs to produce the reference product are recorded as declared harvest, collection, stocking, or receipt lots with species, route, product-state, and mass-basis disclosure, not recursively as finished reference product output |\n| upstream_dataset_requirement | harvest, collection, aquaculture, supplier, landing, stock, feed, packaging, ice, fuel, electricity, water, oxygen, and delivery datasets where outside foreground control |\n| disclosure | disclose species or species group, n.e.c. justification, route, harvest or production area, gear, culture system where relevant, landing or receipt site, live/fresh/chilled state, wet or drained mass basis, sorting and rejection, washing or holding water, temperature or ice use, holding duration, packaging state, intended use where known, declared gate, and unresolved Tiangong UUID substitutions |\n\n"
       headings:
@@ -668,12 +883,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 6942
-              line: 63
+              offset: 7455
+              line: 65
               column: 1
             end:
-              offset: 6963
-              line: 63
+              offset: 7476
+              line: 65
               column: 22
           text: "## 5. System Boundary"
           depth: 2
@@ -688,18 +903,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_22964"
+    - unit_id: "normative_34494"
       family: "allocation"
       span:
         start:
-          offset: 22964
-          line: 328
+          offset: 34494
+          line: 451
           column: 1
         end:
-          offset: 24846
-          line: 337
+          offset: 36675
+          line: 460
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| allocation_id | Applies to | Rule | Required data | Source |\n| --- | --- | --- | --- | --- |\n| `single_reference_product_default` | marketable live, fresh, or chilled n.e.c. aquatic invertebrate output | Treat the declared reference product as the single reference product unless rejected biomass, bycatch, mortalities, or residues are intentionally recovered as co-products. | marketable mass, rejected mass, recovered co-product mass, destination, and revenue or physical relation where co-products are claimed | `mass-balance-identity` |\n| `fallback_scope_priority` | all datasets | If a more specific canonical PCR exists for the species, route, or product state, use that PCR instead of this fallback category. | species, route, product state, classification mapping, and PCR selection note | `mass-balance-identity` |\n| `bycatch_mortality_and_reject_handling` | bycatch, non-target material, mortalities, rejected biomass, and residues | Do not allocate away bycatch, mortalities, rejects, drainage, or residue by excluding them from the foreground package. Record fate and allocate only when a recovered co-product is documented. | bycatch mass, mortality mass, reject mass, drainage or wastewater, destination, disposal or recovery route | `fao-code-responsible-fisheries-1995` |\n| `shared_route_allocation` | multi-species trips, shared aquaculture systems, or shared handling services | Allocate shared vessel fuel, gear service, stock inputs, feed, electricity, water, ice, oxygen, packaging, and handling by direct measurement, trip log, culture-unit record, accepted mass, holding time, package count, or another declared physical driver before economic allocation. | trip records, culture-unit records, accepted mass by species, service logs, package counts, holding time, and allocation driver | `mass-balance-identity` |\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| allocation_id | Applies to | Rule | Required data | Source |\n| --- | --- | --- | --- | --- |\n| `single_reference_product_default` | sole declared-gate reference and all other intended outputs | The final reference output remains unique. Enumerate other actually intended and accepted products by species, form, state, destination and separate handoff; bycatch, mortality or residue does not automatically establish a coproduct. Subdivide/directly assign measured activities first; attribute residual shared burdens by an evidenced causal physical relationship, or a justified economic relationship with sensitivity when a physical basis is unsupported. Allocation does not alter physical mass. | Intended outputs, actual acceptance/market, handoffs, dedicated/shared activities, driver and price/period evidence | `mass-balance-identity` |\n| `fallback_scope_priority` | all datasets | If a more specific canonical PCR exists for the species, route, or product state, use that PCR instead of this fallback category. | species, route, product state, classification mapping, and PCR selection note | `mass-balance-identity` |\n| `bycatch_mortality_and_reject_handling` | bycatch, non-target material, mortalities, rejected biomass, and residues | Do not allocate away bycatch, mortalities, rejects, drainage, or residue by excluding them from the foreground package. Record fate and allocate only when a recovered co-product is documented. | bycatch mass, mortality mass, reject mass, drainage or wastewater, destination, disposal or recovery route | `fao-code-responsible-fisheries-1995` |\n| `shared_route_allocation` | multi-species trips, shared aquaculture systems, or shared handling services | Allocate shared vessel fuel, gear service, stock inputs, feed, electricity, water, ice, oxygen, packaging, and handling by direct measurement, trip log, culture-unit record, accepted mass, holding time, package count, or another declared physical driver before economic allocation. | trip records, culture-unit records, accepted mass by species, service logs, package counts, holding time, and allocation driver | `mass-balance-identity` |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -716,12 +931,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 22964
-              line: 328
+              offset: 34494
+              line: 451
               column: 1
             end:
-              offset: 23004
-              line: 328
+              offset: 34534
+              line: 451
               column: 41
           text: "## 7. Allocation and Co-product Handling"
           depth: 2
@@ -736,18 +951,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_32958"
+    - unit_id: "normative_62038"
       family: "validation"
       span:
         start:
-          offset: 32958
-          line: 368
+          offset: 62038
+          line: 499
           column: 1
         end:
-          offset: 34303
-          line: 379
+          offset: 64310
+          line: 509
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Rule | Severity | Failure message |\n| --- | --- | --- | --- |\n| `val_reference_flow_uuid` | Reference product flow UUID equals `9e2938bd-46d5-4801-b52c-87c35caf9a07` unless a more specific Tiangong CPC 04590 product flow is documented. | error | Reference flow must use the other aquatic invertebrates CPC 04590 identity or document a reviewed replacement. |\n| `val_fallback_scope` | Dataset states why no more specific canonical PCR applies. | error | n.e.c. fallback PCR requires a species and PCR-selection justification. |\n| `val_product_state` | Product state is live, fresh, or chilled and excludes frozen, dried, salted, brined, prepared, preserved, ornamental, or processed product. | error | Product state is outside the live, fresh, or chilled n.e.c. aquatic invertebrate PCR scope. |\n| `val_mass_basis` | Product mass basis is declared as wet, drained, cleaned, live, chilled, ice-excluded, or another stated basis. | error | Product mass basis is missing or ambiguous. |\n| `val_required_qualifiers` | Required qualifiers are present in metadata or process notes. | warning | Reference flow qualifiers are incomplete. |\n| `val_structured_sync` | `structured.yaml` is regenerated from the bilingual Markdown after edits. | error | Structured projection is out of sync with authored PCR Markdown. |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_scope` | reference object | Verify this PCR scope, single species/physical commercial product, actual source/route, life/preparation state, form/moisture/grade and unique declared gate. Classification labels or generic landing UUIDs cannot replace actual gate/state. Explain more-specific-PCR nonapplicability for n.e.c. products and animal origin for natural sponges. | |\n| `validate_gate_quantity` | reference output and all quantities | declared_gate_product is the sole final 1 kg reference output, and Q must be positive measured same-lot accepted net mass. Retain all raw batch quantities, actual intermediate yields, refusal/transit loss/moisture changes and paired transfers. Pack-out and delivery receipts are independently measured, not competing reference outputs. | |\n| `validate_atomic_completion` | all collection duties and actual exchanges | Resolve every applicable section-8 duty into specific physical/chemical exchanges with independent quantities, native units, range/uncertainty evidence, composition/state, same-Q normalization, destination/medium and verified compatible UUIDs. Any unresolved applicable duty makes the final dataset incomplete and validation fails; unknown is not zero and collection amounts/ranges/UUIDs are never copied. | |\n| `validate_fates_ownership` | outputs, resources, services and periods | Check intended products, managed wastes, environmental releases and stocks by actual fate; generated wastes/releases cannot be inputs. Inclusive services exclude overlapping owned fuel/electricity/assets/releases; transport cargo includes accompanying water/ice/containers and empty return is not zero burden. All actual nodes/periods/shared consumers and carried burdens must be complete. | |\n| `validate_projection` | bilingual content and structured projection | English/Chinese must align on reference object, exchange IDs, rules, units/denominators and duties; UUID-bearing Chinese displays use official baseName and unresolved identities remain explicit. Normally regenerate and verify structured Schema/fingerprints; structural pass does not prove identity, yield, numerical ranges or actual data completeness. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -764,12 +979,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 32958
-              line: 368
+              offset: 62038
+              line: 499
               column: 1
             end:
-              offset: 32980
-              line: 368
+              offset: 62060
+              line: 499
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -788,233 +1003,220 @@ normative_context:
     - pointer: "/system_boundary/rules/0"
       rule_id: "system_boundary_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_6942"
+      unit_id: "normative_7455"
       source_span:
         start:
-          offset: 7111
-          line: 67
+          offset: 7624
+          line: 69
           column: 1
         end:
-          offset: 7359
-          line: 67
+          offset: 7872
+          line: 69
           column: 249
     - pointer: "/system_boundary/rules/1"
       rule_id: "system_boundary_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_6942"
+      unit_id: "normative_7455"
       source_span:
         start:
-          offset: 7360
-          line: 68
+          offset: 7873
+          line: 70
           column: 1
         end:
-          offset: 7563
-          line: 68
+          offset: 8076
+          line: 70
           column: 204
     - pointer: "/system_boundary/rules/2"
       rule_id: "system_boundary_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_6942"
+      unit_id: "normative_7455"
       source_span:
         start:
-          offset: 7564
-          line: 69
+          offset: 8077
+          line: 71
           column: 1
         end:
-          offset: 7695
-          line: 69
+          offset: 8208
+          line: 71
           column: 132
     - pointer: "/system_boundary/rules/3"
       rule_id: "system_boundary_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_6942"
+      unit_id: "normative_7455"
       source_span:
         start:
-          offset: 7697
-          line: 71
+          offset: 8210
+          line: 73
           column: 1
         end:
-          offset: 8084
-          line: 71
+          offset: 8597
+          line: 73
           column: 388
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_22964"
+      unit_id: "normative_34494"
       source_span:
         start:
-          offset: 23101
-          line: 332
+          offset: 34631
+          line: 455
           column: 1
         end:
-          offset: 23548
-          line: 332
-          column: 448
+          offset: 35377
+          line: 455
+          column: 747
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_22964"
+      unit_id: "normative_34494"
       source_span:
         start:
-          offset: 23549
-          line: 333
+          offset: 35378
+          line: 456
           column: 1
         end:
-          offset: 23831
-          line: 333
+          offset: 35660
+          line: 456
           column: 283
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_22964"
+      unit_id: "normative_34494"
       source_span:
         start:
-          offset: 23832
-          line: 334
+          offset: 35661
+          line: 457
           column: 1
         end:
-          offset: 24295
-          line: 334
+          offset: 36124
+          line: 457
           column: 464
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_22964"
+      unit_id: "normative_34494"
       source_span:
         start:
-          offset: 24296
-          line: 335
+          offset: 36125
+          line: 458
           column: 1
         end:
-          offset: 24844
-          line: 335
+          offset: 36673
+          line: 458
           column: 549
     - pointer: "/validation_rules/0"
-      rule_id: "val_reference_flow_uuid"
+      rule_id: "validate_scope"
       identity_kind: "explicit"
-      unit_id: "normative_32958"
+      unit_id: "normative_62038"
       source_span:
         start:
-          offset: 33056
-          line: 372
+          offset: 62133
+          line: 503
           column: 1
         end:
-          offset: 33352
-          line: 372
-          column: 297
+          offset: 62517
+          line: 503
+          column: 385
     - pointer: "/validation_rules/1"
-      rule_id: "val_fallback_scope"
+      rule_id: "validate_gate_quantity"
       identity_kind: "explicit"
-      unit_id: "normative_32958"
+      unit_id: "normative_62038"
       source_span:
         start:
-          offset: 33353
-          line: 373
+          offset: 62518
+          line: 504
           column: 1
         end:
-          offset: 33520
-          line: 373
-          column: 168
+          offset: 62924
+          line: 504
+          column: 407
     - pointer: "/validation_rules/2"
-      rule_id: "val_product_state"
+      rule_id: "validate_atomic_completion"
       identity_kind: "explicit"
-      unit_id: "normative_32958"
+      unit_id: "normative_62038"
       source_span:
         start:
-          offset: 33521
-          line: 374
+          offset: 62925
+          line: 505
           column: 1
         end:
-          offset: 33788
-          line: 374
-          column: 268
+          offset: 63412
+          line: 505
+          column: 488
     - pointer: "/validation_rules/3"
-      rule_id: "val_mass_basis"
+      rule_id: "validate_fates_ownership"
       identity_kind: "explicit"
-      unit_id: "normative_32958"
+      unit_id: "normative_62038"
       source_span:
         start:
-          offset: 33789
-          line: 375
+          offset: 63413
+          line: 506
           column: 1
         end:
-          offset: 33976
-          line: 375
-          column: 188
+          offset: 63880
+          line: 506
+          column: 468
     - pointer: "/validation_rules/4"
-      rule_id: "val_required_qualifiers"
+      rule_id: "validate_projection"
       identity_kind: "explicit"
-      unit_id: "normative_32958"
+      unit_id: "normative_62038"
       source_span:
         start:
-          offset: 33977
-          line: 376
+          offset: 63881
+          line: 507
           column: 1
         end:
-          offset: 34124
-          line: 376
-          column: 148
-    - pointer: "/validation_rules/5"
-      rule_id: "val_structured_sync"
-      identity_kind: "explicit"
-      unit_id: "normative_32958"
-      source_span:
-        start:
-          offset: 34125
-          line: 377
-          column: 1
-        end:
-          offset: 34301
-          line: 377
-          column: 177
+          offset: 64308
+          line: 507
+          column: 428
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_6942"
+      unit_id: "normative_7455"
       source_span:
         start:
-          offset: 6942
-          line: 63
+          offset: 7455
+          line: 65
           column: 1
         end:
-          offset: 6963
-          line: 63
+          offset: 7476
+          line: 65
           column: 22
     - code: "NON_RULE_TABLE"
       message: "Table has no rule or requirement column; complete H2 source retained without inferring normative rows."
-      unit_id: "normative_6942"
+      unit_id: "normative_7455"
       source_span:
         start:
-          offset: 8112
-          line: 75
+          offset: 8625
+          line: 77
           column: 1
         end:
-          offset: 9388
-          line: 82
+          offset: 9901
+          line: 84
           column: 416
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_22964"
+      unit_id: "normative_34494"
       source_span:
         start:
-          offset: 22964
-          line: 328
+          offset: 34494
+          line: 451
           column: 1
         end:
-          offset: 23004
-          line: 328
+          offset: 34534
+          line: 451
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_32958"
+      unit_id: "normative_62038"
       source_span:
         start:
-          offset: 32958
-          line: 368
+          offset: 62038
+          line: 499
           column: 1
         end:
-          offset: 32980
-          line: 368
+          offset: 62060
+          line: 499
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -1023,5 +1225,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:87f93937e590682f358159c15e0e6dda129386fc03fae0171d3c2b11b540438a"
-  generated_content_sha256: "sha256:7ce8f7cdd7c6c49c9f8b39f24a472ac08ac8a73a6a9f37c52a85b4f70b730f3e"
+    sha256: "sha256:b23c91cec0239f82277e677d18a054ddc497e65c707d0cf4100f2f7e815ef7f8"
+  generated_content_sha256: "sha256:c61a861c245fe1453d2980bd02108628415b98f453ffc84c01cb24748c0bb560"

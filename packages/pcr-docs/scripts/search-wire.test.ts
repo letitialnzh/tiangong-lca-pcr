@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Index } from 'flexsearch';
 import { searchTerms } from '../lib/search-terms.ts';
-import { encodeSearchEntries, decodeSearchEntries } from '../lib/search-wire.ts';
+import { encodeSearchEntries, decodeSearchEntries, createSearchTermDictionary, readSearchTermDictionary } from '../lib/search-wire.ts';
 
 test('sparse score slots restore exact real engine exports, order, IDs and multilingual matches', async () => {
   const index = new Index({ tokenize: 'strict', encode: (value: unknown) => searchTerms(value, 'en-US') });
@@ -174,4 +174,39 @@ test('v5 real multilingual exports preserve every engine string and ordered quer
     for (const [key, value] of Object.entries(restored)) loaded.import(key, JSON.stringify(value));
     for (const query of ['wheat', '小麦', '珊瑚', 'pcr_rule_boundary', 'café', 'missing']) assert.deepEqual(loaded.search(query, {limit: 30}), index.search(query, {limit: 30}));
   }
+});
+
+test('v5 shared dictionary restores exact cross-shard term order, literal spaces, duplicate native terms and all posting types', () => {
+  const slots = [null, [], null, null, null, null, null, null, [Number.MAX_SAFE_INTEGER, 0, 0, 9]];
+  const inputs: Record<string, unknown[]>[] = [
+    {'1.reg':[0,1], '1.map':[['alpha',slots],['珊瑚',slots],['has space',slots],['',slots],['__proto__',slots],['constructor',slots],['😀',slots],['',slots]], 'foreign.map':[null]},
+    {'1.reg':[9,'id'], '1.map':[['珊瑚',slots],['alpha',slots],['new', [null,null,null,null,null,null,null,null,['mixed',7]]]]},
+  ];
+  const before = inputs.map(input => JSON.stringify(input));
+  const dictionary = createSearchTermDictionary(inputs);
+  assert.deepEqual(dictionary.slice(0,4),['alpha','珊瑚','has space','']);
+  assert.equal(new Set(dictionary).size,dictionary.length);
+  let negative = false;
+  inputs.forEach((original, index) => {
+    const wire = JSON.parse(JSON.stringify(encodeSearchEntries(original,5,dictionary)));
+    assert.equal(wire.dictionaryTerms,true);
+    for(const key of wire.columnarMaps ?? []) negative ||= wire.entries[key][0].some((id: number) => id < 0);
+    assert.equal(JSON.stringify(decodeSearchEntries(wire.entries,wire.sparseMaps,5,true,true,wire.columnarMaps,true,dictionary,true)),before[index]);
+    assert.equal(JSON.stringify(original),before[index]);
+  });
+  assert.equal(negative,true,'Cross-shard encounter order must exercise descending references');
+  assert.throws(()=>encodeSearchEntries(inputs[0]!,4,dictionary),/Invalid serialized/);
+  assert.throws(()=>encodeSearchEntries(inputs[0]!,5,['missing']),/Invalid serialized/);
+});
+
+test('v5 rejects malformed dictionaries, foreign dictionary flags and invalid word references before import', () => {
+  for(const dictionary of [null,{},[1],['same','same'],new Array(1)]) assert.throws(()=>readSearchTermDictionary(dictionary),/Invalid serialized/);
+  const entries = {'1.map':[[[0],[4864],[[1]]]]};
+  for(const dictionary of [undefined,null,{},[1],['same','same']]) assert.throws(()=>decodeSearchEntries(entries,['1.map'],5,true,true,['1.map'],true,dictionary,true),/Invalid serialized/);
+  for(const refs of [[-1],[1],[0.5],['0'],[null],[Number.MAX_SAFE_INTEGER],[Number.MAX_SAFE_INTEGER,1]]) {
+    const columns=[refs,refs.map(()=>4864),refs.map(()=>[1])];
+    assert.throws(()=>decodeSearchEntries({'1.map':columns},['1.map'],5,true,true,['1.map'],true,['word'],true),/Invalid serialized/);
+  }
+  for(const flag of [undefined,false,null,1]) assert.throws(()=>decodeSearchEntries({'1.map':[[0],[4864],[[1]]]},['1.map'],5,true,true,['1.map'],true,['word'],flag),/Invalid serialized/);
+  assert.throws(()=>decodeSearchEntries({},[],4,true,true,undefined,undefined,['word'],true),/Invalid serialized/);
 });
