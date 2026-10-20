@@ -139,3 +139,39 @@ test('v4 columnar maps restore exact term order and reject malformed column leng
   assert.deepEqual(decodeSearchEntries({'1.map': [['old', 4864, [2]]]}, ['1.map'], 4, true, true)['1.map'],
     [['old', [null, null, null, null, null, null, null, null, [2]]]], 'previous v4 wire remains readable');
 });
+
+test('v5 joined terms preserve empty terms, Unicode, literal spaces, exact posting arrays and native fallback', () => {
+  const names = ['', '__proto__', 'constructor', '珊瑚', 'café', '😀', '\n', 'a\\b', '', ...Array.from({length: 2000}, (_, i) => `term-${i}`)];
+  const vector = [null, [], null, null, null, null, null, null, [Number.MAX_SAFE_INTEGER, 0, 0, 99, 2]];
+  const original = {'1.map': names.map(term => [term, vector]), '2.map': ['has space', '空 格', ''].map(term => [term, vector]), '1.reg': [0, 'constructor'], 'foreign.map': [null]};
+  const expected = JSON.stringify(original), wire = JSON.parse(JSON.stringify(encodeSearchEntries(original, 5)));
+  assert.equal(wire.joinedTerms, true); assert.ok(wire.columnarMaps.includes('1.map'));
+  assert.equal(typeof wire.entries['1.map'][0], 'string');
+  assert.ok(Array.isArray(wire.entries['2.map'][0]), 'Terms containing separators retain their original array');
+  assert.equal(JSON.stringify(decodeSearchEntries(wire.entries, wire.sparseMaps, 5, wire.scoreMasks, wire.postingDeltas, wire.columnarMaps, wire.joinedTerms)), expected);
+  assert.equal(JSON.stringify(original), expected, 'Encoding must not mutate source');
+  assert.throws(() => decodeSearchEntries(wire.entries, wire.sparseMaps, 4, true, true, wire.columnarMaps, true), /Invalid serialized/);
+  for (const flag of [undefined, false, null, 1, 'true']) assert.throws(() => decodeSearchEntries(wire.entries, wire.sparseMaps, 5, true, true, wire.columnarMaps, flag), /Invalid serialized/);
+});
+
+test('v5 rejects missing/excess joined terms, foreign flags and malformed columns before import', () => {
+  for (const columns of [['', [], []], ['two terms', [4864], [[1]]], ['one', [4864, 4864], [[1], [2]]], ['x', null, []], ['x', [4864], []], ['x', [4864], [[1]], 'extra'], [null, [4864], [[1]]], ['x', [5120], [[1]]]])
+    assert.throws(() => decodeSearchEntries({'1.map': columns}, ['1.map'], 5, true, true, ['1.map'], true), /Invalid serialized/);
+  assert.deepEqual(decodeSearchEntries({'1.map': ['', [4864], [[1]]]}, ['1.map'], 5, true, true, ['1.map'], true)['1.map'], [['', [null, null, null, null, null, null, null, null, [1]]]]);
+  assert.deepEqual(decodeSearchEntries({'1.map': [[], [], []]}, ['1.map'], 5, true, true, ['1.map'], true)['1.map'], []);
+});
+
+test('v5 real multilingual exports preserve every engine string and ordered query result', async () => {
+  for (const language of ['en-US', 'zh-CN']) {
+    const options = {tokenize: 'strict' as const, resolution: 9, encode: (value: unknown) => searchTerms(value, language)};
+    const index = new Index(options), loaded = new Index(options);
+    for (let i = 0; i < 300; i++) index.add(i * 13, `${'wheat 珊瑚 小麦 '.repeat(i % 5 + 1)}边界 pcr_rule_boundary café ${i}`);
+    const original: Record<string, unknown[]> = {};
+    await index.export((key, value) => {original[key] = JSON.parse(value);});
+    const wire = JSON.parse(JSON.stringify(encodeSearchEntries(original, 5)));
+    const restored = decodeSearchEntries(wire.entries, wire.sparseMaps, 5, wire.scoreMasks, wire.postingDeltas, wire.columnarMaps, wire.joinedTerms);
+    assert.equal(JSON.stringify(restored), JSON.stringify(original));
+    for (const [key, value] of Object.entries(restored)) loaded.import(key, JSON.stringify(value));
+    for (const query of ['wheat', '小麦', '珊瑚', 'pcr_rule_boundary', 'café', 'missing']) assert.deepEqual(loaded.search(query, {limit: 30}), index.search(query, {limit: 30}));
+  }
+});

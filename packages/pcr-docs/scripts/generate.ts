@@ -1006,7 +1006,7 @@ async function generate() {
         entries[key] = parsed;
       });
       const payload = JSON.stringify({
-        ...encodeSearchEntries(entries, 4),
+        ...encodeSearchEntries(entries, 5),
         records: bucket.map((d) => d.record),
       });
       if (Buffer.byteLength(payload) > 20_000_000)
@@ -1036,7 +1036,7 @@ async function generate() {
     }
     await flush();
     json("public/search/" + language + "/manifest.json", {
-      schemaVersion: 4,
+      schemaVersion: 5,
       language,
       shards,
     });

@@ -44,7 +44,7 @@ async function serialize(documents: Document[], language: string): Promise<Shard
   return { entries, records: documents.map(entry => entry.record) };
 }
 
-async function main(scenario: string, schemaVersion: 1 | 2 | 3 | 4): Promise<void> {
+async function main(scenario: string, schemaVersion: 1 | 2 | 3 | 4 | 5): Promise<void> {
   const language = scenario === 'chinese' ? 'zh-CN' : 'en-US';
   const root = `/generated/search/${language}/`;
   const responses = new Map<string, { status: number; body: unknown }>();
@@ -101,6 +101,24 @@ async function main(scenario: string, schemaVersion: 1 | 2 | 3 | 4): Promise<voi
     await install([documents]);
     assert.deepEqual(valid(await query('wheat')), documents.map(entry => entry.record));
     assert.deepEqual(imported, Object.entries(original.entries), 'Worker must pass the original strings and key order into the real engine');
+  } else if (scenario === 'joined-roundtrip-retry') {
+    const documents = Array.from({length: 100}, (_, id) => document(id * 31, `Wheat ${id}`, 'Wheat 小麦 珊瑚'));
+    const original = await serialize(documents, language);
+    await install([documents]);
+    const target = root + 'shard-0.json', response = responses.get(target)!;
+    const shard = response.body; assert.ok(object(shard) && object(shard.entries));
+    const broken = structuredClone(shard); assert.ok(object(broken.entries) && Array.isArray(broken.columnarMaps));
+    const entries = broken.entries;
+    const key = broken.columnarMaps.find(key => typeof key === 'string' && Array.isArray(entries[key]) && typeof entries[key][0] === 'string');
+    assert.equal(typeof key, 'string', 'Fixture must contain actual joined term columns');
+    const columns = broken.entries[String(key)]; assert.ok(Array.isArray(columns));
+    columns[0] += ' extra-term';
+    responses.set(target, {status: 200, body: broken});
+    assert.equal((await query('wheat')).error, 'Invalid serialized search data.');
+    assert.deepEqual(imported, [], 'Corrupt columns fail before engine import');
+    responses.set(target, response);
+    assert.equal(valid(await query('wheat')).length, 30);
+    assert.deepEqual(imported, Object.entries(original.entries), 'Joined terms reach the engine as exact original strings');
   } else if (scenario === 'entry-format-retry') {
     const target = root + 'shard-0.json';
     const original = responses.get(target)!;
@@ -121,9 +139,19 @@ async function main(scenario: string, schemaVersion: 1 | 2 | 3 | 4): Promise<voi
     const original = responses.get(target)!;
     const shard = original.body; assert.ok(object(shard) && object(shard.entries));
     const key = Object.keys(shard.entries).find(key => key.endsWith('.map'))!;
-    const values = (schemaVersion === 3 || schemaVersion === 4) ? [undefined, null, {}, [key, key], ['missing.map'], ['1.reg'], ['__proto__']] : [[], [key]];
+    const values = (schemaVersion === 3 || schemaVersion === 4 || schemaVersion === 5) ? [undefined, null, {}, [key, key], ['missing.map'], ['1.reg'], ['__proto__']] : [[], [key]];
     for (const sparseMaps of values) {
       responses.set(target, { status: 200, body: { ...shard, sparseMaps } });
+      const failure = await query('wheat');
+      assert.equal(failure.results, undefined); assert.equal(failure.error, 'Invalid serialized search data.');
+    }
+    responses.set(target, original); assert.equal(valid(await query('wheat')).length, 4);
+  } else if (scenario === 'joined-metadata') {
+    const target = root + 'shard-0.json', original = responses.get(target)!;
+    const shard = original.body; assert.ok(object(shard));
+    const values = schemaVersion === 5 ? [undefined, false, null, 0, {}, 'true'] : [true, false, null];
+    for (const joinedTerms of values) {
+      responses.set(target, {status: 200, body: {...shard, joinedTerms}});
       const failure = await query('wheat');
       assert.equal(failure.results, undefined); assert.equal(failure.error, 'Invalid serialized search data.');
     }
@@ -132,7 +160,7 @@ async function main(scenario: string, schemaVersion: 1 | 2 | 3 | 4): Promise<voi
     const target = root + 'shard-0.json', original = responses.get(target)!;
     const shard = original.body; assert.ok(object(shard));
     for (const field of ['scoreMasks', 'postingDeltas']) {
-      const values = schemaVersion === 4 ? [undefined, false, null, 0, {}, 'true'] : [true, false, null];
+      const values = schemaVersion >= 4 ? [undefined, false, null, 0, {}, 'true'] : [true, false, null];
       for (const value of values) {
         responses.set(target, {status: 200, body: {...shard, [field]: value}});
         const failure = await query('wheat');
@@ -189,7 +217,7 @@ async function main(scenario: string, schemaVersion: 1 | 2 | 3 | 4): Promise<voi
     responses.set(target, saved); assert.equal(valid(await query('wheat')).length, 4);
     assert.equal(requests.filter(url => url.endsWith('manifest.json')).length, 2);
   } else if (scenario === 'manifest-shape') {
-    for (const invalid of [null, ...[undefined, 0, 5, '2'].map(version => ({ schemaVersion: version, language, shards: [] })), { schemaVersion, language: 'other-language', shards: [] }, { schemaVersion, language, shards: {} }]) {
+    for (const invalid of [null, ...[undefined, 0, 6, '2'].map(version => ({ schemaVersion: version, language, shards: [] })), { schemaVersion, language: 'other-language', shards: [] }, { schemaVersion, language, shards: {} }]) {
       responses.set(root + 'manifest.json', { status: 200, body: invalid });
       assert.equal((await query('wheat')).error, 'Invalid search manifest.');
     }
@@ -224,5 +252,5 @@ async function main(scenario: string, schemaVersion: 1 | 2 | 3 | 4): Promise<voi
   } else throw new Error('Unknown search worker scenario: ' + scenario);
 }
 const scenario = process.argv[2]; assert.ok(scenario);
-const schemaVersion = Number(process.argv[3]); assert.ok(schemaVersion === 1 || schemaVersion === 2 || schemaVersion === 3 || schemaVersion === 4);
+const schemaVersion = Number(process.argv[3]); assert.ok(schemaVersion === 1 || schemaVersion === 2 || schemaVersion === 3 || schemaVersion === 4 || schemaVersion === 5);
 await main(scenario, schemaVersion); process.stdout.write(`PASS ${scenario}\n`);

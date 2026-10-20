@@ -3,6 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
+import { INLINE_MARKDOWN_LIMIT } from "./raw-download.ts";
 import { matchesPath, verifyHostingContract } from "./hosting-contract.ts";
 const rawConfig: unknown = JSON.parse(
   fs.readFileSync(new URL("../../../edgeone.json", import.meta.url), "utf8"),
@@ -20,7 +21,7 @@ test("inline artifact exception validates bytes and cannot waive physical downlo
   const inline = {name:'manifest.yaml',url:'data:application/octet-stream;base64,'+bytes.toString('base64'),bytes:bytes.length,sha256:'sha256:'+createHash('sha256').update(bytes).digest('hex')};
   assert.doesNotThrow(() => verifyHostingContract(config, [...downloads, inline]));
   for (const name of ['pcr.en-US.md', 'pcr.zh-CN.md']) assert.doesNotThrow(() => verifyHostingContract(config, [{...inline, name}]));
-  const markdown = Buffer.alloc(32768, 65);
+  const markdown = Buffer.alloc(INLINE_MARKDOWN_LIMIT, 65);
   const large = {name:'pcr.en-US.md',url:'data:application/octet-stream;base64,'+markdown.toString('base64'),bytes:markdown.length,sha256:'sha256:'+createHash('sha256').update(markdown).digest('hex')};
   assert.doesNotThrow(() => verifyHostingContract(config, [large]));
   assert.throws(() => verifyHostingContract(config, [{...large,name:'manifest.yaml'}]), /Inline manifest length/u);

@@ -1,6 +1,6 @@
 ---
-lastReviewedAt: 2026-10-15
-lastReviewedNote: "Reviewed bounded native inline downloads for current unpublished authored candidates: manifests up to 16384 exact bytes and required English/Chinese Markdown up to 32768 exact bytes. Same-directory manifests bind eligibility to the pinned Git source; duplicate inline bytes retain distinct source/filename identities through physical fallback. Published/history/optional-language/projection downloads and navigation payloads remain intact. Complete export and source-bound qualification remain required."
+lastReviewedAt: 2026-10-20
+lastReviewedNote: "Reviewed bounded native inline downloads for current unpublished authored candidates: manifests up to 16384 exact bytes and required English/Chinese Markdown up to 49152 exact bytes. Same-directory manifests bind eligibility to the pinned Git source; duplicate inline bytes retain distinct source/filename identities through physical fallback. Published/history/optional-language/projection downloads and navigation payloads remain intact. Complete export and source-bound qualification remain required."
 lastReviewedCommit: 6b99296b0b935404abdf900b2566fe2ff59a966d
 title: Generated PCR Documentation Site Contract
 docType: contract
@@ -80,7 +80,10 @@ existing normalized-text projection fingerprint.
 Current candidate PCRs with authored methodology and no release history may use
 native `data:application/octet-stream;base64,` download links for `manifest.yaml`,
 `pcr.en-US.md` and `pcr.zh-CN.md`. The manifest limit is 16,384 original bytes;
-each required-language Markdown limit is 32,768 original bytes. Eligibility comes
+each required-language Markdown limit is 49,152 original bytes. This bounded
+transport packs additional complete candidate downloads into their native links
+so the export stays below the unchanged provider file-count limit; it trades
+fewer physical files for measured additional HTML/navigation bytes. Eligibility comes
 from the canonical same-directory manifest, bound to the exact pinned Git source; Markdown never supplies lifecycle or maturity policy.
 These bounded downloads preserve each original filename and work without
 JavaScript. Decode canonical base64, check the size and SHA-256, and compare every
@@ -416,6 +419,20 @@ logs actual raw/gzip language totals at the unchanged budget gate. Native fallba
 full records, tokenization, scores, ranking, 2 MB text buckets and 20 MB raw/4 MB
 gzip budgets are unchanged. No dependency or remote service is added, and wire
 compression does not claim to reduce the restored engine's resident memory.
+
+Search manifest version 5 requires `joinedTerms: true` together with the v4
+mask/delta flags. A marked columnar map may store its ordered term column as one
+space-separated string when every term lacks a literal ASCII space. Decoding
+restores every term and its exact original position before the existing score
+mask/posting decoder. Empty terms and Unicode remain exact; a column containing
+spaces keeps its original term array, and an empty column stays an array. Header
+counts bound splitting before allocation; missing/excess terms, malformed columns
+and incompatible or missing flags fail initialization and permit a clean retry.
+The Worker continues reading v1–v4; older versions reject v5 metadata. Generation
+verifies original export strings and uses v5 with the same tokenizer, scoring,
+posting arrays, shard text boundaries, ranking, full records and 20 MB raw/4 MB
+gzip gates. This only removes redundant JSON term framing; it does not remove
+search terms, source text or result context.
 
 ### Inspector data transport
 
