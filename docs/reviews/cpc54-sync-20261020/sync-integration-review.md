@@ -1,6 +1,8 @@
 # Current sync-base integration and lossless v5 review
 
-The fork target advanced to `9b347a173` during this repair. Merge `09ade4746` preserves the target's CPC 04 contents and all 1,250 accepted mapping edges, together with this PR's unchanged 63 CPC 54 PCRs and mapping edges. All 252 CPC 54 source-file hashes and 63 selected target checks pass. Coverage reads back 1,313 mapped and 1,564 unmapped of 2,877 leaves.
+Latest content review: [63 PCRs against twelve principles](twelve-principle-review.md). The integration and transport measurements below are historical, pinned to their stated commits; eight PCRs were subsequently repaired in that review.
+
+The fork target advanced to `9b347a173` during this repair. Merge `09ade4746` preserves the target's CPC 04 contents and all 1,250 accepted mapping edges, together with this PR's then-unchanged 63 CPC 54 PCRs and mapping edges. That integration verified its 252 source-file hashes and 63 selected target checks; current fingerprints and later repairs are in the twelve-principle review. Coverage reads back 1,313 mapped and 1,564 unmapped of 2,877 leaves.
 
 ## Lossless transport
 
@@ -30,3 +32,7 @@ Run #40 failed `migration:check` with `UNINVENTORIED_JAVASCRIPT`: the newly comm
 Runtime, migration (zero authored JavaScript; 420 TypeScript files), complete strict types, whole-library lint (zero problems; existing nonblocking warnings retained), all 63 selected content checks and canonical-source projection byte comparisons pass locally. Emitted engineering tests report 142 passed, zero failed and one native-Windows-only skip on macOS. Re-running the converted audit against the existing real export reproduces all prior measurements and hashes exactly. No PCR content or production transport code changed; the full-build measurements above remain bound to `09ade4746`. New Linux CI remains required.
 
 Reproduce the current corpus audit from the repository root with the pinned runtime: `node packages/pcr-docs/scripts/cpc54-search-v5-audit.ts`.
+
+## Twelve-principle follow-up
+
+The subsequent review of `e343452d70599cfaeb0172c13ba5bf9e7a702d9d` records 756 individual criteria, repairs five substantive defects/ambiguities and two wording references in eight PCRs, and retains all 497 atomic cards, 1021 conditional obligations and source entries. Fresh selected checks pass 63/63 with 2674 measurement checks and no skips. Five reused flows and all 63 reference support chains were reread; reference product identities remain unresolved. Mappings remain the exact union of 1250 base and 63 narrower accepted edges. Local aggregate validation passed static stages but failed/incomplete on macOS after Goal safe-traversal failures; no complete test-suite pass is claimed. Workflow41 for the prior input finished successfully; the new commit needs its own CI. Production v5 transport is unchanged by this follow-up.

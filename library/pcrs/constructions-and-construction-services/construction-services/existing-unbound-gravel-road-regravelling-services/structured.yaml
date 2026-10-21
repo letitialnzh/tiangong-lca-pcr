@@ -1366,7 +1366,7 @@ dataset_production:
       source_ids: []
     - id: fuel_consumption
       applies_to: "prep_fuel; finish_fuel"
-      rule: "Actual burned fuel B_fuel is the balanced portion of opening stock plus gross issues after closing stock, true outward returns/transfers and actual spills. Model each real outward disposition by its custody and destination separately; consumption alone may drive combustion calculations."
+      rule: "Use fuel_supply_fate for the same fuel, node and event scope: B_fuel = G_fuel - U_fuel - X_fuel - W_fuel - P_fuel, with complete independently supported and mutually exclusive final outlets. G_fuel already excludes closing stock; internal issues are not extra external receipts. Subtract actual nonburned waste and uncontained fuel loss, not total incident spill. Recovered fuel in closing stock is already removed from G_fuel, and recovered fuel in waste belongs to W_fuel once. Unknown fate remains a gap, never presumed burn. Only supported B_fuel drives combustion; upstream fuel supply remains G_fuel under the declared outlet convention."
       inputs:
         - cp_prep_fuel
         - cp_finish_fuel
@@ -1486,7 +1486,7 @@ data_sources:
     used_for: "Preparation before fresh gravel; loose versus finished state; actual hauling/spread control; windrow/equalize/spread and actual water/roller operations. Illustrative quantities are not PCR defaults."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:941c9b901f59c08c2946d59419b858c856b32ff12b9e0153012dad3b475381cd"
+  source_sha256: "sha256:15199970f204cdff027956ed556964071f3338a5854a9673ed306e9ab9963726"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5890"
@@ -1585,15 +1585,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_71470"
+    - unit_id: "normative_71826"
       family: "validation"
       span:
         start:
-          offset: 71470
+          offset: 71826
           line: 608
           column: 1
         end:
-          offset: 73454
+          offset: 73810
           line: 619
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| host_gate | prepare_host | Require initial suitability, actual scarification/shape/drainage correction and accepted pre-spread gate. Reject missing drainage ownership or structural unsuitability for this route. | fhwa-gravel-2015 |\n| repair_gate | accepted_regravelling | Verify actual chainages, natural aggregate source/gradation/plasticity/moisture, uniform finished geometry, actual specified compaction/quality tests, weather and signed handover; no universal thickness, shrinkage or future-life assumption. | fhwa-gravel-2015 |\n| balance_paths | all inventory rows | Check gross received/issued material and water balances with uncertainty, retained host treatment, internal reuse, real outward custody and closing stock; no duplicate stock/return or burden. Resolve every defect/retest/rework path before counting accepted output. |  |\n| asset_periods | prep_plant; finish_plant | Check full shared-asset phase coverage, all consumers/reporting periods, utilization denominator, replacements/termination and single event ownership; missing lifecycle/support coverage blocks dataset finalization. |  |\n| identity_range | all inventory rows | Expand conditional material/service/waste/substance requirements into actual distinct exchanges. Verify exact flow/property/unit identities and actual numerical uncertainty evidence for each; never equate generic dust with a particle fraction or fuel with exhaust. Missing data is explicit, not zero. |  |\n| validate_fuel_supply_fate | finish_fuel; prep_fuel | Check G_fuel, B_fuel and all exclusive outlets against the actual fuel protocol, stock and provider coverage. Nonreturned unburned waste/loss keeps its upstream burden; unresolved fate, fuel constituent or positive D_fuel blocks a complete quantitative fuel inventory. Do not substitute burned activity for purchased fuel or deduct total spill plus its component outlets. |  |\n\n"
@@ -1613,11 +1613,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 71470
+              offset: 71826
               line: 608
               column: 1
             end:
-              offset: 71492
+              offset: 71848
               line: 608
               column: 23
           text: "## 9. Validation Rules"
@@ -4159,79 +4159,79 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "host_gate"
       identity_kind: "explicit"
-      unit_id: "normative_71470"
+      unit_id: "normative_71826"
       source_span:
         start:
-          offset: 71565
+          offset: 71921
           line: 612
           column: 1
         end:
-          offset: 71798
+          offset: 72154
           line: 612
           column: 234
     - pointer: "/validation_rules/1"
       rule_id: "repair_gate"
       identity_kind: "explicit"
-      unit_id: "normative_71470"
+      unit_id: "normative_71826"
       source_span:
         start:
-          offset: 71799
+          offset: 72155
           line: 613
           column: 1
         end:
-          offset: 72100
+          offset: 72456
           line: 613
           column: 302
     - pointer: "/validation_rules/2"
       rule_id: "balance_paths"
       identity_kind: "explicit"
-      unit_id: "normative_71470"
+      unit_id: "normative_71826"
       source_span:
         start:
-          offset: 72101
+          offset: 72457
           line: 614
           column: 1
         end:
-          offset: 72409
+          offset: 72765
           line: 614
           column: 309
     - pointer: "/validation_rules/3"
       rule_id: "asset_periods"
       identity_kind: "explicit"
-      unit_id: "normative_71470"
+      unit_id: "normative_71826"
       source_span:
         start:
-          offset: 72410
+          offset: 72766
           line: 615
           column: 1
         end:
-          offset: 72674
+          offset: 73030
           line: 615
           column: 265
     - pointer: "/validation_rules/4"
       rule_id: "identity_range"
       identity_kind: "explicit"
-      unit_id: "normative_71470"
+      unit_id: "normative_71826"
       source_span:
         start:
-          offset: 72675
+          offset: 73031
           line: 616
           column: 1
         end:
-          offset: 73020
+          offset: 73376
           line: 616
           column: 346
     - pointer: "/validation_rules/5"
       rule_id: "validate_fuel_supply_fate"
       identity_kind: "explicit"
-      unit_id: "normative_71470"
+      unit_id: "normative_71826"
       source_span:
         start:
-          offset: 73021
+          offset: 73377
           line: 617
           column: 1
         end:
-          offset: 73452
+          offset: 73808
           line: 617
           column: 432
   diagnostics:
@@ -6289,14 +6289,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_71470"
+      unit_id: "normative_71826"
       source_span:
         start:
-          offset: 71470
+          offset: 71826
           line: 608
           column: 1
         end:
-          offset: 71492
+          offset: 71848
           line: 608
           column: 23
 projection_metadata:
@@ -6306,5 +6306,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:941c9b901f59c08c2946d59419b858c856b32ff12b9e0153012dad3b475381cd"
-  generated_content_sha256: "sha256:f539f8927986cb6f9a7311afec0bee2785fa02adf9a4ff05d438e4a845ff7c5c"
+    sha256: "sha256:15199970f204cdff027956ed556964071f3338a5854a9673ed306e9ab9963726"
+  generated_content_sha256: "sha256:1b5319ecde5c21aa2bfb54165a87c066bfc6f802cb4adc8fb0cbbcde151badd6"

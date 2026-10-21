@@ -1098,8 +1098,8 @@ dataset_production:
       process_id: "patch_repair"
       flow_role: "freight"
       record_type: "Foreground measured records"
-      raw_fields: "job_id; patch_id; event_id; period_id; phase_id; trip_id; cargo_id; payload_kg; distance_km; route; empty_leg_share; provider_coverage; freight_work"
-      collection_method: "Collect traceable actual job/batch/event measurements, stock/receipt/fate or completed service records in native units; reconcile original SKU/provider and exclusive burden owner. Denominator V is unique finally accepted installed geometric volume in m3."
+      raw_fields: "job_id; patch_id; event_id; period_id; phase_id; trip_id; leg_id; loaded_or_empty; cargo_id; payload_kg; distance_km; route; attribution_driver; job_share; empty_leg_share; provider_coverage; provider_empty_leg_coverage; uncovered_empty_activity; uncovered_empty_unit; uncovered_empty_owner; freight_work"
+      collection_method: "Reconcile actual loaded and empty legs, measured payload/distance and job attribution against the matched supplier coverage. Record any uncovered empty activity in its actual native unit and link its exclusive provider/resource owner; never convert empty movement to fictitious cargo work. Denominator V is unique finally accepted installed geometric volume in m3."
       unit: "kg*km"
       frequency: "Each batch/event/transfer and final reconciliation"
       temporal_coverage: "Full job including preparation, all attempts, curing and signed handover"
@@ -1472,7 +1472,7 @@ dataset_production:
       source_ids: []
     - id: calc_freight_work
       applies_to: "freight"
-      rule: "freight_work = sum actual payload_kg * actual distance_km * documented job attribution, including allocated actual empty movement; exclude delivery already in another owner."
+      rule: "freight_work = sum actual loaded payload_kg * actual loaded-leg distance_km * documented job attribution. This cargo work does not measure empty movement. If the matched kg*km supplier dataset includes empty legs, retain its actual coverage evidence and do not add those resources again. Otherwise collect actual attributed empty-leg vehicle activity in a compatible native-unit provider service, or its fuel/electricity/asset resources under the existing providers/fuel/electricity/assets roles, with one exclusive owner. Uncovered empty activity blocks data-package finalization; never invent payload mass to represent it. Exclude delivery already covered by another owner."
       inputs:
         - cp_freight
         - "trip scope"
@@ -1559,7 +1559,7 @@ data_sources:
     used_for: "Water-supply aqueduct/non-pipeline classification boundary and narrower mapping context; not source of original foreground stock, fuel, freight or asset algebra."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:111b3c47847600d684c2a78d2ff0e3443cd00a184393413addcb43112861d8b1"
+  source_sha256: "sha256:21513542dea1461d98928bbba38462a1129a83926b6c20edd830402bad2395d7"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6366"
@@ -1658,15 +1658,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_64459"
+    - unit_id: "normative_65227"
       family: "validation"
       span:
         start:
-          offset: 64459
+          offset: 65227
           line: 571
           column: 1
         end:
-          offset: 67057
+          offset: 67825
           line: 585
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `val_scope` | `patch_repair` | Verify water-supply non-pipeline host and this hand-applied local spall route. Unqualified major structural/rebar repair, whole spray lining or adjacent category cannot silently pass this subset. | `un-cpc-3-2025`; `sika-4100-protect-2025` |\n| `val_method` | `patch_repair` | Check actual substrate/rebar and optional primer/protection, approved batching/layers/environment and immediate compatible cure against adopted current instruction. Resolve conflicts by competent written approval; do not erase product-specific criteria or apply illustrative handbook numbers universally. | `sika-4100-protect-2025`; `sika-concrete-repair-handbook` |\n| `val_output` | `accepted_patch_repair` | Require unique positive V with all signed gates; exclude voids/overlap/rejected attempts and unknown states. Amount is 1 m3; every other amount uses actual compatible native numerator / V. Supplied fresh mortar or whole conduit length is not output denominator. |  |\n| `val_reconciliation` | All inventory rows | Check dry/wet/cured and water/fuel stocks/fates, gross/consumed convention, nonreturned waste upstream burden, usable native returns and actual species/medium evidence. Intermediate activities and physical/species views cannot be additive purchases/releases. |  |\n| `val_batch_rework` | `patch_repair` | Require linked batch/patch/event/attempt records and reject routes. Sum all shared-run shares to one, assign events once, keep failed work in final V attribution and exclude rejects from accepted output. |  |\n| `val_asset_provider` | `assets`; `providers` | Require complete-life all-consumer asset driver and full burden coverage with remainder/end-of-life sensitivity; require actual bounded provider-native results and exclusive ownership of utilities/freight/materials/assets. Missing denominator or coverage is incomplete. |  |\n| `val_readiness` | All inventory rows | Report performed/skipped checks and actual gaps. Structural checking does not verify concrete UUIDs, site measurements, acceptance or publication readiness; unresolved identities/supports and uncollected required evidence prevent a final dataset. |  |\n| `val_period_phase` | All inventory rows | Check period/phase IDs for inputs, outputs, assets and events, opening/closing burden carry, replacement and termination/end-of-life coverage, period-specific shares and complete-life totals. Prevent repeated manufacture/stock burden and require resolution of replacement/termination gaps. |  |\n\n\n"
@@ -1686,11 +1686,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 64459
+              offset: 65227
               line: 571
               column: 1
             end:
-              offset: 64481
+              offset: 65249
               line: 571
               column: 23
           text: "## 9. Validation Rules"
@@ -4128,105 +4128,105 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "val_scope"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 64554
+          offset: 65322
           line: 575
           column: 1
         end:
-          offset: 64828
+          offset: 65596
           line: 575
           column: 275
     - pointer: "/validation_rules/1"
       rule_id: "val_method"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 64829
+          offset: 65597
           line: 576
           column: 1
         end:
-          offset: 65229
+          offset: 65997
           line: 576
           column: 401
     - pointer: "/validation_rules/2"
       rule_id: "val_output"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 65230
+          offset: 65998
           line: 577
           column: 1
         end:
-          offset: 65539
+          offset: 66307
           line: 577
           column: 310
     - pointer: "/validation_rules/3"
       rule_id: "val_reconciliation"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 65540
+          offset: 66308
           line: 578
           column: 1
         end:
-          offset: 65849
+          offset: 66617
           line: 578
           column: 310
     - pointer: "/validation_rules/4"
       rule_id: "val_batch_rework"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 65850
+          offset: 66618
           line: 579
           column: 1
         end:
-          offset: 66098
+          offset: 66866
           line: 579
           column: 249
     - pointer: "/validation_rules/5"
       rule_id: "val_asset_provider"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 66099
+          offset: 66867
           line: 580
           column: 1
         end:
-          offset: 66422
+          offset: 67190
           line: 580
           column: 324
     - pointer: "/validation_rules/6"
       rule_id: "val_readiness"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 66423
+          offset: 67191
           line: 581
           column: 1
         end:
-          offset: 66715
+          offset: 67483
           line: 581
           column: 293
     - pointer: "/validation_rules/7"
       rule_id: "val_period_phase"
       identity_kind: "explicit"
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 66716
+          offset: 67484
           line: 582
           column: 1
         end:
-          offset: 67054
+          offset: 67822
           line: 582
           column: 339
   diagnostics:
@@ -6152,14 +6152,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_64459"
+      unit_id: "normative_65227"
       source_span:
         start:
-          offset: 64459
+          offset: 65227
           line: 571
           column: 1
         end:
-          offset: 64481
+          offset: 65249
           line: 571
           column: 23
 projection_metadata:
@@ -6169,5 +6169,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:111b3c47847600d684c2a78d2ff0e3443cd00a184393413addcb43112861d8b1"
-  generated_content_sha256: "sha256:20ec3d698566adf0f8346efe46814a659d70e4974cc962b744ecf2411c831d80"
+    sha256: "sha256:21513542dea1461d98928bbba38462a1129a83926b6c20edd830402bad2395d7"
+  generated_content_sha256: "sha256:b7c896d6cc8eeab7026b0b67356aa59c7c13344c3da67422203f37cc1fa20c7f"

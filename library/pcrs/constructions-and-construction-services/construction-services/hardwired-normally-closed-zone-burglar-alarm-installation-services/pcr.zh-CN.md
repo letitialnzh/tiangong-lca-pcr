@@ -67,7 +67,7 @@ sync_with: pcr.en-US.md
 | declared_starting_condition | 物料已收货识别；既有安装场所与隔离后的市电/接地接口已实际确认并记录 |
 | starting_condition_role | 披露的既有就绪条件；不计为新产品输入或避免负荷 |
 | product_classification_scope | 仅为披露的常闭防区有线入侵报警安装子集 |
-| recursive_input_rule | 同类采购前序安装须记录实际交付状态与有界上游责任；范围重叠未解决时阻止验收 |
+| recursive_input_rule | 同类采购前序安装须记录实际交付状态与有界上游责任。范围重叠未解决时，须先核对上游与前景资源归属，才能定稿 LCA 数据包。实体安装/测试验收证据须单独保留；数据归属缺口既不能证明实体拒收，也不能把验收数量 D 设为零 |
 | upstream_dataset_requirement | 匹配制造/到场供货数据包，明确入场运输、包装与附件包含关系；保留实物可追溯性 |
 | disclosure | 实际场址/日期/设计/接口责任、供货、测试纠正记录、交接、上游范围、资产/期间及剩余证据缺口 |
 
@@ -77,7 +77,7 @@ sync_with: pcr.en-US.md
 | --- | --- | --- | --- |
 | b_scope | install_accept | 承担收货、安装固定、布线接线、永久电池安装、编程、入侵报警测试、纠正、复测与用户交付。主机、现场设备、电池、线路及永久附件分别保留输入角色。不包含消防或生命安全方法及远程监控。 | `texecom-veritas-installation` |
 | b_upstream | all material inputs | 制造及实际入场运输须有匹配的供应方数据包。已包含的包装和附件只计一次。即使包装制造负荷已在上游包含，也须保留入场包装实物账；仅对上游未包含的贡献另加包装负荷。 |  |
-| b_readiness | starting interface | 记录已确认的既有安装表面及隔离后的市电/接地接口。就绪条件须披露，不虚构为采购输入，也不给予抵扣。采购的同类前序安装须明确实际交付状态及上游范围；范围重叠未解决时不得验收。 |  |
+| b_readiness | starting interface | 记录已确认的既有安装表面及隔离后的市电/接地接口。就绪条件须披露，不虚构为采购输入，也不给予抵扣。采购的同类前序安装须明确实际交付状态及上游范围；资源重叠未解决时不得定稿 LCA 数据包。D 依据实际实体调试及签署交付记录独立确定，不以数据齐备性决定；同一实体安装不得重复计数。 |  |
 | b_rework | install_accept | 防区响应失败、防拆回路开路、声响器故障或设防撤防失败均使安装处于未验收状态。纠正与复测关联至 install_accept 和原工单。拆除物须按实际记录分为可用退货、回收/废物外送或留在过程内修复；未完成或失败系统不得计入 accepted_installation。 | `texecom-veritas-installation` |
 | b_assets | owned_equipment_attribution; hired_support_service | 按型号/序列号识别安装方自有工具、测试仪、外部充电器及登高设备，列明全部使用工单/节点与期间。资源生命周期包从购置/制造覆盖服役、维护/更换至退役/终止。租用服务提供方承担其设备生命周期；核对前景用电的包含关系，防止重复归属。 |  |
 | b_gate | accepted_installation | 完成纠正、复测并恢复约定正常状态后，以签署完整安装验收及用户控制交接为终点。排除后续运行用电、维护、监控及新建上游配电。 | `texecom-veritas-installation` |

@@ -935,6 +935,10 @@ allocation_rules:
     applies_to: "joint_repair"
     rule: "Assign each finite pouch batch, changeover, isolation/setup and cleanup event a unique owner and period. Direct joint events use their actual IDs; shared events use recorded causal use shares across every consuming joint, including failed attempts. Report uncertainty and rejected paths; never count the same event both directly and in a shared pool."
     source_ids: []
+  - rule_id: attribution_once
+    applies_to: "all inventory rows"
+    rule: "Apply attribution once. Record each numerator's ledger_scope and attribution_state before using event_share: a quantity already attributed to this job uses event_share = 1; only an unallocated shared-event quantity uses its evidenced causal target share, reconciled across all consumers. Opening/receipts/closing, returns, waste and releases must use the same scope and attribution state. Never multiply a job-attributed quantity by its earlier share again."
+    source_ids: []
   - rule_id: allocation_assets
     applies_to: "shared_assets"
     rule: "For each actual asset use a compatible causal measured driver across all jobs/nodes/periods. Attribute full-life manufacture, maintenance, replacement and disposal burden by the target driver divided by the complete full-life driver. Use completed observed life or observed history plus justified remaining-service/replacement/termination/EOL scenario, source, uncertainty, sensitivity and update trigger. Missing denominator or coverage blocks final dataset. Period totals reconcile once; do not allocate full manufacture anew every reporting year."
@@ -961,7 +965,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Actual kit/component/consumable receipts, states and returns"
       record_type: "foreground_record"
-      raw_fields: "joint_id; attempt_id; batch_id; period_id; material_id; SKU; kit_mode; included_scope; excluded_scope; opening_attributable_count; gross_received_count; final_used_SKU_count; discarded_count; outward_return_count; closing_carried_count; opening_attributable_net_kg; gross_received_net_kg; package_tare_kg; net_chamber_A_kg; net_chamber_B_kg; used_intermediate_kg; installed_retained_net_kg; discarded_net_kg; outward_return_net_kg; closing_carried_net_kg; actual_released_net_kg; unit_net_mass_kg; quantity_volume; volume_unit; density_kg_per_volume_unit; density_state; density_temperature; density_source; receiver; custody; upstream_burden_carry; event_share; accepted_joint_count_N; attribution_scope; inventory_view; transformation_id; opened_kit_count_audit; transformation_component_ids; component_net_kg; transformation_component_fates"
+      raw_fields: "joint_id; attempt_id; batch_id; period_id; material_id; SKU; kit_mode; included_scope; excluded_scope; opening_attributable_count; gross_received_count; final_used_SKU_count; discarded_count; outward_return_count; closing_carried_count; opening_attributable_net_kg; gross_received_net_kg; package_tare_kg; net_chamber_A_kg; net_chamber_B_kg; used_intermediate_kg; installed_retained_net_kg; discarded_net_kg; outward_return_net_kg; closing_carried_net_kg; actual_released_net_kg; unit_net_mass_kg; quantity_volume; volume_unit; density_kg_per_volume_unit; density_state; density_temperature; density_source; receiver; custody; upstream_burden_carry; event_share; ledger_scope; attribution_state; accepted_joint_count_N; attribution_scope; inventory_view; transformation_id; opened_kit_count_audit; transformation_component_ids; component_net_kg; transformation_component_fates"
       collection_method: "Record actual matched SKU native counts and weighed net mass with package tare separate. Gross input is before returns. Reconcile opening plus external gross receipts to closing carried stock, disjoint final used-SKU count, actual discarded count, outward returns and appropriate final mass destinations. Do not add internal issues or intermediate dosing as external exchanges; pair whole-kit/component scopes and retain their physical subledgers. Count-mass or volume-mass conversions require actual matching evidence. final_used_SKU_count excludes separately logged discarded_count; a failed used kit/connector has one declared native count final fate, not two. Job-attributable supply is same-scope opening attributable stock plus external net-of-tare gross receipts minus closing carried stock, with upstream burden carry. Gross-with-outlets retains actual outward exits; consumed-only also excludes corresponding actual returned supply once and has no duplicate return credit. Native final_used_SKU_count and discarded_count are disjoint final SKU states, not dosed/consumed activity. Count discarded only for an actual whole SKU assigned that final state; separate packaging/resin mass fates never fabricate whole-kit discarded count. Internal dosing is nonadditive. Opened-kit count is an audit activity linked by transformation_id to actual original SKU counts, component identities/net mass and final fates. Component physical records never imply invented whole-kit count equivalence; final_used_SKU_count, discarded_count, outward_return_count and closing_carried_count are disjoint final source-SKU states."
       unit: "item; kg; declared actual volume unit"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -973,7 +977,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Actual electricity and compatible use shares"
       record_type: "foreground_record"
-      raw_fields: "joint_id; attempt_id; period_id; equipment_id; supply_boundary; meter_start_kWh; meter_end_kWh; charging_loss_kWh; included_scope; excluded_scope; event_share; accepted_joint_count_N"
+      raw_fields: "joint_id; attempt_id; period_id; equipment_id; supply_boundary; meter_start_kWh; meter_end_kWh; charging_loss_kWh; included_scope; excluded_scope; event_share; ledger_scope; attribution_state; accepted_joint_count_N"
       collection_method: "Meter actual supply; difference readings with traceable charging-loss ownership. Reconcile direct and shared duty and exclude provider/generator overlap before attribution."
       unit: "kWh"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -985,7 +989,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Fuel gross input, stocks, burned quantity and fates"
       record_type: "foreground_record"
-      raw_fields: "joint_id; attempt_id; period_id; equipment_id; fuel_identity; opening_attributable_net_kg; gross_received_net_kg; closing_carried_net_kg; outward_return_net_kg; nonburned_waste_net_kg; nonburned_release_net_kg; other_nonburned_final_net_kg; total_spill_audit_kg; recovered_spill_final_destination; retained_spill_in_closing_kg; quantity_volume; volume_unit; density_kg_per_volume_unit; density_state; density_temperature; density_source; package_tare_kg; included_scope; event_share; accepted_joint_count_N; receiver; custody; treatment_scope; contamination; absorber_fuel_fraction_kg; attribution_scope; inventory_view; upstream_burden_carry"
+      raw_fields: "joint_id; attempt_id; period_id; equipment_id; fuel_identity; opening_attributable_net_kg; gross_received_net_kg; closing_carried_net_kg; outward_return_net_kg; nonburned_waste_net_kg; nonburned_release_net_kg; other_nonburned_final_net_kg; total_spill_audit_kg; recovered_spill_final_destination; retained_spill_in_closing_kg; quantity_volume; volume_unit; density_kg_per_volume_unit; density_state; density_temperature; density_source; package_tare_kg; included_scope; event_share; ledger_scope; attribution_state; accepted_joint_count_N; receiver; custody; treatment_scope; contamination; absorber_fuel_fraction_kg; attribution_scope; inventory_view; upstream_burden_carry"
       collection_method: "Weigh net receipts and stocks or use actual traced conversion evidence. Burned kg equals opening plus gross receipts minus closing and mutually exclusive nonburned final outlets. Total spills are audit-only; recovered spills enter their final fate once and retained spills are already closing stock. Link actual burned fuel and device to species calculations, without treating whole fuel loss as generic elementary emission. Job-attributable supply is same-scope opening attributable stock plus external net-of-tare gross receipts minus closing carried stock, with upstream burden carry. Gross-with-outlets retains actual outward exits; consumed-only also excludes corresponding actual returned supply once and has no duplicate return credit."
       unit: "kg; actual volume unit when evidenced"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -997,7 +1001,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Water and recovered liquid fates"
       record_type: "foreground_record"
-      raw_fields: "joint_id; attempt_id; period_id; water_identity; opening_attributable_net_kg; gross_received_net_kg; closing_carried_net_kg; installed_retained_net_kg; outward_return_net_kg; collected_liquid_waste_net_kg; actual_evaporation_net_kg; uncontained_liquid_net_kg; composition; receiver; treatment_scope; spill_event_id; recovered_spill_destination; event_share; accepted_joint_count_N; custody; attribution_scope; inventory_view; upstream_burden_carry"
+      raw_fields: "joint_id; attempt_id; period_id; water_identity; opening_attributable_net_kg; gross_received_net_kg; closing_carried_net_kg; installed_retained_net_kg; outward_return_net_kg; collected_liquid_waste_net_kg; actual_evaporation_net_kg; uncontained_liquid_net_kg; composition; receiver; treatment_scope; spill_event_id; recovered_spill_destination; event_share; ledger_scope; attribution_state; accepted_joint_count_N; custody; attribution_scope; inventory_view; upstream_burden_carry"
       collection_method: "Measure actual net receipts and final liquid fates; maintain whole-fluid balance and separately attributed substance releases as nonadditive views. Track contaminated liquid receiver and avoid adding recovered liquid both as a spill and as waste. Job-attributable supply is same-scope opening attributable stock plus external net-of-tare gross receipts minus closing carried stock, with upstream burden carry. Gross-with-outlets retains actual outward exits; consumed-only also excludes corresponding actual returned supply once and has no duplicate return credit."
       unit: "kg"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -1009,7 +1013,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Actual purchased tonne-kilometre service"
       record_type: "foreground_record"
-      raw_fields: "joint_id; period_id; carrier; leg_id; payload_net_t; distance_km; empty_return_scope; included_scope; excluded_scope; carrier_service_tkm; event_share; accepted_joint_count_N"
+      raw_fields: "joint_id; period_id; carrier; leg_id; payload_net_t; distance_km; empty_return_scope; included_scope; excluded_scope; carrier_service_tkm; event_share; ledger_scope; attribution_state; accepted_joint_count_N"
       collection_method: "Use measured payload and actual leg route or verified compatible carrier service activity. Compare payload times distance with declared carrier treatment. Reconcile all consumers and direct vehicle scope."
       unit: "t*km; t; km"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -1021,7 +1025,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Completed actual time-reference support"
       record_type: "foreground_record"
-      raw_fields: "joint_id; period_id; provider_id; service_identity; actual_reference_property; actual_reference_unit; completed_hours; time_records; completed_results; included_scope; excluded_scope; event_share; accepted_joint_count_N"
+      raw_fields: "joint_id; period_id; provider_id; service_identity; actual_reference_property; actual_reference_unit; completed_hours; time_records; completed_results; included_scope; excluded_scope; event_share; ledger_scope; attribution_state; accepted_joint_count_N"
       collection_method: "Verify true purchased service identity and hour reference, actual hours and completed support results. Map included/excluded physical resources and asset/travel/waste scope; retain uncovered resources on physical cards."
       unit: "h"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -1045,7 +1049,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Actual removed materials, residues and package fates"
       record_type: "foreground_record"
-      raw_fields: "joint_id; attempt_id; batch_id; period_id; waste_identity; origin_material; cure_state; contamination; fraction_net_kg; package_tare_kg; discarded_SKU_count; receiver; custody; transport_scope; treatment_scope; event_share; accepted_joint_count_N"
+      raw_fields: "joint_id; attempt_id; batch_id; period_id; waste_identity; origin_material; cure_state; contamination; fraction_net_kg; package_tare_kg; discarded_SKU_count; receiver; custody; transport_scope; treatment_scope; event_share; ledger_scope; attribution_state; accepted_joint_count_N"
       collection_method: "Weigh actual segregated fractions or traceable mixed composition, separating host cuttings, cured/uncured resin, packaging and contaminated consumables. Pair discarded counts with materials ledger. Link each failed attempt to actual receiver and avoid duplicate packaging tare or retained mould/resin."
       unit: "kg; item for native discarded-count audit"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -1057,7 +1061,7 @@ dataset_production:
       process_id: "joint_repair"
       flow_role: "Actual species/media, routine and incident emissions"
       record_type: "foreground_record"
-      raw_fields: "joint_id; attempt_id; period_id; event_id; event_owner; routine_or_incident; substance_species; particle_size; receiving_medium; measured_species_kg; measurement_method; actual_activity; activity_unit; factor_kg_per_activity_unit; factor_source; factor_applicability; formulation_component_kg; component_fraction; fate_fraction; temperature_state; whole_fluid_audit_kg; calculation_basis; uncertainty; event_share; accepted_joint_count_N"
+      raw_fields: "joint_id; attempt_id; period_id; event_id; event_owner; routine_or_incident; substance_species; particle_size; receiving_medium; measured_species_kg; measurement_method; actual_activity; activity_unit; factor_kg_per_activity_unit; factor_source; factor_applicability; formulation_component_kg; component_fraction; fate_fraction; temperature_state; whole_fluid_audit_kg; calculation_basis; uncertainty; event_share; ledger_scope; attribution_state; accepted_joint_count_N"
       collection_method: "Use actual species measurements or valid activity-times-factor or actual component composition-times-fate calculations; keep evidence and units for all operands. Distinguish incident ownership and whole-fluid physical balance from partial-species view. Never calculate release from unexplained balance residual."
       unit: "kg; actual matching activity units"
       frequency: "Each actual receipt, issue, attempt, event and acceptance; reconcile campaign close"
@@ -1329,7 +1333,7 @@ data_sources:
     used_for: "Polyurethane casting family and product-identity caution:470W link redirects470,2012 linked470 TDS is not transferable470W quantitative evidence;4GS earlier-energisation marketing belongs to another product"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:efe05b6eeebe7d26b271a4804784515e4bd8d97cf7e0ae10068b13faedd6cebf"
+  source_sha256: "sha256:4d9c813b25555903bee7d2a4097fdddd6130c657cc3318cd725233bc9eca0917"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6521"
@@ -1388,10 +1392,10 @@ normative_context:
           line: 472
           column: 1
         end:
-          offset: 41918
-          line: 482
+          offset: 42423
+          line: 483
           column: 1
-      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_joint | joint_repair | No intended co-product is created. Attribute all actual attempts, cutback, mixing/pour cleanup, protection and tests to the actual positive final accepted N in the bounded comparable campaign. Discarded or abandoned jobs retain burdens; if N is zero the campaign cannot supply this accepted-reference dataset. Scrap sale is not a repair co-product or avoided-production credit. |  |\n| allocation_events | joint_repair | Assign each finite pouch batch, changeover, isolation/setup and cleanup event a unique owner and period. Direct joint events use their actual IDs; shared events use recorded causal use shares across every consuming joint, including failed attempts. Report uncertainty and rejected paths; never count the same event both directly and in a shared pool. |  |\n| allocation_assets | shared_assets | For each actual asset use a compatible causal measured driver across all jobs/nodes/periods. Attribute full-life manufacture, maintenance, replacement and disposal burden by the target driver divided by the complete full-life driver. Use completed observed life or observed history plus justified remaining-service/replacement/termination/EOL scenario, source, uncertainty, sensitivity and update trigger. Missing denominator or coverage blocks final dataset. Period totals reconcile once; do not allocate full manufacture anew every reporting year. |  |\n| allocation_overlap | joint_repair | Select gross-with-outlet or consumed-only inventory treatment explicitly and consistently. Gross input is net of tare before return netting; stocks preserve upstream burden. A consumed-only view cannot also claim the same return output credit. Count and mass physical subledgers, whole-fluid and species views, component and kit scopes, freight and direct vehicles, provider and physical resources, asset/spares/rental scopes are mutually reconciled rather than added twice. |  |\n\n\n"
+      markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| allocation_joint | joint_repair | No intended co-product is created. Attribute all actual attempts, cutback, mixing/pour cleanup, protection and tests to the actual positive final accepted N in the bounded comparable campaign. Discarded or abandoned jobs retain burdens; if N is zero the campaign cannot supply this accepted-reference dataset. Scrap sale is not a repair co-product or avoided-production credit. |  |\n| allocation_events | joint_repair | Assign each finite pouch batch, changeover, isolation/setup and cleanup event a unique owner and period. Direct joint events use their actual IDs; shared events use recorded causal use shares across every consuming joint, including failed attempts. Report uncertainty and rejected paths; never count the same event both directly and in a shared pool. |  |\n| attribution_once | all inventory rows | Apply attribution once. Record each numerator's ledger_scope and attribution_state before using event_share: a quantity already attributed to this job uses event_share = 1; only an unallocated shared-event quantity uses its evidenced causal target share, reconciled across all consumers. Opening/receipts/closing, returns, waste and releases must use the same scope and attribution state. Never multiply a job-attributed quantity by its earlier share again. |  |\n| allocation_assets | shared_assets | For each actual asset use a compatible causal measured driver across all jobs/nodes/periods. Attribute full-life manufacture, maintenance, replacement and disposal burden by the target driver divided by the complete full-life driver. Use completed observed life or observed history plus justified remaining-service/replacement/termination/EOL scenario, source, uncertainty, sensitivity and update trigger. Missing denominator or coverage blocks final dataset. Period totals reconcile once; do not allocate full manufacture anew every reporting year. |  |\n| allocation_overlap | joint_repair | Select gross-with-outlet or consumed-only inventory treatment explicitly and consistently. Gross input is net of tare before return netting; stocks preserve upstream burden. A consumed-only view cannot also claim the same return output credit. Count and mass physical subledgers, whole-fluid and species views, component and kit scopes, freight and direct vehicles, provider and physical resources, asset/spares/rental scopes are mutually reconciled rather than added twice. |  |\n\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1428,16 +1432,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_67273"
+    - unit_id: "normative_68042"
       family: "validation"
       span:
         start:
-          offset: 67273
-          line: 529
+          offset: 68042
+          line: 530
           column: 1
         end:
-          offset: 69749
-          line: 541
+          offset: 70518
+          line: 542
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| validation_route | joint_repair | Reject incompatible local function, cable/connector/kit, missing isolation authority or exposure/slack and any excluded new-insert/trench/armour/shield/branch/shear-bolt/shrink-only/gel route. Actual approved ≤1 kV rating controls; no live-work permission is implied. | un-cpc3-2025; 3m-90na-issue3 |\n| validation_gate | accepted_joint | Require actual preparation/crimp/seal/fill/lot/cure evidence, full required cured-state criterion, applicable calibrated electrical tests, defects closed and signed owner handover. Type-test numbers are not universal field settings. N is positive unique accepted joints only; incomplete/rejected/repeated attempts cannot inflate it. | 3m-90na-issue3 |\n| validation_burden | joint_repair | Verify all actual campaign phases/periods and finite pouch batches, rejected states/rework loops, cleanup/changeover and shared-event ownership. Every failed attempt has a linked repair/waste/return/retained/release path and all burdens stay attributed. N=0 cannot yield an accepted-reference dataset. |  |\n| validation_balance | joint_repair | Check one upstream kit mode and every bundled exclusion, native count including actual discarded count, net chamber/pack/material stocks and exclusive final fates. Gross net-of-tare input precedes return netting. Consumed-only and gross-with-outlet treatments cannot give duplicate return credit. Verify actual factor/volume conversion evidence; unknown/residual does not become zero or an elementary flow. |  |\n| validation_life | shared_assets; provider_service; freight | Require complete-life asset scope and all jobs/nodes/periods with compatible measured denominator and justified remaining-service/replacement/termination/EOL scenario where prospective. Missing denominator/coverage or unresolved service property/unit/results blocks final dataset. Cross-check direct operation, spares, tools, rental/provider and freight for overlaps. |  |\n| validation_identity_range | joint_repair | Resolve each actual concrete exchange with correct identity/state/gate/property/unit before final dataset production. Conditional actual identities require foreground evidence. Range evidence needs stay visible until representative independent evidence is supplied; structural check does not establish UUID verification, quantitative plausibility or publication readiness. |  |\n\n\n"
       headings:
@@ -1456,12 +1460,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 67273
-              line: 529
+              offset: 68042
+              line: 530
               column: 1
             end:
-              offset: 67295
-              line: 529
+              offset: 68064
+              line: 530
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -3818,7 +3822,7 @@ normative_context:
           line: 477
           column: 393
     - pointer: "/allocation_rules/2"
-      rule_id: "allocation_assets"
+      rule_id: "attribution_once"
       identity_kind: "explicit"
       unit_id: "normative_39880"
       source_span:
@@ -3827,99 +3831,112 @@ normative_context:
           line: 478
           column: 1
         end:
-          offset: 41397
+          offset: 41309
           line: 478
-          column: 593
+          column: 505
     - pointer: "/allocation_rules/3"
+      rule_id: "allocation_assets"
+      identity_kind: "explicit"
+      unit_id: "normative_39880"
+      source_span:
+        start:
+          offset: 41310
+          line: 479
+          column: 1
+        end:
+          offset: 41902
+          line: 479
+          column: 593
+    - pointer: "/allocation_rules/4"
       rule_id: "allocation_overlap"
       identity_kind: "explicit"
       unit_id: "normative_39880"
       source_span:
         start:
-          offset: 41398
-          line: 479
+          offset: 41903
+          line: 480
           column: 1
         end:
-          offset: 41915
-          line: 479
+          offset: 42420
+          line: 480
           column: 518
     - pointer: "/validation_rules/0"
       rule_id: "validation_route"
       identity_kind: "explicit"
-      unit_id: "normative_67273"
+      unit_id: "normative_68042"
       source_span:
         start:
-          offset: 67368
-          line: 533
+          offset: 68137
+          line: 534
           column: 1
         end:
-          offset: 67704
-          line: 533
+          offset: 68473
+          line: 534
           column: 337
     - pointer: "/validation_rules/1"
       rule_id: "validation_gate"
       identity_kind: "explicit"
-      unit_id: "normative_67273"
+      unit_id: "normative_68042"
       source_span:
         start:
-          offset: 67705
-          line: 534
+          offset: 68474
+          line: 535
           column: 1
         end:
-          offset: 68093
-          line: 534
+          offset: 68862
+          line: 535
           column: 389
     - pointer: "/validation_rules/2"
       rule_id: "validation_burden"
       identity_kind: "explicit"
-      unit_id: "normative_67273"
+      unit_id: "normative_68042"
       source_span:
         start:
-          offset: 68094
-          line: 535
+          offset: 68863
+          line: 536
           column: 1
         end:
-          offset: 68437
-          line: 535
+          offset: 69206
+          line: 536
           column: 344
     - pointer: "/validation_rules/3"
       rule_id: "validation_balance"
       identity_kind: "explicit"
-      unit_id: "normative_67273"
+      unit_id: "normative_68042"
       source_span:
         start:
-          offset: 68438
-          line: 536
+          offset: 69207
+          line: 537
           column: 1
         end:
-          offset: 68887
-          line: 536
+          offset: 69656
+          line: 537
           column: 450
     - pointer: "/validation_rules/4"
       rule_id: "validation_life"
       identity_kind: "explicit"
-      unit_id: "normative_67273"
+      unit_id: "normative_68042"
       source_span:
         start:
-          offset: 68888
-          line: 537
+          offset: 69657
+          line: 538
           column: 1
         end:
-          offset: 69323
-          line: 537
+          offset: 70092
+          line: 538
           column: 436
     - pointer: "/validation_rules/5"
       rule_id: "validation_identity_range"
       identity_kind: "explicit"
-      unit_id: "normative_67273"
+      unit_id: "normative_68042"
       source_span:
         start:
-          offset: 69324
-          line: 538
+          offset: 70093
+          line: 539
           column: 1
         end:
-          offset: 69746
-          line: 538
+          offset: 70515
+          line: 539
           column: 423
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -5844,15 +5861,15 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_67273"
+      unit_id: "normative_68042"
       source_span:
         start:
-          offset: 67273
-          line: 529
+          offset: 68042
+          line: 530
           column: 1
         end:
-          offset: 67295
-          line: 529
+          offset: 68064
+          line: 530
           column: 23
 projection_metadata:
   contract_version: "2"
@@ -5861,5 +5878,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:efe05b6eeebe7d26b271a4804784515e4bd8d97cf7e0ae10068b13faedd6cebf"
-  generated_content_sha256: "sha256:ffa81ff77154890e01cac8ae132f9c80a0f036d4ebae1ab8c0b939e1ccbfd50b"
+    sha256: "sha256:4d9c813b25555903bee7d2a4097fdddd6130c657cc3318cd725233bc9eca0917"
+  generated_content_sha256: "sha256:d458432a0e699248353b33b3fb98e77acfa539e0f8a45362043513ee50e6e2a2"
