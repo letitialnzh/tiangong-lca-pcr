@@ -1107,9 +1107,9 @@ dataset_production:
       process_id: "slab_cutting"
       flow_role: "conditional direct airborne release"
       record_type: "measured release or supported site-specific emission calculation"
-      raw_fields: "site; lot; cutting_event; substance_or_composition; particle_size_basis; receiving_air_medium; measured_concentration; sampled_air_volume; capture_efficiency_evidence; release_algorithm; factor_records; method; uncertainty; release_duration; collected_waste_exclusion"
-      collection_method: "Use a documented release measurement or explicit source-specific calculation with identified composition, size and air medium; retain raw data, method and factors; absence of evidence is a gap rather than zero Aggregation algorithm: Calculate direct release mass from concentration and volume with unit conversion and documented capture correction; exclude vacuum-collected waste; sum by actual identity; divide by A"
-      unit: "mg/m3; m3; kg"
+      raw_fields: "site; lot; cutting_event; substance_or_composition; particle_size_basis; receiving_air_medium; measured_concentration; sampled_air_volume; capture_efficiency_evidence; release_algorithm; factor_records; method; uncertainty; release_duration; collected_waste_exclusion; measurement_scope; source_boundary; background_corrected_concentration_mg_m3; actual_source_flow_m3_s; interval_duration_s; gas_state_basis; source_coverage_evidence; measured_total_release_kg; total_release_method; control_factor_basis; measured_source_concentration_mg_m3; measured_background_concentration_mg_m3; background_correction_method; source_flow_measurement_evidence"
+      collection_method: "Quantify the whole event release across the actual environmental boundary, not the mass caught by a sampler. For a representative measured source stream, retain background-corrected concentration, the full source flow and matching duration on the same temperature/pressure and dry/wet basis. Sampling-pump volume and worker/room exposure concentration alone cannot establish an event total. For diffuse releases use a validated site-specific total-flux method or supported activity-factor model, with actual event coverage and uncertainty; unknown coverage remains a gap. Exclude captured waste. A downstream release measurement or already controlled release factor receives no second capture deduction. Sum each actual species/size/medium event once and divide by A once. Retain original measured_source_concentration_mg_m3 and measured_background_concentration_mg_m3, the validated background_correction_method and source_flow_measurement_evidence; raw observations and method must support background_corrected_concentration_mg_m3 and the actual flow."
+      unit: "mg/m3; m3; m3/s; s; kg"
       frequency: "Each assessed cutting release event"
       temporal_coverage: "Same cutting lot and actual release period"
       site_scope: "Cutting environmental boundary only"
@@ -1155,9 +1155,9 @@ dataset_production:
       process_id: "fit_acceptance"
       flow_role: "conditional fitting direct airborne release"
       record_type: "measured release or supported site-specific emission calculation"
-      raw_fields: "site; lot; fitting_or_cleanup_event; substance_or_composition; particle_size_basis; receiving_air_medium; measured_concentration; sampled_air_volume; capture_efficiency_evidence; release_algorithm; factor_records; method; uncertainty; release_duration; collected_waste_exclusion"
-      collection_method: "Use actual fitting/cleanup release evidence with composition, size and air medium; distinguish direct release from collected final-cleanup waste Aggregation algorithm: Compute actual direct release mass from raw concentration/volume and documented capture correction; sum by actual identity; divide by A"
-      unit: "mg/m3; m3; kg"
+      raw_fields: "site; lot; fitting_or_cleanup_event; substance_or_composition; particle_size_basis; receiving_air_medium; measured_concentration; sampled_air_volume; capture_efficiency_evidence; release_algorithm; factor_records; method; uncertainty; release_duration; collected_waste_exclusion; measurement_scope; source_boundary; background_corrected_concentration_mg_m3; actual_source_flow_m3_s; interval_duration_s; gas_state_basis; source_coverage_evidence; measured_total_release_kg; total_release_method; control_factor_basis; measured_source_concentration_mg_m3; measured_background_concentration_mg_m3; background_correction_method; source_flow_measurement_evidence"
+      collection_method: "Quantify the whole event release across the actual environmental boundary, not the mass caught by a sampler. For a representative measured source stream, retain background-corrected concentration, the full source flow and matching duration on the same temperature/pressure and dry/wet basis. Sampling-pump volume and worker/room exposure concentration alone cannot establish an event total. For diffuse releases use a validated site-specific total-flux method or supported activity-factor model, with actual event coverage and uncertainty; unknown coverage remains a gap. Exclude captured waste. A downstream release measurement or already controlled release factor receives no second capture deduction. Sum each actual species/size/medium event once and divide by A once. Retain original measured_source_concentration_mg_m3 and measured_background_concentration_mg_m3, the validated background_correction_method and source_flow_measurement_evidence; raw observations and method must support background_corrected_concentration_mg_m3 and the actual flow."
+      unit: "mg/m3; m3; m3/s; s; kg"
       frequency: "Each assessed fitting release event"
       temporal_coverage: "Same fitting lot and actual release period"
       site_scope: "Fitting environmental boundary only"
@@ -1308,11 +1308,21 @@ dataset_production:
       source_ids: []
     - id: release_calc
       applies_to: "cut_airborne_particles; fit_airborne_particles"
-      rule: "For each independently identified direct air release, mass_kg = measured_concentration * sampled_air_volume / 1000000 when measured_concentration is mg/m3 and sampled_air_volume is m3 with only documented capture corrections; alternatively retain the full supported site-specific algorithm and factors. Sum release masses by identity into cut_air_mass or fit_air_mass and divide by A. Captured waste is excluded."
+      rule: "For each independently identified direct air release, mass_kg = sum(background_corrected_concentration_mg_m3 * actual_source_flow_m3_s * interval_duration_s) / 1000000 only for representative actual source-boundary intervals with compatible gas_state_basis and source_coverage_evidence. actual_source_flow_m3_s is the full environmental source stream, never sampling-pump flow; sampled_air_volume is sample-analysis evidence only. Concentration times sampler volume gives sample mass, not the whole event release. Alternatively use measured_total_release_kg from a validated total_release_method, or a fully supported source-specific release_algorithm with actual activity and factor_records. Diffuse/room or worker-exposure samples require an independently validated source-flux bridge before they can establish total released mass. Retain measurement_scope, source_boundary, method, uncertainty and control_factor_basis; do not apply capture correction again to a downstream release measurement or factor that already contains it. Unknown source coverage remains a gap, not zero. Sum actual event masses by substance_or_composition, particle_size_basis and receiving_air_medium into cut_air_mass or fit_air_mass; divide by A once. Captured waste is excluded. Retain original source and background concentration observations, validated background_correction_method and source_flow_measurement_evidence; the correction and actual source flow must be independently supported."
       inputs:
-        - measured_concentration
+        - measurement_scope
+        - source_boundary
+        - background_corrected_concentration_mg_m3
+        - actual_source_flow_m3_s
+        - interval_duration_s
+        - gas_state_basis
+        - source_coverage_evidence
+        - measured_total_release_kg
+        - total_release_method
+        - control_factor_basis
         - sampled_air_volume
-        - capture_efficiency_evidence
+        - method
+        - uncertainty
         - release_algorithm
         - factor_records
         - substance_or_composition
@@ -1321,8 +1331,13 @@ dataset_production:
         - cp_cut_air
         - cp_fit_air
         - A
+        - measured_source_concentration_mg_m3
+        - measured_background_concentration_mg_m3
+        - background_correction_method
+        - source_flow_measurement_evidence
       output: "cut_air_mass / A; fit_air_mass / A"
-      source_ids: []
+      source_ids:
+        - epa-eiip-sample-source-flow
     - id: mass_conversion_calc
       applies_to: "delivered_stone_wool; cut_slabs_transfer; cut_wool_feed"
       rule: "Where actual weighing is unavailable, mass_kg = sum(actual piece volume derived in m3 from measured piece_dimensions or installed_piece_geometry * documented_density_kg_per_m3); retain dimensional records, offcut geometry, density source and uncertainty. Supplier pack mass is usable only for the actual declared grade and count."
@@ -1469,9 +1484,13 @@ data_sources:
     type: "handbook"
     reference: "ROCKWOOL, Thermal Frame Slab 32 installation guide, issue 23.10.2025, version 2.00, pages 1–3. https://www.rockwool.com/syssiteassets/rw-uk/downloads/installation-guides/thermal-frame-slab-32-installation-guide.pdf"
     used_for: "Current route evidence: frame checks, actual aperture measurement, cutting and friction fitting, gap inspection and vacuum cleanup; named-product dimensions and allowances remain product-specific, not universal quantity defaults"
+  - id: "epa-eiip-sample-source-flow"
+    type: "official_guidance"
+    reference: "US EPA, EIIP Volume II Chapter 2, Preferred and Alternative Methods for Estimating Air Emissions from Boilers, printed p. 2.4-13 dated 8 January 2001, equation 2.4-12; https://19january2021snapshot.epa.gov/sites/static/files/2015-08/documents/ii02.pdf"
+    used_for: "Supports only the distinction between sampler gas volume and full source flow when deriving emitted mass from concentration. Boiler/stack methods, factors and example values are not adopted for installation dust or diffuse releases; actual source-specific method and event coverage remain required."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:d12e5cf2720502018a1941781a1a09e7ae52713d3601e16cd0b3e76361ec674d"
+  source_sha256: "sha256:70f663c0d22fa977d52f5eeb928cc1b75c79d477cfe58d9d6562c7d9e14f328f"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5583"
@@ -1570,15 +1589,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_72613"
+    - unit_id: "normative_76216"
       family: "validation"
       span:
         start:
-          offset: 72613
+          offset: 76216
           line: 705
           column: 1
         end:
-          offset: 74659
+          offset: 78262
           line: 717
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| service_gate | reference product | Check positive net A, actual pre-enclosure acceptance and declared slab/system qualifiers; output only accepted insulated cavity area. A manufactured insulation material flow is incompatible with this service gate. | `rockwool-thermal-frame-slab-installation-2025` |\n| aperture_and_fit | aperture_survey; fit_acceptance | Check actual clear-aperture measurements, gap/compression inspection and final disposition of every rejected aperture. Rework adds real burdens and cannot inflate A. | `rockwool-thermal-frame-slab-installation-2025` |\n| transfer_and_stock | slab_cutting; fit_acceptance | Reconcile paired frame_transfer and wool_transfer ids, units, quantities and states. Check stock terms, exclusive returns/external handovers, WIP and mass balance. Do not subtract returned mass twice across gross physical and diagnostic net accounts. | |\n| condition_validation | retention_accessories; all conditional rows | Require actual activation evidence; documented absence permits zero, missing evidence is a data gap. Resolve actual accessory/packaging material and direct-release identities before final exchange creation. | `rockwool-thermal-frame-slab-installation-2025` |\n| node_ownership | all nodes | Check production-lot and period coverage, cut/fit rejection paths, cleanup ownership and shared-meter shares across all consumers. Reconcile shares to one and prevent repeated whole-site or supplier-included burdens. | |\n| thermal_claims | reference qualifiers | Check thickness, density and conductivity declaration conditions. A slab lambda or its thickness/lambda ratio cannot alone justify whole-wall thermal performance or building-life claims. | |\n| range_validation | all flow cards | Verify quantities against original records and declared algorithms. Explain provisional-screen outliers; do not replace missing records with a range midpoint or label these reasoned intervals observed data. | |\n\n"
@@ -1598,11 +1617,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 72613
+              offset: 76216
               line: 705
               column: 1
             end:
-              offset: 72635
+              offset: 76238
               line: 705
               column: 23
           text: "## 9. Validation Rules"
@@ -3806,92 +3825,92 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "service_gate"
       identity_kind: "explicit"
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 72708
+          offset: 76311
           line: 709
           column: 1
         end:
-          offset: 73011
+          offset: 76614
           line: 709
           column: 304
     - pointer: "/validation_rules/1"
       rule_id: "aperture_and_fit"
       identity_kind: "explicit"
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 73012
+          offset: 76615
           line: 710
           column: 1
         end:
-          offset: 73284
+          offset: 76887
           line: 710
           column: 273
     - pointer: "/validation_rules/2"
       rule_id: "transfer_and_stock"
       identity_kind: "explicit"
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 73285
+          offset: 76888
           line: 711
           column: 1
         end:
-          offset: 73593
+          offset: 77196
           line: 711
           column: 309
     - pointer: "/validation_rules/3"
       rule_id: "condition_validation"
       identity_kind: "explicit"
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 73594
+          offset: 77197
           line: 712
           column: 1
         end:
-          offset: 73923
+          offset: 77526
           line: 712
           column: 330
     - pointer: "/validation_rules/4"
       rule_id: "node_ownership"
       identity_kind: "explicit"
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 73924
+          offset: 77527
           line: 713
           column: 1
         end:
-          offset: 74175
+          offset: 77778
           line: 713
           column: 252
     - pointer: "/validation_rules/5"
       rule_id: "thermal_claims"
       identity_kind: "explicit"
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 74176
+          offset: 77779
           line: 714
           column: 1
         end:
-          offset: 74408
+          offset: 78011
           line: 714
           column: 233
     - pointer: "/validation_rules/6"
       rule_id: "range_validation"
       identity_kind: "explicit"
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 74409
+          offset: 78012
           line: 715
           column: 1
         end:
-          offset: 74657
+          offset: 78260
           line: 715
           column: 249
   diagnostics:
@@ -5805,14 +5824,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_72613"
+      unit_id: "normative_76216"
       source_span:
         start:
-          offset: 72613
+          offset: 76216
           line: 705
           column: 1
         end:
-          offset: 72635
+          offset: 76238
           line: 705
           column: 23
 projection_metadata:
@@ -5822,5 +5841,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:d12e5cf2720502018a1941781a1a09e7ae52713d3601e16cd0b3e76361ec674d"
-  generated_content_sha256: "sha256:c481e7f4ccbe292eadd68fe0f98348016ad3a4239c1561ecd4dce13a9af89ffc"
+    sha256: "sha256:70f663c0d22fa977d52f5eeb928cc1b75c79d477cfe58d9d6562c7d9e14f328f"
+  generated_content_sha256: "sha256:b1dcd138e3ebde668015cb611a0df136c3f1aee4b420b85b96675536c07abaa5"

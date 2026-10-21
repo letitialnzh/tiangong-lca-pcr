@@ -958,8 +958,8 @@ dataset_production:
       process_id: "crack_treatment"
       flow_role: "direct and incident identified constituent releases"
       record_type: "measurement; activity-factor; incident balance"
-      raw_fields: "job_id; period_id; batch_id; incident_id; concrete_substance; CAS_or_identity; receiving_medium; particle_size_basis; measurement_value; measurement_unit; sampling_duration_h; instrument_calibration; emission_activity; activity_unit; emission_factor_value; emission_factor_unit; factor_source_revision; fuel_burned_kg; actual_SDS_revision; component_mass_fraction; composition_fraction_basis; composition_fraction_source_revision; medium_fate_fraction; fate_fraction_basis; fate_fraction_source_revision; incident_constituent_measured_kg; retained_kg; captured_kg; reaction_terms_kg; incident_total_kg; recovered_product_kg; captured_waste_kg; uncontained_wholefluid_kg; liquid_volume_value; liquid_volume_unit; liquid_density_value; liquid_density_unit; liquid_temperature_C; liquid_state; host_moisture_kg; weather_water_kg; balance_uncertainty_kg"
-      collection_method: "Identify substance and medium before elementary exchange; use actual measurements or compatible documented species-specific activity/factor and control conditions. Partition each fluid incident into recovered product, captured waste and uncontained whole fluid only in the physical ledgers; do not deduct total again. For elementary exchanges use actual measured released constituent kg or whole-fluid kg times evidenced constituent mass fraction and medium-specific fate fraction, retaining fraction basis/source and uncertainty. Whole formulation is not an elementary exchange. Give each substance/medium/event one owner, exclude fluid_release incident constituents from direct_species, and prevent whole-fluid/partial-species double counting. Separate supplied water, dry solids, retained-host moisture and evidenced weather terms; investigate unknown residual rather than assign emission."
+      raw_fields: "job_id; period_id; batch_id; incident_id; concrete_substance; CAS_or_identity; receiving_medium; particle_size_basis; measurement_value; measurement_unit; sampling_duration_h; instrument_calibration; emission_activity; activity_unit; emission_factor_value; emission_factor_unit; factor_source_revision; fuel_burned_kg; actual_SDS_revision; component_mass_fraction; composition_fraction_basis; composition_fraction_source_revision; medium_fate_fraction; fate_fraction_basis; fate_fraction_source_revision; incident_constituent_measured_kg; retained_kg; captured_kg; reaction_terms_kg; incident_total_kg; recovered_product_kg; captured_waste_kg; uncontained_wholefluid_kg; liquid_volume_value; liquid_volume_unit; liquid_density_value; liquid_density_unit; liquid_temperature_C; liquid_state; host_moisture_kg; weather_water_kg; balance_uncertainty_kg; factor_release_basis; factor_control_scope; factor_control_evidence; uncaptured_fraction; uncaptured_fraction_basis"
+      collection_method: "Identify substance and medium before elementary exchange; use actual measurements or compatible documented species-specific activity/factor and control conditions. Partition each fluid incident into recovered product, captured waste and uncontained whole fluid only in the physical ledgers; do not deduct total again. For elementary exchanges use actual measured released constituent kg or whole-fluid kg times evidenced constituent mass fraction and medium-specific fate fraction, retaining fraction basis/source and uncertainty. Whole formulation is not an elementary exchange. Give each substance/medium/event one owner, exclude fluid_release incident constituents from direct_species, and prevent whole-fluid/partial-species double counting. Separate supplied water, dry solids, retained-host moisture and evidenced weather terms; investigate unknown residual rather than assign emission. Record factor_release_basis and actual factor_control_scope/evidence before use. An already-released species factor or directly measured environmental release receives no additional uncaptured_fraction multiplier. Only an explicitly uncontrolled generation factor may use one evidenced compatible dimensionless uncaptured_fraction; record its basis and percent-to-fraction conversion if needed. Unknown factor/control basis blocks the calculation; no default fraction is supplied."
       unit: "kg; actual activity/factor/measurement/volume/density units; C; h"
       frequency: "Each relevant batch/incident and emission measurement period"
       temporal_coverage: "Full job and actual emission duration"
@@ -1035,14 +1035,21 @@ dataset_production:
       source_ids: []
     - id: species_release
       applies_to: "direct_species"
-      rule: "For each routine substance/medium/event, intensity kg = actual measured release kg / L, or actual compatible activity times documented substance-specific factor times applicable uncaptured fraction / L. Use burned fuel activity when factor requires combustion; account retention/capture/reaction explicitly without assumed 100% solids zero. Exclude incident constituent exchanges assigned to fluid_release; one owner per substance/medium/event, never a generic mixed-formulation elementary exchange."
+      rule: "For each routine substance/medium/event select actual measured environmental release kg / L, or actual compatible activity times the documented substance-specific emission_factor_value / L when factor_release_basis already reports released species under the evidenced factor_control_scope. Only when the factor explicitly reports uncontrolled generation may that activity-factor result be multiplied once by the evidenced applicable dimensionless uncaptured_fraction on the same basis. Retain factor_control_evidence and uncaptured_fraction_basis, with percent-to-fraction conversion when necessary; unknown basis is a gap, not an assumed correction or fraction 1. Never multiply an already controlled release factor or actual released-mass measurement by capture/retention/fate again. Use burned fuel activity when required, preserve reaction/retention evidence and do not infer zero from 100% solids. Exclude incident constituents owned by fluid_release; retain one owner per substance/medium/event, with no generic mixed-formulation elementary exchange."
       inputs:
         - cp_emissions
         - cp_utilities
         - cp_acceptance
         - "actual factor/measurement and controls"
+        - emission_factor_value
+        - factor_release_basis
+        - factor_control_scope
+        - factor_control_evidence
+        - uncaptured_fraction
+        - uncaptured_fraction_basis
       output: "Species/medium-specific kg per 1 m accepted crack path"
-      source_ids: []
+      source_ids:
+        - epa-eiip-factor-control-basis-2001
     - id: fluid_partition
       applies_to: "fluid_release"
       rule: "Physical ledger only: uncontained whole-fluid kg = incident total kg - recovered product kg - captured waste kg, with mutually exclusive measured outlets and uncertainty. For each identified constituent/medium elementary exchange, intensity kg = measured released constituent kg / L, or uncontained whole-fluid kg times evidenced constituent mass fraction times actual medium-specific release/fate fraction / L. Retain actual fraction basis/source and uncertainty; whole formulation stays audit-only, reported species subset is not whole-fluid total, and no duplicate direct_species or whole-fluid/partial-species impact exchange is allowed."
@@ -1128,9 +1135,13 @@ data_sources:
     type: "handbook"
     reference: "Sika US, Sikadur52 Product Data Sheet Edition 9.23.2014, both pages, currently linked at US product page; https://usa.sika.com/dam/dms/us01/0/Sikadur%2052.pdf"
     used_for: "Two-component low-viscosity epoxy route; clean/sound dry/damp without standing water; actual volume dosing; ports and cured surface seal before pressure injection; no thinning/hydrostatic-pressure injection; site-specific current instructions requirement; laboratory data limitations"
+  - id: "epa-eiip-factor-control-basis-2001"
+    type: "official_guidance"
+    reference: "US EPA, EIIP Volume II Chapter 1, Introduction to Stationary Point Source Emission Inventory Development, 31 May 2001, section 4.4, printed pp. 1.4-7 to 1.4-9; https://19january2021snapshot.epa.gov/sites/static/files/2015-08/documents/ii01_may2001.pdf"
+    used_for: "Controlled versus uncontrolled emission-factor basis and conditional control correction only. No source-category factor, capture efficiency, rule-effectiveness value or regulatory requirement is transferred to tunnel repair; actual applicable factor and controls require evidence."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:7eb2d7abd0747c1c4c67526ba0fefe03aef808bb62927d11b6a800b0d457a949"
+  source_sha256: "sha256:6bebb85798afb363a64d8995bdfba8eeac840b3326e19db17bb6594da8516d3c"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6641"
@@ -1229,15 +1240,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_57983"
+    - unit_id: "normative_59312"
       family: "validation"
       span:
         start:
-          offset: 57983
+          offset: 59312
           line: 499
           column: 1
         end:
-          offset: 60538
+          offset: 61867
           line: 512
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_scope` | crack_treatment | Reject scope crossing to new/major replacement, moving/hydrostatic-pressure cracks, PU waterstop or water/mining tunnels; retained host receives no new lining burden or avoided replacement credit. | un-cpc3-2025; sika-sikadur52-us-2014 |\n| `validate_gate` | accepted_crack_repair | Require recorded qualified prestate, actual compatible regional materials/method, surface seal cure before injection, complete actual injection/cure records and owner-sourced verification criteria/results/tolerances with units, defect closure and signed acceptance. Lab strength or elapsed time alone is not acceptance. | sika-sikadur52-us-2014 |\n| `validate_length` | accepted_crack_repair | Recompute union of accepted unique paths and L; count each branch once, never tunnel length, ports/faces/passes or unresolved rejects. Confirm every exchange uses same positive accepted-L denominator with all failed/setup/purge work retained once. |  |\n| `validate_custody` | all inventory rows | Audit gross net-of-tare receipts before returns, internal movements, outward custody, retained closing stock and burden carry-forward. Verify actual whole-fluid fuel outlets and burn calculation without incident double subtraction; capture/waste/elementary releases remain distinct. |  |\n| `validate_assets` | equipment_share | Verify every shared asset consumer/period, complete-life scope and compatible measured service driver; observed history plus justified future scenario for in-service assets includes replacement/termination/EOL and uncertainty/sensitivity/updates. Missing coverage or denominator blocks finalisation; remove overlapping direct fuel/spare/tool/rental coverage. |  |\n| `validate_identity_and_emissions` | all inventory rows | Verify concrete identities/properties/units before final dataset exchange binding; do not substitute near-match resin manufacture/new tunnel/PU for repair service. Check actual species/medium and capture/retention/reaction, fluid partition and weather/host moisture; 100% solids never proves zero release. Record missing ranges, UUIDs and material evidence explicitly. |  |\n| `validate_campaign` | crack_treatment | Trace all batches and preparation/injection/cure/verification periods, setup/changeover and rejects to this node and actual rework/waste/product-return destinations. Reject unresolved failures as accepted output; shared-job causal attribution reconciles once across periods. |  |\n\n\n"
@@ -1257,11 +1268,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 57983
+              offset: 59312
               line: 499
               column: 1
             end:
-              offset: 58005
+              offset: 59334
               line: 499
               column: 23
           text: "## 9. Validation Rules"
@@ -3296,92 +3307,92 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "validate_scope"
       identity_kind: "explicit"
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 58078
+          offset: 59407
           line: 503
           column: 1
         end:
-          offset: 58354
+          offset: 59683
           line: 503
           column: 277
     - pointer: "/validation_rules/1"
       rule_id: "validate_gate"
       identity_kind: "explicit"
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 58355
+          offset: 59684
           line: 504
           column: 1
         end:
-          offset: 58745
+          offset: 60074
           line: 504
           column: 391
     - pointer: "/validation_rules/2"
       rule_id: "validate_length"
       identity_kind: "explicit"
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 58746
+          offset: 60075
           line: 505
           column: 1
         end:
-          offset: 59044
+          offset: 60373
           line: 505
           column: 299
     - pointer: "/validation_rules/3"
       rule_id: "validate_custody"
       identity_kind: "explicit"
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 59045
+          offset: 60374
           line: 506
           column: 1
         end:
-          offset: 59376
+          offset: 60705
           line: 506
           column: 332
     - pointer: "/validation_rules/4"
       rule_id: "validate_assets"
       identity_kind: "explicit"
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 59377
+          offset: 60706
           line: 507
           column: 1
         end:
-          offset: 59780
+          offset: 61109
           line: 507
           column: 404
     - pointer: "/validation_rules/5"
       rule_id: "validate_identity_and_emissions"
       identity_kind: "explicit"
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 59781
+          offset: 61110
           line: 508
           column: 1
         end:
-          offset: 60213
+          offset: 61542
           line: 508
           column: 433
     - pointer: "/validation_rules/6"
       rule_id: "validate_campaign"
       identity_kind: "explicit"
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 60214
+          offset: 61543
           line: 509
           column: 1
         end:
-          offset: 60535
+          offset: 61864
           line: 509
           column: 322
   diagnostics:
@@ -5151,14 +5162,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_57983"
+      unit_id: "normative_59312"
       source_span:
         start:
-          offset: 57983
+          offset: 59312
           line: 499
           column: 1
         end:
-          offset: 58005
+          offset: 59334
           line: 499
           column: 23
 projection_metadata:
@@ -5168,5 +5179,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:7eb2d7abd0747c1c4c67526ba0fefe03aef808bb62927d11b6a800b0d457a949"
-  generated_content_sha256: "sha256:d13071fb2622229704e8b6315d2c6e9506fd8086d7d5ec3ac3ab20ee5a5b683e"
+    sha256: "sha256:6bebb85798afb363a64d8995bdfba8eeac840b3326e19db17bb6594da8516d3c"
+  generated_content_sha256: "sha256:b63609e29c6a20a13dda356e315577b80a29655a51ebe44f06c8563c963a18e7"
