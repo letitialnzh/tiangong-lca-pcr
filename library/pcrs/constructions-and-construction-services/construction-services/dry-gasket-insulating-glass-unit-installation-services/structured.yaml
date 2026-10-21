@@ -1626,8 +1626,8 @@ dataset_production:
       process_id: "survey"
       flow_role: "IGU physical draw, forward handoff, usable exit and incoming discard"
       record_type: "stock ledger, unit register, transfer and waste record"
-      raw_fields: "lot_id; period_id; event_ID; producing_node; unit_ID; rectangular_outline_confirmed; outline_evidence; actual_unit_width_m; actual_unit_height_m; forward_event_ID; corrective_event_ID; unit_state_event_IDs; opening_processed_WIP; processed_receipts; processed_exits; closing_processed_WIP; carrying_burden_link; material_pool_ID; actual_original_upstream_burden_per_matching_unit; original_gross_draw_material_burden; actual_usable_exit_quantity; survey_opening_unit_IDs; survey_receipt_unit_IDs; survey_closing_unit_IDs; survey_supplier_return_unit_IDs; survey_external_transfer_unit_IDs; measured_complete_or_collected_composite_mass_kg; documented_actual_complete_build_kg_per_m2; discarded_unit_ID; actual_net_discarded_mass_j; site_id; actual_build; complete_unit_mass_where_needed; mass_bridge_source; opening_intact_unissued_quantity; receipts; closing_intact_unissued_quantity; usable_return_ids; external_transfer_ids; quarantine_ids; wip_ids; custodian; event_timestamp"
-      collection_method: "Measure unit face area from actual width and height once per unit. Calculate physical gross IGU draw as opening intact unissued area plus receipt area minus closing intact unissued area, without subtracting usable exits. Separately sum mutually exclusive usable supplier-return and external-transfer areas, actual forward-handoff event areas and incoming discarded-unit masses. Weigh composite discarded units or use actual same-build mass/area evidence. Match unit IDs across all states and divide each attributable quantity by A. Stable-key mapping: For every unit, actual_unit_area = actual_unit_width_m * actual_unit_height_m. survey_opening_intact_unissued_area, survey_igu_receipt_area and survey_closing_intact_unissued_area are sums over their named exclusive unit-ID sets. survey_unused_supplier_return_area and survey_unused_external_transfer_area are separate actual usable-exit set sums; survey_usable_exit_area is their sum. survey_forward_area sums distinct forward_event_ID unit areas. actual_discarded_unit_area sums discarded_unit_ID actual areas; survey_discarded_igu_kg is actual complete/composite weighed mass or actual_discarded_unit_area times the evidenced actual complete-build kg/m2. gross_igu_draw comes from igu_stock_draw. Stockburden aliases refer only to this actual Area/m2 pool and its original upstream dataset. No count/area-to-mass factor is inferred from a different IGU build. Field definitions: site_id = site; lot_id = lot; producing_node = node; period_id = period; unit_ID = unit ID; actual_build = actual build; actual_unit_width_m = width; actual_unit_height_m = height; complete_unit_mass_where_needed = complete-unit mass where needed; mass_bridge_source = mass-bridge source; opening_intact_unissued_quantity = opening intact unissued quantity; receipts = receipts; closing_intact_unissued_quantity = closing intact unissued quantity; usable_return_ids = usable return IDs; external_transfer_ids = external-transfer IDs; quarantine_ids = quarantine IDs; wip_ids = WIP IDs; forward_event_ID = forward transfer ID; discarded_unit_ID = discarded-unit ID; custodian = custodian; event_timestamp = timestamps."
+      raw_fields: "lot_id; period_id; event_ID; producing_node; unit_ID; rectangular_outline_confirmed; outline_evidence; actual_unit_width_m; actual_unit_height_m; forward_event_ID; corrective_event_ID; unit_state_event_IDs; opening_processed_WIP; processed_receipts; processed_exits; closing_processed_WIP; carrying_burden_link; material_pool_ID; actual_original_upstream_burden_per_matching_unit; original_gross_draw_material_burden; actual_usable_exit_quantity; survey_opening_unit_IDs; survey_receipt_unit_IDs; survey_closing_unit_IDs; survey_supplier_return_unit_IDs; survey_external_transfer_unit_IDs; measured_complete_or_collected_composite_mass_kg; documented_actual_complete_build_kg_per_m2; discarded_unit_ID; actual_net_discarded_mass_j; site_id; actual_build; complete_unit_mass_where_needed; mass_bridge_source; opening_intact_unissued_quantity; receipts; closing_intact_unissued_quantity; usable_return_ids; external_transfer_ids; quarantine_ids; wip_ids; custodian; event_timestamp; discard_stream_id; discard_mass_method; complete_unit_discard_confirmed; complete_constituent_coverage_evidence; discard_current_state; mass_bridge_state; partial_stream_component_mass_records; other_constituent_fate_ids; mass_method_evidence"
+      collection_method: "Measure unit face area from actual width and height once per unit. Calculate physical gross IGU draw as opening intact unissued area plus receipt area minus closing intact unissued area, without subtracting usable exits. Separately sum mutually exclusive usable supplier-return and external-transfer areas, actual forward-handoff event areas and incoming discarded-unit masses. Weigh composite discarded units or use actual same-build mass/area evidence. Match unit IDs across all states and divide each attributable quantity by A. Stable-key mapping: For every unit, actual_unit_area = actual_unit_width_m * actual_unit_height_m. survey_opening_intact_unissued_area, survey_igu_receipt_area and survey_closing_intact_unissued_area are sums over their named exclusive unit-ID sets. survey_unused_supplier_return_area and survey_unused_external_transfer_area are separate actual usable-exit set sums; survey_usable_exit_area is their sum. survey_forward_area sums distinct forward_event_ID unit areas. actual_discarded_unit_area sums discarded_unit_ID actual areas; survey_discarded_igu_kg follows the actual-state method and completeness conditions in complete_igu_mass_bridge; the complete-area/build alternative is unavailable for a partial stream. gross_igu_draw comes from igu_stock_draw. Stockburden aliases refer only to this actual Area/m2 pool and its original upstream dataset. No count/area-to-mass factor is inferred from a different IGU build. Field definitions: site_id = site; lot_id = lot; producing_node = node; period_id = period; unit_ID = unit ID; actual_build = actual build; actual_unit_width_m = width; actual_unit_height_m = height; complete_unit_mass_where_needed = complete-unit mass where needed; mass_bridge_source = mass-bridge source; opening_intact_unissued_quantity = opening intact unissued quantity; receipts = receipts; closing_intact_unissued_quantity = closing intact unissued quantity; usable_return_ids = usable return IDs; external_transfer_ids = external-transfer IDs; quarantine_ids = quarantine IDs; wip_ids = WIP IDs; forward_event_ID = forward transfer ID; discarded_unit_ID = discarded-unit ID; custodian = custodian; event_timestamp = timestamps. Choose one discard_mass_method for each discard_stream_id and actual discard_current_state. The complete-area/build bridge is eligible only when complete_unit_discard_confirmed and complete_constituent_coverage_evidence establish that the exact quantity and all constituents represented by that factor are dispatched in this waste stream at the matching mass_bridge_state. For partial, sorted or otherwise changed broken-unit waste, use actual tare-corrected stream weighing or independently measured compatible partial_stream_component_mass_records. Do not apply the intact complete-unit kg/m2 factor to the full original unit area. Record other_constituent_fate_ids for retained, returned, separately discarded or actually released portions once, preserving real waste identities and no extra whole-plus-components mass. Missing coverage/state evidence blocks that conversion; it does not erase the original supply burden, establish release or become zero."
       unit: "m2; kg"
       frequency: "each receipt, stock boundary, transfer or rejection event"
       temporal_coverage: "all receiving periods contributing to this lot and linked opening/closing WIP"
@@ -1674,8 +1674,8 @@ dataset_production:
       process_id: "glaze"
       flow_role: "component offcuts and composite IGU breakage"
       record_type: "material-resolved waste and rejection log"
-      raw_fields: "lot_id; period_id; event_ID; producing_node; unit_ID; rectangular_outline_confirmed; outline_evidence; actual_unit_width_m; actual_unit_height_m; forward_event_ID; corrective_event_ID; unit_state_event_IDs; opening_processed_WIP; processed_receipts; processed_exits; closing_processed_WIP; carrying_burden_link; material_pool_ID; weighed_net_kg; actual_length_m; actual_count; documented_same_grade_kg_per_m; documented_same_grade_kg_per_item; measured_complete_or_collected_composite_mass_kg; documented_actual_complete_build_kg_per_m2; actual_net_discarded_mass_j; actual_mass_method; actual_build_or_material_grade; rejected_state; event_pass_id; net_waste_mass; tare; exact_build_mass_bridge_if_used; collection_method; destination; custodian; event_timestamp"
-      collection_method: "Segregate component offcuts from composite IGU waste and usable stock exits. Weigh each discarded material/state and complete or collected broken IGU mass, preserving actual unit identity and remaining composite contents. Link every event to glaze activity and waste destination, reconcile it with input/WIP states, and divide each waste stream by A. Stable-key mapping: actual_discarded_unit_area = sum actual_unit_width_m * actual_unit_height_m over the identified discarded unit events. Match unit/build to the complete composite-mass bridge when a bridge is needed; generic glass-only thickness/density is insufficient. glaze_discarded_igu_kg sums actual_discarded_igu_kg from complete_igu_mass_bridge for glaze events. glaze_component_waste_kg sums distinct non-IGU component masses from actual_material_mass_bridge. actual_net_discarded_mass_j preserves both streams separately, with producing_node = glaze. Field definitions: lot_id = lot; producing_node = node; material_pool_ID = unit/material ID; actual_build_or_material_grade = actual build or material grade; rejected_state = rejected state; event_pass_id = event/pass ID; net_waste_mass = net waste mass; tare = tare; exact_build_mass_bridge_if_used = exact-build mass bridge if used; collection_method = collection method; destination = destination; custodian = custodian; event_timestamp = date."
+      raw_fields: "lot_id; period_id; event_ID; producing_node; unit_ID; rectangular_outline_confirmed; outline_evidence; actual_unit_width_m; actual_unit_height_m; forward_event_ID; corrective_event_ID; unit_state_event_IDs; opening_processed_WIP; processed_receipts; processed_exits; closing_processed_WIP; carrying_burden_link; material_pool_ID; weighed_net_kg; actual_length_m; actual_count; documented_same_grade_kg_per_m; documented_same_grade_kg_per_item; measured_complete_or_collected_composite_mass_kg; documented_actual_complete_build_kg_per_m2; actual_net_discarded_mass_j; actual_mass_method; actual_build_or_material_grade; rejected_state; event_pass_id; net_waste_mass; tare; exact_build_mass_bridge_if_used; collection_method; destination; custodian; event_timestamp; discard_stream_id; discard_mass_method; complete_unit_discard_confirmed; complete_constituent_coverage_evidence; discard_current_state; mass_bridge_state; partial_stream_component_mass_records; other_constituent_fate_ids; mass_method_evidence"
+      collection_method: "Segregate component offcuts from composite IGU waste and usable stock exits. Weigh each discarded material/state and complete or collected broken IGU mass, preserving actual unit identity and remaining composite contents. Link every event to glaze activity and waste destination, reconcile it with input/WIP states, and divide each waste stream by A. Stable-key mapping: actual_discarded_unit_area = sum actual_unit_width_m * actual_unit_height_m over the identified discarded unit events. Match unit/build to the complete composite-mass bridge when a bridge is needed; generic glass-only thickness/density is insufficient. glaze_discarded_igu_kg sums actual_discarded_igu_kg from complete_igu_mass_bridge for glaze events. glaze_component_waste_kg sums distinct non-IGU component masses from actual_material_mass_bridge. actual_net_discarded_mass_j preserves both streams separately, with producing_node = glaze. Field definitions: lot_id = lot; producing_node = node; material_pool_ID = unit/material ID; actual_build_or_material_grade = actual build or material grade; rejected_state = rejected state; event_pass_id = event/pass ID; net_waste_mass = net waste mass; tare = tare; exact_build_mass_bridge_if_used = exact-build mass bridge if used; collection_method = collection method; destination = destination; custodian = custodian; event_timestamp = date. Choose one discard_mass_method for each discard_stream_id and actual discard_current_state. The complete-area/build bridge is eligible only when complete_unit_discard_confirmed and complete_constituent_coverage_evidence establish that the exact quantity and all constituents represented by that factor are dispatched in this waste stream at the matching mass_bridge_state. For partial, sorted or otherwise changed broken-unit waste, use actual tare-corrected stream weighing or independently measured compatible partial_stream_component_mass_records. Do not apply the intact complete-unit kg/m2 factor to the full original unit area. Record other_constituent_fate_ids for retained, returned, separately discarded or actually released portions once, preserving real waste identities and no extra whole-plus-components mass. Missing coverage/state evidence blocks that conversion; it does not erase the original supply burden, establish release or become zero."
       unit: "kg"
       frequency: "each rejection or waste dispatch"
       temporal_coverage: "every glaze and correction event included in the lot"
@@ -1734,8 +1734,8 @@ dataset_production:
       process_id: "accept"
       flow_role: "spent cleaning solids and late composite IGU discard"
       record_type: "segregated waste weighing and unit rejection record"
-      raw_fields: "lot_id; period_id; event_ID; producing_node; unit_ID; rectangular_outline_confirmed; outline_evidence; actual_unit_width_m; actual_unit_height_m; forward_event_ID; corrective_event_ID; unit_state_event_IDs; opening_processed_WIP; processed_receipts; processed_exits; closing_processed_WIP; carrying_burden_link; material_pool_ID; weighed_net_kg; actual_length_m; actual_count; documented_same_grade_kg_per_m; documented_same_grade_kg_per_item; measured_complete_or_collected_composite_mass_kg; documented_actual_complete_build_kg_per_m2; actual_net_discarded_mass_j; spent_wipe_wet_mass_kg; measured_spent_wipe_water_fraction; wipe_water_evidence_ID; actual_mass_method; actual_igu_build; waste_state; event_pass_id; wet_mass; tare; measured_water_content; independently_weighed_composite_igu_mass_or_exact_build_bridge; rejected_state; destination; custodian; event_timestamp"
-      collection_method: "Weigh separated spent cleaning material and residues, documenting water already included in wet mass; exclude separately collected wastewater. Separately weigh actual composite IGUs discarded at accept, preserving actual build and ID rather than converting area into glass-only mass. Keep intact corrective returns and held units out of waste. Link each waste stream to its producing event and custodian, reconcile water with cp_accept_water, and divide each amount by A. Stable-key mapping: actual_discarded_unit_area uses actual discarded-unit dimensions from its matched unit ledger, preserving actual complete build. accept_discarded_igu_kg sums actual own-accept composite discarded mass using complete_igu_mass_bridge; producing_node = accept. accept_collected_solid_waste_kg sums actual collected non-IGU residues/spent consumable net mixture masses. spent_wipe_water_kg = spent_wipe_wet_mass_kg * measured_spent_wipe_water_fraction from a water-specific validated determination; a generic wet-minus-dry result that includes other volatile components is not sufficient. Pass this same fate-ID water constituent to cp_accept_water without another physical inventory output. Field definitions: lot_id = lot; producing_node = node; material_pool_ID = material/unit ID; actual_igu_build = actual IGU build; waste_state = waste state; event_pass_id = event/pass ID; wet_mass = wet mass; tare = tare; measured_water_content = measured water content; independently_weighed_composite_igu_mass_or_exact_build_bridge = independently weighed composite IGU mass or exact-build bridge; rejected_state = rejected state; destination = destination; custodian = custodian; event_timestamp = date."
+      raw_fields: "lot_id; period_id; event_ID; producing_node; unit_ID; rectangular_outline_confirmed; outline_evidence; actual_unit_width_m; actual_unit_height_m; forward_event_ID; corrective_event_ID; unit_state_event_IDs; opening_processed_WIP; processed_receipts; processed_exits; closing_processed_WIP; carrying_burden_link; material_pool_ID; weighed_net_kg; actual_length_m; actual_count; documented_same_grade_kg_per_m; documented_same_grade_kg_per_item; measured_complete_or_collected_composite_mass_kg; documented_actual_complete_build_kg_per_m2; actual_net_discarded_mass_j; spent_wipe_wet_mass_kg; measured_spent_wipe_water_fraction; wipe_water_evidence_ID; actual_mass_method; actual_igu_build; waste_state; event_pass_id; wet_mass; tare; measured_water_content; independently_weighed_composite_igu_mass_or_exact_build_bridge; rejected_state; destination; custodian; event_timestamp; discard_stream_id; discard_mass_method; complete_unit_discard_confirmed; complete_constituent_coverage_evidence; discard_current_state; mass_bridge_state; partial_stream_component_mass_records; other_constituent_fate_ids; mass_method_evidence"
+      collection_method: "Weigh separated spent cleaning material and residues, documenting water already included in wet mass; exclude separately collected wastewater. Separately weigh actual composite IGUs discarded at accept, preserving actual build and ID rather than converting area into glass-only mass. Keep intact corrective returns and held units out of waste. Link each waste stream to its producing event and custodian, reconcile water with cp_accept_water, and divide each amount by A. Stable-key mapping: actual_discarded_unit_area uses actual discarded-unit dimensions from its matched unit ledger, preserving actual complete build. accept_discarded_igu_kg sums actual own-accept composite discarded mass using complete_igu_mass_bridge; producing_node = accept. accept_collected_solid_waste_kg sums actual collected non-IGU residues/spent consumable net mixture masses. spent_wipe_water_kg = spent_wipe_wet_mass_kg * measured_spent_wipe_water_fraction from a water-specific validated determination; a generic wet-minus-dry result that includes other volatile components is not sufficient. Pass this same fate-ID water constituent to cp_accept_water without another physical inventory output. Field definitions: lot_id = lot; producing_node = node; material_pool_ID = material/unit ID; actual_igu_build = actual IGU build; waste_state = waste state; event_pass_id = event/pass ID; wet_mass = wet mass; tare = tare; measured_water_content = measured water content; independently_weighed_composite_igu_mass_or_exact_build_bridge = independently weighed composite IGU mass or exact-build bridge; rejected_state = rejected state; destination = destination; custodian = custodian; event_timestamp = date. Choose one discard_mass_method for each discard_stream_id and actual discard_current_state. The complete-area/build bridge is eligible only when complete_unit_discard_confirmed and complete_constituent_coverage_evidence establish that the exact quantity and all constituents represented by that factor are dispatched in this waste stream at the matching mass_bridge_state. For partial, sorted or otherwise changed broken-unit waste, use actual tare-corrected stream weighing or independently measured compatible partial_stream_component_mass_records. Do not apply the intact complete-unit kg/m2 factor to the full original unit area. Record other_constituent_fate_ids for retained, returned, separately discarded or actually released portions once, preserving real waste identities and no extra whole-plus-components mass. Missing coverage/state evidence blocks that conversion; it does not erase the original supply burden, establish release or become zero."
       unit: "kg"
       frequency: "each cleaning-waste or unit-discard event"
       temporal_coverage: "all inspection/cleaning/correction periods included in the lot"
@@ -1894,7 +1894,7 @@ dataset_production:
       source_ids: []
     - id: complete_igu_mass_bridge
       applies_to: "survey_rejected_igu_waste; broken_igus; accept_rejected_igu_waste"
-      rule: "actual_discarded_igu_kg = measured_complete_or_collected_composite_mass_kg or actual_discarded_unit_area * documented_actual_complete_build_kg_per_m2; use actual build evidence and never omit seals/spacers by assuming pure glass"
+      rule: "For each discard_stream_id select one evidenced discard_mass_method: actual_discarded_igu_kg = measured_complete_or_collected_composite_mass_kg for the actual tare-corrected dispatched stream; or, only with complete_unit_discard_confirmed and complete_constituent_coverage_evidence, actual_discarded_igu_kg = actual_discarded_unit_area * documented_actual_complete_build_kg_per_m2. The bridge must match the exact build, quantity and discard_current_state/mass_bridge_state, with all factor-represented constituents in that same waste stream. An intact whole-unit factor cannot represent a partially collected, sorted or state-changed broken-unit stream from its full original area. For such partial streams use independently measured current-state stream mass or compatible partial_stream_component_mass_records with mass_method_evidence; preserve separate real stream identities. Reconcile other_constituent_fate_ids without whole-plus-component duplication, inferred missing releases or loss of original supply burden. Missing completeness/state evidence leaves the bridge unavailable, never automatic zero. Do not assume every discarded stream is pure glass or a complete composite."
       inputs:
         - measured_complete_or_collected_composite_mass_kg
         - actual_discarded_unit_area
@@ -1902,6 +1902,15 @@ dataset_production:
         - cp_survey_igus
         - cp_glaze_waste
         - cp_accept_waste
+        - discard_stream_id
+        - discard_mass_method
+        - complete_unit_discard_confirmed
+        - complete_constituent_coverage_evidence
+        - discard_current_state
+        - mass_bridge_state
+        - partial_stream_component_mass_records
+        - other_constituent_fate_ids
+        - mass_method_evidence
       output: "actual_discarded_igu_kg"
       source_ids: []
     - id: glaze_material_gross_draw
@@ -2266,7 +2275,7 @@ validation_rules:
     source_ids: []
   - rule_id: validate_own_node_discards
     applies_to: "survey_rejected_igu_waste; broken_igus; accept_rejected_igu_waste"
-    rule: "Verify actual origin node, unit/build, complete composite mass or exact-build bridge, rejected state and real waste custodian. No intact usable return or unresolved hold can be disguised as waste, and no late discard can be assigned to a prior node for convenience."
+    rule: "Verify actual origin node, unit/build, complete composite mass or exact-build bridge, rejected state and real waste custodian. No intact usable return or unresolved hold can be disguised as waste, and no late discard can be assigned to a prior node for convenience. Choose one discard_mass_method for each discard_stream_id and actual discard_current_state. The complete-area/build bridge is eligible only when complete_unit_discard_confirmed and complete_constituent_coverage_evidence establish that the exact quantity and all constituents represented by that factor are dispatched in this waste stream at the matching mass_bridge_state. For partial, sorted or otherwise changed broken-unit waste, use actual tare-corrected stream weighing or independently measured compatible partial_stream_component_mass_records. Do not apply the intact complete-unit kg/m2 factor to the full original unit area. Record other_constituent_fate_ids for retained, returned, separately discarded or actually released portions once, preserving real waste identities and no extra whole-plus-components mass. Missing coverage/state evidence blocks that conversion; it does not erase the original supply burden, establish release or become zero."
     source_ids: []
   - rule_id: validate_physical_draw
     applies_to: "material inputs and usable exit cards"
@@ -2278,7 +2287,7 @@ validation_rules:
     source_ids: []
   - rule_id: validate_mass_conversions
     applies_to: "all kg material and rejected-unit flows"
-    rule: "Confirm actual weighing/tare or same-grade/item/complete-build conversion. Retain IGU usable exits as Area/m2; a kg waste counterpart requires its independently supported complete-unit mass bridge."
+    rule: "Confirm actual weighing/tare or compatible same-state, same-quantity grade/item/build conversion. Retain IGU usable exits as Area/m2; their actual mass views are separate from the actual waste-stream quantity. For discarded IGUs, apply the complete-area/build option of complete_igu_mass_bridge only to its eligible complete current-state stream. Partial/sorted/changed waste requires actual stream weighing or independently supported same-state constituent quantities, not full original-unit area times a complete-build factor. Check discard_stream_id, complete_unit_discard_confirmed, complete_constituent_coverage_evidence, discard_current_state, mass_bridge_state, mass_method_evidence and other_constituent_fate_ids; missing evidence is an unavailable conversion, not a required fictitious whole-unit mass."
     source_ids: []
   - rule_id: validate_water_pools
     applies_to: "cleanup_water; cleanup_supplies; cleanup_waste; cleanup_wastewater; accept_water_vapour"
@@ -2327,7 +2336,7 @@ data_sources:
     used_for: "Supports only the distinction between sampler gas volume and full source flow when deriving emitted mass from concentration. Boiler/stack methods, factors and example values are not adopted for installation dust or diffuse releases; actual source-specific method and event coverage remain required."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:b20de863eeae97cde0cc713264607f5c69934b1a3982809dfca6fd098f0195a3"
+  source_sha256: "sha256:7fdff8c1861c92b95272ac4cc76aa3dacf192f9e1f464c396823d9c178d8a3f0"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_9558"
@@ -2426,18 +2435,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_153291"
+    - unit_id: "normative_158144"
       family: "validation"
       span:
         start:
-          offset: 153291
+          offset: 158144
           line: 1121
           column: 1
         end:
-          offset: 158645
+          offset: 165073
           line: 1142
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_dry_scope` | product category and lot | Verify actual received frames, finished factory IGUs, preformed dry gaskets and mechanical retention. Reject a scope that silently performs frame repair, field IGU alteration, wet/structural silicone or fire glazing. | `pilkington-general-glazing-2013` |\n| `validate_project_details` | support, gasket, retention and drainage acceptance | Use the actual approved IGU/frame-system requirements and compatibility evidence. The monolithic-glass dimensions in ATS-192 must not become default IGU limits; no universal block, pressure or drainage values are inferred. | `pilkington-general-glazing-2013` |\n| `validate_reference_area` | reference_service | First verify rectangular_outline_confirmed and exact actual outline evidence for every included unit; nonrectangular or unknown outlines fail applicability. Require positive A from unique finally accepted actual unit outline areas. Confirm the reference_service name, Area/m2 and 1 m2 amount; exclude pane/face multiplication, visible-only convention without conversion, rejected/held units and repeat inspections. |  |\n| `validate_forward_handoffs` | accepted_igus; glaze_feed; retained_glazing; accept_feed | Match counterpart event/unit IDs, area, state and period; reconcile actual mismatches with stocks/WIP, never by replacing actual intermediate feed with 1 m2. | |\n| `validate_corrective_handoffs` | accept_rework_return; glaze_rework_feed | Activate only for actual intact corrective returns. Match counterpart event/unit IDs and area; carry original material burden without new manufacture and retain each actual extra material/service event. | |\n| `validate_own_node_discards` | survey_rejected_igu_waste; broken_igus; accept_rejected_igu_waste | Verify actual origin node, unit/build, complete composite mass or exact-build bridge, rejected state and real waste custodian. No intact usable return or unresolved hold can be disguised as waste, and no late discard can be assigned to a prior node for convenience. | |\n| `validate_physical_draw` | material inputs and usable exit cards | Recalculate opening plus receipts minus closing intact unissued stock as physical gross draw, including actual usable boundary exits. Confirm positive same-property exits and exclusive states; any net diagnostic must not also reduce physical input or create a credit. | |\n| `validate_unused_burden` | usable outputs | Transfer only evidenced original unused-material burden. Do not transfer service, idle, inspection, correction or installation burdens, and do not claim avoided manufacture. | |\n| `validate_mass_conversions` | all kg material and rejected-unit flows | Confirm actual weighing/tare or same-grade/item/complete-build conversion. Retain IGU usable exits as Area/m2; a kg waste counterpart requires its independently supported complete-unit mass bridge. | |\n| `validate_water_pools` | cleanup_water; cleanup_supplies; cleanup_waste; cleanup_wastewater; accept_water_vapour | Reconcile actual available water and exclusive wastewater, wipe, retained, unused-exit and evidenced-vapour fates within quantified uncertainty. Do not infer vapour from residuals or duplicate wet-wipe water as wastewater. Report an unclosed pool as incomplete. | |\n| `validate_electricity` | each own-node electricity card | Require node-owned metering or positive complete shared attribution with all consumers and periods, correct MJ/kWh handling, actual supplier/voltage and no overlapping bundled-service burden. | |\n| `validate_paid_service` | each own-node shared-service card | Require actual provider/asset/scope, actual paid contract hours including idle, contract-specific billed-day conversion, positive complete consumer weights and total closure; an assumed eight-hour day is invalid. | |\n| `validate_periods` | all node and stock records | Verify receiving, glazing, acceptance and correction period linkage; exclusive opening/closing intact stock and processed WIP; one-time carrying-burden attribution; no accepted denominator for a terminated unaccepted lot. | |\n| `validate_emission_identity` | glaze_other_releases; accept_other_releases; accept_water_vapour | Require known actual species, physical state where relevant, receiving compartment and measured or validated quantity basis. Unknown occurrence, species, medium or quantity remain data gaps; an umbrella label, missing captured waste and a water or stock residual are insufficient evidence. Exclude captured offcuts/dust from direct release and require each non-H2O event to use its actual own-node protocol. | |\n| `validate_range_evidence` | inventory ranges | Keep every provisional screen labelled reasoned_estimate and separate from real quantities. Investigate outliers using external or independent foreground evidence. The 1..1 final range represents A/A normalization only and proves no physical yield. |  |\n| `validate_publication_completeness` | final downstream dataset | Report accepted inputs, performed checks, skipped checks, findings and completeness. Resolve actual exchange and support identities, material balances and review blockers before claiming a complete concrete dataset; an automated structural pass does not prove external identity or physical correctness. | |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | applies_to | rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_dry_scope` | product category and lot | Verify actual received frames, finished factory IGUs, preformed dry gaskets and mechanical retention. Reject a scope that silently performs frame repair, field IGU alteration, wet/structural silicone or fire glazing. | `pilkington-general-glazing-2013` |\n| `validate_project_details` | support, gasket, retention and drainage acceptance | Use the actual approved IGU/frame-system requirements and compatibility evidence. The monolithic-glass dimensions in ATS-192 must not become default IGU limits; no universal block, pressure or drainage values are inferred. | `pilkington-general-glazing-2013` |\n| `validate_reference_area` | reference_service | First verify rectangular_outline_confirmed and exact actual outline evidence for every included unit; nonrectangular or unknown outlines fail applicability. Require positive A from unique finally accepted actual unit outline areas. Confirm the reference_service name, Area/m2 and 1 m2 amount; exclude pane/face multiplication, visible-only convention without conversion, rejected/held units and repeat inspections. |  |\n| `validate_forward_handoffs` | accepted_igus; glaze_feed; retained_glazing; accept_feed | Match counterpart event/unit IDs, area, state and period; reconcile actual mismatches with stocks/WIP, never by replacing actual intermediate feed with 1 m2. | |\n| `validate_corrective_handoffs` | accept_rework_return; glaze_rework_feed | Activate only for actual intact corrective returns. Match counterpart event/unit IDs and area; carry original material burden without new manufacture and retain each actual extra material/service event. | |\n| `validate_own_node_discards` | survey_rejected_igu_waste; broken_igus; accept_rejected_igu_waste | Verify actual origin node, unit/build, complete composite mass or exact-build bridge, rejected state and real waste custodian. No intact usable return or unresolved hold can be disguised as waste, and no late discard can be assigned to a prior node for convenience. Choose one discard_mass_method for each discard_stream_id and actual discard_current_state. The complete-area/build bridge is eligible only when complete_unit_discard_confirmed and complete_constituent_coverage_evidence establish that the exact quantity and all constituents represented by that factor are dispatched in this waste stream at the matching mass_bridge_state. For partial, sorted or otherwise changed broken-unit waste, use actual tare-corrected stream weighing or independently measured compatible partial_stream_component_mass_records. Do not apply the intact complete-unit kg/m2 factor to the full original unit area. Record other_constituent_fate_ids for retained, returned, separately discarded or actually released portions once, preserving real waste identities and no extra whole-plus-components mass. Missing coverage/state evidence blocks that conversion; it does not erase the original supply burden, establish release or become zero. |  |\n| `validate_physical_draw` | material inputs and usable exit cards | Recalculate opening plus receipts minus closing intact unissued stock as physical gross draw, including actual usable boundary exits. Confirm positive same-property exits and exclusive states; any net diagnostic must not also reduce physical input or create a credit. | |\n| `validate_unused_burden` | usable outputs | Transfer only evidenced original unused-material burden. Do not transfer service, idle, inspection, correction or installation burdens, and do not claim avoided manufacture. | |\n| `validate_mass_conversions` | all kg material and rejected-unit flows | Confirm actual weighing/tare or compatible same-state, same-quantity grade/item/build conversion. Retain IGU usable exits as Area/m2; their actual mass views are separate from the actual waste-stream quantity. For discarded IGUs, apply the complete-area/build option of complete_igu_mass_bridge only to its eligible complete current-state stream. Partial/sorted/changed waste requires actual stream weighing or independently supported same-state constituent quantities, not full original-unit area times a complete-build factor. Check discard_stream_id, complete_unit_discard_confirmed, complete_constituent_coverage_evidence, discard_current_state, mass_bridge_state, mass_method_evidence and other_constituent_fate_ids; missing evidence is an unavailable conversion, not a required fictitious whole-unit mass. |  |\n| `validate_water_pools` | cleanup_water; cleanup_supplies; cleanup_waste; cleanup_wastewater; accept_water_vapour | Reconcile actual available water and exclusive wastewater, wipe, retained, unused-exit and evidenced-vapour fates within quantified uncertainty. Do not infer vapour from residuals or duplicate wet-wipe water as wastewater. Report an unclosed pool as incomplete. | |\n| `validate_electricity` | each own-node electricity card | Require node-owned metering or positive complete shared attribution with all consumers and periods, correct MJ/kWh handling, actual supplier/voltage and no overlapping bundled-service burden. | |\n| `validate_paid_service` | each own-node shared-service card | Require actual provider/asset/scope, actual paid contract hours including idle, contract-specific billed-day conversion, positive complete consumer weights and total closure; an assumed eight-hour day is invalid. | |\n| `validate_periods` | all node and stock records | Verify receiving, glazing, acceptance and correction period linkage; exclusive opening/closing intact stock and processed WIP; one-time carrying-burden attribution; no accepted denominator for a terminated unaccepted lot. | |\n| `validate_emission_identity` | glaze_other_releases; accept_other_releases; accept_water_vapour | Require known actual species, physical state where relevant, receiving compartment and measured or validated quantity basis. Unknown occurrence, species, medium or quantity remain data gaps; an umbrella label, missing captured waste and a water or stock residual are insufficient evidence. Exclude captured offcuts/dust from direct release and require each non-H2O event to use its actual own-node protocol. | |\n| `validate_range_evidence` | inventory ranges | Keep every provisional screen labelled reasoned_estimate and separate from real quantities. Investigate outliers using external or independent foreground evidence. The 1..1 final range represents A/A normalization only and proves no physical yield. |  |\n| `validate_publication_completeness` | final downstream dataset | Report accepted inputs, performed checks, skipped checks, findings and completeness. Resolve actual exchange and support identities, material balances and review blockers before claiming a complete concrete dataset; an automated structural pass does not prove external identity or physical correctness. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -2454,11 +2463,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 153291
+              offset: 158144
               line: 1121
               column: 1
             end:
-              offset: 153313
+              offset: 158166
               line: 1121
               column: 23
           text: "## 9. Validation Rules"
@@ -5715,209 +5724,209 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "validate_dry_scope"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 153386
+          offset: 158239
           line: 1125
           column: 1
         end:
-          offset: 153692
+          offset: 158545
           line: 1125
           column: 307
     - pointer: "/validation_rules/1"
       rule_id: "validate_project_details"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 153693
+          offset: 158546
           line: 1126
           column: 1
         end:
-          offset: 154037
+          offset: 158890
           line: 1126
           column: 345
     - pointer: "/validation_rules/2"
       rule_id: "validate_reference_area"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 154038
+          offset: 158891
           line: 1127
           column: 1
         end:
-          offset: 154507
+          offset: 159360
           line: 1127
           column: 470
     - pointer: "/validation_rules/3"
       rule_id: "validate_forward_handoffs"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 154508
+          offset: 159361
           line: 1128
           column: 1
         end:
-          offset: 154760
+          offset: 159613
           line: 1128
           column: 253
     - pointer: "/validation_rules/4"
       rule_id: "validate_corrective_handoffs"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 154761
+          offset: 159614
           line: 1129
           column: 1
         end:
-          offset: 155044
+          offset: 159897
           line: 1129
           column: 284
     - pointer: "/validation_rules/5"
       rule_id: "validate_own_node_discards"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 155045
+          offset: 159898
           line: 1130
           column: 1
         end:
-          offset: 155415
+          offset: 161228
           line: 1130
-          column: 371
+          column: 1331
     - pointer: "/validation_rules/6"
       rule_id: "validate_physical_draw"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 155416
+          offset: 161229
           line: 1131
           column: 1
         end:
-          offset: 155756
+          offset: 161569
           line: 1131
           column: 341
     - pointer: "/validation_rules/7"
       rule_id: "validate_unused_burden"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 155757
+          offset: 161570
           line: 1132
           column: 1
         end:
-          offset: 155980
+          offset: 161793
           line: 1132
           column: 224
     - pointer: "/validation_rules/8"
       rule_id: "validate_mass_conversions"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 155981
+          offset: 161794
           line: 1133
           column: 1
         end:
-          offset: 156256
+          offset: 162684
           line: 1133
-          column: 276
+          column: 891
     - pointer: "/validation_rules/9"
       rule_id: "validate_water_pools"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 156257
+          offset: 162685
           line: 1134
           column: 1
         end:
-          offset: 156639
+          offset: 163067
           line: 1134
           column: 383
     - pointer: "/validation_rules/10"
       rule_id: "validate_electricity"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 156640
+          offset: 163068
           line: 1135
           column: 1
         end:
-          offset: 156895
+          offset: 163323
           line: 1135
           column: 256
     - pointer: "/validation_rules/11"
       rule_id: "validate_paid_service"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 156896
+          offset: 163324
           line: 1136
           column: 1
         end:
-          offset: 157176
+          offset: 163604
           line: 1136
           column: 281
     - pointer: "/validation_rules/12"
       rule_id: "validate_periods"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 157177
+          offset: 163605
           line: 1137
           column: 1
         end:
-          offset: 157454
+          offset: 163882
           line: 1137
           column: 278
     - pointer: "/validation_rules/13"
       rule_id: "validate_emission_identity"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 157455
+          offset: 163883
           line: 1138
           column: 1
         end:
-          offset: 157966
+          offset: 164394
           line: 1138
           column: 512
     - pointer: "/validation_rules/14"
       rule_id: "validate_range_evidence"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 157967
+          offset: 164395
           line: 1139
           column: 1
         end:
-          offset: 158269
+          offset: 164697
           line: 1139
           column: 303
     - pointer: "/validation_rules/15"
       rule_id: "validate_publication_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 158270
+          offset: 164698
           line: 1140
           column: 1
         end:
-          offset: 158643
+          offset: 165071
           line: 1140
           column: 374
   diagnostics:
@@ -8503,14 +8512,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_153291"
+      unit_id: "normative_158144"
       source_span:
         start:
-          offset: 153291
+          offset: 158144
           line: 1121
           column: 1
         end:
-          offset: 153313
+          offset: 158166
           line: 1121
           column: 23
 projection_metadata:
@@ -8520,5 +8529,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:b20de863eeae97cde0cc713264607f5c69934b1a3982809dfca6fd098f0195a3"
-  generated_content_sha256: "sha256:2af59727d0da894c33108217f6db8fe71669ee53f773d2f03af8b352acd09c9d"
+    sha256: "sha256:7fdff8c1861c92b95272ac4cc76aa3dacf192f9e1f464c396823d9c178d8a3f0"
+  generated_content_sha256: "sha256:23fa59e3696f236b09485bb76cd74bd9136d5c858581a85a9379abb781e5045e"

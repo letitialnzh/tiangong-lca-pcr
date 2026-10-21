@@ -1083,8 +1083,8 @@ dataset_production:
       process_id: "slab_cutting"
       flow_role: "slab draw, cut transfer, reusable exits, wool and packaging waste"
       record_type: "stock, scale, transfer and waste event records"
-      raw_fields: "site; lot; grade; slab_dimensions; piece_dimensions; piece_count; pack_mass; thickness; density_evidence; documented_density_kg_per_m3; opening_stock; receipts; closing_stock; opening_cut_wip; closing_cut_wip; supplier_returns; external_handover; event_id; exit_class; wool_transfer_id; cut_piece_mass; usable_internal_recut; wool_waste_mass; packaging_material; packaging_mass; vacuum_event; destination; timestamp"
-      collection_method: "Weigh by material with checked scales or use traceable grade-specific pack/piece mass conversion; record opening and closing stock and every mutually exclusive exit; separate packaging from wool Aggregation algorithm: Compute gross slab draw and diagnostic net use; sum transfer/reusable/waste/packaging separately; divide each numerator by A; closing stock excludes material already recorded as external exit"
+      raw_fields: "site; lot; grade; slab_dimensions; piece_dimensions; piece_count; pack_mass; thickness; density_evidence; documented_density_kg_per_m3; opening_stock; receipts; closing_stock; opening_cut_wip; closing_cut_wip; supplier_returns; external_handover; event_id; exit_class; wool_transfer_id; cut_piece_mass; usable_internal_recut; wool_waste_mass; packaging_material; packaging_mass; vacuum_event; destination; timestamp; piece_id; mass_geometry_state; density_reference_state; actual_piece_volume_m3; compatible_density_kg_per_m3; density_state_bridge_evidence; measured_piece_mass_kg; accepted_piece_ids; retained_piece_mass_evidence"
+      collection_method: "Weigh by material with checked scales or use traceable grade-specific pack/piece mass conversion; record opening and closing stock and every mutually exclusive exit; separate packaging from wool Aggregation algorithm: Compute gross slab draw and diagnostic net use; sum transfer/reusable/waste/packaging separately; divide each numerator by A; closing stock excludes material already recorded as external exit For geometry-to-mass conversion, record piece_id, mass_geometry_state and density_reference_state, actual_piece_volume_m3, compatible_density_kg_per_m3 and density_state_bridge_evidence. Use relaxed cut-piece dimensions with density evidenced for that same state, or actual installed/compressed geometry only with its compatible actual-state density. A shared grade or thermal-declaration density alone does not establish state compatibility. Prefer traceable measured_piece_mass_kg; retained_piece_mass_evidence links independently weighed/converted pieces and actual measured removals to accepted_piece_ids without solving the mass-balance residual. Unknown state conversion leaves a mass-data gap, never zero or an invented compression factor; actual accepted area is determined independently."
       unit: "kg"
       frequency: "Each receipt, transfer, return and waste event; stock at lot boundaries"
       temporal_coverage: "Entire cutting lot including recutting and cutting-owned cleanup"
@@ -1119,8 +1119,8 @@ dataset_production:
       process_id: "fit_acceptance"
       flow_role: "paired frame and wool feed; accessories; reusable and waste exits; conditional actual accessory and packaging waste"
       record_type: "transfer, scale, accessory and rework records"
-      raw_fields: "site; lot; frame_transfer_id; frame_feed_area; wool_transfer_id; feed_mass; opening_wool_wip; closing_wool_wip; installed_wool_mass; installed_piece_geometry; installed_density_evidence; documented_density_kg_per_m3; accessory_identity; accessory_instruction; accessory_opening; accessory_receipts; accessory_closing; accessory_returns; accessory_external_handover; removal_event; removed_mass; reuse_or_discard; fit_reusable_mass; fit_waste_mass; vacuum_event; recipient; timestamp; aperture_id; final_acceptance_record; installed_acceptance_status; accessory_waste_mass; accessory_packaging_waste_mass; accessory_waste_event; accessory_waste_material; accessory_waste_custodian; accessory_waste_destination"
-      collection_method: "Reconcile actual incoming frame and cut-piece transfers; weigh actual material exits and accessory records; tag removal as same-lot rework, external reusable exit or waste; actual accessory instructions establish activation Aggregation algorithm: Sum actual paired feed; compute accessory net issue; sum reusable/waste exits once; retain WIP and refitting loops; divide each numerator by A Record installed wool only by final acceptance membership; unaccepted installed wool belongs to mutually exclusive closing WIP. Weigh actual accessory waste and packaging separately by material/event/custodian; reusable returns and closing stocks are not waste."
+      raw_fields: "site; lot; frame_transfer_id; frame_feed_area; wool_transfer_id; feed_mass; opening_wool_wip; closing_wool_wip; installed_wool_mass; installed_piece_geometry; installed_density_evidence; documented_density_kg_per_m3; accessory_identity; accessory_instruction; accessory_opening; accessory_receipts; accessory_closing; accessory_returns; accessory_external_handover; removal_event; removed_mass; reuse_or_discard; fit_reusable_mass; fit_waste_mass; vacuum_event; recipient; timestamp; aperture_id; final_acceptance_record; installed_acceptance_status; accessory_waste_mass; accessory_packaging_waste_mass; accessory_waste_event; accessory_waste_material; accessory_waste_custodian; accessory_waste_destination; piece_id; mass_geometry_state; density_reference_state; actual_piece_volume_m3; compatible_density_kg_per_m3; density_state_bridge_evidence; measured_piece_mass_kg; accepted_piece_ids; retained_piece_mass_evidence"
+      collection_method: "Reconcile actual incoming frame and cut-piece transfers; weigh actual material exits and accessory records; tag removal as same-lot rework, external reusable exit or waste; actual accessory instructions establish activation Aggregation algorithm: Sum actual paired feed; compute accessory net issue; sum reusable/waste exits once; retain WIP and refitting loops; divide each numerator by A Record installed wool only by final acceptance membership; unaccepted installed wool belongs to mutually exclusive closing WIP. Weigh actual accessory waste and packaging separately by material/event/custodian; reusable returns and closing stocks are not waste. For geometry-to-mass conversion, record piece_id, mass_geometry_state and density_reference_state, actual_piece_volume_m3, compatible_density_kg_per_m3 and density_state_bridge_evidence. Use relaxed cut-piece dimensions with density evidenced for that same state, or actual installed/compressed geometry only with its compatible actual-state density. A shared grade or thermal-declaration density alone does not establish state compatibility. Prefer traceable measured_piece_mass_kg; retained_piece_mass_evidence links independently weighed/converted pieces and actual measured removals to accepted_piece_ids without solving the mass-balance residual. Unknown state conversion leaves a mass-data gap, never zero or an invented compression factor; actual accepted area is determined independently."
       unit: "m2; kg"
       frequency: "Each transfer, accessory issue, removal and cleanup event; WIP at lot limits"
       temporal_coverage: "Whole fitting lot through acceptance and final cleanup"
@@ -1340,7 +1340,7 @@ dataset_production:
         - epa-eiip-sample-source-flow
     - id: mass_conversion_calc
       applies_to: "delivered_stone_wool; cut_slabs_transfer; cut_wool_feed"
-      rule: "Where actual weighing is unavailable, mass_kg = sum(actual piece volume derived in m3 from measured piece_dimensions or installed_piece_geometry * documented_density_kg_per_m3); retain dimensional records, offcut geometry, density source and uncertainty. Supplier pack mass is usable only for the actual declared grade and count."
+      rule: "Where actual weighing is unavailable, mass_kg = sum(actual_piece_volume_m3 * compatible_density_kg_per_m3) for each exact piece/current-state group. Derive actual_piece_volume_m3 from measured piece_dimensions or installed_piece_geometry only after declaring mass_geometry_state. density_reference_state must match that geometry state, moisture and physical condition, proved by density_state_bridge_evidence. Relaxed cut-piece volume may use its evidenced relaxed-state density; compressed installed volume may not use an uncompressed nominal or thermal-declaration density merely because the grade matches. Use an independently supported actual-state conversion or retain the mass gap. Keep piece_id, dimensional observations, density source, uncertainty and measured_piece_mass_kg where available. Exact same-state supplier pack/piece mass is an alternative, never added again. No default density or compression factor is prescribed."
       inputs:
         - piece_dimensions
         - installed_piece_geometry
@@ -1352,6 +1352,15 @@ dataset_production:
         - piece_count
         - cp_cut_material
         - cp_fit_material
+        - piece_id
+        - mass_geometry_state
+        - density_reference_state
+        - actual_piece_volume_m3
+        - compatible_density_kg_per_m3
+        - density_state_bridge_evidence
+        - measured_piece_mass_kg
+        - accepted_piece_ids
+        - retained_piece_mass_evidence
       output: "material_mass_kg"
       source_ids: []
     - id: cut_balance_calc
@@ -1371,7 +1380,7 @@ dataset_production:
       source_ids: []
     - id: fit_balance_calc
       applies_to: "cut_wool_feed; fit_reusable_exit; fit_wool_waste; fit_airborne_particles"
-      rule: "Check fit_feed_mass + opening_wool_wip = installed_wool_mass + fit_reusable_mass + fit_waste_mass + fit_air_mass + closing_wool_wip + unexplained_difference. installed_wool_mass includes only wool in finally accepted apertures, obtained by traceable actual weighing or installed piece geometry times documented same-grade density for that accepted portion; exclude accessories. closing_wool_wip includes installed wool in unaccepted or rejected apertures that has not yet been removed, plus other end-of-period wool awaiting work, and excludes installed_wool_mass and all already recorded exits; assign each physical portion to one mutually exclusive pool. Refitting loops do not add new feed. Where release evidence is absent, retain unknown release/difference as a gap rather than claiming exact closure or zero."
+      rule: "Check fit_feed_mass + opening_wool_wip = installed_wool_mass + fit_reusable_mass + fit_waste_mass + fit_air_mass + closing_wool_wip + unexplained_difference. installed_wool_mass includes only wool in finally accepted apertures, obtained by traceable actual weighing or piece geometry times documented state-compatible density under mass_conversion_calc for that accepted portion; exclude accessories. closing_wool_wip includes installed wool in unaccepted or rejected apertures that has not yet been removed, plus other end-of-period wool awaiting work, and excludes installed_wool_mass and all already recorded exits; assign each physical portion to one mutually exclusive pool. Refitting loops do not add new feed. Where release evidence is absent, retain unknown release/difference as a gap rather than claiming exact closure or zero. For geometry-to-mass conversion, record piece_id, mass_geometry_state and density_reference_state, actual_piece_volume_m3, compatible_density_kg_per_m3 and density_state_bridge_evidence. Use relaxed cut-piece dimensions with density evidenced for that same state, or actual installed/compressed geometry only with its compatible actual-state density. A shared grade or thermal-declaration density alone does not establish state compatibility. Prefer traceable measured_piece_mass_kg; retained_piece_mass_evidence links independently weighed/converted pieces and actual measured removals to accepted_piece_ids without solving the mass-balance residual. Unknown state conversion leaves a mass-data gap, never zero or an invented compression factor; actual accepted area is determined independently."
       inputs:
         - fit_feed_mass
         - opening_wool_wip
@@ -1387,6 +1396,16 @@ dataset_production:
         - aperture_id
         - final_acceptance_record
         - installed_acceptance_status
+        - mass_conversion_calc
+        - piece_id
+        - mass_geometry_state
+        - density_reference_state
+        - actual_piece_volume_m3
+        - compatible_density_kg_per_m3
+        - density_state_bridge_evidence
+        - measured_piece_mass_kg
+        - accepted_piece_ids
+        - retained_piece_mass_evidence
       output: "fitting_mass_balance; unexplained_difference"
       source_ids: []
     - id: shared_service_calc
@@ -1452,7 +1471,7 @@ validation_rules:
       - rockwool-thermal-frame-slab-installation-2025
   - rule_id: transfer_and_stock
     applies_to: "slab_cutting; fit_acceptance"
-    rule: "Reconcile paired frame_transfer and wool_transfer ids, units, quantities and states. Check stock terms, exclusive returns/external handovers, WIP and mass balance. Do not subtract returned mass twice across gross physical and diagnostic net accounts."
+    rule: "Reconcile paired frame_transfer and wool_transfer ids, units, quantities and states. Check stock terms, exclusive returns/external handovers, WIP and mass balance. Do not subtract returned mass twice across gross physical and diagnostic net accounts. Confirm mass_geometry_state and density_reference_state before each geometry-to-mass bridge. Require matching density_state_bridge_evidence or independent same-piece mass evidence linked by piece_id and accepted_piece_ids. Installed compression does not permit using relaxed nominal density by grade alone. Unknown mass conversion blocks that mass/closure claim, not the independently measured physical acceptance area."
     source_ids: []
   - rule_id: condition_validation
     applies_to: "retention_accessories; all conditional rows"
@@ -1490,7 +1509,7 @@ data_sources:
     used_for: "Supports only the distinction between sampler gas volume and full source flow when deriving emitted mass from concentration. Boiler/stack methods, factors and example values are not adopted for installation dust or diffuse releases; actual source-specific method and event coverage remain required."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:70f663c0d22fa977d52f5eeb928cc1b75c79d477cfe58d9d6562c7d9e14f328f"
+  source_sha256: "sha256:3902854d25db581bb23186d889f005167b4a3c3b9ed017d73b0d1a0a371a4f6c"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5583"
@@ -1589,18 +1608,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_76216"
+    - unit_id: "normative_80121"
       family: "validation"
       span:
         start:
-          offset: 76216
+          offset: 80121
           line: 705
           column: 1
         end:
-          offset: 78262
+          offset: 82588
           line: 717
           column: 1
-      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| service_gate | reference product | Check positive net A, actual pre-enclosure acceptance and declared slab/system qualifiers; output only accepted insulated cavity area. A manufactured insulation material flow is incompatible with this service gate. | `rockwool-thermal-frame-slab-installation-2025` |\n| aperture_and_fit | aperture_survey; fit_acceptance | Check actual clear-aperture measurements, gap/compression inspection and final disposition of every rejected aperture. Rework adds real burdens and cannot inflate A. | `rockwool-thermal-frame-slab-installation-2025` |\n| transfer_and_stock | slab_cutting; fit_acceptance | Reconcile paired frame_transfer and wool_transfer ids, units, quantities and states. Check stock terms, exclusive returns/external handovers, WIP and mass balance. Do not subtract returned mass twice across gross physical and diagnostic net accounts. | |\n| condition_validation | retention_accessories; all conditional rows | Require actual activation evidence; documented absence permits zero, missing evidence is a data gap. Resolve actual accessory/packaging material and direct-release identities before final exchange creation. | `rockwool-thermal-frame-slab-installation-2025` |\n| node_ownership | all nodes | Check production-lot and period coverage, cut/fit rejection paths, cleanup ownership and shared-meter shares across all consumers. Reconcile shares to one and prevent repeated whole-site or supplier-included burdens. | |\n| thermal_claims | reference qualifiers | Check thickness, density and conductivity declaration conditions. A slab lambda or its thickness/lambda ratio cannot alone justify whole-wall thermal performance or building-life claims. | |\n| range_validation | all flow cards | Verify quantities against original records and declared algorithms. Explain provisional-screen outliers; do not replace missing records with a range midpoint or label these reasoned intervals observed data. | |\n\n"
+      markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| service_gate | reference product | Check positive net A, actual pre-enclosure acceptance and declared slab/system qualifiers; output only accepted insulated cavity area. A manufactured insulation material flow is incompatible with this service gate. | `rockwool-thermal-frame-slab-installation-2025` |\n| aperture_and_fit | aperture_survey; fit_acceptance | Check actual clear-aperture measurements, gap/compression inspection and final disposition of every rejected aperture. Rework adds real burdens and cannot inflate A. | `rockwool-thermal-frame-slab-installation-2025` |\n| transfer_and_stock | slab_cutting; fit_acceptance | Reconcile paired frame_transfer and wool_transfer ids, units, quantities and states. Check stock terms, exclusive returns/external handovers, WIP and mass balance. Do not subtract returned mass twice across gross physical and diagnostic net accounts. Confirm mass_geometry_state and density_reference_state before each geometry-to-mass bridge. Require matching density_state_bridge_evidence or independent same-piece mass evidence linked by piece_id and accepted_piece_ids. Installed compression does not permit using relaxed nominal density by grade alone. Unknown mass conversion blocks that mass/closure claim, not the independently measured physical acceptance area. |  |\n| condition_validation | retention_accessories; all conditional rows | Require actual activation evidence; documented absence permits zero, missing evidence is a data gap. Resolve actual accessory/packaging material and direct-release identities before final exchange creation. | `rockwool-thermal-frame-slab-installation-2025` |\n| node_ownership | all nodes | Check production-lot and period coverage, cut/fit rejection paths, cleanup ownership and shared-meter shares across all consumers. Reconcile shares to one and prevent repeated whole-site or supplier-included burdens. | |\n| thermal_claims | reference qualifiers | Check thickness, density and conductivity declaration conditions. A slab lambda or its thickness/lambda ratio cannot alone justify whole-wall thermal performance or building-life claims. | |\n| range_validation | all flow cards | Verify quantities against original records and declared algorithms. Explain provisional-screen outliers; do not replace missing records with a range midpoint or label these reasoned intervals observed data. | |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1617,11 +1636,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 76216
+              offset: 80121
               line: 705
               column: 1
             end:
-              offset: 76238
+              offset: 80143
               line: 705
               column: 23
           text: "## 9. Validation Rules"
@@ -3825,92 +3844,92 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "service_gate"
       identity_kind: "explicit"
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 76311
+          offset: 80216
           line: 709
           column: 1
         end:
-          offset: 76614
+          offset: 80519
           line: 709
           column: 304
     - pointer: "/validation_rules/1"
       rule_id: "aperture_and_fit"
       identity_kind: "explicit"
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 76615
+          offset: 80520
           line: 710
           column: 1
         end:
-          offset: 76887
+          offset: 80792
           line: 710
           column: 273
     - pointer: "/validation_rules/2"
       rule_id: "transfer_and_stock"
       identity_kind: "explicit"
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 76888
+          offset: 80793
           line: 711
           column: 1
         end:
-          offset: 77196
+          offset: 81522
           line: 711
-          column: 309
+          column: 730
     - pointer: "/validation_rules/3"
       rule_id: "condition_validation"
       identity_kind: "explicit"
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 77197
+          offset: 81523
           line: 712
           column: 1
         end:
-          offset: 77526
+          offset: 81852
           line: 712
           column: 330
     - pointer: "/validation_rules/4"
       rule_id: "node_ownership"
       identity_kind: "explicit"
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 77527
+          offset: 81853
           line: 713
           column: 1
         end:
-          offset: 77778
+          offset: 82104
           line: 713
           column: 252
     - pointer: "/validation_rules/5"
       rule_id: "thermal_claims"
       identity_kind: "explicit"
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 77779
+          offset: 82105
           line: 714
           column: 1
         end:
-          offset: 78011
+          offset: 82337
           line: 714
           column: 233
     - pointer: "/validation_rules/6"
       rule_id: "range_validation"
       identity_kind: "explicit"
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 78012
+          offset: 82338
           line: 715
           column: 1
         end:
-          offset: 78260
+          offset: 82586
           line: 715
           column: 249
   diagnostics:
@@ -5824,14 +5843,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_76216"
+      unit_id: "normative_80121"
       source_span:
         start:
-          offset: 76216
+          offset: 80121
           line: 705
           column: 1
         end:
-          offset: 76238
+          offset: 80143
           line: 705
           column: 23
 projection_metadata:
@@ -5841,5 +5860,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:70f663c0d22fa977d52f5eeb928cc1b75c79d477cfe58d9d6562c7d9e14f328f"
-  generated_content_sha256: "sha256:b1dcd138e3ebde668015cb611a0df136c3f1aee4b420b85b96675536c07abaa5"
+    sha256: "sha256:3902854d25db581bb23186d889f005167b4a3c3b9ed017d73b0d1a0a371a4f6c"
+  generated_content_sha256: "sha256:b0e0b8eac816c3265d091344bbe736e10dc012c9a855449d0568ace1c5622214"
