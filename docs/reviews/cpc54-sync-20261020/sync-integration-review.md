@@ -22,3 +22,11 @@ Full `npm run docs:build` at `09ade4746` passed: 1455 PCRs, 3497 pages, 19,976 f
 All 140 focused tests and strict types for 419 authored files passed. Shared SEO checked 3482 sitemap URLs with zero findings. Chromium and Firefox, with JavaScript disabled, downloaded a 48-KiB manifest and both 64-KiB required-language Markdown files with exact bytes and filenames. The prior local WebKit runtime did not qualify; complete Linux CI and sealed browser qualification remain required. Earlier full local repository validation was failed/incomplete because of unsupported secure no-follow traversal and missing `pdftotext`; it is not reported as a pass.
 
 Only this fork's PR branch is updated. No upstream branch or publication is changed. Detailed measurements, code hashes and limitations are in `sync-integration-review.json`. The older `search-v5-review.*` measurements describe the pre-integration corpus and remain historical.
+
+## Contract-check repair
+
+Run #40 failed `migration:check` with `UNINVENTORIED_JAVASCRIPT`: the newly committed audit was an authored `.mjs` file. It is now `packages/pcr-docs/scripts/cpc54-search-v5-audit.ts`, covered by the existing strict web-tools project. Parsed external data is narrowed and the pinned typed engine import replaces untyped module loading. No legacy exception or checking suppression is added.
+
+Runtime, migration (zero authored JavaScript; 420 TypeScript files), complete strict types, whole-library lint (zero problems; existing nonblocking warnings retained), all 63 selected content checks and canonical-source projection byte comparisons pass locally. Emitted engineering tests report 142 passed, zero failed and one native-Windows-only skip on macOS. Re-running the converted audit against the existing real export reproduces all prior measurements and hashes exactly. No PCR content or production transport code changed; the full-build measurements above remain bound to `09ade4746`. New Linux CI remains required.
+
+Reproduce the current corpus audit from the repository root with the pinned runtime: `node packages/pcr-docs/scripts/cpc54-search-v5-audit.ts`.
