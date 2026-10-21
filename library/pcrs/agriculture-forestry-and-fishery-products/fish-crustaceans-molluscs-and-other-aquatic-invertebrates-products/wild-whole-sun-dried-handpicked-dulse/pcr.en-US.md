@@ -379,9 +379,9 @@ Collection and handoff requirement: cp_dry independently weigh dried-as-received
 
 ###### Actual water evaporated during sun drying (`dry_evaporation`)
 
-Quantity calculation requirement: cp_dry independently determined water removal using water_balance with measured fresh/dried masses and moisture, free water, side outputs and stock changes; normalize by A. Do not force all fresh-minus-dried mass into evaporation.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Quantity calculation requirement: cp_dry independently determined water removal using water_balance with measured fresh/dried masses and moisture, free water, side outputs and stock changes; normalize by A. Do not force all fresh-minus-dried mass into evaporation.
 
-- Selected flow: Water vapour from actual sun-drying water removal to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Record the actual node-owned quantity in its declared native unit per 1 kg reference flow; the quantity calculation requirement above and section 8 govern measurement, attribution and calculation evidence.
 - Value mode: `calculated_value`

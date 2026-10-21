@@ -444,10 +444,12 @@ process_inventory:
       elementary:
         - row_id: dry_evaporation
           role: "Actual water evaporated during sun drying"
-          name: "Water vapour from actual sun-drying water removal to air"
+          name: "water vapour"
           flow_type: "elementary"
+          flow_ref:
+            uuid: "fe0acd60-3ddc-11dd-ac04-0050c2490048"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "Quantity calculation requirement: cp_dry independently determined water removal using water_balance with measured fresh/dried masses and moisture, free water, side outputs and stock changes; normalize by A. Do not force all fresh-minus-dried mass into evaporation."
+          description: "The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Quantity calculation requirement: cp_dry independently determined water removal using water_balance with measured fresh/dried masses and moisture, free water, side outputs and stock changes; normalize by A. Do not force all fresh-minus-dried mass into evaporation."
           amount:
             expression: "Record the actual node-owned quantity in its declared native unit per 1 kg reference flow; the quantity calculation requirement above and section 8 govern measurement, attribution and calculation evidence."
             value_mode: "calculated_value"
@@ -1131,7 +1133,7 @@ data_sources:
     used_for: "Net dried-as-received reference, node/transfer/stock/water/period accounting, normalization, native energy/service and per-instance release methods, attribution and completeness checks; future actual records/factors remain required."
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:9475e83dcf9f665839f7c131f33d21642c8ab061a60d1689574ab37760453c87"
+  source_sha256: "sha256:c6564c1efeaf4505101a116305fe25c3a1efccc756d5b665403a0a4d22763a05"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_6978"
@@ -1182,15 +1184,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_38262"
+    - unit_id: "normative_38463"
       family: "allocation"
       span:
         start:
-          offset: 38262
+          offset: 38463
           line: 637
           column: 1
         end:
-          offset: 40778
+          offset: 40979
           line: 647
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `allocate_subdivide` | all nodes | First subdivide independently measured collection, holding, drying, grading, bagging and logistics responsibilities and output-specific work. Assign direct work to its actual output. Keep the complete actual output set: whole-food product, usable inferior alternatives, retained stocks, returns, rejects and waste. | `dulse-ledger-method` |\n| `allocate_shared_outputs` | shared pre-grade burdens | For inseparable common burdens prefer an evidenced causal physical relation. Fresh/dried moisture differences make a simple kg ratio insufficient without justification. Only when subdivision and an evidenced causal physical attribution cannot resolve the actual joint burden, use comparable nonnegative producer-gate net-sales values for actual usable outputs, with a strictly positive total denominator, consistent currency/date/boundary and documented valuation of retained usable stock. Shares = each output's comparable value / sum of comparable values. Never use profit. | `dulse-ledger-method` |\n| `allocate_value_gaps` | zero, negative or missing values | Do not silently drop an output or accept an invalid denominator. Explain zero/negative/missing prices or retained-stock valuation, select an evidenced alternate physical attribution with rationale and sensitivity, and retain unresolved cases as gaps. Treatment of waste is not automatically a revenue co-product or an avoided-burden credit. | `dulse-ledger-method` |\n| `allocate_period` | trips, runs, season and stocks | Attribute preparation, failed trips/lots, changeover, cleanup, replacements and termination across the complete declared useful-service/output period. Opening and received reused stocks retain inherited burdens; closing/returned stocks carry the documented residual burden. Reconcile quantities and burden carryover so neither period receives a duplicate or free service. | `dulse-ledger-method` |\n| `allocate_shared_assets` | platforms, containers, vehicles and complete services | Enumerate every actual consumer/node/output/period, including other products. Attribute shared trip/platform service once using evidenced occupancy, area-time, load-distance or another causal driver in its native unit; document service life, replacement, actual use and unused/failed capacity. Complete-service coverage takes precedence over separately covered components. | `dulse-ledger-method` |\n\n"
@@ -1210,11 +1212,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 38262
+              offset: 38463
               line: 637
               column: 1
             end:
-              offset: 38302
+              offset: 38503
               line: 637
               column: 41
           text: "## 7. Allocation and Co-product Handling"
@@ -1230,15 +1232,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_150485"
+    - unit_id: "normative_150686"
       family: "validation"
       span:
         start:
-          offset: 150485
+          offset: 150686
           line: 729
           column: 1
         end:
-          offset: 154177
+          offset: 154378
           line: 742
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `validate_reference` | whole_dulse_received | Require positive same-lot net A, exactly one reference link/output, whole dried wild handpicked Palmaria palmata state, actual food fitness plus primarily human-food use and actual physical recipient. Exclude free water, incidentals and package; retain measured native plant moisture. A/A checks normalization, not yield or safety. | `dulse-ledger-method` |\n| `validate_holding_drying` | predry_hold; sun_dry | Check active/proven bypass/unknown holding evidence and paired selected handoff. Unknown fails completeness; active holding has bounded start/end and water/plant fates. Require actual sun drying independently of holding; no mandatory washing/trimming/salting or invented purchased heat. | `dulse-ledger-method` |\n| `validate_all_fates` | all nodes | Check each actual output/grade/destination, usable alternative, reject, waste, incidental return, water, package, stocks and returns. Match same-state/native-unit handoffs and quantity/burden ledgers. A missing occurrence record is not zero. | `dulse-ledger-method` |\n| `validate_mass_water` | plant and water | Independently check fresh and dried masses, wet-basis moisture/dry matter, side losses and stock changes; separate actual evaporation from pollutant mass. Do not impose a universal fresh-to-dried factor or fixed internal-feed mass. | `dulse-ledger-method` |\n| `validate_energy_release` | actual carrier/service/release instances | Retain verified native exchange quantities/properties/units. Each directly measured amount uses foreground_record/collected_record; each computed carrier, electricity, service or release amount uses calculated_value/calculated_from_collection with per-instance measured inputs, formula and factor/unit/source. Auxiliary MJ cannot replace a native fuel exchange or add duplicate energy burden. Substance and receiving medium precede identity selection. Confirm complete-service coverage excludes duplicate component burdens and records actual asset consumers. | `dulse-ledger-method` |\n| `validate_output_period` | all allocation ledgers | Check every intended output and handoff, complete run/season failures/cleanup, retained-stock valuation/burdens, shared consumers and period attribution once. Economic fallback requires comparable nonnegative producer-gate net-sales values and positive denominator; zero/negative/missing values require a justified alternate with sensitivity and remaining-gap disclosure. | `dulse-ledger-method` |\n| `validate_ranges_identity` | all cards and concrete exchanges | Verify every Range role/unit/basis/evidence; provisional 0..U cannot be treated as measured amount or admissibility cap. Reference 1..1 is normalization only. Verify concrete UUID/property/unit compatibility separately; automated structural checks do not prove identity, physical plausibility, translation equivalence or publication readiness. | `dulse-ledger-method` |\n| `validate_atomic_completion` | all applicable per-flow collection obligations and final exchanges | Final dataset completion and validation require every actual exchange to have an independent atomic card and its own quantity, property/native unit, collection or calculation evidence, range/uncertainty evidence, normalization, actual destination and verified UUID. Unknown identity, activity state, quantity, range evidence or fate blocks completion; it is never zero, a presumed bypass or permission to omit an obligation. Every important concrete flow retains its own range/uncertainty evidence collection duty; a symbolic upper bound is not an empirical range. | |\n\n"
@@ -1258,11 +1260,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 150485
+              offset: 150686
               line: 729
               column: 1
             end:
-              offset: 150507
+              offset: 150708
               line: 729
               column: 23
           text: "## 9. Validation Rules"
@@ -1360,170 +1362,170 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocate_subdivide"
       identity_kind: "explicit"
-      unit_id: "normative_38262"
+      unit_id: "normative_38463"
       source_span:
         start:
-          offset: 38375
+          offset: 38576
           line: 641
           column: 1
         end:
-          offset: 38752
+          offset: 38953
           line: 641
           column: 378
     - pointer: "/allocation_rules/1"
       rule_id: "allocate_shared_outputs"
       identity_kind: "explicit"
-      unit_id: "normative_38262"
+      unit_id: "normative_38463"
       source_span:
         start:
-          offset: 38753
+          offset: 38954
           line: 642
           column: 1
         end:
-          offset: 39411
+          offset: 39612
           line: 642
           column: 659
     - pointer: "/allocation_rules/2"
       rule_id: "allocate_value_gaps"
       identity_kind: "explicit"
-      unit_id: "normative_38262"
+      unit_id: "normative_38463"
       source_span:
         start:
-          offset: 39412
+          offset: 39613
           line: 643
           column: 1
         end:
-          offset: 39839
+          offset: 40040
           line: 643
           column: 428
     - pointer: "/allocation_rules/3"
       rule_id: "allocate_period"
       identity_kind: "explicit"
-      unit_id: "normative_38262"
+      unit_id: "normative_38463"
       source_span:
         start:
-          offset: 39840
+          offset: 40041
           line: 644
           column: 1
         end:
-          offset: 40292
+          offset: 40493
           line: 644
           column: 453
     - pointer: "/allocation_rules/4"
       rule_id: "allocate_shared_assets"
       identity_kind: "explicit"
-      unit_id: "normative_38262"
+      unit_id: "normative_38463"
       source_span:
         start:
-          offset: 40293
+          offset: 40494
           line: 645
           column: 1
         end:
-          offset: 40776
+          offset: 40977
           line: 645
           column: 484
     - pointer: "/validation_rules/0"
       rule_id: "validate_reference"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 150580
+          offset: 150781
           line: 733
           column: 1
         end:
-          offset: 150985
+          offset: 151186
           line: 733
           column: 406
     - pointer: "/validation_rules/1"
       rule_id: "validate_holding_drying"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 150986
+          offset: 151187
           line: 734
           column: 1
         end:
-          offset: 151351
+          offset: 151552
           line: 734
           column: 366
     - pointer: "/validation_rules/2"
       rule_id: "validate_all_fates"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 151352
+          offset: 151553
           line: 735
           column: 1
         end:
-          offset: 151656
+          offset: 151857
           line: 735
           column: 305
     - pointer: "/validation_rules/3"
       rule_id: "validate_mass_water"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 151657
+          offset: 151858
           line: 736
           column: 1
         end:
-          offset: 151958
+          offset: 152159
           line: 736
           column: 302
     - pointer: "/validation_rules/4"
       rule_id: "validate_energy_release"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 151959
+          offset: 152160
           line: 737
           column: 1
         end:
-          offset: 152616
+          offset: 152817
           line: 737
           column: 658
     - pointer: "/validation_rules/5"
       rule_id: "validate_output_period"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 152617
+          offset: 152818
           line: 738
           column: 1
         end:
-          offset: 153068
+          offset: 153269
           line: 738
           column: 452
     - pointer: "/validation_rules/6"
       rule_id: "validate_ranges_identity"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 153069
+          offset: 153270
           line: 739
           column: 1
         end:
-          offset: 153504
+          offset: 153705
           line: 739
           column: 436
     - pointer: "/validation_rules/7"
       rule_id: "validate_atomic_completion"
       identity_kind: "explicit"
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 153505
+          offset: 153706
           line: 740
           column: 1
         end:
-          offset: 154175
+          offset: 154376
           line: 740
           column: 671
   diagnostics:
@@ -1553,26 +1555,26 @@ normative_context:
           column: 297
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_38262"
+      unit_id: "normative_38463"
       source_span:
         start:
-          offset: 38262
+          offset: 38463
           line: 637
           column: 1
         end:
-          offset: 38302
+          offset: 38503
           line: 637
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_150485"
+      unit_id: "normative_150686"
       source_span:
         start:
-          offset: 150485
+          offset: 150686
           line: 729
           column: 1
         end:
-          offset: 150507
+          offset: 150708
           line: 729
           column: 23
 projection_metadata:
@@ -1582,5 +1584,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:9475e83dcf9f665839f7c131f33d21642c8ab061a60d1689574ab37760453c87"
-  generated_content_sha256: "sha256:3077d738aaf96d1351336ca56f2cabacc98d35865ebca7cf630553df4f317819"
+    sha256: "sha256:c6564c1efeaf4505101a116305fe25c3a1efccc756d5b665403a0a4d22763a05"
+  generated_content_sha256: "sha256:9a0624849a59fcc1bd34051e3944aceb44fd4b4625f6180f602bc5b3bed348de"

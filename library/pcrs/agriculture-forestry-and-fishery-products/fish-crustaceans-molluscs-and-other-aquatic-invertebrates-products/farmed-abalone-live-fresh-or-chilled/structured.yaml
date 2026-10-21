@@ -489,7 +489,7 @@ process_inventory:
           name: "Farmed abalone animal lot in its actual species, form and state"
           flow_type: "product"
           property_unit: "Mass 93a60a56-a3c8-11da-a746-0800200b9a66 / kg"
-          description: "This row is the declared reference product output. Retain actual species, form, live/fresh/chilled state, grade, recipient and physical handoff separately. This node is an actual intermediate output, not final reference. Rejects, losses, stocks, grades and delivery may change quantities; never presume yield 1 or constrain all saleable off-grade products by the selected reference subset mass."
+          description: "This row is an actual intermediate animal-product handoff, not the final reference output. Only declared_gate_reference at gate_release is the final accepted reference product. Retain actual species, form, live/fresh/chilled state, grade, recipient and physical handoff separately. Rejects, losses, stocks, grades and delivery may change quantities; never presume yield 1 or constrain all saleable off-grade products by the selected reference subset mass."
           amount:
             expression: "Retain this node's independently measured/evidenced calculated native quantity q, same-lot transfers, losses and stocks; attribute under section 7 and divide by the same positive final-gate accepted net mass Q. Preserve original batch/per-1000-kg and stage denominators, recovering raw quantity using measured stage output S; never fix an internal amount to 1 kg or equate it to final Q."
             value_mode: "foreground_record"
@@ -913,8 +913,8 @@ dataset_production:
       process_id: "harvest_grading_and_live_holding"
       flow_role: "harvest-size product, marketable reference product, and off-grade product"
       record_type: "harvest log, grading sheet, sales invoice, pack-out record"
-      raw_fields: "harvest date; culture unit; product form; live/fresh/chilled state; whole shell-on basis; grade; count; mass; destination ; actual node, original batch/per-1000-kg/stage basis, each own native quantity q/unit, stage output S, same-lot positive final-gate accepted net mass Q, stocks/losses/fates, independent range evidence"
-      collection_method: "harvest weighing, grader records, packhouse records, invoice ; collect only this node's actual events; preserve the original denominator, recovering raw quantity from stage records using independently measured S before Q normalization; never assume stage output equals Q."
+      raw_fields: "harvest date; culture unit; product form; live/fresh/chilled state; whole shell-on basis; grade; count; mass; destination ; actual node, original batch/per-1000-kg/stage basis, each own native quantity q/unit, stage output S, same-lot positive final-gate accepted net mass Q, stocks/losses/fates, independent range evidence  ; measured opening and closing pack-out stocks; dated harvested receipts and onward transfers; separate off-grade sale, reject and other animal-loss masses; independently evidenced signed net animal mass change; species, lot, product state, net whole-animal weighing basis and stock burden carry-over"
+      collection_method: "harvest weighing, grader records, packhouse records, invoice ; collect only this node's actual events; preserve the original denominator, recovering raw quantity from stage records using independently measured S before Q normalization; never assume stage output equals Q.  ; reconcile the same period and traced lots using net whole in-shell animal mass, independently weighing stocks and each destination. Carry stock and its accumulated burden between periods; do not record it as new harvest. Record actual signed biological/native-body-water mass change only with independent measurement or a documented material-balance method and uncertainty, never a balancing residual."
       unit: "kg and item"
       frequency: "each harvest or pack-out batch"
       temporal_coverage: "declared production batch or reporting period"
@@ -1003,13 +1003,16 @@ dataset_production:
         - asc-farm-standard-2025
     - id: reconcile_packout_mass
       applies_to: "harvest_grading_and_live_holding"
-      rule: "harvested_input_mass = measured_packout_onward_mass + offgrade_saleable_mass + reject_mass + measured holding loss on the same product-form basis."
+      rule: "opening_packout_stock + harvested_input_mass + evidenced_net_animal_mass_change = measured_packout_onward_mass + offgrade_saleable_mass + reject_mass + measured_local_animal_loss + closing_packout_stock."
       inputs:
+        - opening_packout_stock
         - harvested_input_mass
+        - evidenced_net_animal_mass_change
         - measured_packout_onward_mass
-        - offgrade_mass
+        - offgrade_saleable_mass
         - reject_mass
-        - holding_loss
+        - measured_local_animal_loss
+        - closing_packout_stock
       output: "pack-out mass balance"
       source_ids:
         - mass-balance-identity
@@ -1182,6 +1185,10 @@ dataset_production:
       applies_to: "all actual cards and product forms"
       requirement: "Set amount evidence mode from the actual method: direct measurement uses foreground_record/collected_record; calculated amounts use calculated_value/calculated_from_collection with measured inputs, formula, factors/units/sources and uncertainty. Candidate templates do not replace actual records. Every reference must remain a whole in-shell animal; a live reference must also be alive. Shucked meat or tissue-only reference products are outside this method, even if a yield is measured. Never substitute their mass for whole-animal Q or enlarge scope through collection obligations."
       evidence: "Original measurement/calculation evidence, actual same-lot state/form, measurements and physical fates"
+    - id: dq_packout_mass_closure
+      applies_to: "harvest_grading_and_live_holding"
+      requirement: "Use reconcile_packout_mass for the same reporting period, traced lot/species and declared whole-animal product form. Opening and closing stocks are required measured fields, not defaults; retain their accumulated burdens across periods. Onward product, off-grade sale, rejects and other animal losses must be mutually exclusive: a death or loss already included in rejects is not deducted again. evidenced_net_animal_mass_change is signed, separately evidenced physical change of the animals, not an unexplained residual or a second receipt/loss. Keep free carrier water, ice and packaging in separate ledgers; exclude them from net animal weights, and do not subtract their drainage again as animal loss. The shorter zero-stock equation applies only when zero opening and closing stocks and no additional animal mass change are evidenced; unknown is never zero."
+      evidence: "Dated net animal weighings, opening/closing stock ledger, disjoint destinations, independent physical-change evidence and burden carry-over records"
 validation_rules:
   - rule_id: validation_rule_1
     applies_to: "foreground_dataset_conformance"
@@ -1266,7 +1273,7 @@ data_sources:
     used_for: "Unique final Q/Q, native q/Q, original batch/per-1000-kg/stage-S conversion and atomic completion duties"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:4940d11f93116c5856f174842371d253db6fa78540a76122ead8944f5901cab3"
+  source_sha256: "sha256:c212bf1ec36b7e3a21b50f14fe2ca4a5a3ac193b5f884e358bb14b7ea7c22c8e"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_7908"
@@ -1317,15 +1324,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_43912"
+    - unit_id: "normative_43973"
       family: "allocation"
       span:
         start:
-          offset: 43912
+          offset: 43973
           line: 624
           column: 1
         end:
-          offset: 44919
+          offset: 44980
           line: 632
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\nAvoid allocation where batch records can partition burdens by culture unit, harvest lot, grade, product form, or destination. Separate whole shell-on live, fresh, chilled, size-grade, and off-grade products by measured mass before applying allocation.\n\nWhen a single foreground batch produces several saleable abalone grades within CPC 04412, allocate shared grow-out, harvest, holding, and pack-out burdens by declared product mass unless a reviewed market-value rule is documented. Shells, mortalities, wastewater, sludge, biofouling residue, and broken or dead product are waste or treatment outputs unless they are sold with a separate product dataset and reference flow.\n\nIf the same site grows other species or co-products in the same system, allocate shared energy, water, feed preparation, and maintenance records by measured culture-unit service, biomass-time, or product mass in that order of preference. The selected allocation basis must be disclosed.\n\n"
@@ -1345,11 +1352,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 43912
+              offset: 43973
               line: 624
               column: 1
             end:
-              offset: 43952
+              offset: 44013
               line: 624
               column: 41
           text: "## 7. Allocation and Co-product Handling"
@@ -1365,16 +1372,16 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_102751"
+    - unit_id: "normative_104761"
       family: "validation"
       span:
         start:
-          offset: 102751
-          line: 709
+          offset: 104761
+          line: 710
           column: 1
         end:
-          offset: 105362
-          line: 730
+          offset: 107372
+          line: 731
           column: 1
       markdown: "## 9. Validation Rules\n\nA foreground data package conforms to this PCR only when:\n\n- the reference product is normalized to 1 kg farmed abalone in a declared live, fresh, or chilled product form;\n- species or hybrid, culture system, seed or juvenile source, product state, product form, size grade, geography, declared gate, holding duration, and feed regime are declared;\n- seed or juvenile input, feed, water, energy, fuel, mortality or residue, harvest, pack-out, and packaging records are either present or explicitly marked not applicable with a reason;\n- count records include mean individual mass or another transparent conversion to kg;\n- feed records distinguish macroalgae, formulated feed, and mixed feed, and keep wet, dry, and as-fed bases separate;\n- water rows distinguish pumped or supplied water from ambient open-water exchange;\n- pack-out mass balance reconciles harvested input, reference product, saleable off-grade product, rejects, and holding losses;\n- same-site multi-species or multi-grade allocation is documented before the dataset is used as a background or secondary dataset.\n\nFinal data-package validation must read back dq_atomic_completion and every dq_complete_ requirement. Every applicable obligation must have concrete exchanges with independent quantities, units, sources, normalization, range/uncertainty, fate and verified UUIDs. Use not_applicable only for evidenced absence. Unknown identities, missing quantities, unclassified fates or unfulfilled obligations block final data-package completion. Static PCR checking is not a substitute for this validation.\n\nFinal datasets have exactly one actual gate_release and one declared_gate_reference. Every actual exchange and applicable dq_complete_/dq_stage_/dq_actual_/dq_range_ obligation must have independent atomic cards, own quantity/native unit, actual collection/calculation and range/uncertainty evidence, same-final-Q normalization, fate and verified UUID. Unknown identity, activity/route/gate, quantity, range evidence or fate blocks completion and validation, never zero, assumed bypass or disclosure-only omission. Static PCR checking does not establish actual dataset completeness.\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `val_reference_form_scope` | market-size product transfers and final reference | Every market-size animal transfer and final reference product must retain its actual whole in-shell form. Raw shucked or tissue-only fresh/chilled final references are outside this methodology. No measured yield or section-8 completion claim enlarges this boundary. | |\n\n"
       headings:
@@ -1393,12 +1400,12 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 102751
-              line: 709
+              offset: 104761
+              line: 710
               column: 1
             end:
-              offset: 102773
-              line: 709
+              offset: 104783
+              line: 710
               column: 23
           text: "## 9. Validation Rules"
           depth: 2
@@ -1482,184 +1489,184 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_43912"
+      unit_id: "normative_43973"
       source_span:
         start:
-          offset: 43954
+          offset: 44015
           line: 626
           column: 1
         end:
-          offset: 44205
+          offset: 44266
           line: 626
           column: 252
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_43912"
+      unit_id: "normative_43973"
       source_span:
         start:
-          offset: 44207
+          offset: 44268
           line: 628
           column: 1
         end:
-          offset: 44629
+          offset: 44690
           line: 628
           column: 423
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_43912"
+      unit_id: "normative_43973"
       source_span:
         start:
-          offset: 44631
+          offset: 44692
           line: 630
           column: 1
         end:
-          offset: 44917
+          offset: 44978
           line: 630
           column: 287
     - pointer: "/validation_rules/0"
       rule_id: "validation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 102834
-          line: 713
+          offset: 104844
+          line: 714
           column: 1
         end:
-          offset: 102946
-          line: 713
+          offset: 104956
+          line: 714
           column: 113
     - pointer: "/validation_rules/1"
       rule_id: "validation_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 102947
-          line: 714
+          offset: 104957
+          line: 715
           column: 1
         end:
-          offset: 103123
-          line: 714
+          offset: 105133
+          line: 715
           column: 177
     - pointer: "/validation_rules/2"
       rule_id: "validation_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103124
-          line: 715
+          offset: 105134
+          line: 716
           column: 1
         end:
-          offset: 103309
-          line: 715
+          offset: 105319
+          line: 716
           column: 186
     - pointer: "/validation_rules/3"
       rule_id: "validation_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103310
-          line: 716
+          offset: 105320
+          line: 717
           column: 1
         end:
-          offset: 103395
-          line: 716
+          offset: 105405
+          line: 717
           column: 86
     - pointer: "/validation_rules/4"
       rule_id: "validation_rule_5"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103396
-          line: 717
+          offset: 105406
+          line: 718
           column: 1
         end:
-          offset: 103513
-          line: 717
+          offset: 105523
+          line: 718
           column: 118
     - pointer: "/validation_rules/5"
       rule_id: "validation_rule_6"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103514
-          line: 718
+          offset: 105524
+          line: 719
           column: 1
         end:
-          offset: 103597
-          line: 718
+          offset: 105607
+          line: 719
           column: 84
     - pointer: "/validation_rules/6"
       rule_id: "validation_rule_7"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103598
-          line: 719
+          offset: 105608
+          line: 720
           column: 1
         end:
-          offset: 103725
-          line: 719
+          offset: 105735
+          line: 720
           column: 128
     - pointer: "/validation_rules/7"
       rule_id: "validation_rule_8"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103726
-          line: 720
+          offset: 105736
+          line: 721
           column: 1
         end:
-          offset: 103856
-          line: 720
+          offset: 105866
+          line: 721
           column: 131
     - pointer: "/validation_rules/8"
       rule_id: "validation_rule_9"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103858
-          line: 722
+          offset: 105868
+          line: 723
           column: 1
         end:
-          offset: 104351
-          line: 722
+          offset: 106361
+          line: 723
           column: 494
     - pointer: "/validation_rules/9"
       rule_id: "validation_rule_10"
       identity_kind: "snapshot_local"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 104353
-          line: 724
+          offset: 106363
+          line: 725
           column: 1
         end:
-          offset: 104935
-          line: 724
+          offset: 106945
+          line: 725
           column: 583
     - pointer: "/validation_rules/10"
       rule_id: "val_reference_form_scope"
       identity_kind: "explicit"
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 105008
-          line: 728
+          offset: 107018
+          line: 729
           column: 1
         end:
-          offset: 105360
-          line: 728
+          offset: 107370
+          line: 729
           column: 353
   diagnostics:
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
@@ -1688,63 +1695,63 @@ normative_context:
           column: 262
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_43912"
+      unit_id: "normative_43973"
       source_span:
         start:
-          offset: 43912
+          offset: 43973
           line: 624
           column: 1
         end:
-          offset: 43952
+          offset: 44013
           line: 624
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 102751
-          line: 709
+          offset: 104761
+          line: 710
           column: 1
         end:
-          offset: 102773
-          line: 709
+          offset: 104783
+          line: 710
           column: 23
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 103858
-          line: 722
+          offset: 105868
+          line: 723
           column: 1
         end:
-          offset: 104351
-          line: 722
+          offset: 106361
+          line: 723
           column: 494
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 104353
-          line: 724
+          offset: 106363
+          line: 725
           column: 1
         end:
-          offset: 104935
-          line: 724
+          offset: 106945
+          line: 725
           column: 583
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Preceding prose may govern this group but Markdown does not establish its scope; complete relevant section retained."
-      unit_id: "normative_102751"
+      unit_id: "normative_104761"
       source_span:
         start:
-          offset: 105008
-          line: 728
+          offset: 107018
+          line: 729
           column: 1
         end:
-          offset: 105360
-          line: 728
+          offset: 107370
+          line: 729
           column: 353
 projection_metadata:
   contract_version: "2"
@@ -1753,5 +1760,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:4940d11f93116c5856f174842371d253db6fa78540a76122ead8944f5901cab3"
-  generated_content_sha256: "sha256:4f4cea2c52194528a200e95ef5c3d819325c2c4a20e672e37e810d424173aa8e"
+    sha256: "sha256:c212bf1ec36b7e3a21b50f14fe2ca4a5a3ac193b5f884e358bb14b7ea7c22c8e"
+  generated_content_sha256: "sha256:d5492c2c49a3306866ed6e1a3a0c0175afea4b6e46fed58d2bb07ecd6057a19f"

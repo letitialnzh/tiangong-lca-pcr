@@ -129,7 +129,7 @@ Complete departure, searching, hookah compressor, collection, return and zero-ca
 
 Only actual compressor atmospheric intake crosses the environment boundary here. Record air quantity or measured volume with actual temperature, pressure, humidity/composition and documented density conversion to mass. This is breathing air, not pure oxygen, scuba cylinder supply or aquatic aeration. Do not record diver inhalation again as a second natural uptake.
 
-- Selected flow: Ambient air abstracted for hookah breathing supply
+- Selected flow: air `fe0acd60-3ddc-11dd-aaa4-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` (unit group `93a60a57-a4c8-11da-a746-0800200c9a66`) / kg
 - Amount rule: Use cp_capture to measure this actual exchange and retain the complete physical ledger; after unique attribution divide by accepted net reference animal mass of the same covered lots. Missing values are not zero.
 - Value mode: `calculated_value`

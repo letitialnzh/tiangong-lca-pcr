@@ -106,7 +106,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -120,7 +120,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -250,7 +250,7 @@ sync_with: pcr.en-US.md
 
 仅计量本负责方从环境新取入的海水，记录实际接触、清洗或冷却用途，排除循环及上游转入。
 
-- 选定流：本次野生海捕及完整航次责任实际直接海水取用
+- 选定流：海水 `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_capture 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -304,7 +304,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -318,7 +318,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -440,9 +440,9 @@ sync_with: pcr.en-US.md
 
 ###### 本次野生海捕及完整航次责任有证据的水蒸发 (`capture_water_evaporation`)
 
-实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
 
-- 选定流：本次野生海捕及完整航次责任有证据的水蒸发
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_capture 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -501,7 +501,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_condition`
 
@@ -515,7 +515,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_condition`
 
@@ -645,7 +645,7 @@ sync_with: pcr.en-US.md
 
 仅计量本负责方从环境新取入的海水，记录实际接触、清洗或冷却用途，排除循环及上游转入。
 
-- 选定流：本次保留头部去内脏及初步清理实际直接海水取用
+- 选定流：海水 `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_condition 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -699,7 +699,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_condition`
 
@@ -713,7 +713,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_condition`
 
@@ -857,9 +857,9 @@ sync_with: pcr.en-US.md
 
 ###### 本次保留头部去内脏及初步清理有证据的水蒸发 (`condition_water_evaporation`)
 
-实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
 
-- 选定流：本次保留头部去内脏及初步清理有证据的水蒸发
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_condition 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -962,7 +962,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -976,7 +976,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -1106,7 +1106,7 @@ sync_with: pcr.en-US.md
 
 仅计量本负责方从环境新取入的海水，记录实际接触、清洗或冷却用途，排除循环及上游转入。
 
-- 选定流：本次实际物理及去向分级实际直接海水取用
+- 选定流：海水 `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_grade 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -1160,7 +1160,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -1174,7 +1174,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -1296,9 +1296,9 @@ sync_with: pcr.en-US.md
 
 ###### 本次实际物理及去向分级有证据的水蒸发 (`grade_water_evaporation`)
 
-实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
 
-- 选定流：本次实际物理及去向分级有证据的水蒸发
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_grade 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -1401,7 +1401,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -1415,7 +1415,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -1568,7 +1568,7 @@ sync_with: pcr.en-US.md
 
 仅计量本负责方从环境新取入的海水，记录实际接触、清洗或冷却用途，排除循环及上游转入。
 
-- 选定流：本次实际非冻结冷却及有界冷藏实际直接海水取用
+- 选定流：海水 `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_preserve 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -1622,7 +1622,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -1636,7 +1636,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -1736,9 +1736,9 @@ sync_with: pcr.en-US.md
 
 ###### 本次实际非冻结冷却及有界冷藏有证据的水蒸发 (`preserve_water_evaporation`)
 
-实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
 
-- 选定流：本次实际非冻结冷却及有界冷藏有证据的水蒸发
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_preserve 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -1841,7 +1841,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_present`
 
@@ -1855,7 +1855,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_present`
 
@@ -1985,7 +1985,7 @@ sync_with: pcr.en-US.md
 
 仅计量本负责方从环境新取入的海水，记录实际接触、清洗或冷却用途，排除循环及上游转入。
 
-- 选定流：本次生产者保护性包装呈现实际直接海水取用
+- 选定流：海水 `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_present 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -2039,7 +2039,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_present`
 
@@ -2053,7 +2053,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_present`
 
@@ -2153,9 +2153,9 @@ sync_with: pcr.en-US.md
 
 ###### 本次生产者保护性包装呈现有证据的水蒸发 (`present_water_evaporation`)
 
-实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。实际经独立证据支持的向空气蒸发；不得将无法解释的去内脏、鱼体或水账差额填在此，未知损失保留为未解决账项。
 
-- 选定流：本次生产者保护性包装呈现有证据的水蒸发
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：依 cp_present 计量真实角色数量；先按本节及第 8 节数量方法处理：先闭合未分配实物流转、损失及存量并将共用资源归属一次，再除以正的合格最终鱼体千克数；独立单输出 LCA 视图仅按第 7 节对负担分配一次，保留实物账与分配矩阵，质量分区不得乘经济份额。
 - 数值来源模式：计算值 (`calculated_value`)
@@ -2236,7 +2236,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover`
 
@@ -2250,7 +2250,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover`
 
@@ -2582,7 +2582,7 @@ sync_with: pcr.en-US.md
 | validate_balance | actual physical records | 按未分配账核对去内脏质量分区、水冰各去向、其他物种、存量、废物及归海，接收和转出按相同转移编号配对。不得把经济分配后的量与未分配整鱼比较闭合，未解释差额不能填蒸发。 |  |
 | validate_technology | capture and handling events | 检查真实父活动、技术差异、事件互斥或共存、清洁换批及重复处理编号。拖网、网具、钓具相关投入及兼捕、遗失和栖息地证据按实际覆盖，不由通用候选路线声称完成。 | noaa-atlantic-cod |
 | validate_attribution | LCA resources and periods | 单独核对分配矩阵和未分配实物视图：每份资源负责一次，各边界份额和为 1，无二次最终份额；收入缺失和无产出不删负担。对照完整返航、资产服务、替换及服务内含范围避免双算。 |  |
-| validate_ranges | all cards and final package | 每卡必须保留同基准范围，但暂定估算不能证明实际值合理；角色展开到实际物质后分别用独立证据复核数量和单位、范围适用性，禁止用本批最大值自证 QA。无数量或支持身份或服务功能单位证据的实际角色仍是缺口。 |  |
+| validate_ranges | all cards and final package | 核对已提供范围与实际分子单位、最终参考基准及物理或 LCA 视图一致。暂定估算不能证明合理性或代替缺失数量。无数值范围的卡保留独立范围／不确定度证据需求，不编造界限。实际交换完成前须取得各实例自身代表性证据、数量、身份及真实服务单位；数值 QA 前建立适用独立包络，不得以被检批次自证。真实越界值保留并调查，不截断。 |  |
 | `validate_inventory_completion` | 所有具体交换及第8节逐流完善责任 | 核查每项适用 dq_complete 责任均已形成独立实测且身份核实的交换卡；逐项确认数量、原生单位、Range证据、归一化、接收介质、去向和不重复归属。任一实际子交换、数量、身份或去向未落实均使最终数据包不完整并校验失败；未知不得填零。静态PCR检查不能替代这些证据。 |  |
 
 ## 10. 发布数据集画像

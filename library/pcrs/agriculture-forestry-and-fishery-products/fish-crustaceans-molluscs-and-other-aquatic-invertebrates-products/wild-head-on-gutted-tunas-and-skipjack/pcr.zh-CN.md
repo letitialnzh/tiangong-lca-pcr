@@ -118,7 +118,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -143,7 +143,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -165,7 +165,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -190,7 +190,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -212,7 +212,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -235,7 +235,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -261,7 +261,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -283,7 +283,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_bait_supply_mass`
 
@@ -297,7 +297,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_bait_supply_mass`
 
@@ -309,9 +309,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际钓饵呼吸向大气二氧化碳 (`bait_supply_biogenic_co2`)
 
-仅实测或由物种阶段模型参数时期独立验证及接收介质支持的实际钓饵维持生物呼吸二氧化碳。不是化石燃料二氧化碳，也不假定统一代谢；真实其他气水去向仍独立识别。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅实测或由物种阶段模型参数时期独立验证及接收介质支持的实际钓饵维持生物呼吸二氧化碳。不是化石燃料二氧化碳，也不假定统一代谢；真实其他气水去向仍独立识别。
 
-- 选定流：实际钓饵呼吸向大气二氧化碳
+- 选定流：二氧化碳（生物源） `08a91e70-3ddc-11dd-9c15-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_bait_supply_emissions 取得真实数量并保持未分配物理账和共用节点时期资源一次归属；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节一次归属并保留原账矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -321,7 +321,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_emissions`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -344,7 +344,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -354,9 +354,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`bait_supply_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_bait_supply_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -366,7 +366,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_bait_supply_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -396,7 +396,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -421,7 +421,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -443,7 +443,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -468,7 +468,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -490,7 +490,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -513,7 +513,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -539,7 +539,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -561,7 +561,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -583,7 +583,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture_mass`
 
@@ -597,7 +597,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture_mass`
 
@@ -617,7 +617,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -641,7 +641,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -665,7 +665,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -688,7 +688,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -698,9 +698,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`capture_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_capture_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -710,7 +710,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_capture_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -740,7 +740,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -762,7 +762,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -787,7 +787,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -809,7 +809,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -834,7 +834,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -856,7 +856,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -879,7 +879,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -905,7 +905,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -927,7 +927,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_mass`
 
@@ -941,7 +941,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_conditioning_mass`
 
@@ -961,7 +961,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1007,7 +1007,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1031,7 +1031,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1054,7 +1054,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1064,9 +1064,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`conditioning_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_conditioning_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -1076,7 +1076,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_conditioning_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -1150,7 +1150,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1172,7 +1172,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1197,7 +1197,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -1219,7 +1219,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -1244,7 +1244,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1266,7 +1266,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1289,7 +1289,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1315,7 +1315,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1337,7 +1337,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade_mass`
 
@@ -1351,7 +1351,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade_mass`
 
@@ -1371,7 +1371,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1395,7 +1395,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1420,7 +1420,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1430,9 +1430,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`grade_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_grade_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -1442,7 +1442,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_grade_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -1516,7 +1516,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1538,7 +1538,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1563,7 +1563,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -1585,7 +1585,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -1610,7 +1610,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1632,7 +1632,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1655,7 +1655,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1681,7 +1681,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1703,7 +1703,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_chill_mass`
 
@@ -1717,7 +1717,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_chill_mass`
 
@@ -1737,7 +1737,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1761,7 +1761,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1786,7 +1786,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1796,9 +1796,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`chill_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_chill_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -1808,7 +1808,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_chill_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -1882,7 +1882,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1904,7 +1904,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -1929,7 +1929,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -1951,7 +1951,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -1976,7 +1976,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1998,7 +1998,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2021,7 +2021,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2047,7 +2047,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2069,7 +2069,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_present_mass`
 
@@ -2083,7 +2083,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_present_mass`
 
@@ -2103,7 +2103,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2152,7 +2152,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2162,9 +2162,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`present_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_present_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -2174,7 +2174,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_present_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -2248,7 +2248,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2270,7 +2270,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2295,7 +2295,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -2317,7 +2317,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -2342,7 +2342,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2364,7 +2364,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2387,7 +2387,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2413,7 +2413,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2435,7 +2435,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover_mass`
 
@@ -2449,7 +2449,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover_mass`
 
@@ -2465,7 +2465,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover_mass`
 
@@ -2479,7 +2479,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover_mass`
 
@@ -2523,7 +2523,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2548,7 +2548,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2558,9 +2558,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`handover_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_handover_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -2570,7 +2570,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_handover_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -2625,7 +2625,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_fad_service_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -2647,7 +2647,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_fad_service_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -2682,7 +2682,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_fad_service_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2712,7 +2712,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_mass`
 - 数量范围：可替换宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2737,7 +2737,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -2759,7 +2759,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_energy`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：MJ
@@ -2784,7 +2784,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2806,7 +2806,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2829,7 +2829,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2855,7 +2855,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -2877,7 +2877,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_shared_resources_mass`
 
@@ -2891,7 +2891,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_shared_resources_mass`
 
@@ -2916,7 +2916,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_emissions`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -2926,9 +2926,9 @@ sync_with: pcr.en-US.md
 
 ###### 有证据的向大气蒸发水 (`shared_resources_evaporation`)
 
-仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅本节点有测量或验证模型支持的蒸发水，不作任意质量补平项，不把全部用水等于消耗。
 
-- 选定流：有证据的向大气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass / kg
 - 数量规则：按 cp_shared_resources_mass 取得本卡实际接收、转移、产出、损失或资源量，保持未分配物理账并使共用节点时期资源仅归属一次；物理闭合后除正数接受最终净公斤；独立单输出 LCA 视图按第 7 节归属一次并保留未分配账及矩阵。
 - 数值来源模式：计算值（`calculated_value`）
@@ -2938,7 +2938,7 @@ sync_with: pcr.en-US.md
 - 证据类型：采集后计算（`calculated_from_collection`）
 - 采集协议：`cp_shared_resources_mass`
 - 数量范围：可替换的宽泛暂定筛选估计，不是默认数量或允许界限
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg

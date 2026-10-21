@@ -139,26 +139,18 @@ sync_with: pcr.en-US.md
 
 ###### 育苗和中间培育电力（`hatchery_nursery_electricity`）
 
-本行覆盖泵、曝气、供氧、过滤、照明、冷却或加热、紫外或其他水处理、活饵培养和单体隔间系统用电。
+本卡仅记录本节点实际发生且未包含于完整外购服务的育苗／中间培育用电。保留计量 kWh、唯一分摊依据和同一实际最终门验收净动物质量 Q（正值）。本卡不提供数值范围：须独立采集代表性范围或计量不确定度证据，并以该最终参考产品每 kg 的 kWh 表达；未解决的定量证据需求不能变成默认值、零或 QA 通过。原始每 1,000 kg 记录只有对应同一最终 Q、状态及群体时才能除以 1000；阶段强度必须用独立实测阶段产量还原 kWh 分子，再除以 Q。
 
 - 选定流：电力
 - 流属性/单位：Energy / kWh
-- 数量规则：育苗和中间培育操作的计量或分配电力记录
+- 数量规则：本节点实际计量 kWh，经唯一归属后除以同一最终门验收净动物质量 Q（正值，kg）；保留原始读数及原分母证据。
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_energy_and_fuel_records_broodstock_hatchery_nursery_and_stocking`
 - 来源：`nephrops-hatchery-handbook-2015`, `asc-farm-standard-2025`
-- 数量范围：暂定育苗电力筛选估计
-  - 范围角色：默认估计（`default_estimate`）
-  - 下限：0
-  - 上限：20000
-  - 单位：kWh/1,000 kg marketable product
-  - 基准：相对市场化输出的宽泛首轮场内育苗和中间培育电力
-  - 基准类型：过程输出（`process_output`）
-  - 证据类型：推理估算（`reasoned_estimate`）
 
 ##### 废物流
 

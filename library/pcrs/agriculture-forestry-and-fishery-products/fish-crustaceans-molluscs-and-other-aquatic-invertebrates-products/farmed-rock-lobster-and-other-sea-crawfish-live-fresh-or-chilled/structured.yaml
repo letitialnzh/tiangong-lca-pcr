@@ -1219,12 +1219,13 @@ dataset_production:
   calculation_rules:
     - id: calc_reference_product_mass
       applies_to: "reference product"
-      rule: "net marketable product mass = packed or delivered acceptable mass minus rejects and mortalities within the declared product boundary"
+      rule: "Q is the independently measured positive accepted net animal mass of the same lot and actual product state at declared_gate_release, collected under cp_final_gate_acceptance. From a gross weighing, deduct only measured tare, free water/ice and rejects or losses actually included in that weighing, once. Never deduct rejects or mortalities again from already accepted net mass. Reconcile earlier pack-out, delivery, other intended outputs, losses and stocks separately; do not substitute an intermediate acceptable mass for final Q."
       inputs:
         - cp_harvest_and_product_mass_records_growout_and_husbandry
         - cp_harvest_and_product_mass_records_harvest_live_holding_chilling_and_packout
         - cp_packaging_live_holding_and_chilling_records_harvest_live_holding_chilling_and_packout
         - "cp_delivery_and_route_records_delivery_to_declared_gate when delivery is included"
+        - cp_final_gate_acceptance
       output: "kg reference product"
       source_ids: []
     - id: calc_count_to_mass
@@ -1462,7 +1463,7 @@ data_sources:
     used_for: "Allocation hierarchy explicitly adopted by this PCR: subdivision, causal physical and economic relationships; no aquaculture performance, actual share or non-GHG impact-assessment conclusion"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:36789fabdd9f17679d56512137a3b001df548285223e110a2a8de35cd3f05a42"
+  source_sha256: "sha256:a4fc916ded9727c71cbfba895700c743c18f474960b005ed5c91d443235615b2"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_11152"
@@ -1561,15 +1562,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_118691"
+    - unit_id: "normative_119119"
       family: "validation"
       span:
         start:
-          offset: 118691
+          offset: 119119
           line: 804
           column: 1
         end:
-          offset: 120836
+          offset: 121264
           line: 818
           column: 1
       markdown: "## 9. Validation Rules\n\n| Rule id | Severity | Rule |\n| --- | --- | --- |\n| `val_reference_flow_uuid` | error | Independently verify reference identity against actual species, life stage, form/state and final gate. A category label or live-animal landing UUID cannot automatically identify farm, packhouse or delivered product; no grouped UUID grants a binding. |\n| `val_reference_unit` | error | The reference amount must be expressed as kg with Mass `93a60a56-a3c8-11da-a746-0800200b9a66` and Units of mass `93a60a57-a4c8-11da-a746-0800200c9a66`. |\n| `val_farmed_not_wild` | error | A dataset based only on wild capture, wild landing, or post-capture live holding without controlled aquaculture production is non-conforming. |\n| `val_adjacent_categories` | error | Homarus lobster, Norway lobster, wild rock lobster, frozen, dried, salted, brined, cooked, canned, or otherwise processed crustacean products must not be reported under this PCR as the main reference product. |\n| `val_required_qualifiers` | error | Species or taxon group, culture system, biological starting condition, product state, size grade or count basis, declared gate, and farmed proof must be present. |\n| `val_collection_protocol_coverage` | error | Each foreground inventory row with `foreground_record` or `calculated_value` must link to a collection protocol or calculation rule. |\n| `val_mass_balance` | warning | Biological stock, mortality, residue, harvest, packed, rejected, and delivered mass should reconcile; unexplained imbalance must be disclosed. |\n| `val_range_review` | warning | Reasoned-estimate ranges are candidate QA screens and must be replaced or justified before reviewed or published use. |\n| `val_final_gate_completion` | error | Check sole declared_gate_release reference output 1 kg, positive final accepted net-kg denominator, actual included/bypassed delivery and every independently measured internal transfer, rejection and loss. Verify all dq_complete actual child exchanges, native units, normalization, independent Range evidence, UUIDs, fates and non-duplication; any gap makes the final dataset incomplete and fails validation. |\n\n"
@@ -1589,11 +1590,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 118691
+              offset: 119119
               line: 804
               column: 1
             end:
-              offset: 118713
+              offset: 119141
               line: 804
               column: 23
           text: "## 9. Validation Rules"
@@ -1756,118 +1757,118 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "val_reference_flow_uuid"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 118765
+          offset: 119193
           line: 808
           column: 1
         end:
-          offset: 119054
+          offset: 119482
           line: 808
           column: 290
     - pointer: "/validation_rules/1"
       rule_id: "val_reference_unit"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 119055
+          offset: 119483
           line: 809
           column: 1
         end:
-          offset: 119241
+          offset: 119669
           line: 809
           column: 187
     - pointer: "/validation_rules/2"
       rule_id: "val_farmed_not_wild"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 119242
+          offset: 119670
           line: 810
           column: 1
         end:
-          offset: 119419
+          offset: 119847
           line: 810
           column: 178
     - pointer: "/validation_rules/3"
       rule_id: "val_adjacent_categories"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 119420
+          offset: 119848
           line: 811
           column: 1
         end:
-          offset: 119668
+          offset: 120096
           line: 811
           column: 249
     - pointer: "/validation_rules/4"
       rule_id: "val_required_qualifiers"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 119669
+          offset: 120097
           line: 812
           column: 1
         end:
-          offset: 119870
+          offset: 120298
           line: 812
           column: 202
     - pointer: "/validation_rules/5"
       rule_id: "val_collection_protocol_coverage"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 119871
+          offset: 120299
           line: 813
           column: 1
         end:
-          offset: 120052
+          offset: 120480
           line: 813
           column: 182
     - pointer: "/validation_rules/6"
       rule_id: "val_mass_balance"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 120053
+          offset: 120481
           line: 814
           column: 1
         end:
-          offset: 120230
+          offset: 120658
           line: 814
           column: 178
     - pointer: "/validation_rules/7"
       rule_id: "val_range_review"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 120231
+          offset: 120659
           line: 815
           column: 1
         end:
-          offset: 120383
+          offset: 120811
           line: 815
           column: 153
     - pointer: "/validation_rules/8"
       rule_id: "val_final_gate_completion"
       identity_kind: "explicit"
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 120384
+          offset: 120812
           line: 816
           column: 1
         end:
-          offset: 120834
+          offset: 121262
           line: 816
           column: 451
   diagnostics:
@@ -1909,14 +1910,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_118691"
+      unit_id: "normative_119119"
       source_span:
         start:
-          offset: 118691
+          offset: 119119
           line: 804
           column: 1
         end:
-          offset: 118713
+          offset: 119141
           line: 804
           column: 23
 projection_metadata:
@@ -1926,5 +1927,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:36789fabdd9f17679d56512137a3b001df548285223e110a2a8de35cd3f05a42"
-  generated_content_sha256: "sha256:675d0ef7f9e4630c7f6f1f6603dfb2dbd56e0cd13ddfdcf2eb302c385a8d918e"
+    sha256: "sha256:a4fc916ded9727c71cbfba895700c743c18f474960b005ed5c91d443235615b2"
+  generated_content_sha256: "sha256:402fe2980a0fefda4282488dd7298fba1ecc6c2525ab70671e05a855fec84280"

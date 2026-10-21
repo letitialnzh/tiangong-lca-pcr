@@ -119,7 +119,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_managed_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -142,7 +142,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10
   - 单位：kg
@@ -165,7 +165,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10
   - 单位：kg
@@ -189,7 +189,7 @@ sync_with: pcr.en-US.md
 - 来源：`uf-ifas-ras-fa099`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100000
   - 单位：kg
@@ -213,7 +213,7 @@ sync_with: pcr.en-US.md
 - 来源：`uf-ifas-ras-fa099`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kWh
@@ -236,7 +236,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_energy_managed_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100000
   - 单位：MJ
@@ -267,7 +267,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_managed_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -292,7 +292,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_waste_managed_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -315,7 +315,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_managed_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100000
   - 单位：kg
@@ -338,7 +338,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_waste_managed_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kg
@@ -363,7 +363,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_managed_rearing`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100000
   - 单位：kg
@@ -392,7 +392,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_farm_harvest`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -415,7 +415,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_energy_farm_harvest`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kWh
@@ -439,7 +439,7 @@ sync_with: pcr.en-US.md
 - 来源：`uf-ifas-onfarm-transport-fa119`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -462,7 +462,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_materials_farm_harvest`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -493,7 +493,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_farm_harvest`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -518,7 +518,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_waste_farm_harvest`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -541,7 +541,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_farm_harvest`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100000
   - 单位：kg
@@ -566,7 +566,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_farm_harvest`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100000
   - 单位：kg
@@ -595,7 +595,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_energy_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100000
   - 单位：MJ
@@ -618,7 +618,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -641,7 +641,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -664,7 +664,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_energy_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kWh
@@ -687,7 +687,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_materials_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -718,7 +718,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -741,7 +741,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -766,7 +766,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_waste_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -789,7 +789,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -814,7 +814,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_live_conditioning`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -843,7 +843,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_stock_farm_dispatch`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -866,7 +866,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_farm_dispatch`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -889,7 +889,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_materials_farm_dispatch`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -912,7 +912,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_energy_farm_dispatch`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：1000
   - 单位：kWh
@@ -971,7 +971,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_waste_farm_dispatch`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：100
   - 单位：kg
@@ -994,7 +994,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_farm_dispatch`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg
@@ -1019,7 +1019,7 @@ sync_with: pcr.en-US.md
 - 采集协议：`cp_water_farm_dispatch`
 
 - 数量范围：可替换暂定筛查估算；不是经验值或合规限值
-  - 范围角色：默认估计（`default_estimate`）
+  - 范围角色：QA 筛查（`qa_guardrail`）
   - 下限：0
   - 上限：10000
   - 单位：kg

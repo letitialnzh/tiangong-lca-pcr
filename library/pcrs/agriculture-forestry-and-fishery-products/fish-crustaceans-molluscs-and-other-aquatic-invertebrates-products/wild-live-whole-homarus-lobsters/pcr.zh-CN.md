@@ -275,7 +275,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture_mass`
 
@@ -289,7 +289,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture_mass`
 
@@ -436,9 +436,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际有证据的向空气蒸发水 (`capture_water_evaporation`)
 
-仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
 
-- 选定流：实际有证据的向空气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：由 cp_capture_mass 实际原始记录保留未分配实物接收、转移、库存及去向，共享事件、节点或期间责任归属一次后按第 8 节除以正最终验收原体千克数。另按第 7 节对标明的单输出 LCA 视图归属一次；保留实物台账及分配矩阵。
 - 数值来源模式：`calculated_value`
@@ -664,7 +664,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade_mass`
 
@@ -678,7 +678,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade_mass`
 
@@ -822,9 +822,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际有证据的向空气蒸发水 (`grade_water_evaporation`)
 
-仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
 
-- 选定流：实际有证据的向空气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：由 cp_grade_mass 实际原始记录保留未分配实物接收、转移、库存及去向，共享事件、节点或期间责任归属一次后按第 8 节除以正最终验收原体千克数。另按第 7 节对标明的单输出 LCA 视图归属一次；保留实物台账及分配矩阵。
 - 数值来源模式：`calculated_value`
@@ -1072,7 +1072,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_live_maintenance_mass`
 
@@ -1086,7 +1086,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_live_maintenance_mass`
 
@@ -1230,9 +1230,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际有证据的向空气蒸发水 (`live_maintenance_water_evaporation`)
 
-仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
 
-- 选定流：实际有证据的向空气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：由 cp_live_maintenance_mass 实际原始记录保留未分配实物接收、转移、库存及去向，共享事件、节点或期间责任归属一次后按第 8 节除以正最终验收原体千克数。另按第 7 节对标明的单输出 LCA 视图归属一次；保留实物台账及分配矩阵。
 - 数值来源模式：`calculated_value`
@@ -1458,7 +1458,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation_mass`
 
@@ -1472,7 +1472,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation_mass`
 
@@ -1616,9 +1616,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际有证据的向空气蒸发水 (`presentation_water_evaporation`)
 
-仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
 
-- 选定流：实际有证据的向空气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：由 cp_presentation_mass 实际原始记录保留未分配实物接收、转移、库存及去向，共享事件、节点或期间责任归属一次后按第 8 节除以正最终验收原体千克数。另按第 7 节对标明的单输出 LCA 视图归属一次；保留实物台账及分配矩阵。
 - 数值来源模式：`calculated_value`
@@ -1844,7 +1844,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover_mass`
 
@@ -1858,7 +1858,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_handover_mass`
 
@@ -2004,9 +2004,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际有证据的向空气蒸发水 (`handover_water_evaporation`)
 
-仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅纳入经计量或独立支持的实际蒸发估算，记录受纳空气及不确定性；不得作补足缺失水平衡的任意平差项。
 
-- 选定流：实际有证据的向空气蒸发水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - 数量规则：由 cp_handover_mass 实际原始记录保留未分配实物接收、转移、库存及去向，共享事件、节点或期间责任归属一次后按第 8 节除以正最终验收原体千克数。另按第 7 节对标明的单输出 LCA 视图归属一次；保留实物台账及分配矩阵。
 - 数值来源模式：`calculated_value`

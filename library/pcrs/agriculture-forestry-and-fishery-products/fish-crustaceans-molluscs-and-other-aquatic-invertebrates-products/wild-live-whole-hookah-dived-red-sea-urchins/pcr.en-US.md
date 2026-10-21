@@ -359,7 +359,7 @@ Record actual pump, aeration and cooling electricity not already in capture/shar
 
 Record actual environmental intake for tanks or wetting, by location and conditions; purchased water belongs above. Include preparation intake through a separately owned preparation exchange when applicable.
 
-- Selected flow: Seawater directly abstracted from declared marine source
+- Selected flow: sea water `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - Flow property / unit: Mass / kg
 - Amount rule: Measured actual intake from cp_holding, per 1 kg reference flow
 - Value mode: Calculated value (`calculated_value`)

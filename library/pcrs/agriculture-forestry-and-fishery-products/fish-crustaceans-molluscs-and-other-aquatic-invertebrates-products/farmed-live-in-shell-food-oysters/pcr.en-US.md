@@ -291,9 +291,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`spat_collection_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_spat_collection_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -479,9 +479,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`algal_culture_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_algal_culture_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -614,6 +614,29 @@ Only actual separate sale with matched cohort and competence state; exclude from
   - Basis kind: reference_flow
   - Evidence kind: reasoned_estimate
 
+###### Water actually transferred to another owned node (`hatchery_internal_water_transfer`)
+
+Record only actual cross-node water transfers, paired to the receiver other_water_supply with identical state, mass, event and transfer id. This is neither environmental release nor independent sale and adds no second abstraction burden. Carrier water already included in algal feed uses the matched material-composition ledger, not a duplicate water exchange here.
+
+- Selected flow: Water actually transferred to another owned node
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- Amount rule: Collect actual node quantities with cp_hatchery_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
+- Value mode: calculated_value
+- Specificity: site_specific
+- Normalization basis: per 1 kg reference flow
+- Basis kind: reference_flow
+- Evidence kind: calculated_from_collection
+- Collection protocol: `cp_hatchery_mass`
+- Sources: `farmed-oyster-foreground-method`
+- Range: Provisional screening envelope, not default quantity or universal allowed limit
+  - Range role: qa_guardrail
+  - Lower: 0
+  - Upper: 10000
+  - Unit: kg
+  - Basis: per 1 kg reference flow
+  - Basis kind: reference_flow
+  - Evidence kind: reasoned_estimate
+
 ##### Elementary flows
 
 ###### Fossil carbon dioxide from actual direct combustion to unspecified air (`hatchery_fossil_co2`)
@@ -642,32 +665,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`hatchery_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
-- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
-- Amount rule: Collect actual node quantities with cp_hatchery_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
-- Value mode: calculated_value
-- Specificity: site_specific
-- Normalization basis: per 1 kg reference flow
-- Basis kind: reference_flow
-- Evidence kind: calculated_from_collection
-- Collection protocol: `cp_hatchery_mass`
-- Sources: `farmed-oyster-foreground-method`
-- Range: Provisional screening envelope, not default quantity or universal allowed limit
-  - Range role: qa_guardrail
-  - Lower: 0
-  - Upper: 10000
-  - Unit: kg
-  - Basis: per 1 kg reference flow
-  - Basis kind: reference_flow
-  - Evidence kind: reasoned_estimate
-
-###### Water actually transferred to another owned node (`hatchery_internal_water_transfer`)
-
-Record only actual cross-node water transfers, paired to the receiver other_water_supply with identical state, mass, event and transfer id. This is neither environmental release nor independent sale and adds no second abstraction burden. Carrier water already included in algal feed uses the matched material-composition ledger, not a duplicate water exchange here.
-
-- Selected flow: Water actually transferred to another owned node
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_hatchery_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -924,9 +924,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`settlement_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_settlement_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -1158,9 +1158,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`nursery_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_nursery_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -1318,13 +1318,13 @@ Record only actual cross-node water transfers, paired to the receiver other_wate
 
 ##### Waste flows
 
-###### Collected dead oysters and removed fouling to treatment (`growout_collected_mortality`)
+###### Collected dead oysters sent to treatment (`growout_collected_mortality`)
 
-Record only actual node exchanges with identity, state, origin/destination and measurement evidence; pair transfers by actual cohort/event.
+Only actual collected dead oysters leaving grow-out for documented treatment. Retain species, count, native shell/body wet mass, moisture, event and recipient; exclude removed biofouling, sediment, gear and separately removed liquid. Uncollected mortality is not collected waste. Establish this stream’s independent range or measurement-uncertainty evidence. A combined removed-waste total does not supply this amount; unknown separate mass or fate blocks completion, never a default or zero.
 
-- Selected flow: Collected dead oysters and removed fouling to treatment
+- Selected flow: Collected dead oysters sent to treatment
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
-- Amount rule: Collect actual node quantities with cp_growout_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
+- Amount rule: Independently measure collected dead-oyster wet kg under cp_growout_mass, then divide its unallocated physical quantity by matching positive final accepted net oyster kg. Count actual loss and treatment ownership once; do not copy a combined quantity or range.
 - Value mode: calculated_value
 - Specificity: site_specific
 - Normalization basis: per 1 kg reference flow
@@ -1332,14 +1332,21 @@ Record only actual node exchanges with identity, state, origin/destination and m
 - Evidence kind: calculated_from_collection
 - Collection protocol: `cp_growout_mass`
 - Sources: `farmed-oyster-foreground-method`
-- Range: Provisional screening envelope, not default quantity or universal allowed limit
-  - Range role: qa_guardrail
-  - Lower: 0
-  - Upper: 10000
-  - Unit: kg
-  - Basis: per 1 kg reference flow
-  - Basis kind: reference_flow
-  - Evidence kind: reasoned_estimate
+
+###### Removed grow-out biofouling sent to treatment (`growout_removed_biofouling`)
+
+Only an actual separately identified removed-biofouling waste stream exported to documented treatment. Record material/organism composition, wet mass, moisture, removal event and recipient; distinct physical streams or treatment routes require independent cards and quantities. Exclude dead oysters, loose sediment, gear and separately removed liquid. No UUID, numerical Range or quantity is inherited from mortality. If combined-removal records cannot establish the separate amounts, retain the evidence gap and block completion rather than inventing a split.
+
+- Selected flow: Removed grow-out biofouling sent to treatment
+- Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
+- Amount rule: Independently measure this removed-biofouling stream’s wet kg under cp_growout_mass, then divide its unallocated physical quantity by matching positive final accepted net oyster kg. Establish its own range or measurement-uncertainty evidence and reconcile actual treatment once.
+- Value mode: calculated_value
+- Specificity: site_specific
+- Normalization basis: per 1 kg reference flow
+- Basis kind: reference_flow
+- Evidence kind: calculated_from_collection
+- Collection protocol: `cp_growout_mass`
+- Sources: `farmed-oyster-foreground-method`
 
 ###### Actual wastewater or saline effluent exported to declared treatment (`growout_wastewater`)
 
@@ -1415,9 +1422,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`growout_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_growout_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -1626,9 +1633,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`harvest_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_harvest_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -1837,9 +1844,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`conditioning_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_conditioning_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -2117,9 +2124,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`grading_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_grading_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -2328,9 +2335,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`depuration_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_depuration_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -2585,9 +2592,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`live_holding_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_live_holding_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -2797,9 +2804,9 @@ Only actual fossil combustion with matching unspecified-air compartment; use mea
 
 ###### Water actually evaporated to air (`dispatch_water_evaporation`)
 
-Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or evidenced materially relevant evaporation mass, period and receiving air compartment, reconciling intake, supply, internal transfers, carriers and stocks. Never invent evaporation as a balancing plug or duplicate water vapour already recorded in another emission card.
 
-- Selected flow: Water actually evaporated to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_dispatch_mass; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: calculated_value
@@ -2844,7 +2851,7 @@ Record measured or evidenced materially relevant evaporation mass, period and re
 | `cp_settlement_energy` | `settlement` | actual node energy input | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps | Read node submeters and actual energy invoices, attributing common meters with equipment run logs; retain actual supply geography/voltage, convert kWh to MJ by verified 3.6, no duplicate own generation and purchased electricity. | MJ | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Owned settlement or remote setting node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
 | `cp_nursery_mass` | `nursery` | node material, organism, water, stock and emission mass | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps | Node owner measures each actual event with calibrated scales or matched weighed sampling and stock ledger; water uses actual-state density, emissions actual measured or declared factor evidence; reconcile source/destination transfers, suppliers and treatment receipts without duplicating shared events. | kg | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Owned oyster nursery node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
 | `cp_nursery_energy` | `nursery` | actual node energy input | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps | Read node submeters and actual energy invoices, attributing common meters with equipment run logs; retain actual supply geography/voltage, convert kWh to MJ by verified 3.6, no duplicate own generation and purchased electricity. | MJ | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Owned oyster nursery node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
-| `cp_growout_mass` | `growout` | node material, organism, water, stock and emission mass | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps | Node owner measures each actual event with calibrated scales or matched weighed sampling and stock ledger; water uses actual-state density, emissions actual measured or declared factor evidence; reconcile source/destination transfers, suppliers and treatment receipts without duplicating shared events. | kg | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Managed oyster grow-out node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
+| `cp_growout_mass` | `growout` | node material, organism, water, stock and emission mass | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps; separately measured dead-oyster wet mass/count and biofouling wet mass/composition/moisture; removal/treatment receipt ids; separation evidence and unresolved mixed-removal gaps | Node owner measures each actual event with calibrated scales or matched weighed sampling and stock ledger; water uses actual-state density, emissions actual measured or declared factor evidence; reconcile source/destination transfers, suppliers and treatment receipts without duplicating shared events. | kg | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Managed oyster grow-out node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
 | `cp_growout_energy` | `growout` | actual node energy input | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps | Read node submeters and actual energy invoices, attributing common meters with equipment run logs; retain actual supply geography/voltage, convert kWh to MJ by verified 3.6, no duplicate own generation and purchased electricity. | MJ | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Managed oyster grow-out node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
 | `cp_harvest_mass` | `harvest` | node material, organism, water, stock and emission mass | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps | Node owner measures each actual event with calibrated scales or matched weighed sampling and stock ledger; water uses actual-state density, emissions actual measured or declared factor evidence; reconcile source/destination transfers, suppliers and treatment receipts without duplicating shared events. | kg | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Independent harvest of managed oysters node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
 | `cp_harvest_energy` | `harvest` | actual node energy input | raw records and measurements with matched supplier evidence | cohort/batch; dates/period; event/asset/transfer ids; predecessor/successor; actual live stage/species/state; material/substance and origin/destination; gross/tare/net mass and external-cultch exclusion; count and representative mass sample; water volume/density/salinity and tank stock; meters and energy carrier; opening/closing animal/fuel/equipment stock; attribution share; carbon/emission-factor basis; error and gaps | Read node submeters and actual energy invoices, attributing common meters with equipment run logs; retain actual supply geography/voltage, convert kWh to MJ by verified 3.6, no duplicate own generation and purchased electricity. | MJ | each event/transfer/batch; meters continuous or complete run period | complete declared cohort cycle and reporting periods, with traceable cross-period stock and asset service | only Independent harvest of managed oysters node of declared operating unit, preserving actual waterbody/supply boundary | per 1 kg reference flow | scale/meter calibration, independent representative samples, batch routes/transfers, live acceptance and authorized release, stock/shared-event reconciliation, density/factor origin/error and gap disposition |
@@ -3027,7 +3034,7 @@ Record measured or evidenced materially relevant evaporation mass, period and re
 | `validate_transfers` | applicable nodes and complete foreground package | Pair every internal output/input at the same actual state, measured quantity and uncertainty. Exclude external cultch and free carrier water identically only for oyster biological net-mass interfaces. For wet algal-culture feed and other supplied materials preserve the same actual wet mass, dry matter, concentration and carrier basis at both ends, retaining carrier water in composition subledgers without a duplicate water exchange. Actual losses, flows and stocks explain differences. Match undersize/broodstock loops without accepted-sales attribution; shell-bearing stock is not constant mass during growth. Normalize only to positive accepted final live net mass; no-output/dead-crop periods retain documented burdens, never divide by zero or omit failed production. | `farmed-oyster-foreground-method` |
 | `validate_water` | applicable nodes and complete foreground package | Reconcile abstracted/supplied water, recirculation, carried feed/product water, evaporation, treatment exports, direct returns/discharges and tank stock changes by node. Record elemental nutrient/pollutant mass basis separately from bulk water, do not add both full wastewater and identical direct discharge or count each recirculation pass as new input. | `farmed-oyster-foreground-method` |
 | `validate_resources` | applicable nodes and complete foreground package | Reconcile each utility meter, fuel stock, invoice and asset/event owner across all node consumers/periods. Purchased service includes no second identical own fuel; own generation includes fuel and direct emissions once and no duplicate grid purchase. Only exact actual CN low-voltage consumption uses that fixed flow; only actual supplied treated water uses its fixed identity. | `farmed-oyster-foreground-method` |
-| `validate_ranges` | applicable nodes and complete foreground package | Every card has a Range. Provisional reasoned screening envelopes are not measured yields, default inventories or universal allowed limits; values outside prompt investigation, not replacement or automatic physical rejection. Establish empirical guardrails only with independent campaigns/samples and documented comparable state; the same batch maximum cannot validate its batch. Exact final 1 kg is reference normalization, not a biological yield. | `farmed-oyster-foreground-method` |
+| `validate_ranges` | applicable nodes and complete foreground package | Review supplied Ranges as provisional reasoned screening envelopes, not measured yields, default inventories or universal limits. Cards without numerical Ranges retain their own independent range or measurement-uncertainty collection duty; never copy a removed mixed-stream range to children. Final exchange completion requires independently supported actual quantity and range/uncertainty evidence for each stream. Numerical QA needs independent comparable campaigns/samples and documented actual state, not the tested batch maximum. Preserve genuine outliers; final 1 kg is normalization only. | `farmed-oyster-foreground-method` |
 | `validate_identities` | applicable nodes and complete foreground package | Resolve each concrete foreground exchange to its verified exact physical identity, property/unit and destination before downstream dataset publication; semantic umbrellas may generate zero/one/multiple actual exchanges, never one fabricated universal identity. Identity evidence never supplies emission factors, densities, shelf life or sanitation validity. | `farmed-oyster-foreground-method` |
 | `validate_credits` | applicable nodes and complete foreground package | Require actual losses/discharges/gear and site impact evidence with uncertainty; do not cancel them against general qualitative ecosystem benefits. No automatic negative shell-carbon, nutrient, waste or habitat credits. Check node-local protocol ownership, bilingual machine fields and current deterministic projection. | `farmed-oyster-foreground-method` |
 | `validate_inventory_completion` | all concrete exchanges and section 8 completion obligations | Verify each applicable dq_complete obligation has separately measured and identity-verified exchange cards. Check each quantity, native unit, range evidence, normalization, receiving medium, destination and non-duplication. Any unfulfilled actual child exchange, quantity, identity or destination makes the final dataset incomplete and fails validation; unknown cannot be zero. Static PCR checking does not replace this evidence. |  |

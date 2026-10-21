@@ -106,7 +106,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -120,7 +120,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -250,7 +250,7 @@ Actual target wild biomass removed from the marine environment, including target
 
 Measure only newly abstracted seawater crossing from environment at this owner; record actual contact/cleaning/cooling use. Recirculation and upstream transfers are excluded.
 
-- Selected flow: Actual direct seawater abstraction at capture
+- Selected flow: sea water `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_capture under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -304,7 +304,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -318,7 +318,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -440,9 +440,9 @@ Actual direct release to identified marine/freshwater/soil compartment; distingu
 
 ###### Evidenced water evaporation at capture (`capture_water_evaporation`)
 
-Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
 
-- Selected flow: Evidenced water evaporation at capture
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_capture under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -501,7 +501,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_condition`
 
@@ -515,7 +515,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_condition`
 
@@ -645,7 +645,7 @@ Expand the actual supplied freshwater/seawater/potable water identity and intend
 
 Measure only newly abstracted seawater crossing from environment at this owner; record actual contact/cleaning/cooling use. Recirculation and upstream transfers are excluded.
 
-- Selected flow: Actual direct seawater abstraction at condition
+- Selected flow: sea water `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_condition under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -699,7 +699,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_condition`
 
@@ -713,7 +713,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_condition`
 
@@ -857,9 +857,9 @@ Actual direct release to identified marine/freshwater/soil compartment; distingu
 
 ###### Evidenced water evaporation at condition (`condition_water_evaporation`)
 
-Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
 
-- Selected flow: Evidenced water evaporation at condition
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_condition under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -962,7 +962,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -976,7 +976,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -1106,7 +1106,7 @@ Expand the actual supplied freshwater/seawater/potable water identity and intend
 
 Measure only newly abstracted seawater crossing from environment at this owner; record actual contact/cleaning/cooling use. Recirculation and upstream transfers are excluded.
 
-- Selected flow: Actual direct seawater abstraction at grade
+- Selected flow: sea water `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_grade under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -1160,7 +1160,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -1174,7 +1174,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -1296,9 +1296,9 @@ Actual direct release to identified marine/freshwater/soil compartment; distingu
 
 ###### Evidenced water evaporation at grade (`grade_water_evaporation`)
 
-Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
 
-- Selected flow: Evidenced water evaporation at grade
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_grade under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -1401,7 +1401,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -1415,7 +1415,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -1568,7 +1568,7 @@ Actual purchased ice supplied for onboard or landing capture-fishery chilling, G
 
 Measure only newly abstracted seawater crossing from environment at this owner; record actual contact/cleaning/cooling use. Recirculation and upstream transfers are excluded.
 
-- Selected flow: Actual direct seawater abstraction at preserve
+- Selected flow: sea water `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_preserve under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -1622,7 +1622,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -1636,7 +1636,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -1736,9 +1736,9 @@ Actual direct release to identified marine/freshwater/soil compartment; distingu
 
 ###### Evidenced water evaporation at preserve (`preserve_water_evaporation`)
 
-Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
 
-- Selected flow: Evidenced water evaporation at preserve
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_preserve under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -1841,7 +1841,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_present`
 
@@ -1855,7 +1855,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_present`
 
@@ -1985,7 +1985,7 @@ Expand the actual supplied freshwater/seawater/potable water identity and intend
 
 Measure only newly abstracted seawater crossing from environment at this owner; record actual contact/cleaning/cooling use. Recirculation and upstream transfers are excluded.
 
-- Selected flow: Actual direct seawater abstraction at present
+- Selected flow: sea water `172a3db9-6556-11dd-ad8b-0800200c9a66`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_present under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -2039,7 +2039,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_present`
 
@@ -2053,7 +2053,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_present`
 
@@ -2153,9 +2153,9 @@ Actual direct release to identified marine/freshwater/soil compartment; distingu
 
 ###### Evidenced water evaporation at present (`present_water_evaporation`)
 
-Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Actual independently evidenced evaporation to air. Do not assign unexplained gutting/fish/water balance differences here; unknown loss is an unresolved ledger item.
 
-- Selected flow: Evidenced water evaporation at present
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: Measure actual role quantity under cp_present under the quantity method in this section and section 8: first close unallocated physical transfers, losses and stocks and own shared resources once, then divide by positive accepted final carcass kg; a separate single-output LCA view allocates burdens only once under section 7, retaining physical ledger and allocation matrix without multiplying mass partitions by economic shares.
 - Value mode: Calculated value (`calculated_value`)
@@ -2236,7 +2236,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover`
 
@@ -2250,7 +2250,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover`
 
@@ -2582,7 +2582,7 @@ Only actual independently owned fossil combustion at the gate with compatible un
 | validate_balance | actual physical records | Reconcile gutting mass partitions, water/ice fates, other species, stocks, wastes and sea returns in the unallocated ledger; pair receipts/outputs by same transfer id. Never close economically allocated amounts against unallocated whole fish or fill unexplained differences with evaporation. |  |
 | validate_technology | capture and handling events | Check actual parent, technology deltas, event coexistence/exclusion, cleaning/changeovers and repeated-pass ids. Actual trawl/net/hook inputs, bycatch, losses and habitat evidence require real coverage, not completion asserted from candidate routes. | noaa-atlantic-cod |
 | validate_attribution | LCA resources and periods | Independently check allocation matrix and unallocated physical view: own each resource once, shares at each boundary sum to 1, no second final share; missing revenue and no output do not erase burdens. Reconcile complete return, asset service, replacement and inclusive-service scope to avoid duplicates. |  |
-| validate_ranges | all cards and final package | Retain same-basis ranges on every card, but provisional estimates cannot prove actual value plausibility. After actual-substance expansion independently check quantity/unit and range applicability for each role; do not self-validate from the same batch maximum. Actual roles without quantity, support identity or real service functional-unit evidence remain gaps. |  |
+| validate_ranges | all cards and final package | Check supplied Ranges on the same actual numerator unit, final-reference basis and physical or LCA view. Provisional estimates do not prove plausibility or supply missing amounts. Cards without numerical Ranges retain an independent range/uncertainty evidence need, not a fabricated bound. Before actual exchange completion obtain each instance’s own representative evidence, quantity, identity and real service unit; before numerical QA establish the applicable independent envelope without using the tested batch to validate itself. Preserve and investigate genuine outliers without clipping. |  |
 | `validate_inventory_completion` | all concrete exchanges and section 8 completion obligations | Verify each applicable dq_complete obligation has separately measured and identity-verified exchange cards. Check each quantity, native unit, range evidence, normalization, receiving medium, destination and non-duplication. Any unfulfilled actual child exchange, quantity, identity or destination makes the final dataset incomplete and fails validation; unknown cannot be zero. Static PCR checking does not replace this evidence. |  |
 
 ## 10. Published Dataset Profile

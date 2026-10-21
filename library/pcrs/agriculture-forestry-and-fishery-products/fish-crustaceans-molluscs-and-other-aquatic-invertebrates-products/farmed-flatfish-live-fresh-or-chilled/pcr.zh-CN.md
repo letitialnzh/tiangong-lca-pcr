@@ -44,7 +44,7 @@ sync_with: pcr.en-US.md
 | 字段 | 值 |
 | --- | --- |
 | Reference amount | 1 |
-| Reference product flow | 送最终生产者门验收的活养殖食用整条比目鱼 |
+| Reference product flow | 首次生产者交付的实际状态养殖食用整条比目鱼 |
 | Reference flow property | 质量 `93a60a56-a3c8-11da-a746-0800200b9a66` |
 | Reference unit group | 质量单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` |
 | Reference unit | kg |

@@ -244,7 +244,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -258,7 +258,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -414,7 +414,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 
@@ -428,7 +428,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 
@@ -624,7 +624,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 
@@ -638,7 +638,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grading`
 
@@ -836,7 +836,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live_hold`
 
@@ -850,7 +850,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live_hold`
 
@@ -1046,7 +1046,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live_hold`
 
@@ -1060,7 +1060,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live_hold`
 
@@ -1300,7 +1300,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fresh_chill`
 
@@ -1314,7 +1314,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fresh_chill`
 
@@ -1554,7 +1554,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fresh_chill`
 
@@ -1568,7 +1568,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_fresh_chill`
 
@@ -1724,7 +1724,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -1738,7 +1738,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -1934,7 +1934,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -1948,7 +1948,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -1964,7 +1964,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -1978,7 +1978,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -2311,7 +2311,7 @@ Apply lot_attribution to every nonfinal row: retain raw collected values separat
 | `validate_balance` | all nodes | Check species/state-specific opening stock + receipts = accepted transfers + other intended outputs + actual losses/releases + closing stock, adjusted only for separately measured water or material changes. Pair internal transfers once and require nonnegative exchanges. A 1 kg final denominator does not fix upstream catch or live intake to 1 kg. | `wild-crab-foreground-method` |
 | `validate_technology` | capture | Reconcile gear deployed/retrieved/lost/recovered and bait charged/retrieved/consumed/remaining by deployment. Preserve observed ghost-fishing, entanglement, bottom contact and unknown fate outside mere mass totals. Confirm every claimed non-pot delta using actual method-specific effort, catch and impact records; no borrowed stock-status, sustainable-fishery or universal no-habitat-effect claim. | `wild-crab-foreground-method` |
 | `validate_hold_state` | live_hold; fresh_chill; presentation | Live survivors, eligible fresh diversions and nonqualifying mortality are disjoint. Fresh diversion requires separately documented actual death/handling history and lawful acceptance; unknown deaths remain a gap or reject. Check node activation, before/after states, lot time and bypass transfer equivalence. Neither zero-duration holding nor unobserved feed/gas/effluent may be inferred from missing logs. | `wild-crab-foreground-method` |
-| `validate_ranges` | all cards | Every nonfinal card carries a protocol-derived screening range 0 to its independent U_row in the same numerator unit per 1 kg reference flow. Establish U_row before assessing the target lot from a separate representative campaign or supplier envelope, with scope, sample size and uncertainty margin; if absent, record a range-evidence gap and do not call the row QA-cleared. These are not universal maxima, default inventory values or acceptance limits; outliers require investigation, never clipping. The final range 1 to 1 kg is the reference definition only. | `wild-crab-foreground-method` |
+| `validate_ranges` | all cards | For supplied nonfinal Ranges verify the same numerator unit per 1 kg reference flow and independent U_row evidence under reference_envelope. Cards without Ranges record an unresolved independent range-evidence need, not a claim that a protocol-derived interval already exists. Before numerical QA establish the instance envelope from a separate representative campaign or supplier evidence, retaining scope, sample size and uncertainty; absent evidence is a gap, never QA-cleared, a default quantity or zero. Preserve and investigate real outliers without clipping. Final 1..1 kg is reference normalization only. | `wild-crab-foreground-method` |
 | `validate_ownership` | all nodes | Check all intended outputs/handoffs, failed-trip burden, stock carryover, shared-node/period shares and packaging returns. One physical fuel, water, operating-service or asset event has one burden owner; upstream supplier burdens and actual direct releases cannot be omitted or duplicated. Check material and water ledgers separately from pollutant/species ledgers. | `wild-crab-foreground-method` |
 | `validate_binding` | all exchanges | Resolve each actual exchange to a separately confirmed concrete identity, property, unit and relevant geography/state/compartment before downstream process publication. Conditional umbrella cards may instantiate multiple actual substances/materials, never a fixed generic UUID. Exact fixed electricity/ice/CO2 cards apply only to their declared conditions; quantity factors require independent evidence. Identity and measurement validation do not certify food safety or fishery sustainability. | `wild-crab-foreground-method` |
 | `validate_secondary_bait` | capture_bait | Check prior system, recovery/supply handoffs, actual composition/state, inheritance/cut-off decision and duplicate burdens. Missing supplier evidence remains a gap; do not import experimental catch efficiency, sustainability assertions or negative-carbon credit. | `cerbule-secondary-bait-2023`; `wild-crab-foreground-method` |

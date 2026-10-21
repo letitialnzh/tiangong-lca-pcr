@@ -275,7 +275,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture_mass`
 
@@ -289,7 +289,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture_mass`
 
@@ -436,9 +436,9 @@ Specify actual marine/fresh receiving medium, destination, intake versus return 
 
 ###### Actual evidenced evaporative water to air (`capture_water_evaporation`)
 
-Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
 
-- Selected flow: Actual evidenced evaporative water to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: From actual raw records in cp_capture_mass, retain the unallocated physical receipts/transfers/stocks/fates, assign shared event/node/period ownership once and divide by positive final accepted native-body kg under section 8. Separately apply section 7 once to the labelled single-output LCA view; retain the physical ledger and allocation matrix.
 - Value mode: `calculated_value`
@@ -664,7 +664,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade_mass`
 
@@ -678,7 +678,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade_mass`
 
@@ -822,9 +822,9 @@ Specify actual marine/fresh receiving medium, destination, intake versus return 
 
 ###### Actual evidenced evaporative water to air (`grade_water_evaporation`)
 
-Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
 
-- Selected flow: Actual evidenced evaporative water to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: From actual raw records in cp_grade_mass, retain the unallocated physical receipts/transfers/stocks/fates, assign shared event/node/period ownership once and divide by positive final accepted native-body kg under section 8. Separately apply section 7 once to the labelled single-output LCA view; retain the physical ledger and allocation matrix.
 - Value mode: `calculated_value`
@@ -1072,7 +1072,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live_maintenance_mass`
 
@@ -1086,7 +1086,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_live_maintenance_mass`
 
@@ -1230,9 +1230,9 @@ Specify actual marine/fresh receiving medium, destination, intake versus return 
 
 ###### Actual evidenced evaporative water to air (`live_maintenance_water_evaporation`)
 
-Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
 
-- Selected flow: Actual evidenced evaporative water to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: From actual raw records in cp_live_maintenance_mass, retain the unallocated physical receipts/transfers/stocks/fates, assign shared event/node/period ownership once and divide by positive final accepted native-body kg under section 8. Separately apply section 7 once to the labelled single-output LCA view; retain the physical ledger and allocation matrix.
 - Value mode: `calculated_value`
@@ -1458,7 +1458,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation_mass`
 
@@ -1472,7 +1472,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation_mass`
 
@@ -1616,9 +1616,9 @@ Specify actual marine/fresh receiving medium, destination, intake versus return 
 
 ###### Actual evidenced evaporative water to air (`presentation_water_evaporation`)
 
-Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
 
-- Selected flow: Actual evidenced evaporative water to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: From actual raw records in cp_presentation_mass, retain the unallocated physical receipts/transfers/stocks/fates, assign shared event/node/period ownership once and divide by positive final accepted native-body kg under section 8. Separately apply section 7 once to the labelled single-output LCA view; retain the physical ledger and allocation matrix.
 - Value mode: `calculated_value`
@@ -1844,7 +1844,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover_mass`
 
@@ -1858,7 +1858,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover_mass`
 
@@ -2004,9 +2004,9 @@ Specify actual marine/fresh receiving medium, destination, intake versus return 
 
 ###### Actual evidenced evaporative water to air (`handover_water_evaporation`)
 
-Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Include only a measured or independently supported actual evaporation estimate with receiving air and uncertainty; not an arbitrary plug for missing water balance.
 
-- Selected flow: Actual evidenced evaporative water to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66` / kg
 - Amount rule: From actual raw records in cp_handover_mass, retain the unallocated physical receipts/transfers/stocks/fates, assign shared event/node/period ownership once and divide by positive final accepted native-body kg under section 8. Separately apply section 7 once to the labelled single-output LCA view; retain the physical ledger and allocation matrix.
 - Value mode: `calculated_value`

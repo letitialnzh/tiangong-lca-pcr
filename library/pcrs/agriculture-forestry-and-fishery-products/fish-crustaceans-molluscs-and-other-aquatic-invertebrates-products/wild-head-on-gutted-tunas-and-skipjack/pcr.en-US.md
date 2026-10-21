@@ -118,7 +118,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -143,7 +143,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -165,7 +165,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -190,7 +190,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -212,7 +212,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -235,7 +235,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -261,7 +261,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -283,7 +283,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_bait_supply_mass`
 
@@ -297,7 +297,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_bait_supply_mass`
 
@@ -309,9 +309,9 @@ Record only this material’s separately measured mass at the declared process h
 
 ###### Actual bait respiration carbon dioxide to air (`bait_supply_biogenic_co2`)
 
-Only actual bait-maintenance biogenic respiratory CO2 when measured or supported by a species/stage-specific model with parameters, period, independent validation and receiving medium. Not fossil fuel CO2 or assumed universal metabolism; actual other gas/water fates remain separately identified.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only actual bait-maintenance biogenic respiratory CO2 when measured or supported by a species/stage-specific model with parameters, period, independent validation and receiving medium. Not fossil fuel CO2 or assumed universal metabolism; actual other gas/water fates remain separately identified.
 
-- Selected flow: Actual bait respiration carbon dioxide to air
+- Selected flow: carbon dioxide (biogenic) `08a91e70-3ddc-11dd-9c15-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain actual quantity under cp_bait_supply_emissions, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; separate single-output LCA view applies section 7 attribution once, retaining original ledger/matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -321,7 +321,7 @@ Only actual bait-maintenance biogenic respiratory CO2 when measured or supported
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -344,7 +344,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -354,9 +354,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`bait_supply_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_bait_supply_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -366,7 +366,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_bait_supply_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -396,7 +396,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -421,7 +421,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -443,7 +443,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -468,7 +468,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -490,7 +490,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -513,7 +513,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -539,7 +539,7 @@ Actual target-species whole biomass taken under capture responsibility, includin
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -561,7 +561,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -583,7 +583,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture_mass`
 
@@ -597,7 +597,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture_mass`
 
@@ -617,7 +617,7 @@ Actual whole captured fish, live or dead as recorded, before own gutting; event/
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -643,7 +643,7 @@ Actual landed or onboard waste transfer to treatment, excluding products and rel
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -667,7 +667,7 @@ Actual dead target/non-target biomass released to identified water, disaggregate
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -690,7 +690,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -700,9 +700,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`capture_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_capture_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -712,7 +712,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_capture_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -742,7 +742,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -764,7 +764,7 @@ Paired receipt of the immediately preceding actual node: own whole catch or part
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -789,7 +789,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -811,7 +811,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -836,7 +836,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -858,7 +858,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -881,7 +881,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -907,7 +907,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -929,7 +929,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning_mass`
 
@@ -943,7 +943,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_conditioning_mass`
 
@@ -963,7 +963,7 @@ Actual prepared carcass retaining head and actual retained gills, drained as def
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1009,7 +1009,7 @@ Actual damaged/unacceptable fish sent to treatment, separate from organ removal 
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1033,7 +1033,7 @@ Only actual organ/blood discharge to nature, identified substance/material and m
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1056,7 +1056,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1066,9 +1066,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`conditioning_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_conditioning_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -1078,7 +1078,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_conditioning_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -1152,7 +1152,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1174,7 +1174,7 @@ Immediately preceding whole or head-on gutted fish with actual preparation and p
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1199,7 +1199,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -1221,7 +1221,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -1246,7 +1246,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -1268,7 +1268,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -1291,7 +1291,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1317,7 +1317,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -1339,7 +1339,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade_mass`
 
@@ -1353,7 +1353,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade_mass`
 
@@ -1373,7 +1373,7 @@ Actual accepted grade by species, whole/head-on-gutted form and handling status;
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1397,7 +1397,7 @@ Actual treatment-bound rejects only. Unresolved acceptance remains separately tr
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1422,7 +1422,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1432,9 +1432,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`grade_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_grade_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -1444,7 +1444,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_grade_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -1518,7 +1518,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1540,7 +1540,7 @@ Actual whole or gutted, pending/accepted grade, live/dead as recorded; this may 
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1565,7 +1565,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -1587,7 +1587,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -1612,7 +1612,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -1634,7 +1634,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -1657,7 +1657,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1683,7 +1683,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -1705,7 +1705,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_chill_mass`
 
@@ -1719,7 +1719,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_chill_mass`
 
@@ -1739,7 +1739,7 @@ Preserve the exact pre/post-gutting, grading and gill state and measured mass, t
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1763,7 +1763,7 @@ Only actual waste-destination fish, including storage mortality if live intermed
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1788,7 +1788,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1798,9 +1798,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`chill_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_chill_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -1810,7 +1810,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_chill_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -1884,7 +1884,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1906,7 +1906,7 @@ Actual paired pre-presentation product and its preparation, grade and chill stat
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -1931,7 +1931,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -1953,7 +1953,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -1978,7 +1978,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2000,7 +2000,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2023,7 +2023,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2049,7 +2049,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2071,7 +2071,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_present_mass`
 
@@ -2085,7 +2085,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_present_mass`
 
@@ -2105,7 +2105,7 @@ Measured fish-only mass with actual head/gut/gill, grade, chill status and trans
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2154,7 +2154,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2164,9 +2164,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`present_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_present_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -2176,7 +2176,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_present_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -2250,7 +2250,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2272,7 +2272,7 @@ Exact receipt from the last actual handling node after all required own conditio
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2297,7 +2297,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -2319,7 +2319,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -2344,7 +2344,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2366,7 +2366,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2389,7 +2389,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2415,7 +2415,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2437,7 +2437,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover_mass`
 
@@ -2451,7 +2451,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover_mass`
 
@@ -2467,7 +2467,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover_mass`
 
@@ -2481,7 +2481,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_handover_mass`
 
@@ -2525,7 +2525,7 @@ Only actual refused/failed fish or materials sent to waste with recipient; do no
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2550,7 +2550,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2560,9 +2560,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`handover_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_handover_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -2572,7 +2572,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_handover_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -2627,7 +2627,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_fad_service_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -2649,7 +2649,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_fad_service_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -2684,7 +2684,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_fad_service_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2714,7 +2714,7 @@ Only actual solid water ice received from another actual node, paired by ice sta
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2739,7 +2739,7 @@ Conditional identity: this binding applies only to actual purchased Chinese grid
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -2761,7 +2761,7 @@ Actual separately identified supplier/mix/voltage electricity only. Record onboa
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_energy`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: MJ
@@ -2786,7 +2786,7 @@ Conditional identity: only actual externally purchased treated industrial proces
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2808,7 +2808,7 @@ Actual external liquid-water supply at its treatment/source state, or paired int
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2831,7 +2831,7 @@ Only actual purchased water ice for capture/onboard or landing nonfreezing handl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2857,7 +2857,7 @@ Actual water directly abstracted by source and medium, excluding purchased suppl
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -2879,7 +2879,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_shared_resources_mass`
 
@@ -2893,7 +2893,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_shared_resources_mass`
 
@@ -2918,7 +2918,7 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_emissions`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -2928,9 +2928,9 @@ Only direct fossil CO2 from the node-owned actual fuel/combustion, to unspecifie
 
 ###### Evidenced water evaporation to air (`shared_resources_evaporation`)
 
-Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Only evidenced evaporated water for this node, with actual measurement or validated model. Do not use evaporation as an arbitrary mass-balance plug or equate all water use to consumption.
 
-- Selected flow: Evidenced water evaporation to air
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass / kg
 - Amount rule: Obtain this card's actual receipt, transfer, output, loss or resource quantity under cp_shared_resources_mass, retaining unallocated physical ledger and shared node/period resource ownership once; divide after physical closure by positive accepted final net kg; the separate single-output LCA view applies section 7 attribution once while retaining unallocated ledger and matrix.
 - Value mode: Calculated value (`calculated_value`)
@@ -2940,7 +2940,7 @@ Only evidenced evaporated water for this node, with actual measurement or valida
 - Evidence kind: Calculated from collection (`calculated_from_collection`)
 - Collection protocol: `cp_shared_resources_mass`
 - Range: Replaceable broad provisional screening estimate, not default amount or allowed limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg

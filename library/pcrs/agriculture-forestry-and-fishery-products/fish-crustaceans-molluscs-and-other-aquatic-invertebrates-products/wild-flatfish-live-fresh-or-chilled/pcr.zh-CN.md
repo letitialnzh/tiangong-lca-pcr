@@ -100,7 +100,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -114,7 +114,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -161,7 +161,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -175,7 +175,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -250,7 +250,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -264,7 +264,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -357,7 +357,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -371,7 +371,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grade`
 
@@ -452,9 +452,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际蒸发至已识别空气区室的水 (`grade_actual_water_evaporation`)
 
-仅实际有证据蒸发时记录，保留实测或模型质量、期间、接收空气及不确定性，并核对进水、转移、存量及其他水去向；不得无证据补平衡或重复水蒸气排放。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅实际有证据蒸发时记录，保留实测或模型质量、期间、接收空气及不确定性，并核对进水、转移、存量及其他水去向；不得无证据补平衡或重复水蒸气排放。
 
-- 选定流：实际蒸发至已识别空气区室的水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - 数量规则：依据 cp_grade 采集实际节点数量；按第 8 节两种视图规则先保留未分配物理转移、存量及去向，唯一归属共享资源，再以相匹配最终验收净千克归一化。共产品 LCA 分配另列且仅计一次。
 - 数值来源模式：计算值 `calculated_value`
@@ -491,7 +491,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -505,7 +505,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -668,7 +668,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -682,7 +682,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_preserve`
 
@@ -810,9 +810,9 @@ sync_with: pcr.en-US.md
 
 ###### 自有暂养与冷却实际蒸发的水 (`preserve_evaporated_water`)
 
-当蒸发对水平衡重要时，记录实测或有独立证据的蒸发；排除内部循环及无记录的补平衡数值。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。当蒸发对水平衡重要时，记录实测或有独立证据的蒸发；排除内部循环及无记录的补平衡数值。
 
-- 选定流：自有暂养与冷却实际蒸发的水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - 数量规则：依据 cp_preserve 采集实际节点数量；按第 8 节两种视图规则先保留未分配物理转移、存量及去向，唯一归属共享资源，再以相匹配最终验收净千克归一化。共产品 LCA 分配另列且仅计一次。
 - 数值来源模式：计算值 `calculated_value`
@@ -849,7 +849,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -863,7 +863,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -956,7 +956,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -970,7 +970,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -986,7 +986,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -1000,7 +1000,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -1106,9 +1106,9 @@ sync_with: pcr.en-US.md
 
 ###### 实际蒸发至已识别空气区室的水 (`presentation_actual_water_evaporation`)
 
-仅实际有证据蒸发时记录，保留实测或模型质量、期间、接收空气及不确定性，并核对进水、转移、存量及其他水去向；不得无证据补平衡或重复水蒸气排放。
+所绑定身份的排放子介质为未细分的空气。实际证据已明确更具体空气子介质时，须在数据集定稿前核实并选用对应身份。仅实际有证据蒸发时记录，保留实测或模型质量、期间、接收空气及不确定性，并核对进水、转移、存量及其他水去向；不得无证据补平衡或重复水蒸气排放。
 
-- 选定流：实际蒸发至已识别空气区室的水
+- 选定流：水蒸气 `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - 流属性/单位：质量 `93a60a56-a3c8-11da-a746-0800200b9a66`; 单位组 `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - 数量规则：依据 cp_presentation 采集实际节点数量；按第 8 节两种视图规则先保留未分配物理转移、存量及去向，唯一归属共享资源，再以相匹配最终验收净千克归一化。共产品 LCA 分配另列且仅计一次。
 - 数值来源模式：计算值 `calculated_value`

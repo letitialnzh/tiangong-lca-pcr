@@ -139,26 +139,18 @@ Record only actual use at this node outside complete-service coverage; this cond
 
 ###### Hatchery and nursery electricity (`hatchery_nursery_electricity`)
 
-This row covers electricity for pumps, aeration, oxygenation, filtration, lighting, chilling or heating, UV or other water treatment, live-feed culture, and individual-compartment systems.
+This card records only actual hatchery/nursery electricity owned by this node, outside any inclusive service. Retain metered kWh, the documented once-only attribution and the same positive accepted final-gate net animal mass Q. No numerical Range is supplied: collect independent representative range or measurement-uncertainty evidence in kWh per kg of that final reference; an unresolved quantitative evidence need cannot become a default, zero or a QA pass. Original per-1000-kg records convert by /1000 only for that same final Q, state and population; a stage-based intensity requires the independently measured stage output to recover its kWh numerator before division by Q.
 
 - Selected flow: Electricity
 - Flow property / unit: Energy / kWh
-- Amount rule: metered electricity or allocated electricity records for hatchery and nursery operations
+- Amount rule: Actual node-owned metered kWh, attributed once and divided by the same positive final-gate accepted net animal kg Q; preserve raw readings and original denominator evidence.
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_energy_and_fuel_records_broodstock_hatchery_nursery_and_stocking`
 - Sources: `nephrops-hatchery-handbook-2015`, `asc-farm-standard-2025`
-- Range: Provisional hatchery electricity screening estimate
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 20000
-  - Unit: kWh/1,000 kg marketable product
-  - Basis: broad first-pass on-site hatchery and nursery electricity relative to marketable output
-  - Basis kind: Process output (`process_output`)
-  - Evidence kind: Reasoned estimate (`reasoned_estimate`)
 
 ##### Waste flows
 

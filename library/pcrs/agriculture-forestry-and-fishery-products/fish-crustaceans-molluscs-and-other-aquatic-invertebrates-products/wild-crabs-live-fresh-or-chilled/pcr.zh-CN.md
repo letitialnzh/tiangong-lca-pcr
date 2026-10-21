@@ -244,7 +244,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -258,7 +258,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_capture`
 
@@ -414,7 +414,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grading`
 
@@ -428,7 +428,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grading`
 
@@ -624,7 +624,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grading`
 
@@ -638,7 +638,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_grading`
 
@@ -836,7 +836,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_live_hold`
 
@@ -850,7 +850,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_live_hold`
 
@@ -1046,7 +1046,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_live_hold`
 
@@ -1060,7 +1060,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_live_hold`
 
@@ -1300,7 +1300,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fresh_chill`
 
@@ -1314,7 +1314,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fresh_chill`
 
@@ -1554,7 +1554,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fresh_chill`
 
@@ -1568,7 +1568,7 @@ sync_with: pcr.en-US.md
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_fresh_chill`
 
@@ -1724,7 +1724,7 @@ pre_sort 整蟹产出带实际状态、物种、躯体状态、质量及时间�
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -1738,7 +1738,7 @@ pre_sort 整蟹产出带实际状态、物种、躯体状态、质量及时间�
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -1934,7 +1934,7 @@ pre_sort 整蟹产出带实际状态、物种、躯体状态、质量及时间�
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -1948,7 +1948,7 @@ pre_sort 整蟹产出带实际状态、物种、躯体状态、质量及时间�
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -1964,7 +1964,7 @@ pre_sort 整蟹产出带实际状态、物种、躯体状态、质量及时间�
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -1978,7 +1978,7 @@ pre_sort 整蟹产出带实际状态、物种、躯体状态、质量及时间�
 - 数值来源模式：前景记录（`foreground_record`）
 - 适用范围：场址特定（`site_specific`）
 - 归一化基准：每 1 kg 参考流
-- 基准类型：过程输出（`process_output`）
+- 基准类型：参考流（`reference_flow`）
 - 证据类型：采集记录（`collected_record`）
 - 采集协议：`cp_presentation`
 
@@ -2311,7 +2311,7 @@ pre_sort 整蟹产出带实际状态、物种、躯体状态、质量及时间�
 | `validate_balance` | all nodes | 按物种/状态检查期初库存 + 收货 = 合格转移 + 其他预期产出 + 实际损失/放流 + 期末库存，仅按独立测得水或材料变化调整。内部转移配对一次并要求交换非负。最终 1 kg 分母不把上游渔获或活体输入固定为 1 kg。 | `wild-crab-foreground-method` |
 | `validate_technology` | capture | 按投放核对渔具投放/回收/丢失/再回收及饵料投放/回收/消耗/剩余。观察到的幽灵捕捞、缠绕、底接触和未知归趋须在质量合计外保留。每项非笼壶差异须实际方法特定的强度、渔获和影响记录证实，不借用种群状态、可持续渔业或通用无栖境影响声明。 | `wild-crab-foreground-method` |
 | `validate_hold_state` | live_hold; fresh_chill; presentation | 活体存活、合格鲜品转流和不合格死亡互斥。鲜品转流须独立记录实际死亡/处理历史及适用接收证据；不明死亡仍为缺口或剔除。检查节点激活、前后状态、批次时间及旁路转移等价性。不从日志缺失推断零时长暂养或不存在饲料/供气/废水。 | `wild-crab-foreground-method` |
-| `validate_ranges` | all cards | 每一非最终卡带协议推导筛查范围：以相同分子单位、每 1 kg 参考流计为 0 到独立 U_row。评估目标批次前，从独立代表性调查期或供应者包络建立 U_row，记录范围、样本量及不确定度裕量；缺失则记录范围证据缺口，不称该行通过 QA。这些不是通用最大值、默认清单值或接收限值；越界须调查，不截断。最终 1 到 1 kg 范围仅为参考定义。 | `wild-crab-foreground-method` |
+| `validate_ranges` | all cards | 对已提供非最终范围，核对其每 1 kg 参考流的相同分子单位及 reference_envelope 下独立 U_row 证据。无范围的卡记录尚未解决的独立范围证据需求，不声称已有协议推导区间。数值 QA 前须从独立代表性调查期或供应方证据建立各实例包络，保留适用范围、样本量及不确定度；缺证据即为缺口，不得称 QA 通过或填默认量、零。真实越界值保留并调查，不截断。最终 1..1 kg 仅为参考归一化。 | `wild-crab-foreground-method` |
 | `validate_ownership` | all nodes | 检查全部预期产出/交接、失败航次负荷、库存结转、共享节点/期间份额及包装返还。每个物理燃料、水、带操作服务或资产事件只有唯一负荷归属；不得漏记或重复供应者上游负荷及实际直接排放。材料与水台账分别于污染物/物种台账检查。 | `wild-crab-foreground-method` |
 | `validate_binding` | all exchanges | 下游过程发布前，每项实际交换须分别确认具体身份、属性、单位及相关地域/状态/介质。有条件集合卡可实例化多个实际物质/材料，绝不固定为通用 UUID。固定电/冰/CO2 卡仅适用其声明条件，数量系数须独立证据。身份与计量校验不认证食品安全或渔业可持续性。 | `wild-crab-foreground-method` |
 | `validate_secondary_bait` | capture_bait | 核对原系统、回收/供应交接、实际配方/状态、继承或截断决定及重复负荷；没有供应证据时保留缺口，不采用实验捕获效率、可持续性断言或负碳信用。 | `cerbule-secondary-bait-2023`; `wild-crab-foreground-method` |

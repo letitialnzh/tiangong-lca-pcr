@@ -100,7 +100,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -114,7 +114,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -161,7 +161,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -175,7 +175,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_capture`
 
@@ -250,7 +250,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -264,7 +264,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -357,7 +357,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -371,7 +371,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_grade`
 
@@ -452,9 +452,9 @@ Measure bulk water separately from individually characterized pollutant constitu
 
 ###### Water actually evaporated to the identified air compartment (`grade_actual_water_evaporation`)
 
-Conditional evidenced evaporation only, with measured/modelled mass, period, receiving air and uncertainty; reconcile intake, transfers, stocks and other water fates. Not an unsupported balancing plug or a duplicate vapour emission.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Conditional evidenced evaporation only, with measured/modelled mass, period, receiving air and uncertainty; reconcile intake, transfers, stocks and other water fates. Not an unsupported balancing plug or a duplicate vapour emission.
 
-- Selected flow: Water actually evaporated to the identified air compartment
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_grade; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: Calculated value `calculated_value`
@@ -491,7 +491,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -505,7 +505,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -668,7 +668,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -682,7 +682,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_preserve`
 
@@ -810,9 +810,9 @@ Only preservation-owned shore fuel direct emissions; capture-owned onboard emiss
 
 ###### Water actually evaporated from owned holding and chilling (`preserve_evaporated_water`)
 
-Record measured or independently evidenced evaporation when material to water balance; exclude internal circulation and undocumented balancing plugs.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Record measured or independently evidenced evaporation when material to water balance; exclude internal circulation and undocumented balancing plugs.
 
-- Selected flow: Water actually evaporated from owned holding and chilling
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_preserve; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: Calculated value `calculated_value`
@@ -849,7 +849,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -863,7 +863,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -956,7 +956,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -970,7 +970,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -986,7 +986,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -1000,7 +1000,7 @@ Record only this material’s separately measured mass at the declared process h
 - Value mode: Foreground record (`foreground_record`)
 - Specificity: Site-specific (`site_specific`)
 - Normalization basis: per 1 kg reference flow
-- Basis kind: Process output (`process_output`)
+- Basis kind: Reference flow (`reference_flow`)
 - Evidence kind: Collected record (`collected_record`)
 - Collection protocol: `cp_presentation`
 
@@ -1106,9 +1106,9 @@ Only actual presentation_shore_fuel direct fossil combustion; do not duplicate c
 
 ###### Water actually evaporated to the identified air compartment (`presentation_actual_water_evaporation`)
 
-Conditional evidenced evaporation only, with measured/modelled mass, period, receiving air and uncertainty; reconcile intake, transfers, stocks and other water fates. Not an unsupported balancing plug or a duplicate vapour emission.
+The bound identity represents emissions to air, unspecified. Where actual evidence identifies a more specific air subcompartment, verify and select the corresponding identity before finalizing the dataset. Conditional evidenced evaporation only, with measured/modelled mass, period, receiving air and uncertainty; reconcile intake, transfers, stocks and other water fates. Not an unsupported balancing plug or a duplicate vapour emission.
 
-- Selected flow: Water actually evaporated to the identified air compartment
+- Selected flow: water vapour `fe0acd60-3ddc-11dd-ac04-0050c2490048`
 - Flow property / unit: Mass `93a60a56-a3c8-11da-a746-0800200b9a66`; unit group `93a60a57-a4c8-11da-a746-0800200c9a66` / kg
 - Amount rule: Collect actual node quantities with cp_presentation; under the section 8 two-view rule retain unallocated physical transfers, stocks and destinations, assign shared resources once, and normalize by matching accepted final net kg. Co-product LCA allocation is a separately labelled projection applied once.
 - Value mode: Calculated value `calculated_value`

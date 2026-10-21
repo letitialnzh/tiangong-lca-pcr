@@ -665,13 +665,13 @@ process_inventory:
     inputs:
       product:
         - row_id: product_transferred_to_controlled_delivery
-          role: "Actual-state farmed crab biomass at delivery completion"
-          name: "Actual-state farmed crab biomass at delivery completion"
+          role: "Actual-state farmed crab product loaded for controlled delivery"
+          name: "Actual-state farmed crab product loaded for controlled delivery"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          description: "This is the actual loading receipt from marketable_farmed_crabs_live_fresh_or_chilled, paired by lot, species, state, transfer ID and loading time. It precedes delivery losses and is neither arrival mass nor final accepted reference Q. Record carrier water, ice and packaging separately."
           amount:
-            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
+            expression: "Independently measure net animal mass actually loaded, matching the pack-out outgoing transfer; retain actual state, count and paired records. Divide that actual loading quantity by the same positive final-gate accepted net animal mass; never replace loading quantity by arrival mass, accepted output or fixed 1 kg."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -713,9 +713,9 @@ process_inventory:
           name: "Actual-state farmed crab biomass at delivery completion"
           flow_type: "product"
           property_unit: "Mass / kg"
-          description: "Collect only when the exchange actually occurs and is owned by this node. Resolve each supply, material and state separately and measure its own quantity; never copy a family total or range. Retain raw batch/stage records and apply calc_final_gate_normalization to the sole final-gate denominator; unknown is not zero."
+          description: "This is independently measured animal mass arriving after the actual included delivery. Reconcile loading, arrival, actual transit losses and any stocks once; pair the arrival transfer to qualified_product_gate_receipt. Final-gate rejection and accepted reference Q are determined separately, not assumed equal to arrival mass."
           amount:
-            expression: "Measure net animal mass for the same lot, species, actual life stage/product state and paired transfer ID, retaining counts, growth, losses and fates; normalize by sole final-gate accepted net mass and never fix an internal transfer to 1 kg."
+            expression: "Independently measure net animal mass actually arriving, retaining paired loading records, actual transit losses and destinations. Divide that actual arrival quantity by the same positive final-gate accepted net animal mass; never assume loading, arrival and accepted output are equal."
             value_mode: "foreground_record"
             specificity: "site_specific"
             basis:
@@ -1055,8 +1055,8 @@ dataset_production:
       process_id: "harvest_live_holding_chilling_and_packout"
       flow_role: "harvest-size product, marketable reference product, off-grade product, and product state"
       record_type: "harvest log, grading sheet, sales invoice, dispatch record, pack-out record"
-      raw_fields: "harvest date; culture unit; species; product state; whole or declared basis; grade; count; sex or maturity class; mass; destination ; raw collection basis and original aggregation obligations: reconcile harvested input, marketable output, off-grade product, rejects, holding losses, and reference product"
-      collection_method: "harvest weighing, grader records, live holding records, packhouse records, invoice"
+      raw_fields: "lot/species/actual state/product-form basis; harvest date and culture unit; independently weighed net harvested receipts; opening/closing pack-out stock; independently weighed net onward transfer and paired ID; off-grade product; mutually exclusive rejects/local mortalities/tissue losses and destinations; evidenced physical animal-mass change; gross/tare/free water/ice and drainage subledger; actual delivery/final-gate linkage"
+      collection_method: "Use calibrated, tared/drained weighing and matched harvest, stock, grading and pack-out handover records to reconcile the local animal ledger under reconcile_packout_mass; independently retain receiving/acceptance records under cp_final_gate_acceptance without replacing measured local output by final Q"
       unit: "kg and item"
       frequency: "each harvest, holding, or pack-out batch"
       temporal_coverage: "declared production batch, harvest lot, or reporting period"
@@ -1194,14 +1194,20 @@ dataset_production:
         - mass-balance-identity
     - id: reconcile_packout_mass
       applies_to: "harvest_live_holding_chilling_and_packout"
-      rule: "harvested_input_mass = reference_product_mass + offgrade_saleable_mass + reject_mass + measured holding, mortality, drainage, or cleaning loss on the same product-form basis."
+      rule: "harvested_input_mass + opening_packout_stock + evidenced_net_animal_mass_change = measured_packout_onward_mass + offgrade_saleable_mass + reject_mass + measured_local_animal_loss + closing_packout_stock, on the same declared animal/product-form basis. Measure measured_packout_onward_mass independently at the actual outgoing handling transfer; it is not final-gate accepted Q. Keep destinations mutually exclusive and count each local reject, mortality or tissue loss once. Evidence any physical animal-mass change separately. The signed net-change term covers only evidenced gain or decrease not already represented in another receipt, stock, output, reject or local-loss term; never count the same change in two terms. Unexplained imbalance is not a permitted adjustment. Track free water, ice, drainage and packaging in separate material ledgers, excluding them only from gross weighings that contain them. Reconcile subsequent delivery and final acceptance separately under their actual owners, then normalize each actual quantity by positive final accepted Q through calc_final_gate_normalization; never move a downstream loss into pack-out or assume the outgoing transfer equals Q."
       inputs:
         - harvested_input_mass
-        - reference_product_mass
+        - opening_packout_stock
+        - evidenced_net_animal_mass_change
+        - measured_packout_onward_mass
         - offgrade_mass
         - reject_mass
-        - holding_loss
-      output: "pack-out mass balance"
+        - measured_local_animal_loss
+        - closing_packout_stock
+        - cp_harvest_and_product_records_harvest_live_holding_chilling_and_packout
+        - cp_atomic_inventory_harvest_live_holding_chilling_and_packout
+        - cp_final_gate_acceptance
+      output: "independently reconciled local pack-out animal-mass balance and separate final-gate denominator"
       source_ids:
         - mass-balance-identity
     - id: calculate_packaging_and_ice_mass
@@ -1373,7 +1379,7 @@ validation_rules:
     source_ids: []
   - rule_id: val_crab_requirement_08
     applies_to: "foreground_dataset_conformance"
-    rule: "pack-out mass balance reconciles harvested input, reference product, saleable off-grade product, rejects, and holding, mortality, drainage, or cleaning losses;"
+    rule: "Reconcile local harvested receipts, opening/closing stock, independently measured pack-out onward animal mass, saleable off-grade product, rejects and actual local losses on the same product-form basis, with evidenced physical mass changes and no duplicated fate. Independently reconcile included delivery and final acceptance; their losses are not pack-out losses, and only positive final accepted net mass Q is the normalization denominator, not a presumed pack-out output."
     source_ids: []
   - rule_id: val_crab_requirement_09
     applies_to: "foreground_dataset_conformance"
@@ -1422,7 +1428,7 @@ data_sources:
     used_for: "Allocation hierarchy explicitly adopted by this PCR: subdivision, causal physical and economic relationships; no aquaculture performance, actual share or non-GHG impact-assessment conclusion"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:564947ac5341e086a356e311efaa54afcf07591aad7bed4103c9c6544b02be8f"
+  source_sha256: "sha256:f9dcded8d759e1662a840c3be1748586b17e0f8d62904848269f4782a4b0e5de"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_10091"
@@ -1473,15 +1479,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_49754"
+    - unit_id: "normative_49866"
       family: "allocation"
       span:
         start:
-          offset: 49754
+          offset: 49866
           line: 637
           column: 1
         end:
-          offset: 51773
+          offset: 51885
           line: 647
           column: 1
       markdown: "## 7. Allocation and Co-product Handling\n\nAvoid allocation where batch records can partition burdens by species, hatchery batch, nursery unit, grow-out unit, fattening unit, harvest lot, size grade, sex or maturity class, product form, live/fresh/chilled state, or destination. Separate live, fresh, chilled, soft-shell, fattened, off-grade, and delivery products by measured mass before applying allocation.\n\nWhen a single foreground batch produces several saleable grades within CPC 04312, first subdivide directly attributable activities. Allocate remaining common burdens by a documented causal physical relationship; product mass is usable only when that relation is supported. Otherwise use comparable actual gate revenue with disclosed price period and sensitivity, or retain unresolved allocation when neither relationship is evidenced. Shells, molts, mortalities, wastewater, sludge, feed residue, packaging rejects, and dead product are waste or treatment outputs unless they are sold with a separate product dataset and reference flow.\n\nIf the same site grows multiple species or products in the same pond, pen, cage, box, RAS, tank, vehicle, vessel, or packhouse route, allocate shared energy, water, feed preparation, oxygenation, filtration, labour service, and maintenance records by measured subprocess use, culture unit, biomass-time, area-time, or product mass in that order of preference. The selected allocation basis must be disclosed.\n\nThis PCR explicitly adopts the allocation hierarchy in GHG Protocol Product Standard chapter 9: subdivision first, then evidenced causal physical relationships, and evidenced economic relationships where physical relationships are inapplicable. Mass is not an automatic convenience default. Preserve unallocated physical quantities and a separately labelled once-only LCA view; reconcile all output/node shares to one. Allocation never repairs physical imbalance, and internal transfers create no sale or substitution credit. Source: `ghg-product-allocation`.\n\n"
@@ -1501,11 +1507,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 49754
+              offset: 49866
               line: 637
               column: 1
             end:
-              offset: 49794
+              offset: 49906
               line: 637
               column: 41
           text: "## 7. Allocation and Co-product Handling"
@@ -1521,18 +1527,18 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_123513"
+    - unit_id: "normative_125323"
       family: "validation"
       span:
         start:
-          offset: 123513
+          offset: 125323
           line: 724
           column: 1
         end:
-          offset: 125989
+          offset: 128115
           line: 741
           column: 1
-      markdown: "## 9. Validation Rules\n\n\n\n| Rule id | Severity | Rule |\n| --- | --- | --- |\n| `val_crab_requirement_01` | error | the reference product is normalized to 1 kg farmed crab in a declared live, fresh, or chilled product form; |\n| `val_crab_requirement_02` | error | species, biological starting condition, farmed production evidence, culture system, product state, product form, size grade, geography, declared gate, holding duration, and packaging state are declared; |\n| `val_crab_requirement_03` | error | the dataset distinguishes farmed grow-out, nursery, or fattening from wild catch and does not use this PCR for wild capture followed only by storage, live holding, chilling, grading, or dispatch; |\n| `val_crab_requirement_04` | error | broodstock, larval, megalopa, juvenile, seed crab, stocked crab, feed, controlled water, energy, fuel, health treatment or chemical use, mortality, molt or residue, harvest, pack-out, packaging, and delivery where relevant are either present or explicitly marked not applicable with a reason; |\n| `val_crab_requirement_05` | error | count, basket, box, tank, tub, or size-grade records include actual net mass, count per kg or mean mass, stage, product form, tare where relevant, and sampling method; |\n| `val_crab_requirement_06` | error | water rows distinguish controlled water intake, exchange, recirculation, oxygenation, salinity, discharge, and live holding water; |\n| `val_crab_requirement_07` | error | feed records distinguish formulated feed, trash fish, mollusc feed, live feed, wet basis, dry basis, and as-fed basis; |\n| `val_crab_requirement_08` | error | pack-out mass balance reconciles harvested input, reference product, saleable off-grade product, rejects, and holding, mortality, drainage, or cleaning losses; |\n| `val_crab_requirement_09` | error | same-site multi-species, shared-pond, shared-pen, shared-cage, shared-box, shared-RAS, shared-packhouse, or multi-grade allocation is documented before the dataset is used as a background or secondary dataset. |\n| `val_final_gate_completion` | error | Check sole declared_gate_release reference output 1 kg, positive final accepted net-kg denominator, actual included/bypassed delivery and every independently measured internal transfer, rejection and loss. Verify all dq_complete actual child exchanges, native units, normalization, independent Range evidence, UUIDs, fates and non-duplication; any gap makes the final dataset incomplete and fails validation. |\n\n"
+      markdown: "## 9. Validation Rules\n\n\n\n| Rule id | Severity | Rule |\n| --- | --- | --- |\n| `val_crab_requirement_01` | error | the reference product is normalized to 1 kg farmed crab in a declared live, fresh, or chilled product form; |\n| `val_crab_requirement_02` | error | species, biological starting condition, farmed production evidence, culture system, product state, product form, size grade, geography, declared gate, holding duration, and packaging state are declared; |\n| `val_crab_requirement_03` | error | the dataset distinguishes farmed grow-out, nursery, or fattening from wild catch and does not use this PCR for wild capture followed only by storage, live holding, chilling, grading, or dispatch; |\n| `val_crab_requirement_04` | error | broodstock, larval, megalopa, juvenile, seed crab, stocked crab, feed, controlled water, energy, fuel, health treatment or chemical use, mortality, molt or residue, harvest, pack-out, packaging, and delivery where relevant are either present or explicitly marked not applicable with a reason; |\n| `val_crab_requirement_05` | error | count, basket, box, tank, tub, or size-grade records include actual net mass, count per kg or mean mass, stage, product form, tare where relevant, and sampling method; |\n| `val_crab_requirement_06` | error | water rows distinguish controlled water intake, exchange, recirculation, oxygenation, salinity, discharge, and live holding water; |\n| `val_crab_requirement_07` | error | feed records distinguish formulated feed, trash fish, mollusc feed, live feed, wet basis, dry basis, and as-fed basis; |\n| `val_crab_requirement_08` | error | Reconcile local harvested receipts, opening/closing stock, independently measured pack-out onward animal mass, saleable off-grade product, rejects and actual local losses on the same product-form basis, with evidenced physical mass changes and no duplicated fate. Independently reconcile included delivery and final acceptance; their losses are not pack-out losses, and only positive final accepted net mass Q is the normalization denominator, not a presumed pack-out output. |\n| `val_crab_requirement_09` | error | same-site multi-species, shared-pond, shared-pen, shared-cage, shared-box, shared-RAS, shared-packhouse, or multi-grade allocation is documented before the dataset is used as a background or secondary dataset. |\n| `val_final_gate_completion` | error | Check sole declared_gate_release reference output 1 kg, positive final accepted net-kg denominator, actual included/bypassed delivery and every independently measured internal transfer, rejection and loss. Verify all dq_complete actual child exchanges, native units, normalization, independent Range evidence, UUIDs, fates and non-duplication; any gap makes the final dataset incomplete and fails validation. |\n\n"
       headings:
         - kind: "heading"
           span:
@@ -1549,11 +1555,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 123513
+              offset: 125323
               line: 724
               column: 1
             end:
-              offset: 123535
+              offset: 125345
               line: 724
               column: 23
           text: "## 9. Validation Rules"
@@ -1638,183 +1644,183 @@ normative_context:
     - pointer: "/allocation_rules/0"
       rule_id: "allocation_rule_1"
       identity_kind: "snapshot_local"
-      unit_id: "normative_49754"
+      unit_id: "normative_49866"
       source_span:
         start:
-          offset: 49796
+          offset: 49908
           line: 639
           column: 1
         end:
-          offset: 50162
+          offset: 50274
           line: 639
           column: 367
     - pointer: "/allocation_rules/1"
       rule_id: "allocation_rule_2"
       identity_kind: "snapshot_local"
-      unit_id: "normative_49754"
+      unit_id: "normative_49866"
       source_span:
         start:
-          offset: 50164
+          offset: 50276
           line: 641
           column: 1
         end:
-          offset: 50800
+          offset: 50912
           line: 641
           column: 637
     - pointer: "/allocation_rules/2"
       rule_id: "allocation_rule_3"
       identity_kind: "snapshot_local"
-      unit_id: "normative_49754"
+      unit_id: "normative_49866"
       source_span:
         start:
-          offset: 50802
+          offset: 50914
           line: 643
           column: 1
         end:
-          offset: 51210
+          offset: 51322
           line: 643
           column: 409
     - pointer: "/allocation_rules/3"
       rule_id: "allocation_rule_4"
       identity_kind: "snapshot_local"
-      unit_id: "normative_49754"
+      unit_id: "normative_49866"
       source_span:
         start:
-          offset: 51212
+          offset: 51324
           line: 645
           column: 1
         end:
-          offset: 51771
+          offset: 51883
           line: 645
           column: 560
     - pointer: "/validation_rules/0"
       rule_id: "val_crab_requirement_01"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 123589
+          offset: 125399
           line: 730
           column: 1
         end:
-          offset: 123736
+          offset: 125546
           line: 730
           column: 148
     - pointer: "/validation_rules/1"
       rule_id: "val_crab_requirement_02"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 123737
+          offset: 125547
           line: 731
           column: 1
         end:
-          offset: 123979
+          offset: 125789
           line: 731
           column: 243
     - pointer: "/validation_rules/2"
       rule_id: "val_crab_requirement_03"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 123980
+          offset: 125790
           line: 732
           column: 1
         end:
-          offset: 124215
+          offset: 126025
           line: 732
           column: 236
     - pointer: "/validation_rules/3"
       rule_id: "val_crab_requirement_04"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 124216
+          offset: 126026
           line: 733
           column: 1
         end:
-          offset: 124548
+          offset: 126358
           line: 733
           column: 333
     - pointer: "/validation_rules/4"
       rule_id: "val_crab_requirement_05"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 124549
+          offset: 126359
           line: 734
           column: 1
         end:
-          offset: 124756
+          offset: 126566
           line: 734
           column: 208
     - pointer: "/validation_rules/5"
       rule_id: "val_crab_requirement_06"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 124757
+          offset: 126567
           line: 735
           column: 1
         end:
-          offset: 124927
+          offset: 126737
           line: 735
           column: 171
     - pointer: "/validation_rules/6"
       rule_id: "val_crab_requirement_07"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 124928
+          offset: 126738
           line: 736
           column: 1
         end:
-          offset: 125086
+          offset: 126896
           line: 736
           column: 159
     - pointer: "/validation_rules/7"
       rule_id: "val_crab_requirement_08"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 125087
+          offset: 126897
           line: 737
           column: 1
         end:
-          offset: 125286
+          offset: 127412
           line: 737
-          column: 200
+          column: 516
     - pointer: "/validation_rules/8"
       rule_id: "val_crab_requirement_09"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 125287
+          offset: 127413
           line: 738
           column: 1
         end:
-          offset: 125536
+          offset: 127662
           line: 738
           column: 250
     - pointer: "/validation_rules/9"
       rule_id: "val_final_gate_completion"
       identity_kind: "explicit"
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 125537
+          offset: 127663
           line: 739
           column: 1
         end:
-          offset: 125987
+          offset: 128113
           line: 739
           column: 451
   diagnostics:
@@ -1844,26 +1850,26 @@ normative_context:
           column: 380
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_49754"
+      unit_id: "normative_49866"
       source_span:
         start:
-          offset: 49754
+          offset: 49866
           line: 637
           column: 1
         end:
-          offset: 49794
+          offset: 49906
           line: 637
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_123513"
+      unit_id: "normative_125323"
       source_span:
         start:
-          offset: 123513
+          offset: 125323
           line: 724
           column: 1
         end:
-          offset: 123535
+          offset: 125345
           line: 724
           column: 23
 projection_metadata:
@@ -1873,5 +1879,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:564947ac5341e086a356e311efaa54afcf07591aad7bed4103c9c6544b02be8f"
-  generated_content_sha256: "sha256:9a4650db41359cf395b084db7d16a90fa0b03753083c97558a391e038e78dcb0"
+    sha256: "sha256:f9dcded8d759e1662a840c3be1748586b17e0f8d62904848269f4782a4b0e5de"
+  generated_content_sha256: "sha256:0ad9a4964564cf21fd1be6af942a9c27eab8d60d4da144b82eff5b483e607e22"

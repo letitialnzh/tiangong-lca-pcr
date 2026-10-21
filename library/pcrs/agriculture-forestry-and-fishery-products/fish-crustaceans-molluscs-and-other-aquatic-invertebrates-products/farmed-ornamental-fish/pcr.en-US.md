@@ -119,7 +119,7 @@ Conditional actual return paired to conditioning_returns, with origin cohort/sta
 - Collection protocol: `cp_stock_managed_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -142,7 +142,7 @@ Conditional purchased juveniles: record species/stage, supplier, receipt mass/co
 - Collection protocol: `cp_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10
   - Unit: kg
@@ -165,7 +165,7 @@ Conditional external breeder introduction/replacement: document breeder origin, 
 - Collection protocol: `cp_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10
   - Unit: kg
@@ -189,7 +189,7 @@ Record supplier and actual untreated/municipal/treated process-quality water sep
 - Sources: `uf-ifas-ras-fa099`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: kg
@@ -213,7 +213,7 @@ Meter pumping, aeration, filtration, lighting, heating and cleaning including id
 - Sources: `uf-ifas-ras-fa099`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kWh
@@ -236,7 +236,7 @@ Conditional externally supplied heat, measured at the user boundary with supplie
 - Collection protocol: `cp_energy_managed_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: MJ
@@ -267,7 +267,7 @@ Measured actual sale-bound stock removed for harvest; retained breeders and unha
 - Collection protocol: `cp_stock_managed_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -292,7 +292,7 @@ Record measured dead/euthanized biomass, diagnosis/event where available and act
 - Collection protocol: `cp_waste_managed_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -315,7 +315,7 @@ Conditional wastewater delivered to an actual on-site/off-site treatment boundar
 - Collection protocol: `cp_water_managed_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: kg
@@ -338,7 +338,7 @@ Measure filter backwash/sludge/pond-cleaning solids with moisture and destinatio
 - Collection protocol: `cp_waste_managed_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kg
@@ -363,7 +363,7 @@ Conditional actual direct environmental water return, with source/receiving comp
 - Collection protocol: `cp_water_managed_rearing`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: kg
@@ -392,7 +392,7 @@ Match actual stock withdrawal to market_ready_stock and the originating circuit/
 - Collection protocol: `cp_stock_farm_harvest`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -415,7 +415,7 @@ Record pump-down, aeration and electric on-farm transport only where operated; s
 - Collection protocol: `cp_energy_farm_harvest`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kWh
@@ -439,7 +439,7 @@ External supplier water newly entering this node only; pond/tank water reused fo
 - Sources: `uf-ifas-onfarm-transport-fa119`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -462,7 +462,7 @@ Conditional actual oxygen dosing; record gaseous supply form, purity/provider an
 - Collection protocol: `cp_materials_farm_harvest`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -493,7 +493,7 @@ Measured viable fish arriving after removal and on-farm transport; fish returned
 - Collection protocol: `cp_stock_farm_harvest`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -518,7 +518,7 @@ Measure handling/transfer losses and disposal; alive unmarketable fish are not a
 - Collection protocol: `cp_waste_farm_harvest`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -541,7 +541,7 @@ Conditional actual treatment route; distinguish pump-down pond drainage, carrier
 - Collection protocol: `cp_water_farm_harvest`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: kg
@@ -566,7 +566,7 @@ Conditional direct drainage/release with source, volume/mass and receiving mediu
 - Collection protocol: `cp_water_farm_harvest`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: kg
@@ -595,7 +595,7 @@ Conditional external heat at actual holding user boundary, metered MJ and docume
 - Collection protocol: `cp_energy_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100000
   - Unit: MJ
@@ -618,7 +618,7 @@ Match harvested_live_lot mass/count, timing, water and surviving grade at receip
 - Collection protocol: `cp_stock_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -641,7 +641,7 @@ New external supply only, separately identified by provider and water-quality st
 - Collection protocol: `cp_water_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -664,7 +664,7 @@ Meter holding pumps/aeration, handling, thermal control and cleaning through the
 - Collection protocol: `cp_energy_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kWh
@@ -687,7 +687,7 @@ Conditional oxygen addition, exact supply form/provider and measured kg. No oxyg
 - Collection protocol: `cp_materials_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -718,7 +718,7 @@ Record actual accepted grade and viable net mass after holding/grading, passed t
 - Collection protocol: `cp_stock_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -741,7 +741,7 @@ Actual viable under-size/retained breeders returned to origin circuit/cohort; pa
 - Collection protocol: `cp_stock_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -766,7 +766,7 @@ Measure deaths and actual cull disposal, retaining cause/destination evidence. K
 - Collection protocol: `cp_waste_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -789,7 +789,7 @@ Actual treatment handoff, measured composition/quantity; direct release uses env
 - Collection protocol: `cp_water_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -814,7 +814,7 @@ Conditional direct environmental return; measure water mass, receiving compartme
 - Collection protocol: `cp_water_live_conditioning`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -843,7 +843,7 @@ Match graded_live_stock and lot/grade records. The actual mass may exceed final 
 - Collection protocol: `cp_stock_farm_dispatch`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -866,7 +866,7 @@ Actual newly supplied carrier/cleaning water at dispatch; internally transferred
 - Collection protocol: `cp_water_farm_dispatch`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -889,7 +889,7 @@ Conditional measured oxygen filling with verified supply form/purity/provider; k
 - Collection protocol: `cp_materials_farm_dispatch`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -912,7 +912,7 @@ Conditional filling/sealing/thermal/cleaning electricity from actual equipment; 
 - Collection protocol: `cp_energy_farm_dispatch`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 1000
   - Unit: kWh
@@ -971,7 +971,7 @@ Actual pre-gate mortality/culls, measured net biomass and disposal. Destination 
 - Collection protocol: `cp_waste_farm_dispatch`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 100
   - Unit: kg
@@ -994,7 +994,7 @@ Actual wash/filling overflow to treatment, excluding carrier water shipped to bu
 - Collection protocol: `cp_water_farm_dispatch`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg
@@ -1019,7 +1019,7 @@ Conditional actual direct environmental release; separately record mass and actu
 - Collection protocol: `cp_water_farm_dispatch`
 
 - Range: Replaceable provisional screening estimate; not empirical or compliance limit
-  - Range role: Default estimate (`default_estimate`)
+  - Range role: QA guardrail (`qa_guardrail`)
   - Lower: 0
   - Upper: 10000
   - Unit: kg

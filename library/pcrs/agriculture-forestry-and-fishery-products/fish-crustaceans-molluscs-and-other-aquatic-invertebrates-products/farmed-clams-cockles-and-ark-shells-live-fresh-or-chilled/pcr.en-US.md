@@ -270,7 +270,7 @@ Use this card only for an actual controlled discharge to freshwater. Never subst
 
 Use this card only for an actual controlled discharge to sea water. Never substitute a freshwater identity for sea water or another medium. Retain monitoring interval, flow, concentration/elemental basis, influent background and material-origin evidence; do not automatically attribute an environmental water body’s pre-existing load to farming. Do not count the same mass again through individually inventoried constituents. Report net retention/removal and closure residuals separately, not as negative emissions or avoided burdens; unmetered open-water diffuse pathways need independent model evidence.
 
-- Selected flow: Total nitrogen (excluding N2), emissions to sea water
+- Selected flow: nitrogen, total (excluding N2) `01b3863d-e1f8-4396-b9e0-7b2fdf812735`
 - Flow property / unit: Mass / kg
 - Amount rule: Calculate the gross monitored indicator load by matched discharge volume and representative concentration over each interval, retaining unit conversion and origin attribution, then normalize to accepted final reference-product mass; never infer it directly from a net N/P-balance residual.
 - Value mode: Calculated value (`calculated_value`)
@@ -282,9 +282,9 @@ Use this card only for an actual controlled discharge to sea water. Never substi
 
 ###### Gross total phosphorus discharged to sea water (`nutrient_p_marine_discharge`)
 
-Use this card only for an actual controlled discharge to sea water. Never substitute a freshwater identity for sea water or another medium. Retain monitoring interval, flow, concentration/elemental basis, influent background and material-origin evidence; do not automatically attribute an environmental water body’s pre-existing load to farming. Do not count the same mass again through individually inventoried constituents. Report net retention/removal and closure residuals separately, not as negative emissions or avoided burdens; unmetered open-water diffuse pathways need independent model evidence.
+The platform supplies no official Chinese name for this identity; the Chinese rendering retains the canonical English name. Use this card only for an actual controlled discharge to sea water. Never substitute a freshwater identity for sea water or another medium. Retain monitoring interval, flow, concentration/elemental basis, influent background and material-origin evidence; do not automatically attribute an environmental water body’s pre-existing load to farming. Do not count the same mass again through individually inventoried constituents. Report net retention/removal and closure residuals separately, not as negative emissions or avoided burdens; unmetered open-water diffuse pathways need independent model evidence.
 
-- Selected flow: Total phosphorus, emissions to sea water
+- Selected flow: phosphorus, total `b92ed4fa-4e30-4cec-9e48-cef7e6fd4aa6`
 - Flow property / unit: Mass / kg
 - Amount rule: Calculate the gross monitored indicator load by matched discharge volume and representative concentration over each interval, retaining unit conversion and origin attribution, then normalize to accepted final reference-product mass; never infer it directly from a net N/P-balance residual.
 - Value mode: Calculated value (`calculated_value`)

@@ -138,24 +138,18 @@ sync_with: pcr.en-US.md
 
 ###### 孵化和育苗电力（`hatchery_nursery_electricity`）
 
+本卡仅记录本节点实际发生且未包含于完整外购服务的育苗／中间培育用电。保留计量 kWh、唯一分摊依据和同一实际最终门验收净动物质量 Q（正值）。本卡不提供数值范围：须独立采集代表性范围或计量不确定度证据，并以该最终参考产品每 kg 的 kWh 表达；未解决的定量证据需求不能变成默认值、零或 QA 通过。原始每 1,000 kg 记录只有对应同一最终 Q、状态及群体时才能除以 1000；阶段强度必须用独立实测阶段产量还原 kWh 分子，再除以 Q。
+
 - 选定流：电力
 - 流属性/单位： Energy / kWh
-- 数量规则： 孵化和育苗作业的实测或分摊电力记录
+- 数量规则：本节点实际计量 kWh，经唯一归属后除以同一最终门验收净动物质量 Q（正值，kg）；保留原始读数及原分母证据。
 - 数值来源模式： Foreground record (`foreground_record`)
 - 适用范围： Site-specific (`site_specific`)
 - 归一化基准：每 1 kg 参考流
-- 基准类型： Process output (`process_output`)
+- 基准类型：参考流（`reference_flow`）
 - 证据类型： Collected record (`collected_record`)
 - 采集协议： `cp_energy_and_fuel_records_broodstock_hatchery_nursery_and_stocking`
 - 来源： `dtu-european-lobster-larvae-2023`, `asc-farm-standard-2025`
-- 数量范围： 暂定孵化电力筛查估算
-  - Range role: Default estimate (`default_estimate`)
-  - Lower: 0
-  - Upper: 20000
-  - Unit: kWh/1,000 kg marketable product
-  - Basis: 现场孵化和育苗电力相对于可销售输出的宽泛首轮估算
-  - 基准类型： Process output (`process_output`)
-  - 证据类型： Reasoned estimate (`reasoned_estimate`)
 
 ##### 废物流
 

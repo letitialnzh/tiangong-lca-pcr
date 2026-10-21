@@ -1087,8 +1087,8 @@ dataset_production:
       process_id: "utilities"
       flow_role: "substance and gas releases"
       record_type: "sampling and mass balance"
-      raw_fields: "substance; species_basis; medium; source_stage_event_id; loop; final_outfall_id; sample_time; raw_concentration_unit; concentration; background; raw_flow_unit; flow; duration; lab_method; detection_limit; quantification_limit; fuel_carbon; factor; oxidation; refrigerant_stocks"
-      collection_method: "Use paired concentration/flow/time, upstream background, QA and documented unit/species conversions; actual carbon balance or sourced equipment factors for combustion; named refrigerant balance; per 1 kg reference flow; integrate actual substance mass and attribute once; uncertainty and nondetects disclosed; protocol owning process: utilities; retain actual source-stage, event, consumer and period links; records owned here are attributed once."
+      raw_fields: "substance; species_basis; medium; source_stage_event_id; loop; final_outfall_id; sample_time; raw_concentration_unit; concentration; background; raw_flow_unit; flow; duration; lab_method; detection_limit; quantification_limit; fuel_carbon; factor; oxidation; refrigerant_stocks; inlet_id; inlet_volume; inlet_concentration; outlet_volume; outlet_concentration; volume_unit; gross_outlet_load; inlet_load; stock_and_other_water_fates; background_attribution_method; attributed_background_load; uncertainty"
+      collection_method: "Match inlet and outlet concentration/volume/time independently, retain gross and inlet substance loads with their own units, background origin, stocks/other fates and QA, and apply integrated_release for inventory-basis selection and any justified attribution; use actual carbon balance or sourced equipment factors for combustion and named refrigerant balance; per 1 kg reference flow, attribute each actual event once and disclose uncertainty/nondetects; protocol owning process: utilities; retain source-stage, event, consumer and period links."
       unit: "kg substance; concentration; flow; time"
       frequency: "representative actual events and periods"
       temporal_coverage: "complete selected phases and treatment"
@@ -1099,8 +1099,8 @@ dataset_production:
       process_id: "residuals"
       flow_role: "substance and gas releases"
       record_type: "sampling and mass balance"
-      raw_fields: "substance; species_basis; medium; source_stage_event_id; loop; final_outfall_id; sample_time; raw_concentration_unit; concentration; background; raw_flow_unit; flow; duration; lab_method; detection_limit; quantification_limit; fuel_carbon; factor; oxidation; refrigerant_stocks"
-      collection_method: "Use paired concentration/flow/time, upstream background, QA and documented unit/species conversions; actual carbon balance or sourced equipment factors for combustion; named refrigerant balance; per 1 kg reference flow; integrate actual substance mass and attribute once; uncertainty and nondetects disclosed; protocol owning process: residuals; retain actual source-stage, event, consumer and period links; records owned here are attributed once."
+      raw_fields: "substance; species_basis; medium; source_stage_event_id; loop; final_outfall_id; sample_time; raw_concentration_unit; concentration; background; raw_flow_unit; flow; duration; lab_method; detection_limit; quantification_limit; fuel_carbon; factor; oxidation; refrigerant_stocks; inlet_id; inlet_volume; inlet_concentration; outlet_volume; outlet_concentration; volume_unit; gross_outlet_load; inlet_load; stock_and_other_water_fates; background_attribution_method; attributed_background_load; uncertainty"
+      collection_method: "Match inlet and outlet concentration/volume/time independently, retain gross and inlet substance loads with their own units, background origin, stocks/other fates and QA, and apply integrated_release for inventory-basis selection and any justified attribution; use actual carbon balance or sourced equipment factors for combustion and named refrigerant balance; per 1 kg reference flow, attribute each actual event once and disclose uncertainty/nondetects; protocol owning process: residuals; retain source-stage, event, consumer and period links."
       unit: "kg substance; concentration; flow; time"
       frequency: "representative actual events and periods"
       temporal_coverage: "complete selected phases and treatment"
@@ -1185,13 +1185,13 @@ dataset_production:
         - pcr-live-aquaculture-method
     - id: integrated_release
       applies_to: "direct substance releases"
-      rule: "Integrate actual concentration minus background over paired flow/time windows, retaining unit and species/element conversion, nondetect handling and lab QA; do not infer releases from treatment-service expenditure."
+      rule: "For each actual waterborne substance and receiving medium, first retain gross outlet load L_out = sum(C_out,k * V_out,k), using concentration and discharged volume matched to each representative interval, with explicit unit and elemental/species conversions. Independently retain inlet load L_in = sum(C_in,j * V_in,j) for the same period/basis, other water fates, stocks and uncertainty. Gross outlet load is the default direct-release inventory; an out-minus-in balance is a separate diagnostic, not automatically an emission or removal credit. A foreground-attributable release may replace the gross inventory only under a documented, independently justified source/fate method that identifies the inlet/background share actually reaching that outlet and accounts for other outputs, retention, transformation and stock changes; retain both load records, the explicit attribution formula and applicability evidence, and use only one inventory representation. Never assume equal inlet/outlet volumes or substitute (C_out - C_background) * V_out without that evidence. Negative or uncertain differences remain review findings, not automatic negative emissions, uptake credits or zero. Retain nondetect handling and laboratory QA; missing volume, matching or attribution evidence blocks the affected result, and treatment-service expenditure cannot determine release mass."
       inputs:
         - cp_water_utilities
         - cp_water_residuals
         - cp_release_utilities
         - cp_release_residuals
-      output: "actual substance release mass"
+      output: "gross outlet and inlet load records, separate diagnostic balance and one justified release inventory per substance/medium"
       source_ids:
         - pcr-live-aquaculture-method
     - id: attribution_ledger
@@ -1340,7 +1340,7 @@ dataset_production:
       evidence: "per-flow original records under the linked protocol, identity and destination evidence"
     - id: dq_complete_nutrient_substance_releases
       applies_to: "residuals; outputs; elementary"
-      requirement: "Identify and separately collect every actual exchange covered by “Actual nutrient and chemical substances to water”; retain all following collection, quantity and normalization obligations: Individual nitrogen/phosphorus species and actual health/cleaning substances with receiving medium; concentration times measured flow and duration, background subtraction and elemental/species conversion evidence. Flow property / unit: Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg Amount rule: Actual attributable quantity from cp_release_residuals divided by qualified net viable fish mass at handover; include only when actually used or occurring. Value mode: calculated_value Specificity: site_specific Normalization basis: per 1 kg reference flow Basis kind: reference_flow Evidence kind: calculated_from_collection Collection protocol: cp_release_residuals Sources: pcr-live-aquaculture-method Establish native units, measured quantities, destinations and independent range evidence for each concrete exchange. This completion requirement supplies no child quantity, default or allowed range; establish each child range independently. No actual exchange may be omitted."
+      requirement: "Identify and separately collect every actual exchange covered by “Actual nutrient and chemical substances to water”; retain all following collection, quantity and normalization obligations: Individual nitrogen/phosphorus species and actual health/cleaning substances with receiving medium; apply integrated_release: retain matched gross outlet and inlet loads, unit and elemental/species conversion evidence; any background attribution requires the documented source/fate method and applicability evidence, with no automatic negative credit or duplicate gross/net inventory. Flow property / unit: Mass 93a60a56-a3c8-11da-a746-0800200b9a66; unit group 93a60a57-a4c8-11da-a746-0800200c9a66 / kg Amount rule: Actual attributable quantity from cp_release_residuals divided by qualified net viable fish mass at handover; include only when actually used or occurring. Value mode: calculated_value Specificity: site_specific Normalization basis: per 1 kg reference flow Basis kind: reference_flow Evidence kind: calculated_from_collection Collection protocol: cp_release_residuals Sources: pcr-live-aquaculture-method Establish native units, measured quantities, destinations and independent range evidence for each concrete exchange. This completion requirement supplies no child quantity, default or allowed range; establish each child range independently. No actual exchange may be omitted."
       evidence: "per-flow original records under the linked protocol, identity and destination evidence"
     - id: dq_complete_biological_air_releases
       applies_to: "residuals; outputs; elementary"
@@ -1429,7 +1429,7 @@ data_sources:
     used_for: "Self-defined method, not external observation; fixed 1–1 kg is only normalization; other ranges are replaceable reasoned screens without empirical claims"
 normative_context:
   normalization: "utf8-lf-v1"
-  source_sha256: "sha256:548bfb6fd707a6fdad962e6e0fd4a064aca613e00e3a8f1f7a71e51012aea99f"
+  source_sha256: "sha256:f6a2076818b824157e906b66f3be36ffc34a899852eb4d620427d00b57dc5b50"
   identity_scope: "projection_snapshot"
   units:
     - unit_id: "normative_5546"
@@ -1528,15 +1528,15 @@ normative_context:
               line: 2
               column: 1
           markdown: "---\n"
-    - unit_id: "normative_114932"
+    - unit_id: "normative_117004"
       family: "validation"
       span:
         start:
-          offset: 114932
+          offset: 117004
           line: 881
           column: 1
         end:
-          offset: 118865
+          offset: 120937
           line: 895
           column: 1
       markdown: "## 9. Validation Rules\n\n| rule_id | Applies to | Rule | source_ids |\n| --- | --- | --- | --- |\n| `v_reference` | aquaculture_live_handover | Require one species/cohort, actual farmed origin, declared seed/broodstock/live-fish-feed purpose, life stage and producer gate, net viable wet mass plus count, weighing and health/fitness evidence. Eggs/gametes, dead/rejected fish and nonfish organisms cannot satisfy the reference. | `un-cpc-3-2025`; `pcr-live-aquaculture-method` |\n| `v_measurement` | all inventory rows | Check same-reference normalization, actual representative count-to-mass measurements, calibrated net weighing, moisture/density/gas conditions and energy units. Range outliers trigger reviewed evidence and uncertainty, never clipping or automatic invalidation; missing actual quantities remain gaps. | `pcr-live-aquaculture-method` |\n| `v_routes` | broodstock_hatch; managed_rearing; harvest | Verify owned/purchased phase matrix and supplier burdens; spawning deltas reference broodstock_hatch and water deltas actual managed_rearing. With rearing check reared_live_transfer → harvest_stock_input; for actual hatchery-only seed check hatched_fish_transfer → harvest_stock_input, seed-stage fitness and evidence of phase absence. Require actual owned hatchery or rearing production; retain all hatchery/live-food resources, without fictitious stages or duplicate transfers. | `fao-seed-production`; `ifas-ras-health`; `pcr-live-aquaculture-method` |\n| `v_balance` | all selected nodes | Reconcile fish counts and measured biomass with growth, opening/closing stocks, transfers, handovers, mortalities, rejection and escapes; growth means input/output wet mass need not be equal. Reconcile feed dry matter, nutrient intake and measured species releases with stated retention and solids, not a universal emission factor. | `pcr-live-aquaculture-method` |\n| `v_completeness` | utilities; residuals | For each selected source-stage inspect actual resource categories, treatment and direct release records. Supplied water, own abstraction, circulation, waste handoff and direct discharge are distinct. Substance releases require species/basis, receiving medium, flow-duration, concentration/background and laboratory QA. | `pcr-live-aquaculture-method` |\n| `v_attribution` | broodstock_hatch; managed_rearing; utilities | Check every intended output/handover, run/changeover, parent spawning cycle, period carryover, retirement fate and shared consumer matrix. Sum attributed shares to actual totals and ensure no repeated upstream, parent, asset, service or internal-transfer burden. | `pcr-live-aquaculture-method` |\n| `v_binding` | all inventory rows | Each final dataset exchange needs a concrete verified identity matching substance/product, state, purpose, supply geography/technology/provider, flow type, direction and unit. Conditional umbrellas split into actual exchanges at data production. Candidate unresolved registrations and a structural check pass do not verify final identities. | `pcr-live-aquaculture-method` |\n| `v_zero_gate` | conditional processes; presentation | Zero is accepted only with documented non-use or observed absence over the applicable stage/period. Unknown viability, purpose, route, handover state, quantity or release fate prevents a complete qualifying dataset; report performed and skipped validation coverage. | `pcr-live-aquaculture-method` |\n| `validate_inventory_completion` | all concrete exchanges and section 8 completion obligations | Verify each applicable dq_complete obligation has separately measured and identity-verified exchange cards. Check each quantity, native unit, range evidence, normalization, receiving medium, destination and non-duplication. Any unfulfilled actual child exchange, quantity, identity or destination makes the final dataset incomplete and fails validation; unknown cannot be zero. Static PCR checking does not replace this evidence. |  |\n\n"
@@ -1556,11 +1556,11 @@ normative_context:
         - kind: "heading"
           span:
             start:
-              offset: 114932
+              offset: 117004
               line: 881
               column: 1
             end:
-              offset: 114954
+              offset: 117026
               line: 881
               column: 23
           text: "## 9. Validation Rules"
@@ -1801,118 +1801,118 @@ normative_context:
     - pointer: "/validation_rules/0"
       rule_id: "v_reference"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 115027
+          offset: 117099
           line: 885
           column: 1
         end:
-          offset: 115407
+          offset: 117479
           line: 885
           column: 381
     - pointer: "/validation_rules/1"
       rule_id: "v_measurement"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 115408
+          offset: 117480
           line: 886
           column: 1
         end:
-          offset: 115782
+          offset: 117854
           line: 886
           column: 375
     - pointer: "/validation_rules/2"
       rule_id: "v_routes"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 115783
+          offset: 117855
           line: 887
           column: 1
         end:
-          offset: 116398
+          offset: 118470
           line: 887
           column: 616
     - pointer: "/validation_rules/3"
       rule_id: "v_balance"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 116399
+          offset: 118471
           line: 888
           column: 1
         end:
-          offset: 116801
+          offset: 118873
           line: 888
           column: 403
     - pointer: "/validation_rules/4"
       rule_id: "v_completeness"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 116802
+          offset: 118874
           line: 889
           column: 1
         end:
-          offset: 117198
+          offset: 119270
           line: 889
           column: 397
     - pointer: "/validation_rules/5"
       rule_id: "v_attribution"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 117199
+          offset: 119271
           line: 890
           column: 1
         end:
-          offset: 117562
+          offset: 119634
           line: 890
           column: 364
     - pointer: "/validation_rules/6"
       rule_id: "v_binding"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 117563
+          offset: 119635
           line: 891
           column: 1
         end:
-          offset: 117974
+          offset: 120046
           line: 891
           column: 412
     - pointer: "/validation_rules/7"
       rule_id: "v_zero_gate"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 117975
+          offset: 120047
           line: 892
           column: 1
         end:
-          offset: 118330
+          offset: 120402
           line: 892
           column: 356
     - pointer: "/validation_rules/8"
       rule_id: "validate_inventory_completion"
       identity_kind: "explicit"
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 118331
+          offset: 120403
           line: 893
           column: 1
         end:
-          offset: 118863
+          offset: 120935
           line: 893
           column: 533
   diagnostics:
@@ -1954,14 +1954,14 @@ normative_context:
           column: 41
     - code: "AMBIGUOUS_PROSE_ATTACHMENT"
       message: "Ancestor preamble may govern this family; exact structural ancestor source retained separately without inferring applicability. Rule extraction remains scoped to this H2."
-      unit_id: "normative_114932"
+      unit_id: "normative_117004"
       source_span:
         start:
-          offset: 114932
+          offset: 117004
           line: 881
           column: 1
         end:
-          offset: 114954
+          offset: 117026
           line: 881
           column: 23
 projection_metadata:
@@ -1971,5 +1971,5 @@ projection_metadata:
     path: "pcr.en-US.md"
     normalization: "utf8-lf-v1"
     hash_algorithm: "sha256"
-    sha256: "sha256:548bfb6fd707a6fdad962e6e0fd4a064aca613e00e3a8f1f7a71e51012aea99f"
-  generated_content_sha256: "sha256:a60aae8813e1e0bc943559880491413fd6209ff743424e599d0d196f2d92a099"
+    sha256: "sha256:f6a2076818b824157e906b66f3be36ffc34a899852eb4d620427d00b57dc5b50"
+  generated_content_sha256: "sha256:6854e9936799c94049a94fe46f454be87819c4c63b47dee67ba3e1b0ee6b8e6c"
