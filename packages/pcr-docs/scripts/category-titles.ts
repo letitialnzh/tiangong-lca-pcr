@@ -12,6 +12,7 @@ const zh: Readonly<Record<string,string>> = {
   "community-social-and-personal-services": "社区、社会和个人服务",
   constructions: "建筑物和工程结构",
   "constructions-and-construction-services": "建筑工程和施工服务",
+  "construction-services": "施工服务",
   "creative-original-assets": "创作原作资产",
   "crude-petroleum-and-natural-gas": "原油和天然气",
   "data-products": "数据产品",

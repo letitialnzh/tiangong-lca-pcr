@@ -1,6 +1,6 @@
 ---
-lastReviewedAt: 2026-10-19
-lastReviewedNote: "Adapted Candywangx PCR #23 native-download transport for CPC 04: required English/Chinese candidate Markdown up to 65536 exact bytes, unchanged 16384-byte manifests and eligibility, and two static workers within the retained 6 GB process-tree gate. Original Unicode bytes, filenames, source bindings, page routes, chapters, languages and navigation payloads remain required. File/per-file/heap/memory gates and PCR methodology are unchanged; complete export and browser qualification remain required."
+lastReviewedAt: 2026-10-20
+lastReviewedNote: "Integrated the fork sync baseline with lossless v5 shared search dictionaries and logical-index packs. Candidate manifest downloads are bounded at 49152 bytes, required-language Markdown at the inherited 65536 bytes, and inspector packs at 4000000 bytes/32 records. Original bytes, identities, native navigation, source binding, eligibility and all provider/search/memory gates remain required; static workers and CI duration follow the sync baseline. Full export and browser qualification remain required."
 lastReviewedCommit: f793bd03d2a9351811b9bb0259b8f5e60c12156d
 title: Generated PCR Documentation Site Contract
 docType: contract
@@ -79,7 +79,7 @@ existing normalized-text projection fingerprint.
 
 Current candidate PCRs with authored methodology and no release history may use
 native `data:application/octet-stream;base64,` download links for `manifest.yaml`,
-`pcr.en-US.md` and `pcr.zh-CN.md`. The manifest limit is 16,384 original bytes;
+`pcr.en-US.md` and `pcr.zh-CN.md`. The candidate manifest download limit is 49,152 original bytes;
 each required-language Markdown limit is 65,536 original bytes. Eligibility comes
 from the canonical same-directory manifest, bound to the exact pinned Git source; Markdown never supplies lifecycle or maturity policy.
 These bounded downloads preserve each original filename and work without
@@ -308,7 +308,7 @@ complete source artifacts remain subject to the existing fidelity contract.
 
 The complete export runs locally or in GitHub qualification and has no project-owned
 elapsed-time acceptance budget. CI bounds its instrumented documentation job to
-60 minutes; stage and total durations remain reported. The old 18-minute full-build
+120 minutes; stage and total durations remain reported. The old 18-minute full-build
 cap incorrectly applied the provider deadline to this offline work. EdgeOne runs
 only the sealed-product importer, whose separate 15-minute download/materialization
 deadline, cleanup and atomic handoff remain enforced. The export uses two static workers
@@ -424,12 +424,35 @@ full records, tokenization, scores, ranking, 2 MB text buckets and 20 MB raw/4 M
 gzip budgets are unchanged. No dependency or remote service is added, and wire
 compression does not claim to reduce the restored engine's resident memory.
 
+Search manifest version 5 retains the joined-term representation and may declare
+one shared `termDictionary` per language. New dictionary-bearing shards set
+`dictionaryTerms: true` as well as `joinedTerms`, `scoreMasks` and `postingDeltas`.
+A marked columnar map stores signed deltas of dictionary indexes in its term
+column. Decoding restores every original term, its position and the unchanged
+posting arrays before engine import. Dictionary strings are unique and ordered
+by first encounter; empty terms, literal spaces, Unicode and hostile-looking keys
+remain exact. Missing/foreign dictionaries, duplicate strings, invalid deltas,
+out-of-range references and incompatible flags fail initialization and permit retry.
+
+Several logical indexes may share one physical v5 JSON pack. Each manifest shard
+keeps its original position and record count and names its `entry` in that pack.
+Every pack entry must be covered exactly once. The Worker fetches each physical
+pack once, then imports separate indexes in the original logical order. The 2 MB
+text buckets, thirty candidates per logical index, complete records and global
+ranking remain unchanged. Original v1–v4 shards and existing ungrouped v5 joined
+terms stay readable. Generation verifies exact original engine export strings and
+record serialization after packing. The unchanged 20 MB raw/4 MB gzip language
+budgets include each physical pack once **and the complete dictionary-bearing
+manifest**; duplicate logical references never hide transport bytes. Each physical
+pack also satisfies the existing per-file cap. No words, scores, IDs, null slots,
+source text, record context or native navigation payloads are removed.
+
 ### Inspector data transport
 
 The field inspector groups complete generated records into versioned JSON packs,
 using positional entries `[key, manifest, structured]`. Each record carries its
 exact transport key; current records and historical releases have distinct keys.
-Packs target at most 1,000,000 bytes and 32 records. A single larger record stays
+Packs target at most 4,000,000 bytes and 32 records. A single larger record stays
 whole and must satisfy the unchanged 25 MB file limit. No PCR field, scalar type,
 array position, object-key order or empty value is removed. Generation requires
 each decoded record to serialize exactly as its original generated data; export

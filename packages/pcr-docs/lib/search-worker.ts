@@ -1,5 +1,5 @@
 import { searchTerms } from "./search-terms.ts";
-import { decodeSearchEntries, SEARCH_SCORE_SLOTS } from "./search-wire.ts";
+import { decodeSearchEntries, readSearchTermDictionary, SEARCH_SCORE_SLOTS } from "./search-wire.ts";
 import type {SearchResult} from "./types.ts";
 interface SearchIndex {import(key:string,payload:string):void;search(query:string,options:{limit:number}):(string|number)[]}
 interface SearchShard {index:SearchIndex;records:Map<string,SearchResult>}
@@ -23,16 +23,35 @@ async function load(language:string):Promise<SearchShard[]> {
  const response=await fetch(`/generated/search/${encodeURIComponent(language)}/manifest.json`);
  if(!response.ok)throw new Error("Search index is unavailable.");
  const manifest:unknown=await response.json();
- if(!record(manifest)||(manifest.schemaVersion!==1&&manifest.schemaVersion!==2&&manifest.schemaVersion!==3&&manifest.schemaVersion!==4)||manifest.language!==language||!Array.isArray(manifest.shards))throw new Error("Invalid search manifest.");
- const shards:SearchShard[]=[];
+ if(!record(manifest)||(manifest.schemaVersion!==1&&manifest.schemaVersion!==2&&manifest.schemaVersion!==3&&manifest.schemaVersion!==4&&manifest.schemaVersion!==5)||manifest.language!==language||!Array.isArray(manifest.shards))throw new Error("Invalid search manifest.");
+ if(manifest.schemaVersion!==5&&Object.hasOwn(manifest,"termDictionary"))throw new Error("Invalid serialized search data.");
+ const dictionary=Object.hasOwn(manifest,"termDictionary")?readSearchTermDictionary(manifest.termDictionary):undefined;
+ const packed=new Map<string,Set<number>>();
+ for(const item of manifest.shards)if(record(item)&&Object.hasOwn(item,"entry")){
+  if(manifest.schemaVersion!==5||typeof item.url!=="string"||!item.url.startsWith("/generated/search/")||typeof item.entry!=="number"||!Number.isSafeInteger(item.entry)||item.entry<0||typeof item.records!=="number"||!Number.isSafeInteger(item.records)||item.records<0)throw new Error("Invalid search shard.");
+  const entries=packed.get(item.url)??new Set<number>();
+  if(entries.has(item.entry))throw new Error("Invalid search shard.");
+  entries.add(item.entry);packed.set(item.url,entries);
+ }
+ for(const entries of packed.values())for(const entry of entries)if(entry>=entries.size)throw new Error("Invalid search shard.");
+ const payloads=new Map<string,unknown>(),shards:SearchShard[]=[];
  for(const item of manifest.shards){
   if(!record(item)||typeof item.url!=="string"||!item.url.startsWith("/generated/search/"))throw new Error("Invalid search shard.");
-  const response=await fetch(item.url);if(!response.ok)throw new Error("Search shard is unavailable.");
-  const data:unknown=await response.json();
+  if(!payloads.has(item.url)){
+   const response=await fetch(item.url);if(!response.ok)throw new Error("Search shard is unavailable.");
+   const payload:unknown=await response.json();payloads.set(item.url,payload);
+  }
+  let data:unknown=payloads.get(item.url);
+  if(Object.hasOwn(item,"entry")){
+   if(!record(data)||data.schemaVersion!==5||!Array.isArray(data.indexes)||data.indexes.length!==packed.get(item.url)?.size||typeof item.entry!=="number")throw new Error("Invalid serialized search data.");
+   data=data.indexes[item.entry];
+  }
   if(!record(data)||!record(data.entries)||!Array.isArray(data.records)||!data.records.every(searchRecord))throw new Error("Invalid serialized search data.");
-  if(manifest.schemaVersion!==3&&manifest.schemaVersion!==4&&Object.hasOwn(data,"sparseMaps"))throw new Error("Invalid serialized search data.");
-  if(manifest.schemaVersion!==4&&(Object.hasOwn(data,"scoreMasks")||Object.hasOwn(data,"postingDeltas")||Object.hasOwn(data,"columnarMaps")))throw new Error("Invalid serialized search data.");
-  const entries=(manifest.schemaVersion===3||manifest.schemaVersion===4)?decodeSearchEntries(data.entries,data.sparseMaps,manifest.schemaVersion,data.scoreMasks,data.postingDeltas,data.columnarMaps):data.entries;
+  if(Object.hasOwn(item,"entry")&&data.records.length!==item.records)throw new Error("Invalid serialized search data.");
+  if(manifest.schemaVersion!==3&&manifest.schemaVersion!==4&&manifest.schemaVersion!==5&&Object.hasOwn(data,"sparseMaps"))throw new Error("Invalid serialized search data.");
+  if(manifest.schemaVersion!==4&&manifest.schemaVersion!==5&&(Object.hasOwn(data,"scoreMasks")||Object.hasOwn(data,"postingDeltas")||Object.hasOwn(data,"columnarMaps")))throw new Error("Invalid serialized search data.");
+  if(manifest.schemaVersion!==5&&(Object.hasOwn(data,"joinedTerms")||Object.hasOwn(data,"dictionaryTerms")))throw new Error("Invalid serialized search data.");
+  const entries=(manifest.schemaVersion===3||manifest.schemaVersion===4||manifest.schemaVersion===5)?decodeSearchEntries(data.entries,data.sparseMaps,manifest.schemaVersion,data.scoreMasks,data.postingDeltas,data.columnarMaps,data.joinedTerms,dictionary,data.dictionaryTerms):data.entries;
   const index=await createIndex(language);
   for(const [key,payload]of Object.entries(entries)){
    let serialized:string;

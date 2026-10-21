@@ -3,8 +3,11 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-for (const schemaVersion of [1, 2, 3, 4]) for (const [scenario, description] of [
+for (const schemaVersion of [1, 2, 3, 4, 5]) for (const [scenario, description] of [
+  ...(schemaVersion === 5 ? [['dictionary-roundtrip-retry', 'worker restores shared dictionary references exactly and retries corrupted columns'], ['legacy-v5-roundtrip','worker retains existing v5 joined terms'], ['packed-wire-roundtrip','packed indexes retain exact exports and full records'], ['packed-limit','physical packing preserves logical per-shard candidate limits'], ['packed-multi-shard','physical packing retains logical merge and URL deduplication'], ['packed-chinese','physical packing retains full Chinese context'], ['packed-corruption','malformed packs and locators fail and allow a clean retry']] : []),
   ...(schemaVersion === 4 ? [['flat-v4-roundtrip', 'worker retains the original flat v4 reader']] : []),
+  ['dictionary-metadata','worker rejects incompatible global dictionary metadata and permits a clean retry'],
+  ['joined-metadata', 'worker rejects incompatible joined-term metadata and permits a valid retry'],
   ['mask-metadata', 'worker rejects incompatible mask/delta metadata and permits a valid retry'],
   ['wire-roundtrip', 'worker imports every export string exactly and preserves complete result records'],
   ['entry-format-retry', 'worker rejects entries from the wrong wire format and permits a valid retry'],

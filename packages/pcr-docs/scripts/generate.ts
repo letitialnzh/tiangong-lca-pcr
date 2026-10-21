@@ -49,7 +49,7 @@ import {
 } from "./markdown.ts";
 import { SUMMARY_LIMIT, catalogSummary, documentSummary } from "./summaries.ts";
 import { searchTerms } from "../lib/search-terms.ts";
-import { encodeSearchEntries, SEARCH_SCORE_SLOTS } from "../lib/search-wire.ts";
+import { encodeSearchEntries, decodeSearchEntries, createSearchTermDictionary, SEARCH_SCORE_SLOTS } from "../lib/search-wire.ts";
 const app = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { values: options } = parseArgs({
   options: {
@@ -987,73 +987,54 @@ async function generate() {
     docs.forEach((doc, i) => {
       doc.record.id = String(i);
     });
-    const shards: SearchShard[] = [];
-    let bucket: SearchDocument[] = [],
-      bytes = 0;
+    const pending: {entries: Record<string, unknown[]>; records: SearchResult[]; nativeSha256: string; recordsSha256: string}[] = [];
+    let bucket: SearchDocument[] = [], bytes = 0;
     async function flush() {
       if (!bucket.length) return;
-      const index = new Index({
-        tokenize: "strict",
-        resolution: SEARCH_SCORE_SLOTS,
-        encode: (value: unknown) => searchTerms(value, language),
-      });
+      const index = new Index({tokenize: "strict", resolution: SEARCH_SCORE_SLOTS, encode: (value: unknown) => searchTerms(value, language)});
       for (const doc of bucket) index.add(Number(doc.record.id), doc.text);
-      const entries: Record<string,unknown[]> = {};
+      const entries: Record<string, unknown[]> = {};
       await index.export((key, value) => {
         const parsed: unknown = JSON.parse(value);
         if (!Array.isArray(parsed) || JSON.stringify(parsed) !== value)
           throw new Error("Unsupported serialized search export: " + language + "/" + key);
         entries[key] = parsed;
       });
-      const payload = JSON.stringify({
-        ...encodeSearchEntries(entries, 4),
-        records: bucket.map((d) => d.record),
-      });
-      if (Buffer.byteLength(payload) > 20_000_000)
-        throw new Error("Search shard exceeds 20MB: " + language);
-      const url =
-        "/generated/search/" +
-        language +
-        "/shard-" +
-        String(shards.length).padStart(3, "0") +
-        ".json";
-      write("public" + url.slice("/generated".length), payload);
-      shards.push({
-        url,
-        bytes: Buffer.byteLength(payload),
-        gzipBytes: gzipSync(payload, { level: 9 }).length,
-        records: bucket.length,
-        sha256: sha256(payload),
-      });
-      bucket = [];
-      bytes = 0;
+      const records = bucket.map(doc => doc.record);
+      pending.push({entries, records, nativeSha256: sha256(JSON.stringify(entries)), recordsSha256: sha256(JSON.stringify(records))});
+      bucket = []; bytes = 0;
     }
     for (const doc of docs) {
       const size = Buffer.byteLength(doc.text);
       if (bytes + size > 2_000_000) await flush();
-      bucket.push(doc);
-      bytes += size;
+      bucket.push(doc); bytes += size;
     }
     await flush();
-    json("public/search/" + language + "/manifest.json", {
-      schemaVersion: 4,
-      language,
-      shards,
-    });
-    const rawBytes = shards.reduce((sum, shard) => sum + shard.bytes, 0);
-    const gzipBytes = shards.reduce((sum, shard) => sum + shard.gzipBytes, 0);
-    console.log(JSON.stringify({event: "search-index-size", language, rawBytes, gzipBytes, shards: shards.length, records: docs.length}));
+    const termDictionary = createSearchTermDictionary(pending.map(shard => shard.entries));
+    const indexes = pending.map(shard => ({...encodeSearchEntries(shard.entries, 5, termDictionary), records: shard.records}));
+    const payload = JSON.stringify({schemaVersion: 5, indexes});
+    const restored: unknown = JSON.parse(payload);
+    if (!isUnknownRecord(restored) || !Array.isArray(restored.indexes)) throw new Error("Invalid packed search data");
+    for (let index = 0; index < pending.length; index++) {
+      const data: unknown = restored.indexes[index];
+      if (!isUnknownRecord(data)) throw new Error("Invalid packed search index");
+      const entries = decodeSearchEntries(data.entries, data.sparseMaps, 5, data.scoreMasks, data.postingDeltas, data.columnarMaps, data.joinedTerms, termDictionary, data.dictionaryTerms);
+      if (sha256(JSON.stringify(entries)) !== pending[index]!.nativeSha256 || sha256(JSON.stringify(data.records)) !== pending[index]!.recordsSha256)
+        throw new Error("Packed search changed native data: " + language + "/" + index);
+    }
+    const url = "/generated/search/" + language + "/pack-000.json";
+    const packBytes = Buffer.byteLength(payload), packGzipBytes = gzipSync(payload, {level: 9}).length;
+    if (packBytes > 20_000_000) throw new Error("Search pack exceeds 20MB: " + language);
+    write("public" + url.slice("/generated".length), payload);
+    const shards: SearchShard[] = pending.map((shard, entry) => ({url, entry, records: shard.records.length, bytes: packBytes, gzipBytes: packGzipBytes, sha256: sha256(payload), nativeSha256: shard.nativeSha256, recordsSha256: shard.recordsSha256}));
+    const searchManifest = JSON.stringify({schemaVersion: 5, language, termDictionary, shards});
+    write("public/search/" + language + "/manifest.json", searchManifest);
+    const manifestBytes = Buffer.byteLength(searchManifest), manifestGzipBytes = gzipSync(searchManifest, {level: 9}).length;
+    const rawBytes = packBytes + manifestBytes, gzipBytes = packGzipBytes + manifestGzipBytes;
+    console.log(JSON.stringify({event: "search-index-size", language, rawBytes, gzipBytes, shards: shards.length, physicalPacks: 1, dictionaryTerms: termDictionary.length, records: docs.length}));
     if (rawBytes > 20_000_000 || gzipBytes > 4_000_000)
-      throw new Error(
-        "Search exceeds the per-language browser budget: " + language + " (raw " + rawBytes + "/20000000; gzip " + gzipBytes + "/4000000)",
-      );
-    report.search.push({
-      language,
-      records: docs.length,
-      rawBytes,
-      gzipBytes,
-      shards,
-    });
+      throw new Error("Search exceeds the per-language browser budget: " + language + " (raw " + rawBytes + "/20000000; gzip " + gzipBytes + "/4000000)");
+    report.search.push({language, records: docs.length, rawBytes, gzipBytes, shards, manifest: {rawBytes: manifestBytes, gzipBytes: manifestGzipBytes, terms: termDictionary.length}});
   }
   for (const page of manifest.pages) {
     if (!page.indexable || page.kind === "pcr") continue;

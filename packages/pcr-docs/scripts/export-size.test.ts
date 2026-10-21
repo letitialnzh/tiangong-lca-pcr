@@ -137,3 +137,13 @@ test("accounting reports growth above 1.5 GB without inventing an aggregate cap"
   assert.deepEqual(report.categories.recordJson, { files: 64, bytes: 1_536_000_000 });
   assert.equal(report.maxFile!.bytes, 24_000_000);
 });
+
+test("Expanded candidate Markdown packing preserves complete UTF-8 bytes and leaves larger files physical", () => {
+  const directory = 'library/pcrs/domain/category/product/';
+  const manifest = {path:directory + 'manifest.yaml', bytes:Buffer.from('status: candidate\ncontent_maturity: authored_methodology\n')};
+  const body = Buffer.from('\ufeff# 完整原文\r\n' + '原始数据、边界和来源。\r\n'.repeat(1300));
+  assert.ok(body.length > 32768 && body.length <= INLINE_MARKDOWN_LIMIT);
+  const url = inlineDownloadUrl(directory + 'pcr.zh-CN.md', body, false, manifest);
+  assert.ok(url); assert.deepEqual(decodeInlineDownloadUrl(url), body);
+  assert.equal(inlineDownloadUrl(directory + 'pcr.zh-CN.md', Buffer.alloc(INLINE_MARKDOWN_LIMIT + 1), false, manifest), undefined);
+});
